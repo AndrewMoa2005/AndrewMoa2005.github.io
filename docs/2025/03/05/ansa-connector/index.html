@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Andrew Moa Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://AndrewMoa2005.github.io//img/home-bg.jpg">
+    <meta property="twitter:image" content="https://AndrewMoa2005.github.io//img/home-bg.jpg" />
+    
+
+    
+    <meta name="title" content="Ansa快速设置连接" />
+    <meta property="og:title" content="Ansa快速设置连接" />
+    <meta property="twitter:title" content="Ansa快速设置连接" />
+    
+
+    
+    <meta name="description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。">
+    <meta property="og:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    <meta property="twitter:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="AndrewMoa, Andrew Moa, Andrew Moa的博客, Andrew Moa Blog, 博客, 个人网站, 仿真分析, CAE, CFD, Linux">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Ansa快速设置连接 | Andrew Moa的博客 | Andrew Moa&#39;s Blog</title>
+
+    <link rel="canonical" href="/2025/03/05/ansa-connector/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Andrew Moa Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/ansa/">ansa</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/cfd/">cfd</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/linux/">linux</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/zhihu/">zhihu</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                            前处理
+                        </a>
+                        
+                        <a class="tag" href="/tags/ansa" title="ansa">
+                            ansa
+                        </a>
+                        
+                        <a class="tag" href="/tags/cae" title="cae">
+                            cae
+                        </a>
+                        
+                    </div>
+                    <h1>Ansa快速设置连接</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Andrew Moa
+                             
+                            on 
+                            Wednesday, March 5, 2025
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>Ansa可以通过Connection功能快速设置连接。</p>
+<p>这里以螺接为例，首先将所有螺钉单独显示出来。
+使用<code>TOPO</code>→<code>Curves</code>→<code>Tubes2Curve</code>将螺接钉几何转换成曲线。
+
+  <img src="/img/_resources/cf8ec5657b55d755b53386ae1b4272be.png" alt="cf8ec5657b55d755b53386ae1b4272be.png">
+
+</p>
+<p>保留曲线，将螺接钉几何曲面全删掉。
+
+  <img src="/img/_resources/0b4b65d233db1e00fd74584da04b96d7.png" alt="0b4b65d233db1e00fd74584da04b96d7.png">
+
+</p>
+<p>再使用Topo→Points→Edges将曲线转换成3D点，删除掉曲线。
+
+  <img src="/img/_resources/dc9424dd60a768365c03f1153fc031f5.png" alt="dc9424dd60a768365c03f1153fc031f5.png">
+
+
+
+  <img src="/img/_resources/1ebe0dfd2e017056e6564ad06ba1e3f5.png" alt="1ebe0dfd2e017056e6564ad06ba1e3f5.png">
+
+</p>
+<p>根据3D点生成螺钉连接点，框选上一步生成的3D点。除了根据曲线定义连接点意外，还可以根据点和面生成连接点。但不同的几何形式对应不同的连接类型，应注意根据需要的连接类型选择对应的几何。这里列出一些常用的连接类型和几何对应关系：</p>
+<ul>
+<li>3D点：螺接、铆接、焊点</li>
+<li>线段：粘胶、焊缝、包边、螺接(直线段)</li>
+<li>面：粘胶</li>
+</ul>
+<p>螺钉连接点可以根据3D点或直线段生成，这里选择用3D点生成。
+
+  <img src="/img/_resources/4331a76dc0794af78759754fbb601025.png" alt="4331a76dc0794af78759754fbb601025.png">
+
+</p>
+<p>在模型树中可以看到生成的连接类型为螺钉。
+
+  <img src="/img/_resources/c791ca537a4743fa0d63ee7987037fa1.png" alt="c791ca537a4743fa0d63ee7987037fa1.png">
+
+</p>
+<p>将所有的螺钉连接点都扔到一个Part里，Part显示为连接类型。
+
+  <img src="/img/_resources/8af2a1ab4dad7113ad593f1f58a12f58.png" alt="8af2a1ab4dad7113ad593f1f58a12f58.png">
+
+</p>
+<p>选择连接管理器Connection Manager，框选要定义的连接点然后鼠标中键，进入连接定义对话框
+
+  <img src="/img/_resources/53e86de73bce9bcf48d5f9a94e78ce03.png" alt="53e86de73bce9bcf48d5f9a94e78ce03.png">
+
+</p>
+<p>连接方式选择<code>BOLT</code>，搜索距离根据几何尺寸填写。框选部分选择需要连接的PID，双击进入编辑然后输入英文半角符号<code>?</code>可以打开选择对话框，最多支持4个PID连接。这里ANSA默认连接方式是按Part搜索，需要手动改成PID。补充螺钉半径和其他连接信息，按<code>Realize</code>生成连接。
+
+  <img src="/img/_resources/452ade2ba664f49f46e72dfb029f11a1.png" alt="452ade2ba664f49f46e72dfb029f11a1.png">
+
+</p>
+<p>BEAM需要设置材料和截面尺寸，在弹出的PID对话框中设置。
+
+  <img src="/img/_resources/241c9eaa6309725edb610cafc31f4daf.png" alt="241c9eaa6309725edb610cafc31f4daf.png">
+
+</p>
+<p>连接效果如下。
+
+  <img src="/img/_resources/32339600fef4ea6b7c7078c6a0d19fd3.png" alt="32339600fef4ea6b7c7078c6a0d19fd3.png">
+
+</p>
+<p>PS：如果是SHELL网格，可以通过上面的3D点生成的螺钉连接点的方式生成螺接网格（如上图）。但如果是实体网格的话，就必须要通过直线段生成的螺钉连接点连接螺钉孔，生成带方向的连接点，连接类型还必须选择<code>BOLT ON SOLID</code>。
+
+  <img src="/img/_resources/91f23d42ef3b6bef725cff838c7bb392.png" alt="91f23d42ef3b6bef725cff838c7bb392.png">
+
+
+
+  <img src="/img/_resources/e5ad09f455baef060628b84040161fb8.png" alt="e5ad09f455baef060628b84040161fb8.png">
+
+</p>
+<hr>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2025/02/28/ansa-washer-mesh/" data-toggle="tooltip" data-placement="top" title="Ansa螺钉孔washer网格">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2025/03/05/ansa-unit/" data-toggle="tooltip" data-placement="top" title="Ansa单位制">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+
+
+<link href="https://xxx.xxx.com/dist/Artalk.css" rel="stylesheet" />
+<script src="https://xxx.xxx.com/dist/Artalk.js"></script>
+
+
+<div id="Comments"></div>
+
+<script>
+    Artalk.init({
+        el: '#Comments',
+        pageKey: 'https:\/\/AndrewMoa2005.github.io\/2025\/03\/05\/ansa-connector\/',
+        pageTitle: 'Ansa快速设置连接',
+        server: 'https:\/\/xxx.xxx.com',
+        site: 'xxx blog',
+    })
+</script>
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/abaqus" title="abaqus">
+                            abaqus
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ansa" title="ansa">
+                            ansa
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/cae" title="cae">
+                            cae
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cfd" title="cfd">
+                            cfd
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cfx" title="cfx">
+                            cfx
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/fluent" title="fluent">
+                            fluent
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/openfoam" title="openfoam">
+                            openfoam
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/slurm" title="slurm">
+                            slurm
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
+                            star-ccm&#43;
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/su2" title="su2">
+                            su2
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ubuntu" title="ubuntu">
+                            ubuntu
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                            前处理
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
+                            虚拟机
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    <li>
+                        <a href="mailto:Andrew.Moa2005@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/AndrewMoa2005">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Andrew Moa Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Andrew Moa Blog 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow" title="' + t + '">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

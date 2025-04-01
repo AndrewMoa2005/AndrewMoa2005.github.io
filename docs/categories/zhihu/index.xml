@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zhihu on Andrew Moa Blog</title>
+    <link>https://AndrewMoa2005.github.io/categories/zhihu/</link>
+    <description>Recent content in Zhihu on Andrew Moa Blog</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 08 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://AndrewMoa2005.github.io/categories/zhihu/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>扒一扒十沣科技国产CFD软件——QFlux及QMesh</title>
+      <link>https://AndrewMoa2005.github.io/2021/09/08/tenfong/</link>
+      <pubDate>Wed, 08 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2021/09/08/tenfong/</guid>
+      <description>&lt;p&gt;先说结论：1、十沣科技产品QFlux和QMesh与自身宣传不符。QMesh并不是什么“自主开发的先进计算流体力学核心软件”；而QFlux功能根本就尚未完善，至少没有包含其宣传所拥有的功能，而且笔者有理由怀疑其求解器根本就是“借鉴”自OpenFOAM。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>求解器验证对比——旋转和静止同心圆柱之间的层流</title>
+      <link>https://AndrewMoa2005.github.io/2021/08/14/vmfl001/</link>
+      <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2021/08/14/vmfl001/</guid>
+      <description>&lt;p&gt;本文采用不同CFD求解器，对层流流动问题进行验证。通过列举不同求解器的操作过程和输出结果的差异，验证各个求解器的精度。&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;1-问题描述&#34;&gt;1. 问题描述&lt;/h2&gt;&#xA;&lt;p&gt;如下图，建立两个同心圆柱间的定常层流模型。流动由内筒以恒定角速度旋转而引起，而外筒保持静止。使用周期性边界，只需要对流域的一部分进行建模。物理模型和输入数据如下表所示。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>ArchLinux下OpenFOAM编译安装与PBS并行化</title>
+      <link>https://AndrewMoa2005.github.io/2021/08/12/archlinux-compile-openfoam/</link>
+      <pubDate>Thu, 12 Aug 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2021/08/12/archlinux-compile-openfoam/</guid>
+      <description>&lt;h2 id=&#34;1-源代码下载&#34;&gt;1. 源代码下载&lt;/h2&gt;&#xA;&lt;h3 id=&#34;11-下载openfoam源代码&#34;&gt;1.1 下载OpenFOAM源代码&lt;/h3&gt;&#xA;&lt;p&gt;在&lt;code&gt;${HOME}&lt;/code&gt;目录下新建OpenFOAM目录：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#f1fa8c&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;HOME&lt;/span&gt;&lt;span style=&#34;color:#f1fa8c&#34;&gt;}&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir OpenFOAM &lt;span style=&#34;color:#ff79c6&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; OpenFOAM&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从github下载OpenFOAM和ThirdParty的源代码，放到&lt;code&gt;${HOME}/OpenFOAM&lt;/code&gt;目录中：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>超算平台部署STAR-CCM&#43;</title>
+      <link>https://AndrewMoa2005.github.io/2021/08/04/slurm-starccm/</link>
+      <pubDate>Wed, 04 Aug 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2021/08/04/slurm-starccm/</guid>
+      <description>&lt;p&gt;最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

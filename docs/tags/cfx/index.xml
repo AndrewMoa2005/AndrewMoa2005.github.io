@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cfx on Andrew Moa Blog</title>
+    <link>https://AndrewMoa2005.github.io/tags/cfx/</link>
+    <description>Recent content in Cfx on Andrew Moa Blog</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 26 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://AndrewMoa2005.github.io/tags/cfx/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Slurm提交Fluent和CFX的计算脚本</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/26/slurm-script-for-fluent-and-cfx/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/26/slurm-script-for-fluent-and-cfx/</guid>
+      <description>&lt;h2 id=&#34;1-fluent&#34;&gt;1. Fluent&lt;/h2&gt;&#xA;&lt;p&gt;首先要编写Fluent的jou脚本：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/read-case &amp;#34;small_fan.cas.h5&amp;#34; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/initialize/hyb-initialization &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/iterate 100 &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-case &amp;#34;small_fan_results.cas.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-data &amp;#34;small_fan_results.dat.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/exit ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个jou文件很简单，就是告诉Fluent读取哪个文件、怎么初始化、迭代多少步、如何保存直至最后退出。&#xA;如果计算比较复杂的，比如涉及到UDF加载或特殊条件初始化设置的，还需要增加相应的命令行。&#xA;不熟悉怎么编写TUI命令的话，可以通过Fluent图形界面下面的命令行窗口录制脚本。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>求解器验证对比——旋转和静止同心圆柱之间的层流</title>
+      <link>https://AndrewMoa2005.github.io/2021/08/14/vmfl001/</link>
+      <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2021/08/14/vmfl001/</guid>
+      <description>&lt;p&gt;本文采用不同CFD求解器，对层流流动问题进行验证。通过列举不同求解器的操作过程和输出结果的差异，验证各个求解器的精度。&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;1-问题描述&#34;&gt;1. 问题描述&lt;/h2&gt;&#xA;&lt;p&gt;如下图，建立两个同心圆柱间的定常层流模型。流动由内筒以恒定角速度旋转而引起，而外筒保持静止。使用周期性边界，只需要对流域的一部分进行建模。物理模型和输入数据如下表所示。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

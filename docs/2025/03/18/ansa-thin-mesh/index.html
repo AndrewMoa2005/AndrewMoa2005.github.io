@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Andrew Moa Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://AndrewMoa2005.github.io//img/home-bg.jpg">
+    <meta property="twitter:image" content="https://AndrewMoa2005.github.io//img/home-bg.jpg" />
+    
+
+    
+    <meta name="title" content="Ansa薄板网格建模" />
+    <meta property="og:title" content="Ansa薄板网格建模" />
+    <meta property="twitter:title" content="Ansa薄板网格建模" />
+    
+
+    
+    <meta name="description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。">
+    <meta property="og:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    <meta property="twitter:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="AndrewMoa, Andrew Moa, Andrew Moa的博客, Andrew Moa Blog, 博客, 个人网站, 仿真分析, CAE, CFD, Linux">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Ansa薄板网格建模 | Andrew Moa的博客 | Andrew Moa&#39;s Blog</title>
+
+    <link rel="canonical" href="/2025/03/18/ansa-thin-mesh/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Andrew Moa Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/ansa/">ansa</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/cfd/">cfd</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/linux/">linux</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/zhihu/">zhihu</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                            前处理
+                        </a>
+                        
+                        <a class="tag" href="/tags/ansa" title="ansa">
+                            ansa
+                        </a>
+                        
+                        <a class="tag" href="/tags/cae" title="cae">
+                            cae
+                        </a>
+                        
+                    </div>
+                    <h1>Ansa薄板网格建模</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Andrew Moa
+                             
+                            on 
+                            Tuesday, March 18, 2025
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>由于近期经常做一些冷板结构分析，涉及到薄板建模的。虽然尝试过用Shell单元进行分析，但相比于Solid单元，Shell单元做出来的结果应力、位移均有所偏大，而且涉及到接触问题更容易出现计算不收敛的情况。
+所幸Ansa提供了通过Shell单元拉伸生成体网格的方式，可以快速通过Shell单元生成Solid网格，极大地节省了建模时间。</p>
+<p>建模步骤如下：</p>
+<ol>
+<li>
+<p>薄板实体简化为Shell并划分网格，可以参考<a href="../Ansa/2025-02-27-Ansa%E6%8A%BD%E4%B8%AD%E9%9D%A2%E5%8A%9F%E8%83%BD.md">Ansa抽中面功能</a>。
+
+  <img src="/img/_resources/5c6da744441c0b43367e9d1ff0296ec1.png" alt="5c6da744441c0b43367e9d1ff0296ec1.png">
+
+</p>
+</li>
+<li>
+<p><code>Volume Mesh</code>→<code>Extrude</code>调出<code>Extrude</code>窗口，选中要拉伸的Shell单元。
+
+  <img src="/img/_resources/02fe91f7f3a74047ccd442f4eaa42505.png" alt="02fe91f7f3a74047ccd442f4eaa42505.png">
+
+</p>
+</li>
+<li>
+<p>目标面选择<code>None</code>。
+
+  <img src="/img/_resources/5818d8ffc832684765e7312eafe76ea9.png" alt="5818d8ffc832684765e7312eafe76ea9.png">
+
+</p>
+</li>
+<li>
+<p>拉伸方式选择<code>Offse</code>t，方向选择<code>Both sides (middle)</code>。
+
+  <img src="/img/_resources/d464570c23719e82fcd4d152a9278f8d.png" alt="d464570c23719e82fcd4d152a9278f8d.png">
+
+</p>
+</li>
+<li>
+<p><code>Steps</code>选择层数，<code>Distance</code>输入薄板厚度，<code>Biasing</code>建议选择<code>Smooth</code>，<code>Finish</code>完成。
+
+  <img src="/img/_resources/e3b90aaa49545a963c3f998a86a3a036.png" alt="e3b90aaa49545a963c3f998a86a3a036.png">
+
+</p>
+</li>
+<li>
+<p>检查生成的网格质量，修复差网格。
+
+  <img src="/img/_resources/242f974310b6eff9061c0c8ce2230673.png" alt="242f974310b6eff9061c0c8ce2230673.png">
+
+</p>
+</li>
+</ol>
+<p>总结：这种方式比较适合厚度均匀的薄板生成体网格。但是当薄板厚度不均匀，或者存在T型连接（例如注塑件筋条等，如下图）的时候，就不适用了。
+
+  <img src="/img/_resources/0ad79055f8a7a324c278b023ee79be6f.png" alt="0ad79055f8a7a324c278b023ee79be6f.png">
+
+</p>
+<hr>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2025/03/10/abaqus-connect-setup/" data-toggle="tooltip" data-placement="top" title="Abaqus接触设置">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2025/03/19/hyperv-install-ubuntu/" data-toggle="tooltip" data-placement="top" title="Hyper-V安装Ubuntu24.04">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+
+
+<link href="https://xxx.xxx.com/dist/Artalk.css" rel="stylesheet" />
+<script src="https://xxx.xxx.com/dist/Artalk.js"></script>
+
+
+<div id="Comments"></div>
+
+<script>
+    Artalk.init({
+        el: '#Comments',
+        pageKey: 'https:\/\/AndrewMoa2005.github.io\/2025\/03\/18\/ansa-thin-mesh\/',
+        pageTitle: 'Ansa薄板网格建模',
+        server: 'https:\/\/xxx.xxx.com',
+        site: 'xxx blog',
+    })
+</script>
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/abaqus" title="abaqus">
+                            abaqus
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ansa" title="ansa">
+                            ansa
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/cae" title="cae">
+                            cae
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cfd" title="cfd">
+                            cfd
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cfx" title="cfx">
+                            cfx
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/fluent" title="fluent">
+                            fluent
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/openfoam" title="openfoam">
+                            openfoam
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/slurm" title="slurm">
+                            slurm
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
+                            star-ccm&#43;
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/su2" title="su2">
+                            su2
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ubuntu" title="ubuntu">
+                            ubuntu
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                            前处理
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
+                            虚拟机
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    <li>
+                        <a href="mailto:Andrew.Moa2005@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/AndrewMoa2005">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Andrew Moa Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Andrew Moa Blog 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow" title="' + t + '">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Andrew Moa Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://AndrewMoa2005.github.io//img/home-bg.jpg">
+    <meta property="twitter:image" content="https://AndrewMoa2005.github.io//img/home-bg.jpg" />
+    
+
+    
+    <meta name="title" content="Tabby配置MSYS2" />
+    <meta property="og:title" content="Tabby配置MSYS2" />
+    <meta property="twitter:title" content="Tabby配置MSYS2" />
+    
+
+    
+    <meta name="description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。">
+    <meta property="og:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    <meta property="twitter:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="AndrewMoa, Andrew Moa, Andrew Moa的博客, Andrew Moa Blog, 博客, 个人网站, 仿真分析, CAE, CFD, Linux">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Tabby配置MSYS2 | Andrew Moa的博客 | Andrew Moa&#39;s Blog</title>
+
+    <link rel="canonical" href="/2025/03/26/tabby-setup-msys2/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Andrew Moa Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/ansa/">ansa</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/cfd/">cfd</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/linux/">linux</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/zhihu/">zhihu</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1>Tabby配置MSYS2</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Andrew Moa
+                             
+                            on 
+                            Wednesday, March 26, 2025
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p><a href="https://tabby.sh/">Tabby</a>是一款颜值很高的终端工具，最开始用它是为了替代本机终端，用着用着后来发现越来越多的优点。
+首先它内置支持SSH连接方式，同时支持SFTP传输文件，设置操作简单，避免了在Windows终端中的繁琐设置。其次，可以用来替代MSYS2、Cygwin原有的Mintty界面，实现不同终端之间无缝切换。
+关于Tabby终端中如何调用MSYS2，下面记录一下配置方法：</p>
+<ol>
+<li>
+<p>首先在Tabby设置中克隆一个CMD配置：
+
+  <img src="/img/_resources/d3078fcb85ac34f312416cd671b2cb58.png" alt="d3078fcb85ac34f312416cd671b2cb58.png">
+
+</p>
+</li>
+<li>
+<p>在名称中填写要调用的MSYS2工具链：
+
+  <img src="/img/_resources/462779a7512334158043be9cbd1a265c.png" alt="462779a7512334158043be9cbd1a265c.png">
+
+
+注意，图标这里不能直接指派ico文件，Tabby无法识别，必须将ico图标转换成svg格式。
+这种ico2svg在线转换资源很多，网上一搜一大把：</p>
+<ul>
+<li><a href="https://www.aconvert.com/cn/image/ico-to-svg/">ACCONVERT - ICO转SVG</a></li>
+<li><a href="https://cdkm.com/cn/ico-to-svg">CDKM - ICO转SVG</a></li>
+<li><a href="https://www.freeconvert.com/zh/ico-to-svg">FreeConvert - ICO到SVG转换器 </a></li>
+</ul>
+<p>转换完成后下载svg文件，用文本工具打开将svg源码复制粘贴到上面的图标栏里，Tabby就可以正常显示图标了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-svg" data-lang="svg"><span style="display:flex;"><span><span style="color:#ff79c6">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; standalone=&#34;no&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;!DOCTYPE svg PUBLIC &#34;-//W3C//DTD SVG 1.1//EN&#34; &#34;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#34;&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;svg</span> <span style="color:#50fa7b">version=</span><span style="color:#f1fa8c">&#34;1.1&#34;</span> <span style="color:#50fa7b">id=</span><span style="color:#f1fa8c">&#34;Layer_1&#34;</span> <span style="color:#50fa7b">xmlns=</span><span style="color:#f1fa8c">&#34;http://www.w3.org/2000/svg&#34;</span> <span style="color:#50fa7b">xmlns:xlink=</span><span style="color:#f1fa8c">&#34;http://www.w3.org/1999/xlink&#34;</span> <span style="color:#50fa7b">x=</span><span style="color:#f1fa8c">&#34;0px&#34;</span> <span style="color:#50fa7b">y=</span><span style="color:#f1fa8c">&#34;0px&#34;</span> <span style="color:#50fa7b">width=</span><span style="color:#f1fa8c">&#34;16px&#34;</span> <span style="color:#50fa7b">height=</span><span style="color:#f1fa8c">&#34;16px&#34;</span> <span style="color:#50fa7b">viewBox=</span><span style="color:#f1fa8c">&#34;0 0 16 16&#34;</span> <span style="color:#50fa7b">enable-background=</span><span style="color:#f1fa8c">&#34;new 0 0 16 16&#34;</span> <span style="color:#50fa7b">xml:space=</span><span style="color:#f1fa8c">&#34;preserve&#34;</span><span style="color:#ff79c6">&gt;</span>  <span style="color:#ff79c6">&lt;image</span> <span style="color:#50fa7b">id=</span><span style="color:#f1fa8c">&#34;image0&#34;</span> <span style="color:#50fa7b">width=</span><span style="color:#f1fa8c">&#34;16&#34;</span> <span style="color:#50fa7b">height=</span><span style="color:#f1fa8c">&#34;16&#34;</span> <span style="color:#50fa7b">x=</span><span style="color:#f1fa8c">&#34;0&#34;</span> <span style="color:#50fa7b">y=</span><span style="color:#f1fa8c">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">xlink:href=</span><span style="color:#f1fa8c">&#34;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAIGNIUk0AAHomAACAhAAA+gAAAIDo
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">AAB1MAAA6mAAADqYAAAXcJy6UTwAAADPUExURb5kPsBpRdWbgtSZgL9lQMBoQ8+McMyEZsJuS/36
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">+P///9uplL5lP+3UyevOws2HafDc1NCPdOjHuejIur9mQO3TyeXCs8NxTv37+vv18sh7W8h8XP/+
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">/uS+rt2umtOXfuXBsvfs6Pjv6+bDtMFqRvny7vHf1/36+dyrlvXn4e/a0dadhMBpRP79/f7+/fz4
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">9sJuSvHe1vnw7PPi2+O9rNqmkN2tmeC2pP78+8Z3Vfft6L9mQfz59+fFt8JtSdKVe79nQsuDZcV0
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">UtGSd8NvTFLhcR8AAAABYktHRApo0PRWAAAAB3RJTUUH6QMaAysVnHCKGgAAAJpJREFUGNONj1cS
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">ggAUA2NBIdi7WAErYEFFBRXr/c8k7QC8n8zuRyYPSHWZbC4fhFAoJkKUKAOlMiuJqJI1oE42EtEk
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">pRbaZCfmbq9PKoMhOYrFmDI5maoa9Yhn84VC6svVmkYkZJrWhtvd3qYkBmwdNAFH8hR2O4FweAYu
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">vLowSc/CzbMtwL0/gqUGVR/+8xUWvT/h9u8vxaN/UKUNLao7WagAAAAldEVYdGRhdGU6Y3JlYXRl
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">ADIwMjUtMDMtMjZUMDM6NDM6MjArMDA6MDDH702KAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI1LTAz
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">LTI2VDAzOjQzOjIwKzAwOjAwtrL1NgAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNS0wMy0yNlQw
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">Mzo0MzoyMSswMDowMEfQ310AAAAASUVORK5CYII=&#34;</span> <span style="color:#ff79c6">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">&lt;/svg&gt;</span>
+</span></span></code></pre></div><p>禁用动态标签页标题：根据自己需要设置，建议选上。
+分组：需要先新建配置文件组，然后再在这里选。</p>
+</li>
+<li>
+<p>程序、参数和环境变量如图所示。
+
+  <img src="/img/_resources/3d0df91731d21b5ff1106c8dcdb927ff.png" alt="3d0df91731d21b5ff1106c8dcdb927ff.png">
+
+
+工作目录和HOME目录填写MSYS2的HOME目录，MSYSTEM填写要调用的工具链。</p>
+</li>
+<li>
+<p>上面第3步保存之后，就可以通过Tabby标题栏的图标快速调用MSYS2的Clang64终端了，其他工具链按同样的方法配置。
+
+  <img src="/img/_resources/1b2105682c9dbbeb3e58d7bc9fb5d6ca.png" alt="1b2105682c9dbbeb3e58d7bc9fb5d6ca.png">
+
+</p>
+</li>
+</ol>
+<hr>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2025/03/25/powershell-starccm-script/" data-toggle="tooltip" data-placement="top" title="PowerShell编写STAR-CCM&#43;自动排队计算脚本">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2025/03/26/slurm-script-for-fluent-and-cfx/" data-toggle="tooltip" data-placement="top" title="Slurm提交Fluent和CFX的计算脚本">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+
+
+<link href="https://xxx.xxx.com/dist/Artalk.css" rel="stylesheet" />
+<script src="https://xxx.xxx.com/dist/Artalk.js"></script>
+
+
+<div id="Comments"></div>
+
+<script>
+    Artalk.init({
+        el: '#Comments',
+        pageKey: 'https:\/\/AndrewMoa2005.github.io\/2025\/03\/26\/tabby-setup-msys2\/',
+        pageTitle: 'Tabby配置MSYS2',
+        server: 'https:\/\/xxx.xxx.com',
+        site: 'xxx blog',
+    })
+</script>
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/abaqus" title="abaqus">
+                            abaqus
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ansa" title="ansa">
+                            ansa
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/cae" title="cae">
+                            cae
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cfd" title="cfd">
+                            cfd
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cfx" title="cfx">
+                            cfx
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/fluent" title="fluent">
+                            fluent
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/openfoam" title="openfoam">
+                            openfoam
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/slurm" title="slurm">
+                            slurm
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
+                            star-ccm&#43;
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/su2" title="su2">
+                            su2
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ubuntu" title="ubuntu">
+                            ubuntu
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                            前处理
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
+                            虚拟机
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    <li>
+                        <a href="mailto:Andrew.Moa2005@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/AndrewMoa2005">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Andrew Moa Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Andrew Moa Blog 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow" title="' + t + '">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

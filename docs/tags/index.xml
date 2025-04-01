@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Andrew Moa Blog</title>
+    <link>https://AndrewMoa2005.github.io/tags/</link>
+    <description>Recent content in Tags on Andrew Moa Blog</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 27 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://AndrewMoa2005.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux</title>
+      <link>https://AndrewMoa2005.github.io/tags/linux/</link>
+      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Openfoam</title>
+      <link>https://AndrewMoa2005.github.io/tags/openfoam/</link>
+      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/openfoam/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Slurm</title>
+      <link>https://AndrewMoa2005.github.io/tags/slurm/</link>
+      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/slurm/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Su2</title>
+      <link>https://AndrewMoa2005.github.io/tags/su2/</link>
+      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/su2/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ubuntu</title>
+      <link>https://AndrewMoa2005.github.io/tags/ubuntu/</link>
+      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/ubuntu/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cfx</title>
+      <link>https://AndrewMoa2005.github.io/tags/cfx/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/cfx/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Fluent</title>
+      <link>https://AndrewMoa2005.github.io/tags/fluent/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/fluent/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ansys</title>
+      <link>https://AndrewMoa2005.github.io/tags/ansys/</link>
+      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/ansys/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cae</title>
+      <link>https://AndrewMoa2005.github.io/tags/cae/</link>
+      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/cae/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Powershell</title>
+      <link>https://AndrewMoa2005.github.io/tags/powershell/</link>
+      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/powershell/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Star-Ccm&#43;</title>
+      <link>https://AndrewMoa2005.github.io/tags/star-ccm&#43;/</link>
+      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/star-ccm&#43;/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Abaqus</title>
+      <link>https://AndrewMoa2005.github.io/tags/abaqus/</link>
+      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/abaqus/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>虚拟机</title>
+      <link>https://AndrewMoa2005.github.io/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/</link>
+      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ansa</title>
+      <link>https://AndrewMoa2005.github.io/tags/ansa/</link>
+      <pubDate>Tue, 18 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/ansa/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>前处理</title>
+      <link>https://AndrewMoa2005.github.io/tags/%E5%89%8D%E5%A4%84%E7%90%86/</link>
+      <pubDate>Tue, 18 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/%E5%89%8D%E5%A4%84%E7%90%86/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cfd</title>
+      <link>https://AndrewMoa2005.github.io/tags/cfd/</link>
+      <pubDate>Wed, 08 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/cfd/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Pbs</title>
+      <link>https://AndrewMoa2005.github.io/tags/pbs/</link>
+      <pubDate>Thu, 12 Aug 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/tags/pbs/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

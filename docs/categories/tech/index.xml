@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech on Andrew Moa Blog</title>
+    <link>https://AndrewMoa2005.github.io/categories/tech/</link>
+    <description>Recent content in Tech on Andrew Moa Blog</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 26 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://AndrewMoa2005.github.io/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tabby配置MSYS2</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/26/tabby-setup-msys2/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/26/tabby-setup-msys2/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://tabby.sh/&#34;&gt;Tabby&lt;/a&gt;是一款颜值很高的终端工具，最开始用它是为了替代本机终端，用着用着后来发现越来越多的优点。&#xA;首先它内置支持SSH连接方式，同时支持SFTP传输文件，设置操作简单，避免了在Windows终端中的繁琐设置。其次，可以用来替代MSYS2、Cygwin原有的Mintty界面，实现不同终端之间无缝切换。&#xA;关于Tabby终端中如何调用MSYS2，下面记录一下配置方法：&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

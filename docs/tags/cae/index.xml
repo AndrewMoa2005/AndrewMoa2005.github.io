@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cae on Andrew Moa Blog</title>
+    <link>https://AndrewMoa2005.github.io/tags/cae/</link>
+    <description>Recent content in Cae on Andrew Moa Blog</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 25 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://AndrewMoa2005.github.io/tags/cae/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ubuntu24.04安装Ansys2025R1</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/25/ubuntu-install-ansys/</link>
+      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/25/ubuntu-install-ansys/</guid>
+      <description>&lt;h2 id=&#34;1-准备工作&#34;&gt;1. 准备工作&lt;/h2&gt;&#xA;&lt;p&gt;全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/e8b6a55779447694ef28a8a9560f2bab.png&#34; alt=&#34;e8b6a55779447694ef28a8a9560f2bab.png&#34;&gt;&#xA;&#xA;&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/3f912a7795844465627dc878eb409e95.png&#34; alt=&#34;3f912a7795844465627dc878eb409e95.png&#34;&gt;&#xA;&#xA;&#xA;安装过程中至少需要8GB内存，推荐内存16~32GB。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ubuntu安装SIMULIA2024</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/21/ubuntu-install-simulia/</link>
+      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/21/ubuntu-install-simulia/</guid>
+      <description>&lt;p&gt;为什么选择SIMULIA？首先是Abaqus功能强大，绝大多数结构问题都能求解。其次流固耦合方便，STAR-CCM+自带案例就手把手你怎么和Abaqus双向耦合。再次是过往经历的惯性，毕竟主机厂Abaqus用得可不少，不缺案例和资源。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa薄板网格建模</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/18/ansa-thin-mesh/</link>
+      <pubDate>Tue, 18 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/18/ansa-thin-mesh/</guid>
+      <description>&lt;p&gt;由于近期经常做一些冷板结构分析，涉及到薄板建模的。虽然尝试过用Shell单元进行分析，但相比于Solid单元，Shell单元做出来的结果应力、位移均有所偏大，而且涉及到接触问题更容易出现计算不收敛的情况。&#xA;所幸Ansa提供了通过Shell单元拉伸生成体网格的方式，可以快速通过Shell单元生成Solid网格，极大地节省了建模时间。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Abaqus接触设置</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</link>
+      <pubDate>Mon, 10 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</guid>
+      <description>&lt;h2 id=&#34;1-相关命令&#34;&gt;1. 相关命令&lt;/h2&gt;&#xA;&lt;p&gt;Ansa中，给Abaqus设置接触一般常用以下命令：&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/cb35dcf11a636abacef3aabe97112e62.png&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-接触对&#34;&gt;2. 接触对&lt;/h2&gt;&#xA;&lt;p&gt;最常用的接触对，一般通过&lt;code&gt;AUXILIARIES&lt;/code&gt;→ &lt;code&gt;CONTACT&lt;/code&gt;→&lt;code&gt;CONTACT&lt;/code&gt;调出创建对话框。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/038dffae1f80e68c064572e228df00c6.png&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34;&gt;&#xA;&#xA;&#xA;常用设置一般为以下几个：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Abaqus提交命令</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/06/abaqus-submit-command/</link>
+      <pubDate>Thu, 06 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/06/abaqus-submit-command/</guid>
+      <description>&lt;p&gt;用Ansa输出inp文件之后，可以通过Abaqus CAE窗口界面提交inp文件进行计算，也可以通过命令行方式提交计算。使用命令行提交需要添加Path，Windows下通常是&lt;code&gt;[Abaqus安装目录]\Commands&lt;/code&gt;路径。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa单位制</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/05/ansa-unit/</link>
+      <pubDate>Wed, 05 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/05/ansa-unit/</guid>
+      <description>&lt;p&gt;Ansa导入step模型默认长度单位是mm，重量是ton。但我们常用的SI单位制长度是m，重量是kg。&#xA;关于两种单位的转换如下表所示。&lt;/p&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;LENGTH&lt;/th&gt;&#xA;          &lt;th&gt;MASS&lt;/th&gt;&#xA;          &lt;th&gt;TIME&lt;/th&gt;&#xA;          &lt;th&gt;FORCE&lt;/th&gt;&#xA;          &lt;th&gt;STRESS&lt;/th&gt;&#xA;          &lt;th&gt;ENERGY&lt;/th&gt;&#xA;          &lt;th&gt;DENSITY&lt;/th&gt;&#xA;          &lt;th&gt;YOUNG’s MUDULUS&lt;/th&gt;&#xA;          &lt;th&gt;Velocity (56.3KPH)&lt;/th&gt;&#xA;          &lt;th&gt;GRAVITY&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;m&lt;/td&gt;&#xA;          &lt;td&gt;kg&lt;/td&gt;&#xA;          &lt;td&gt;s&lt;/td&gt;&#xA;          &lt;td&gt;N&lt;/td&gt;&#xA;          &lt;td&gt;Pa&lt;/td&gt;&#xA;          &lt;td&gt;Joule&lt;/td&gt;&#xA;          &lt;td&gt;7.83E+03&lt;/td&gt;&#xA;          &lt;td&gt;2.07E+11&lt;/td&gt;&#xA;          &lt;td&gt;15.64&lt;/td&gt;&#xA;          &lt;td&gt;9.81&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;mm&lt;/td&gt;&#xA;          &lt;td&gt;ton&lt;/td&gt;&#xA;          &lt;td&gt;s&lt;/td&gt;&#xA;          &lt;td&gt;N&lt;/td&gt;&#xA;          &lt;td&gt;MPa&lt;/td&gt;&#xA;          &lt;td&gt;N-mm&lt;/td&gt;&#xA;          &lt;td&gt;7.83E-09&lt;/td&gt;&#xA;          &lt;td&gt;2.07E+05&lt;/td&gt;&#xA;          &lt;td&gt;1.564E+04&lt;/td&gt;&#xA;          &lt;td&gt;9.81E+03&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;p&gt;在定义模型参数时，应注意根据长度选择对应的单位制。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa快速设置连接</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/05/ansa-connector/</link>
+      <pubDate>Wed, 05 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/05/ansa-connector/</guid>
+      <description>&lt;p&gt;Ansa可以通过Connection功能快速设置连接。&lt;/p&gt;&#xA;&lt;p&gt;这里以螺接为例，首先将所有螺钉单独显示出来。&#xA;使用&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Curves&lt;/code&gt;→&lt;code&gt;Tubes2Curve&lt;/code&gt;将螺接钉几何转换成曲线。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/cf8ec5657b55d755b53386ae1b4272be.png&#34; alt=&#34;cf8ec5657b55d755b53386ae1b4272be.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa螺钉孔washer网格</title>
+      <link>https://AndrewMoa2005.github.io/2025/02/28/ansa-washer-mesh/</link>
+      <pubDate>Fri, 28 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/02/28/ansa-washer-mesh/</guid>
+      <description>&lt;p&gt;使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/ff86c5fd4ac5cc0624c9013d21a1dab5.png&#34; alt=&#34;ff86c5fd4ac5cc0624c9013d21a1dab5.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;但默认设置生成的网格螺钉孔貌似都没有按washer处理。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/6ea45853b136275e0c8325e7b4a47341.png&#34; alt=&#34;6ea45853b136275e0c8325e7b4a47341.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa抽中面功能</title>
+      <link>https://AndrewMoa2005.github.io/2025/02/27/ansa-midsurf/</link>
+      <pubDate>Thu, 27 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/02/27/ansa-midsurf/</guid>
+      <description>&lt;p&gt;ANSA针对钣金件抽中面有几种不同处理方式。&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-skin方法&#34;&gt;1. &lt;code&gt;Skin&lt;/code&gt;方法&lt;/h2&gt;&#xA;&lt;p&gt;&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Mid.Surfa.&lt;/code&gt;→&lt;code&gt;Skin&lt;/code&gt;，选中整个几何体然后无脑按鼠标中键就可以自动抽中面。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/0f525cbbea14aa2904b78e9e80f86f98.png&#34; alt=&#34;0f525cbbea14aa2904b78e9e80f86f98.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa网格质量设置</title>
+      <link>https://AndrewMoa2005.github.io/2025/02/27/ansa-mesh-quality/</link>
+      <pubDate>Thu, 27 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/02/27/ansa-mesh-quality/</guid>
+      <description>&lt;p&gt;快捷键F11，或者下面这个按钮，定义Ansa网格质量&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34; alt=&#34;0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;面网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/8dba04bca8c14b3a47e4ed87d938ac49.png&#34; alt=&#34;8dba04bca8c14b3a47e4ed87d938ac49.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;体网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/1b8e7d21f062ee6d961c4975a0dedffd.png&#34; alt=&#34;1b8e7d21f062ee6d961c4975a0dedffd.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;最好把配置文件另存为到本地，下次重新打开配置文件覆盖即可。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

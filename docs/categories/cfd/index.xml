@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CFD on Andrew Moa Blog</title>
+    <link>https://AndrewMoa2005.github.io/categories/cfd/</link>
+    <description>Recent content in CFD on Andrew Moa Blog</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 27 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://AndrewMoa2005.github.io/categories/cfd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>OpenFOAM编译安装cfmesh和ccm工具</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/27/openfoam-compile-cfmesh-and-ccm/</link>
+      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/27/openfoam-compile-cfmesh-and-ccm/</guid>
+      <description>&lt;h2 id=&#34;1-编译cfmesh&#34;&gt;1. 编译cfmesh&lt;/h2&gt;&#xA;&lt;p&gt;前期编译安装的是com版的OpenFOAM，版本号是v2412，没有附带cfmesh的源码。&#xA;根据官方文档的提示，需要手动下载cfmesh的源码文件：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Slurm提交Fluent和CFX的计算脚本</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/26/slurm-script-for-fluent-and-cfx/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/26/slurm-script-for-fluent-and-cfx/</guid>
+      <description>&lt;h2 id=&#34;1-fluent&#34;&gt;1. Fluent&lt;/h2&gt;&#xA;&lt;p&gt;首先要编写Fluent的jou脚本：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/read-case &amp;#34;small_fan.cas.h5&amp;#34; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/initialize/hyb-initialization &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/iterate 100 &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-case &amp;#34;small_fan_results.cas.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-data &amp;#34;small_fan_results.dat.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/exit ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个jou文件很简单，就是告诉Fluent读取哪个文件、怎么初始化、迭代多少步、如何保存直至最后退出。&#xA;如果计算比较复杂的，比如涉及到UDF加载或特殊条件初始化设置的，还需要增加相应的命令行。&#xA;不熟悉怎么编写TUI命令的话，可以通过Fluent图形界面下面的命令行窗口录制脚本。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>PowerShell编写STAR-CCM&#43;自动排队计算脚本</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/25/powershell-starccm-script/</link>
+      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/25/powershell-starccm-script/</guid>
+      <description>&lt;p&gt;以前用STAR-CCM+在Windows工作站做计算的时候（没钱，公司舍不得上超算……），有时候一晚上要提交十几二十个计算任务（瞎卷ㄟ( ▔, ▔ )ㄏ），当然不可能十几个任务全都一起跑（机器遭不住），也不可能全程盯着它跑一个个手动提交（人遭不住）。几年前用PowerShell编写了这个简易的排队计算的模板，在这里分享给大家。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Andrew Moa Blog</title>
+    <link>https://AndrewMoa2005.github.io/</link>
+    <description>Recent content on Andrew Moa Blog</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 27 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://AndrewMoa2005.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>OpenFOAM编译安装cfmesh和ccm工具</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/27/openfoam-compile-cfmesh-and-ccm/</link>
+      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/27/openfoam-compile-cfmesh-and-ccm/</guid>
+      <description>&lt;h2 id=&#34;1-编译cfmesh&#34;&gt;1. 编译cfmesh&lt;/h2&gt;&#xA;&lt;p&gt;前期编译安装的是com版的OpenFOAM，版本号是v2412，没有附带cfmesh的源码。&#xA;根据官方文档的提示，需要手动下载cfmesh的源码文件：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ubuntu编译安装SU2</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/27/ubuntu-compile-and-install-su2/</link>
+      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/27/ubuntu-compile-and-install-su2/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://su2code.github.io/&#34;&gt;SU2&lt;/a&gt;是一款由斯坦福大学航空航天学院开发的开源CFD求解器，基于C++和Python开发，定位类似于OpenFOAM，但不支持多面体网格。相比OpenFOAM，SU2在高速可压缩流方面的求解更有优势。&lt;/p&gt;&#xA;&lt;p&gt;下载SU2源代码：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Bash&#34; data-lang=&#34;Bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code &lt;span style=&#34;color:#ff79c6&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#6272a4&#34;&gt;# 只clone最近commit版本，加快下载速度&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git clone https://github.com/su2code/SU2.git --depth&lt;span style=&#34;color:#ff79c6&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#bd93f9&#34;&gt;1&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;定义环境变量，新建配置文件&lt;code&gt;su2.env&lt;/code&gt;：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Bash&#34; data-lang=&#34;Bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;touch &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code/su2.env&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;chmod +x &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code/su2.env&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;vim &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code/su2.env&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在&lt;code&gt;su2.env&lt;/code&gt;文件中加入以下内容，保存退出：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Slurm提交Fluent和CFX的计算脚本</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/26/slurm-script-for-fluent-and-cfx/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/26/slurm-script-for-fluent-and-cfx/</guid>
+      <description>&lt;h2 id=&#34;1-fluent&#34;&gt;1. Fluent&lt;/h2&gt;&#xA;&lt;p&gt;首先要编写Fluent的jou脚本：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/read-case &amp;#34;small_fan.cas.h5&amp;#34; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/initialize/hyb-initialization &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/iterate 100 &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-case &amp;#34;small_fan_results.cas.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-data &amp;#34;small_fan_results.dat.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/exit ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个jou文件很简单，就是告诉Fluent读取哪个文件、怎么初始化、迭代多少步、如何保存直至最后退出。&#xA;如果计算比较复杂的，比如涉及到UDF加载或特殊条件初始化设置的，还需要增加相应的命令行。&#xA;不熟悉怎么编写TUI命令的话，可以通过Fluent图形界面下面的命令行窗口录制脚本。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Tabby配置MSYS2</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/26/tabby-setup-msys2/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/26/tabby-setup-msys2/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://tabby.sh/&#34;&gt;Tabby&lt;/a&gt;是一款颜值很高的终端工具，最开始用它是为了替代本机终端，用着用着后来发现越来越多的优点。&#xA;首先它内置支持SSH连接方式，同时支持SFTP传输文件，设置操作简单，避免了在Windows终端中的繁琐设置。其次，可以用来替代MSYS2、Cygwin原有的Mintty界面，实现不同终端之间无缝切换。&#xA;关于Tabby终端中如何调用MSYS2，下面记录一下配置方法：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>PowerShell编写STAR-CCM&#43;自动排队计算脚本</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/25/powershell-starccm-script/</link>
+      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/25/powershell-starccm-script/</guid>
+      <description>&lt;p&gt;以前用STAR-CCM+在Windows工作站做计算的时候（没钱，公司舍不得上超算……），有时候一晚上要提交十几二十个计算任务（瞎卷ㄟ( ▔, ▔ )ㄏ），当然不可能十几个任务全都一起跑（机器遭不住），也不可能全程盯着它跑一个个手动提交（人遭不住）。几年前用PowerShell编写了这个简易的排队计算的模板，在这里分享给大家。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ubuntu24.04安装Ansys2025R1</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/25/ubuntu-install-ansys/</link>
+      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/25/ubuntu-install-ansys/</guid>
+      <description>&lt;h2 id=&#34;1-准备工作&#34;&gt;1. 准备工作&lt;/h2&gt;&#xA;&lt;p&gt;全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/e8b6a55779447694ef28a8a9560f2bab.png&#34; alt=&#34;e8b6a55779447694ef28a8a9560f2bab.png&#34;&gt;&#xA;&#xA;&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/3f912a7795844465627dc878eb409e95.png&#34; alt=&#34;3f912a7795844465627dc878eb409e95.png&#34;&gt;&#xA;&#xA;&#xA;安装过程中至少需要8GB内存，推荐内存16~32GB。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ubuntu24.04搭建Samba服务器</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/24/ubuntu-setup-samba/</link>
+      <pubDate>Mon, 24 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/24/ubuntu-setup-samba/</guid>
+      <description>&lt;p&gt;由于Ubuntu运行在虚拟机中，通过Ubuntu挂载Windows共享文件夹，在挂载点中运行某些CAE软件会出现计算报错。考虑将Ubuntu文件夹共享给Windows，因此需要在Ubuntu系统上搭建Samba服务器。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Hyper-V虚拟交换机NAT设置静态IP</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/21/hyperv-setup-static-ipaddr-for-nat/</link>
+      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/21/hyperv-setup-static-ipaddr-for-nat/</guid>
+      <description>&lt;p&gt;前面讲过用NAT+端口映射的方式访问虚拟机，但使用过程中发现一个问题：每次宿主机重启之后，默认的&lt;code&gt;Default Switch&lt;/code&gt;IP地址都会变更，造成虚拟机无法访问网关进而无法联网。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ubuntu安装SIMULIA2024</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/21/ubuntu-install-simulia/</link>
+      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/21/ubuntu-install-simulia/</guid>
+      <description>&lt;p&gt;为什么选择SIMULIA？首先是Abaqus功能强大，绝大多数结构问题都能求解。其次流固耦合方便，STAR-CCM+自带案例就手把手你怎么和Abaqus双向耦合。再次是过往经历的惯性，毕竟主机厂Abaqus用得可不少，不缺案例和资源。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ubuntu安装Slurm</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/20/ubuntu-install-slurm/</link>
+      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/20/ubuntu-install-slurm/</guid>
+      <description>&lt;p&gt;Slurm，和PBS、LSF一样，超算上常用的任务管理系统。Slurm优点是开源免费、活跃度很高，近几年国内新兴的超算平台几乎都提供了Slurm作为主要的任务管理系统。PBS开源后活跃度低得可怜，更新到最新系统后安装一直出问题，提了issue也不见答复。LSF有版权风险，国内应用也不多，属于很少见的类型。至于命令和脚本，这三家都大差不差，学会了其中一家另外的也是手到擒来。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ubuntu挂载Windows共享文件夹(cifs&#43;nfs)</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/20/ubuntu-mount-windows-share-folder/</link>
+      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/20/ubuntu-mount-windows-share-folder/</guid>
+      <description>&lt;p&gt;在虚拟机中运行计算文件，会导致虚拟磁盘膨胀，占用太多磁盘空间。这个时候可以通过挂载宿主机文件夹的形式，把计算文件转移到宿主机磁盘上，避免了虚拟磁盘膨胀的问题。&#xA;在Windows中建立共享文件夹，这里省略了，只需要确保虚拟机能通过IP地址访问宿主机即可。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Hyper-V安装Ubuntu24.04</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/19/hyperv-install-ubuntu/</link>
+      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/19/hyperv-install-ubuntu/</guid>
+      <description>&lt;h2 id=&#34;1-需求&#34;&gt;1. 需求&lt;/h2&gt;&#xA;&lt;p&gt;考虑在新电脑上安装Linux，不是双系统，因为还要满足日常办公。不喜欢折腾的可以用WSL，这里用Hyper-V实现，同时通过端口映射实现外网访问虚拟机。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa薄板网格建模</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/18/ansa-thin-mesh/</link>
+      <pubDate>Tue, 18 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/18/ansa-thin-mesh/</guid>
+      <description>&lt;p&gt;由于近期经常做一些冷板结构分析，涉及到薄板建模的。虽然尝试过用Shell单元进行分析，但相比于Solid单元，Shell单元做出来的结果应力、位移均有所偏大，而且涉及到接触问题更容易出现计算不收敛的情况。&#xA;所幸Ansa提供了通过Shell单元拉伸生成体网格的方式，可以快速通过Shell单元生成Solid网格，极大地节省了建模时间。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Abaqus接触设置</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</link>
+      <pubDate>Mon, 10 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</guid>
+      <description>&lt;h2 id=&#34;1-相关命令&#34;&gt;1. 相关命令&lt;/h2&gt;&#xA;&lt;p&gt;Ansa中，给Abaqus设置接触一般常用以下命令：&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/cb35dcf11a636abacef3aabe97112e62.png&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-接触对&#34;&gt;2. 接触对&lt;/h2&gt;&#xA;&lt;p&gt;最常用的接触对，一般通过&lt;code&gt;AUXILIARIES&lt;/code&gt;→ &lt;code&gt;CONTACT&lt;/code&gt;→&lt;code&gt;CONTACT&lt;/code&gt;调出创建对话框。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/038dffae1f80e68c064572e228df00c6.png&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34;&gt;&#xA;&#xA;&#xA;常用设置一般为以下几个：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Abaqus提交命令</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/06/abaqus-submit-command/</link>
+      <pubDate>Thu, 06 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/06/abaqus-submit-command/</guid>
+      <description>&lt;p&gt;用Ansa输出inp文件之后，可以通过Abaqus CAE窗口界面提交inp文件进行计算，也可以通过命令行方式提交计算。使用命令行提交需要添加Path，Windows下通常是&lt;code&gt;[Abaqus安装目录]\Commands&lt;/code&gt;路径。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa单位制</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/05/ansa-unit/</link>
+      <pubDate>Wed, 05 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/05/ansa-unit/</guid>
+      <description>&lt;p&gt;Ansa导入step模型默认长度单位是mm，重量是ton。但我们常用的SI单位制长度是m，重量是kg。&#xA;关于两种单位的转换如下表所示。&lt;/p&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;LENGTH&lt;/th&gt;&#xA;          &lt;th&gt;MASS&lt;/th&gt;&#xA;          &lt;th&gt;TIME&lt;/th&gt;&#xA;          &lt;th&gt;FORCE&lt;/th&gt;&#xA;          &lt;th&gt;STRESS&lt;/th&gt;&#xA;          &lt;th&gt;ENERGY&lt;/th&gt;&#xA;          &lt;th&gt;DENSITY&lt;/th&gt;&#xA;          &lt;th&gt;YOUNG’s MUDULUS&lt;/th&gt;&#xA;          &lt;th&gt;Velocity (56.3KPH)&lt;/th&gt;&#xA;          &lt;th&gt;GRAVITY&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;m&lt;/td&gt;&#xA;          &lt;td&gt;kg&lt;/td&gt;&#xA;          &lt;td&gt;s&lt;/td&gt;&#xA;          &lt;td&gt;N&lt;/td&gt;&#xA;          &lt;td&gt;Pa&lt;/td&gt;&#xA;          &lt;td&gt;Joule&lt;/td&gt;&#xA;          &lt;td&gt;7.83E+03&lt;/td&gt;&#xA;          &lt;td&gt;2.07E+11&lt;/td&gt;&#xA;          &lt;td&gt;15.64&lt;/td&gt;&#xA;          &lt;td&gt;9.81&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;mm&lt;/td&gt;&#xA;          &lt;td&gt;ton&lt;/td&gt;&#xA;          &lt;td&gt;s&lt;/td&gt;&#xA;          &lt;td&gt;N&lt;/td&gt;&#xA;          &lt;td&gt;MPa&lt;/td&gt;&#xA;          &lt;td&gt;N-mm&lt;/td&gt;&#xA;          &lt;td&gt;7.83E-09&lt;/td&gt;&#xA;          &lt;td&gt;2.07E+05&lt;/td&gt;&#xA;          &lt;td&gt;1.564E+04&lt;/td&gt;&#xA;          &lt;td&gt;9.81E+03&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;p&gt;在定义模型参数时，应注意根据长度选择对应的单位制。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa快速设置连接</title>
+      <link>https://AndrewMoa2005.github.io/2025/03/05/ansa-connector/</link>
+      <pubDate>Wed, 05 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/03/05/ansa-connector/</guid>
+      <description>&lt;p&gt;Ansa可以通过Connection功能快速设置连接。&lt;/p&gt;&#xA;&lt;p&gt;这里以螺接为例，首先将所有螺钉单独显示出来。&#xA;使用&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Curves&lt;/code&gt;→&lt;code&gt;Tubes2Curve&lt;/code&gt;将螺接钉几何转换成曲线。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/cf8ec5657b55d755b53386ae1b4272be.png&#34; alt=&#34;cf8ec5657b55d755b53386ae1b4272be.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa螺钉孔washer网格</title>
+      <link>https://AndrewMoa2005.github.io/2025/02/28/ansa-washer-mesh/</link>
+      <pubDate>Fri, 28 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/02/28/ansa-washer-mesh/</guid>
+      <description>&lt;p&gt;使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/ff86c5fd4ac5cc0624c9013d21a1dab5.png&#34; alt=&#34;ff86c5fd4ac5cc0624c9013d21a1dab5.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;但默认设置生成的网格螺钉孔貌似都没有按washer处理。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/6ea45853b136275e0c8325e7b4a47341.png&#34; alt=&#34;6ea45853b136275e0c8325e7b4a47341.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa抽中面功能</title>
+      <link>https://AndrewMoa2005.github.io/2025/02/27/ansa-midsurf/</link>
+      <pubDate>Thu, 27 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/02/27/ansa-midsurf/</guid>
+      <description>&lt;p&gt;ANSA针对钣金件抽中面有几种不同处理方式。&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-skin方法&#34;&gt;1. &lt;code&gt;Skin&lt;/code&gt;方法&lt;/h2&gt;&#xA;&lt;p&gt;&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Mid.Surfa.&lt;/code&gt;→&lt;code&gt;Skin&lt;/code&gt;，选中整个几何体然后无脑按鼠标中键就可以自动抽中面。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/0f525cbbea14aa2904b78e9e80f86f98.png&#34; alt=&#34;0f525cbbea14aa2904b78e9e80f86f98.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Ansa网格质量设置</title>
+      <link>https://AndrewMoa2005.github.io/2025/02/27/ansa-mesh-quality/</link>
+      <pubDate>Thu, 27 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/02/27/ansa-mesh-quality/</guid>
+      <description>&lt;p&gt;快捷键F11，或者下面这个按钮，定义Ansa网格质量&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34; alt=&#34;0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;面网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/8dba04bca8c14b3a47e4ed87d938ac49.png&#34; alt=&#34;8dba04bca8c14b3a47e4ed87d938ac49.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;体网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/1b8e7d21f062ee6d961c4975a0dedffd.png&#34; alt=&#34;1b8e7d21f062ee6d961c4975a0dedffd.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;最好把配置文件另存为到本地，下次重新打开配置文件覆盖即可。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>扒一扒十沣科技国产CFD软件——QFlux及QMesh</title>
+      <link>https://AndrewMoa2005.github.io/2021/09/08/tenfong/</link>
+      <pubDate>Wed, 08 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2021/09/08/tenfong/</guid>
+      <description>&lt;p&gt;先说结论：1、十沣科技产品QFlux和QMesh与自身宣传不符。QMesh并不是什么“自主开发的先进计算流体力学核心软件”；而QFlux功能根本就尚未完善，至少没有包含其宣传所拥有的功能，而且笔者有理由怀疑其求解器根本就是“借鉴”自OpenFOAM。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>求解器验证对比——旋转和静止同心圆柱之间的层流</title>
+      <link>https://AndrewMoa2005.github.io/2021/08/14/vmfl001/</link>
+      <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2021/08/14/vmfl001/</guid>
+      <description>&lt;p&gt;本文采用不同CFD求解器，对层流流动问题进行验证。通过列举不同求解器的操作过程和输出结果的差异，验证各个求解器的精度。&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;1-问题描述&#34;&gt;1. 问题描述&lt;/h2&gt;&#xA;&lt;p&gt;如下图，建立两个同心圆柱间的定常层流模型。流动由内筒以恒定角速度旋转而引起，而外筒保持静止。使用周期性边界，只需要对流域的一部分进行建模。物理模型和输入数据如下表所示。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>ArchLinux下OpenFOAM编译安装与PBS并行化</title>
+      <link>https://AndrewMoa2005.github.io/2021/08/12/archlinux-compile-openfoam/</link>
+      <pubDate>Thu, 12 Aug 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2021/08/12/archlinux-compile-openfoam/</guid>
+      <description>&lt;h2 id=&#34;1-源代码下载&#34;&gt;1. 源代码下载&lt;/h2&gt;&#xA;&lt;h3 id=&#34;11-下载openfoam源代码&#34;&gt;1.1 下载OpenFOAM源代码&lt;/h3&gt;&#xA;&lt;p&gt;在&lt;code&gt;${HOME}&lt;/code&gt;目录下新建OpenFOAM目录：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#f1fa8c&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;HOME&lt;/span&gt;&lt;span style=&#34;color:#f1fa8c&#34;&gt;}&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir OpenFOAM &lt;span style=&#34;color:#ff79c6&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; OpenFOAM&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从github下载OpenFOAM和ThirdParty的源代码，放到&lt;code&gt;${HOME}/OpenFOAM&lt;/code&gt;目录中：&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>超算平台部署STAR-CCM&#43;</title>
+      <link>https://AndrewMoa2005.github.io/2021/08/04/slurm-starccm/</link>
+      <pubDate>Wed, 04 Aug 2021 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2021/08/04/slurm-starccm/</guid>
+      <description>&lt;p&gt;最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>https://AndrewMoa2005.github.io/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/about/</guid>
+      <description>&lt;h2 id=&#34;关于我&#34;&gt;关于我&lt;/h2&gt;&#xA;&lt;p&gt;Hi，我是Andrew Moa，一个工程师，曾服务于格力、比亚迪等企业，担任研究员、热管理及仿真工程师。&lt;/p&gt;&#xA;&lt;p&gt;由于对CFD有着执着的热爱，加之踏入社会以后一直从事相关方面的工作，受到不少前辈大佬的支持和鼓励，于是想着将自己积累的知识和经验分享出来。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>https://AndrewMoa2005.github.io/search/placeholder/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/search/placeholder/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

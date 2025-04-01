@@ -5,7 +5,7 @@ echo -e " Deploying updates to GitHub... "
 rm -rf public
 rm -rf docs
 
-hugo build
+# hugo build
 hugo build -d docs
 
 git add .

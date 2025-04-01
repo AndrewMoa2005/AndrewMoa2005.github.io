@@ -237,11 +237,11 @@
                 <h2 id="1-准备工作">1. 准备工作</h2>
 <p>全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。
 
-  <img src="/img/_resources/e8b6a55779447694ef28a8a9560f2bab.png" alt="e8b6a55779447694ef28a8a9560f2bab.png">
+  <img src="/docs/img/_resources/e8b6a55779447694ef28a8a9560f2bab.png" alt="e8b6a55779447694ef28a8a9560f2bab.png">
 
 
 
-  <img src="/img/_resources/3f912a7795844465627dc878eb409e95.png" alt="3f912a7795844465627dc878eb409e95.png">
+  <img src="/docs/img/_resources/3f912a7795844465627dc878eb409e95.png" alt="3f912a7795844465627dc878eb409e95.png">
 
 
 安装过程中至少需要8GB内存，推荐内存16~32GB。</p>
@@ -259,12 +259,12 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> <span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">HOME</span><span style="color:#f1fa8c">}</span>/ISO/1
 </span></span><span style="display:flex;"><span>sudo ./INSTALL <span style="color:#6272a4"># 由于需要以服务形式运行，建议以管理员用户权限运行安装程序</span>
 </span></span></code></pre></div><p>
-  <img src="/img/_resources/598ba0142449e130e1d6680aef25e2db.png" alt="598ba0142449e130e1d6680aef25e2db.png">
+  <img src="/docs/img/_resources/598ba0142449e130e1d6680aef25e2db.png" alt="598ba0142449e130e1d6680aef25e2db.png">
 
 </p>
 <p>许可证安装路径选择：<code>/opt/ansys_inc</code>：
 
-  <img src="/img/_resources/5a06611a2b8026902f761f7ff6953b86.png" alt="5a06611a2b8026902f761f7ff6953b86.png">
+  <img src="/docs/img/_resources/5a06611a2b8026902f761f7ff6953b86.png" alt="5a06611a2b8026902f761f7ff6953b86.png">
 
 
 安装完成后退出安装程序。</p>
@@ -280,36 +280,36 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>sudo /opt/ansys_inc/shared_files/licensing/init_ansyslm_tomcat start
 </span></span></code></pre></div><p>然后用浏览器打开该地址：<code>http://localhost:1084/ANSYSLMCenter.html</code>，定位到<code>Get System Hostid information</code>栏目，找到<code>HOSTID</code>，把它复制下来后面会用到：
 
-  <img src="/img/_resources/a52950f2db9ae12884303cbf17f8bdc2.png" alt="a52950f2db9ae12884303cbf17f8bdc2.png">
+  <img src="/docs/img/_resources/a52950f2db9ae12884303cbf17f8bdc2.png" alt="a52950f2db9ae12884303cbf17f8bdc2.png">
 
 </p>
 <p>打开<code>license_2024.12.15.txt</code>文件，在开头的<code>SERVER localhost XXXXXXXXXXXX 1055</code>这一行中将<code>XXXXXXXXXXXX</code>替换为上面复制下来的<code>HOSTID</code>，保存文件。
 
-  <img src="/img/_resources/98784654bd0673c67c268b30c410841d.png" alt="98784654bd0673c67c268b30c410841d.png">
+  <img src="/docs/img/_resources/98784654bd0673c67c268b30c410841d.png" alt="98784654bd0673c67c268b30c410841d.png">
 
 </p>
 <p>定位到<code>Add a License File</code>栏目，载入刚刚编辑过的<code>license_2024.12.15.txt</code>文件。
 
-  <img src="/img/_resources/8b20a3edf84fd2d7ed3014bb482ebaa3.png" alt="8b20a3edf84fd2d7ed3014bb482ebaa3.png">
+  <img src="/docs/img/_resources/8b20a3edf84fd2d7ed3014bb482ebaa3.png" alt="8b20a3edf84fd2d7ed3014bb482ebaa3.png">
 
 </p>
 <p>这里出现了一个问题，提示<code>lmgrd</code>找不到，无法启动服务器守护进程，运行以下命令：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>sudo cp /opt/ansys_inc/shared_files/licensing/linx64/update/lmgrd /opt/ansys_inc/shared_files/licensing/linx64/lmgrd
 </span></span></code></pre></div><p>再次载入文件即可：
 
-  <img src="/img/_resources/3d393bbce991d531ef2829ec57b3f0d2.png" alt="3d393bbce991d531ef2829ec57b3f0d2.png">
+  <img src="/docs/img/_resources/3d393bbce991d531ef2829ec57b3f0d2.png" alt="3d393bbce991d531ef2829ec57b3f0d2.png">
 
 </p>
 <p>定位到<code>View Status/Start/Stop License Manager</code>栏目，确认服务器运行状态：
 
-  <img src="/img/_resources/fc01fe3a22a3f809c25540c512c61df0.png" alt="fc01fe3a22a3f809c25540c512c61df0.png">
+  <img src="/docs/img/_resources/fc01fe3a22a3f809c25540c512c61df0.png" alt="fc01fe3a22a3f809c25540c512c61df0.png">
 
 </p>
 <p>退出浏览器并关闭许可证配置程序，确认守护进程是否在运行：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>sudo /opt/ansys_inc/shared_files/licensing/init_ansyslm_tomcat stop
 </span></span><span style="display:flex;"><span>ps -eaf | grep ansyslmd
 </span></span></code></pre></div><p>
-  <img src="/img/_resources/edac3b8a6905bbabd6bbe9ab46101f0f.png" alt="edac3b8a6905bbabd6bbe9ab46101f0f.png">
+  <img src="/docs/img/_resources/edac3b8a6905bbabd6bbe9ab46101f0f.png" alt="edac3b8a6905bbabd6bbe9ab46101f0f.png">
 
 </p>
 <p>如果许可证服务器和主程序分别安装在不同机器上，需要在防火墙中开启许可证服务器的1055端口：</p>
@@ -342,7 +342,7 @@
 </span></span></code></pre></div><p>查看服务状态：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>sudo systemctl status ansyslmd
 </span></span></code></pre></div><p>
-  <img src="/img/_resources/936bafa551b8e5f366e60560bc7a3cb1.png" alt="936bafa551b8e5f366e60560bc7a3cb1.png">
+  <img src="/docs/img/_resources/936bafa551b8e5f366e60560bc7a3cb1.png" alt="936bafa551b8e5f366e60560bc7a3cb1.png">
 
 
 服务启动成功，安装完毕后可以重启验证下。</p>
@@ -352,47 +352,47 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> <span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">HOME</span><span style="color:#f1fa8c">}</span>/ISO/1
 </span></span><span style="display:flex;"><span>sudo ./INSTALL <span style="color:#6272a4"># 用root权限安装</span>
 </span></span></code></pre></div><p>
-  <img src="/img/_resources/6933ca38adf2f53214ee6da37be02675.png" alt="6933ca38adf2f53214ee6da37be02675.png">
+  <img src="/docs/img/_resources/6933ca38adf2f53214ee6da37be02675.png" alt="6933ca38adf2f53214ee6da37be02675.png">
 
 </p>
 <p>求解同样选择安装在：<code>/opt/ansys_inc</code>
 
-  <img src="/img/_resources/93a9af6a6829b4c21c211ed56a9089a2.png" alt="93a9af6a6829b4c21c211ed56a9089a2.png">
+  <img src="/docs/img/_resources/93a9af6a6829b4c21c211ed56a9089a2.png" alt="93a9af6a6829b4c21c211ed56a9089a2.png">
 
 </p>
 <p>根据自己需要选择安装哪些内容：
 
-  <img src="/img/_resources/921717f7b3c0f69710ca2d0de4f8a702.png" alt="921717f7b3c0f69710ca2d0de4f8a702.png">
+  <img src="/docs/img/_resources/921717f7b3c0f69710ca2d0de4f8a702.png" alt="921717f7b3c0f69710ca2d0de4f8a702.png">
 
 </p>
 <p>配置CAD几何图形接口，本机没安装CAD软件，选择跳过：
 
-  <img src="/img/_resources/3905fc228e5b13ede8a3389f6997b76f.png" alt="3905fc228e5b13ede8a3389f6997b76f.png">
+  <img src="/docs/img/_resources/3905fc228e5b13ede8a3389f6997b76f.png" alt="3905fc228e5b13ede8a3389f6997b76f.png">
 
 </p>
 <p>根据前面选择安装内容的不同，后面会询问一堆配置文件路径，根据自己需要设置吧，没有就无脑Next。
 
-  <img src="/img/_resources/1ae7bc0a6a670019f24a6b43a6a45e7b.png" alt="1ae7bc0a6a670019f24a6b43a6a45e7b.png">
+  <img src="/docs/img/_resources/1ae7bc0a6a670019f24a6b43a6a45e7b.png" alt="1ae7bc0a6a670019f24a6b43a6a45e7b.png">
 
 </p>
 <p>选择是否创建桌面快捷方式，选上吧，兴许有用呢。
 
-  <img src="/img/_resources/40ec3516e05c8562ad9e52ed6703e3ef.png" alt="40ec3516e05c8562ad9e52ed6703e3ef.png">
+  <img src="/docs/img/_resources/40ec3516e05c8562ad9e52ed6703e3ef.png" alt="40ec3516e05c8562ad9e52ed6703e3ef.png">
 
 </p>
 <p>确认安装内容，点击Next开始复制文件：
 
-  <img src="/img/_resources/bdaa34603562269aeb94f1634682c3e5.png" alt="bdaa34603562269aeb94f1634682c3e5.png">
+  <img src="/docs/img/_resources/bdaa34603562269aeb94f1634682c3e5.png" alt="bdaa34603562269aeb94f1634682c3e5.png">
 
 </p>
 <p>可以查看安装进度，安装过程中会询问载入其他<code>.iso</code>文件挂载路径。
 
-  <img src="/img/_resources/6e6129bc46d805ef3d32b5269fdddbf0.png" alt="6e6129bc46d805ef3d32b5269fdddbf0.png">
+  <img src="/docs/img/_resources/6e6129bc46d805ef3d32b5269fdddbf0.png" alt="6e6129bc46d805ef3d32b5269fdddbf0.png">
 
 </p>
 <p>安装完成，提示有一些报错，不管它，退出。
 
-  <img src="/img/_resources/8329e891f49681100884f8cd734a3685.png" alt="8329e891f49681100884f8cd734a3685.png">
+  <img src="/docs/img/_resources/8329e891f49681100884f8cd734a3685.png" alt="8329e891f49681100884f8cd734a3685.png">
 
 </p>
 <p>接下来将<code>ansys.2025r1.linx64-ssq.tar.gz</code>压缩包中的<code>v251</code>文件夹下的文件解压到安装目录下并覆盖：</p>
@@ -426,7 +426,7 @@
 <li>点击Save保存配置</li>
 </ol>
 <p>
-  <img src="/img/_resources/4a20e58eeea7df3348c81b7cd2b1dd5c.png" alt="4a20e58eeea7df3348c81b7cd2b1dd5c.png">
+  <img src="/docs/img/_resources/4a20e58eeea7df3348c81b7cd2b1dd5c.png" alt="4a20e58eeea7df3348c81b7cd2b1dd5c.png">
 
 
 保存退出，完成许可证配置。</p>
@@ -434,7 +434,7 @@
 <p>配置完许可证之后，通过以下命令启动<code>Workbench</code>：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>/ansys_inc/v251/Framework/bin/Linux64/runwb2
 </span></span></code></pre></div><p>
-  <img src="/img/_resources/3294556c73209acc5799dc0203469459.png" alt="3294556c73209acc5799dc0203469459.png">
+  <img src="/docs/img/_resources/3294556c73209acc5799dc0203469459.png" alt="3294556c73209acc5799dc0203469459.png">
 
 </p>
 <p>类似的，一些关键主程序的入口参考如下：</p>

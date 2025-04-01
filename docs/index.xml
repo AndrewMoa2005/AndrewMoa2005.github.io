@@ -48,7 +48,7 @@
       <link>https://AndrewMoa2005.github.io/2025/03/25/ubuntu-install-ansys/</link>
       <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2025/03/25/ubuntu-install-ansys/</guid>
-      <description>&lt;h2 id=&#34;1-准备工作&#34;&gt;1. 准备工作&lt;/h2&gt;&#xA;&lt;p&gt;全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/e8b6a55779447694ef28a8a9560f2bab.png&#34; alt=&#34;e8b6a55779447694ef28a8a9560f2bab.png&#34;&gt;&#xA;&#xA;&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/3f912a7795844465627dc878eb409e95.png&#34; alt=&#34;3f912a7795844465627dc878eb409e95.png&#34;&gt;&#xA;&#xA;&#xA;安装过程中至少需要8GB内存，推荐内存16~32GB。&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;1-准备工作&#34;&gt;1. 准备工作&lt;/h2&gt;&#xA;&lt;p&gt;全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/e8b6a55779447694ef28a8a9560f2bab.png&#34; alt=&#34;e8b6a55779447694ef28a8a9560f2bab.png&#34;&gt;&#xA;&#xA;&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/3f912a7795844465627dc878eb409e95.png&#34; alt=&#34;3f912a7795844465627dc878eb409e95.png&#34;&gt;&#xA;&#xA;&#xA;安装过程中至少需要8GB内存，推荐内存16~32GB。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ubuntu24.04搭建Samba服务器</title>
@@ -104,7 +104,7 @@
       <link>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</link>
       <pubDate>Mon, 10 Mar 2025 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</guid>
-      <description>&lt;h2 id=&#34;1-相关命令&#34;&gt;1. 相关命令&lt;/h2&gt;&#xA;&lt;p&gt;Ansa中，给Abaqus设置接触一般常用以下命令：&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/cb35dcf11a636abacef3aabe97112e62.png&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-接触对&#34;&gt;2. 接触对&lt;/h2&gt;&#xA;&lt;p&gt;最常用的接触对，一般通过&lt;code&gt;AUXILIARIES&lt;/code&gt;→ &lt;code&gt;CONTACT&lt;/code&gt;→&lt;code&gt;CONTACT&lt;/code&gt;调出创建对话框。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/038dffae1f80e68c064572e228df00c6.png&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34;&gt;&#xA;&#xA;&#xA;常用设置一般为以下几个：&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;1-相关命令&#34;&gt;1. 相关命令&lt;/h2&gt;&#xA;&lt;p&gt;Ansa中，给Abaqus设置接触一般常用以下命令：&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/cb35dcf11a636abacef3aabe97112e62.png&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-接触对&#34;&gt;2. 接触对&lt;/h2&gt;&#xA;&lt;p&gt;最常用的接触对，一般通过&lt;code&gt;AUXILIARIES&lt;/code&gt;→ &lt;code&gt;CONTACT&lt;/code&gt;→&lt;code&gt;CONTACT&lt;/code&gt;调出创建对话框。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/038dffae1f80e68c064572e228df00c6.png&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34;&gt;&#xA;&#xA;&#xA;常用设置一般为以下几个：&lt;/p&gt;</description>
     </item>
     <item>
       <title>Abaqus提交命令</title>
@@ -125,28 +125,28 @@
       <link>https://AndrewMoa2005.github.io/2025/03/05/ansa-connector/</link>
       <pubDate>Wed, 05 Mar 2025 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2025/03/05/ansa-connector/</guid>
-      <description>&lt;p&gt;Ansa可以通过Connection功能快速设置连接。&lt;/p&gt;&#xA;&lt;p&gt;这里以螺接为例，首先将所有螺钉单独显示出来。&#xA;使用&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Curves&lt;/code&gt;→&lt;code&gt;Tubes2Curve&lt;/code&gt;将螺接钉几何转换成曲线。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/cf8ec5657b55d755b53386ae1b4272be.png&#34; alt=&#34;cf8ec5657b55d755b53386ae1b4272be.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+      <description>&lt;p&gt;Ansa可以通过Connection功能快速设置连接。&lt;/p&gt;&#xA;&lt;p&gt;这里以螺接为例，首先将所有螺钉单独显示出来。&#xA;使用&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Curves&lt;/code&gt;→&lt;code&gt;Tubes2Curve&lt;/code&gt;将螺接钉几何转换成曲线。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/cf8ec5657b55d755b53386ae1b4272be.png&#34; alt=&#34;cf8ec5657b55d755b53386ae1b4272be.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ansa螺钉孔washer网格</title>
       <link>https://AndrewMoa2005.github.io/2025/02/28/ansa-washer-mesh/</link>
       <pubDate>Fri, 28 Feb 2025 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2025/02/28/ansa-washer-mesh/</guid>
-      <description>&lt;p&gt;使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/ff86c5fd4ac5cc0624c9013d21a1dab5.png&#34; alt=&#34;ff86c5fd4ac5cc0624c9013d21a1dab5.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;但默认设置生成的网格螺钉孔貌似都没有按washer处理。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/6ea45853b136275e0c8325e7b4a47341.png&#34; alt=&#34;6ea45853b136275e0c8325e7b4a47341.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+      <description>&lt;p&gt;使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/ff86c5fd4ac5cc0624c9013d21a1dab5.png&#34; alt=&#34;ff86c5fd4ac5cc0624c9013d21a1dab5.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;但默认设置生成的网格螺钉孔貌似都没有按washer处理。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/6ea45853b136275e0c8325e7b4a47341.png&#34; alt=&#34;6ea45853b136275e0c8325e7b4a47341.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ansa抽中面功能</title>
       <link>https://AndrewMoa2005.github.io/2025/02/27/ansa-midsurf/</link>
       <pubDate>Thu, 27 Feb 2025 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2025/02/27/ansa-midsurf/</guid>
-      <description>&lt;p&gt;ANSA针对钣金件抽中面有几种不同处理方式。&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-skin方法&#34;&gt;1. &lt;code&gt;Skin&lt;/code&gt;方法&lt;/h2&gt;&#xA;&lt;p&gt;&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Mid.Surfa.&lt;/code&gt;→&lt;code&gt;Skin&lt;/code&gt;，选中整个几何体然后无脑按鼠标中键就可以自动抽中面。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/0f525cbbea14aa2904b78e9e80f86f98.png&#34; alt=&#34;0f525cbbea14aa2904b78e9e80f86f98.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+      <description>&lt;p&gt;ANSA针对钣金件抽中面有几种不同处理方式。&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-skin方法&#34;&gt;1. &lt;code&gt;Skin&lt;/code&gt;方法&lt;/h2&gt;&#xA;&lt;p&gt;&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Mid.Surfa.&lt;/code&gt;→&lt;code&gt;Skin&lt;/code&gt;，选中整个几何体然后无脑按鼠标中键就可以自动抽中面。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/0f525cbbea14aa2904b78e9e80f86f98.png&#34; alt=&#34;0f525cbbea14aa2904b78e9e80f86f98.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ansa网格质量设置</title>
       <link>https://AndrewMoa2005.github.io/2025/02/27/ansa-mesh-quality/</link>
       <pubDate>Thu, 27 Feb 2025 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2025/02/27/ansa-mesh-quality/</guid>
-      <description>&lt;p&gt;快捷键F11，或者下面这个按钮，定义Ansa网格质量&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34; alt=&#34;0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;面网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/8dba04bca8c14b3a47e4ed87d938ac49.png&#34; alt=&#34;8dba04bca8c14b3a47e4ed87d938ac49.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;体网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/1b8e7d21f062ee6d961c4975a0dedffd.png&#34; alt=&#34;1b8e7d21f062ee6d961c4975a0dedffd.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;最好把配置文件另存为到本地，下次重新打开配置文件覆盖即可。&lt;/p&gt;</description>
+      <description>&lt;p&gt;快捷键F11，或者下面这个按钮，定义Ansa网格质量&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34; alt=&#34;0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;面网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/8dba04bca8c14b3a47e4ed87d938ac49.png&#34; alt=&#34;8dba04bca8c14b3a47e4ed87d938ac49.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;体网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/1b8e7d21f062ee6d961c4975a0dedffd.png&#34; alt=&#34;1b8e7d21f062ee6d961c4975a0dedffd.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;最好把配置文件另存为到本地，下次重新打开配置文件覆盖即可。&lt;/p&gt;</description>
     </item>
     <item>
       <title>扒一扒十沣科技国产CFD软件——QFlux及QMesh</title>

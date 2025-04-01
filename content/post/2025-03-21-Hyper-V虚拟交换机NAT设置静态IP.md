@@ -18,13 +18,13 @@ categories: [ "Linux" ]
 为了保证虚拟机联网，每次重启开机都要手动设置`Default Switch`对应适配器的IP地址，非常不便。下面是参考[微软官方文档](https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/user-guide/setup-nat-network)给出的解决方案。
 
 这里前面的步骤可以通过图形用户界面去实现，首先新建一个内部的虚拟交换机：
-![38530a4ee6eaabf98448a647c0446d0c.png](/img/_resources/38530a4ee6eaabf98448a647c0446d0c.png)
+![38530a4ee6eaabf98448a647c0446d0c.png](/docs/img/_resources/38530a4ee6eaabf98448a647c0446d0c.png)
 
 命名虚拟交换机，记住它，后面会用到。确定新建：
-![2d9b503b6087be2acffc63498abc5977.png](/img/_resources/2d9b503b6087be2acffc63498abc5977.png)
+![2d9b503b6087be2acffc63498abc5977.png](/docs/img/_resources/2d9b503b6087be2acffc63498abc5977.png)
 
 在Windows网络适配器中找到新建的虚拟机适配器，将IP地址改成虚拟机设置的网关地址，子网掩码也改成和虚拟机设置的一致：
-![e4140c00e7140a6ad234b58fa208caa9.png](/img/_resources/e4140c00e7140a6ad234b58fa208caa9.png)
+![e4140c00e7140a6ad234b58fa208caa9.png](/docs/img/_resources/e4140c00e7140a6ad234b58fa208caa9.png)
 
 下面用管理员权限打开PowerShell，通过以下命令行查看是否已有NAT网络：
 ```PowerShell
@@ -60,9 +60,9 @@ Active                           : True
 ```
 
 这样新的NAT网络就配置好了，在虚拟机设置中更换成新设置的虚拟交换机。
-![0dede2ea198412fb98f352185b8c299c.png](/img/_resources/0dede2ea198412fb98f352185b8c299c.png)
+![0dede2ea198412fb98f352185b8c299c.png](/docs/img/_resources/0dede2ea198412fb98f352185b8c299c.png)
 
 再登录虚拟机，手动设置DNS即可（不理解为什么不能通过网关自动获取DNS，也许是BUG……），否则虚拟机无法访问外网。
-![03ac4a6c4f91bb45fc4fd1d30483119b.png](/img/_resources/03ac4a6c4f91bb45fc4fd1d30483119b.png)
+![03ac4a6c4f91bb45fc4fd1d30483119b.png](/docs/img/_resources/03ac4a6c4f91bb45fc4fd1d30483119b.png)
 
 ---

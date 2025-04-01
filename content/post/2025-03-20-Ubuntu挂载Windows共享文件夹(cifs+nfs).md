@@ -24,7 +24,7 @@ categories: [ "Linux" ]
 smbclient -L 172.25.64.1 -U ${username}
 ```
 
-![915cf6282a8325b667b52d37dea315f0.png](/img/_resources/915cf6282a8325b667b52d37dea315f0.png)
+![915cf6282a8325b667b52d37dea315f0.png](/docs/img/_resources/915cf6282a8325b667b52d37dea315f0.png)
 挂载点访问路径：`//172.25.64.1/Share`
 
 ## 2. 挂载方法
@@ -56,7 +56,7 @@ sudo mount -t cifs //172.25.64.1/Share /mnt -o uid=user,gid=group,username=${use
 ```Bash
 mount | grep cifs
 ```
-![b9e4cda2700bd92ba7d89159f79cc007.png](/img/_resources/b9e4cda2700bd92ba7d89159f79cc007.png)
+![b9e4cda2700bd92ba7d89159f79cc007.png](/docs/img/_resources/b9e4cda2700bd92ba7d89159f79cc007.png)
 
 取消挂载通过`umount`命令：
 ```Bash
@@ -91,7 +91,7 @@ sudo umount /mnt
 	注意`/etc/cifs-credentials`文件的编码需要是UTF-8。
 
 以上便完成了开机自动挂载设置，重启后可以通过`df -h`验证。
-![8bcbb069683deec77050415a12e0edc1.png](/img/_resources/8bcbb069683deec77050415a12e0edc1.png)
+![8bcbb069683deec77050415a12e0edc1.png](/docs/img/_resources/8bcbb069683deec77050415a12e0edc1.png)
 
 ## 4. 权限问题
 
@@ -100,7 +100,7 @@ sudo umount /mnt
 默认情况下，NFS并不提供任何验证机制，因此不需要验证用户名密码，存在一定的安全风险。NFSv3根据客户端IP地址完成验证[^2]，可以通过指定客户端IP地址的方式提高安全性。
 
 Windows10可以通过第三方工具haneWIN[^3]创建NFS共享文件夹，下载安装并通过图形界面配置即可，这里不详细介绍，可以参考其他相关文章[^4]。注意配置完成后要在防火墙中开放相关端口。
-![4581ebf45d084151983b8c35aa9a88ac.png](/img/_resources/4581ebf45d084151983b8c35aa9a88ac.png)
+![4581ebf45d084151983b8c35aa9a88ac.png](/docs/img/_resources/4581ebf45d084151983b8c35aa9a88ac.png)
 
 在Ubuntu上安装NFS相关工具，开启相关服务：
 ```Bash

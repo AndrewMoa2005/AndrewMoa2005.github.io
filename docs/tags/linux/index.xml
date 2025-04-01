@@ -20,7 +20,7 @@
       <link>https://AndrewMoa2005.github.io/2025/03/25/ubuntu-install-ansys/</link>
       <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2025/03/25/ubuntu-install-ansys/</guid>
-      <description>&lt;h2 id=&#34;1-准备工作&#34;&gt;1. 准备工作&lt;/h2&gt;&#xA;&lt;p&gt;全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/e8b6a55779447694ef28a8a9560f2bab.png&#34; alt=&#34;e8b6a55779447694ef28a8a9560f2bab.png&#34;&gt;&#xA;&#xA;&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/img/_resources/3f912a7795844465627dc878eb409e95.png&#34; alt=&#34;3f912a7795844465627dc878eb409e95.png&#34;&gt;&#xA;&#xA;&#xA;安装过程中至少需要8GB内存，推荐内存16~32GB。&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;1-准备工作&#34;&gt;1. 准备工作&lt;/h2&gt;&#xA;&lt;p&gt;全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/e8b6a55779447694ef28a8a9560f2bab.png&#34; alt=&#34;e8b6a55779447694ef28a8a9560f2bab.png&#34;&gt;&#xA;&#xA;&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/3f912a7795844465627dc878eb409e95.png&#34; alt=&#34;3f912a7795844465627dc878eb409e95.png&#34;&gt;&#xA;&#xA;&#xA;安装过程中至少需要8GB内存，推荐内存16~32GB。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ubuntu24.04搭建Samba服务器</title>

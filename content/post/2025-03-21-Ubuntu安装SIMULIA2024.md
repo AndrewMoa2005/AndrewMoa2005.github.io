@@ -54,128 +54,128 @@ export NOLICENSECHECK=true
 ./StartTUI.sh # 启动文本界面安装向导
 ```
 
-![7222cbf4b6f8545b9766ce654edf28ba.png](/img/_resources/7222cbf4b6f8545b9766ce654edf28ba.png)
+![7222cbf4b6f8545b9766ce654edf28ba.png](/docs/img/_resources/7222cbf4b6f8545b9766ce654edf28ba.png)
 `Enter`下一步。
 
-![32a37d1807765cbc529f11c58e35ea12.png](/img/_resources/32a37d1807765cbc529f11c58e35ea12.png)
+![32a37d1807765cbc529f11c58e35ea12.png](/docs/img/_resources/32a37d1807765cbc529f11c58e35ea12.png)
 记得一定要选`4`，也就是`FLEXnet License Server`。输入`4`，然后`Enter`继续。
 
-![e29968284f99250e82746af3a935d704.png](/img/_resources/e29968284f99250e82746af3a935d704.png)
+![e29968284f99250e82746af3a935d704.png](/docs/img/_resources/e29968284f99250e82746af3a935d704.png)
 确认安装内容，`Enter`开始启动相关安装程序。
 
 ### 2.2 安装许可证服务器
 
-![2b46aa33180c36f27a537a1ab8418f3a.png](/img/_resources/2b46aa33180c36f27a537a1ab8418f3a.png)
+![2b46aa33180c36f27a537a1ab8418f3a.png](/docs/img/_resources/2b46aa33180c36f27a537a1ab8418f3a.png)
 选择`P`，然后输入`/iso/4`文件夹的绝对路径。
 
-![98b4844bd00955f5d423ca362fe2b553.png](/img/_resources/98b4844bd00955f5d423ca362fe2b553.png)
+![98b4844bd00955f5d423ca362fe2b553.png](/docs/img/_resources/98b4844bd00955f5d423ca362fe2b553.png)
 选择许可证服务器的安装路径，这里选择安装在`${HOME}/opt/SIMULIA/License/2024`路径下，要输入绝对路径。
 
-![da9c6aa1f933df48fe6027e382c878d5.png](/img/_resources/da9c6aa1f933df48fe6027e382c878d5.png)
+![da9c6aa1f933df48fe6027e382c878d5.png](/docs/img/_resources/da9c6aa1f933df48fe6027e382c878d5.png)
 这里选择默认，安装后启动许可证服务器。
 
-![842cf6835291e50d2a108b92c793ae29.png](/img/_resources/842cf6835291e50d2a108b92c793ae29.png)
+![842cf6835291e50d2a108b92c793ae29.png](/docs/img/_resources/842cf6835291e50d2a108b92c793ae29.png)
 选择许可证文件路径，输入绝对路径。
 
-![0a7fcef173dc84dbae5cd0fd3561f1d0.png](/img/_resources/0a7fcef173dc84dbae5cd0fd3561f1d0.png)
+![0a7fcef173dc84dbae5cd0fd3561f1d0.png](/docs/img/_resources/0a7fcef173dc84dbae5cd0fd3561f1d0.png)
 输入许可证文件后提示检索主机ID失败，忽略它，输入`2`继续。
 
-![3cdf57da3ac4f813368bc21959fd50cc.png](/img/_resources/3cdf57da3ac4f813368bc21959fd50cc.png)
+![3cdf57da3ac4f813368bc21959fd50cc.png](/docs/img/_resources/3cdf57da3ac4f813368bc21959fd50cc.png)
 继续选`2`。
 
-![37278e435bdf4ce57cc8753974ed4262.png](/img/_resources/37278e435bdf4ce57cc8753974ed4262.png)
+![37278e435bdf4ce57cc8753974ed4262.png](/docs/img/_resources/37278e435bdf4ce57cc8753974ed4262.png)
 确认安装信息。
 
-![d98331d9aec49934746e4780dc8a570f.png](/img/_resources/d98331d9aec49934746e4780dc8a570f.png)
+![d98331d9aec49934746e4780dc8a570f.png](/docs/img/_resources/d98331d9aec49934746e4780dc8a570f.png)
 安装完成，`Enter`继续下一个程序安装。
 
 ### 2.3 安装求解器
 
-![e63e9f0c584011800a215af5d2c128a7.png](/img/_resources/e63e9f0c584011800a215af5d2c128a7.png)
+![e63e9f0c584011800a215af5d2c128a7.png](/docs/img/_resources/e63e9f0c584011800a215af5d2c128a7.png)
 选择`P`，然后输入`/iso/5`文件夹的绝对路径。
 
-![9da9338bf17ca917eee54135eac4bd13.png](/img/_resources/9da9338bf17ca917eee54135eac4bd13.png)
+![9da9338bf17ca917eee54135eac4bd13.png](/docs/img/_resources/9da9338bf17ca917eee54135eac4bd13.png)
 选择安装路径，这里选择安装在`${HOME}/opt/SIMULIA/EstProducts/2024`路径下。
 
-![150907cf29102dc5b4bcda22e3f2af44.png](/img/_resources/150907cf29102dc5b4bcda22e3f2af44.png)
+![150907cf29102dc5b4bcda22e3f2af44.png](/docs/img/_resources/150907cf29102dc5b4bcda22e3f2af44.png)
 选择要安装的内容，全选输入`-1`。
 
-![618fa052254d576c29637eb792b63f5b.png](/img/_resources/618fa052254d576c29637eb792b63f5b.png)
+![618fa052254d576c29637eb792b63f5b.png](/docs/img/_resources/618fa052254d576c29637eb792b63f5b.png)
 选择许可证类型，默认选第`1`个。
 
-![2525f16acab485199fb0107493718334.png](/img/_resources/2525f16acab485199fb0107493718334.png)
+![2525f16acab485199fb0107493718334.png](/docs/img/_resources/2525f16acab485199fb0107493718334.png)
 输入许可证服务器的访问地址和端口，输入`29100@localhost`定义`License Server 1`，其余`Enter`跳过。
 
-![5e3f75d3e4eb45d0651f815415cec836.png](/img/_resources/5e3f75d3e4eb45d0651f815415cec836.png)
+![5e3f75d3e4eb45d0651f815415cec836.png](/docs/img/_resources/5e3f75d3e4eb45d0651f815415cec836.png)
 选择命令行程序的路径，这里选择安装到`${HOME}/opt/SIMULIA/var/DassaultSystemes/SIMULIA/Commands`。
 
-![2dbc679c28801c1edcf17410e0541414.png](/img/_resources/2dbc679c28801c1edcf17410e0541414.png)
+![2dbc679c28801c1edcf17410e0541414.png](/docs/img/_resources/2dbc679c28801c1edcf17410e0541414.png)
 选择外部插件的路径，这里选择安装到`${HOME}/opt/SIMULIA/var/DassaultSystemes/SIMULIA/CAE/plugins/2024`。
 
-![0ab546bf5c53e748044cb596a40aac68.png](/img/_resources/0ab546bf5c53e748044cb596a40aac68.png)
+![0ab546bf5c53e748044cb596a40aac68.png](/docs/img/_resources/0ab546bf5c53e748044cb596a40aac68.png)
 选择`Tosca`的接口，根据实际需要来。
 
-![575d8708a07ed1bc9781af02aa739e58.png](/img/_resources/575d8708a07ed1bc9781af02aa739e58.png)
+![575d8708a07ed1bc9781af02aa739e58.png](/docs/img/_resources/575d8708a07ed1bc9781af02aa739e58.png)
 选择`Tosca Fluid`工作目录，这里指派到`${HOME}/temp`下。
 
-![f9de5443a5f54c198a15d433cbcc459d.png](/img/_resources/f9de5443a5f54c198a15d433cbcc459d.png)
+![f9de5443a5f54c198a15d433cbcc459d.png](/docs/img/_resources/f9de5443a5f54c198a15d433cbcc459d.png)
 选择STAR-CCM+安装路径，根据实际情况设置，默认留空。
 
-![bfade401e6f700848f6166f118eb2204.png](/img/_resources/bfade401e6f700848f6166f118eb2204.png)
+![bfade401e6f700848f6166f118eb2204.png](/docs/img/_resources/bfade401e6f700848f6166f118eb2204.png)
 选择STAR-CCM+许可证，根据实际情况设置，默认留空。
 
-![817069e8e89653272d962e4a6553940e.png](/img/_resources/817069e8e89653272d962e4a6553940e.png)
+![817069e8e89653272d962e4a6553940e.png](/docs/img/_resources/817069e8e89653272d962e4a6553940e.png)
 选择Fluent安装路径，根据实际情况设置，默认留空。
 
-![4b87a12aa92cdc9ef67cb2596b331bc1.png](/img/_resources/4b87a12aa92cdc9ef67cb2596b331bc1.png)
+![4b87a12aa92cdc9ef67cb2596b331bc1.png](/docs/img/_resources/4b87a12aa92cdc9ef67cb2596b331bc1.png)
 确认安装信息，`Enter`开始复制文件。
 
-![a48dc4111041562afdd9c43a3f853613.png](/img/_resources/a48dc4111041562afdd9c43a3f853613.png)
+![a48dc4111041562afdd9c43a3f853613.png](/docs/img/_resources/a48dc4111041562afdd9c43a3f853613.png)
 安装过程中会启动验算程序，可以查看验算结果。`Enter`继续。
 
-![192460b7772483522ff8ff97c5f47f61.png](/img/_resources/192460b7772483522ff8ff97c5f47f61.png)
+![192460b7772483522ff8ff97c5f47f61.png](/docs/img/_resources/192460b7772483522ff8ff97c5f47f61.png)
 求解器安装完成，`Enter`退出，进入下一个安装程序。
 
 ### 2.4 安装CAA API
 
-![a1105475937fa8f0c85abdf177501160.png](/img/_resources/a1105475937fa8f0c85abdf177501160.png)
+![a1105475937fa8f0c85abdf177501160.png](/docs/img/_resources/a1105475937fa8f0c85abdf177501160.png)
 选择`P`，然后输入`/iso/6`文件夹的绝对路径。
 
-![fbe21029d223f693d9cdfd727ec588c4.png](/img/_resources/fbe21029d223f693d9cdfd727ec588c4.png)
+![fbe21029d223f693d9cdfd727ec588c4.png](/docs/img/_resources/fbe21029d223f693d9cdfd727ec588c4.png)
 选择安装路径，这里选择安装到`${HOME}/opt/SIMULIA/EstProducts/2024`。
 
-![098367e7a54310e3ceefee9c52659171.png](/img/_resources/098367e7a54310e3ceefee9c52659171.png)
+![098367e7a54310e3ceefee9c52659171.png](/docs/img/_resources/098367e7a54310e3ceefee9c52659171.png)
 确认要安装的内容，`Enter`继续。
 
-![2e23fd22aea12099636c0c53efb9b011.png](/img/_resources/2e23fd22aea12099636c0c53efb9b011.png)
+![2e23fd22aea12099636c0c53efb9b011.png](/docs/img/_resources/2e23fd22aea12099636c0c53efb9b011.png)
 完成安装，`Enter`退出。
 
 ### 2.5 安装Isight
 
-![58015ba8b4b0068cfcb447f20857939f.png](/img/_resources/58015ba8b4b0068cfcb447f20857939f.png)
+![58015ba8b4b0068cfcb447f20857939f.png](/docs/img/_resources/58015ba8b4b0068cfcb447f20857939f.png)
 选择安装路径，这里选择安装到`${HOME}/opt/SIMULIA/Isight/2024`。
 
-![48a30d42cac1ed6b1b91f2ce39040cce.png](/img/_resources/48a30d42cac1ed6b1b91f2ce39040cce.png)
+![48a30d42cac1ed6b1b91f2ce39040cce.png](/docs/img/_resources/48a30d42cac1ed6b1b91f2ce39040cce.png)
 选择要安装的内容，`-1`全选。
 
-![741fd85d5d3f278d9bb7f9bf6530c60a.png](/img/_resources/741fd85d5d3f278d9bb7f9bf6530c60a.png)
+![741fd85d5d3f278d9bb7f9bf6530c60a.png](/docs/img/_resources/741fd85d5d3f278d9bb7f9bf6530c60a.png)
 是否启动`TomEE`配置工具，默认跳过。
 
-![bcda28276dc83f5ae970fcfa37300078.png](/img/_resources/bcda28276dc83f5ae970fcfa37300078.png)
+![bcda28276dc83f5ae970fcfa37300078.png](/docs/img/_resources/bcda28276dc83f5ae970fcfa37300078.png)
 这一步也默认跳过吧。
 
-![b6652ff01997c5fa5e1375d92be835f3.png](/img/_resources/b6652ff01997c5fa5e1375d92be835f3.png)
+![b6652ff01997c5fa5e1375d92be835f3.png](/docs/img/_resources/b6652ff01997c5fa5e1375d92be835f3.png)
 没有安装文档，选择跳过吧。
 
-![952737d22e78e4dd5cbb2fddf27e9bc4.png](/img/_resources/952737d22e78e4dd5cbb2fddf27e9bc4.png)
+![952737d22e78e4dd5cbb2fddf27e9bc4.png](/docs/img/_resources/952737d22e78e4dd5cbb2fddf27e9bc4.png)
 确认安装内容，`Enter`开始复制文件。
 
-![f27fe27fbc46bb915c1fe167d235753f.png](/img/_resources/f27fe27fbc46bb915c1fe167d235753f.png)
+![f27fe27fbc46bb915c1fe167d235753f.png](/docs/img/_resources/f27fe27fbc46bb915c1fe167d235753f.png)
 安装完成，`Enter`退出。
 
 ### 2.6 安装完成
 
-![2f4f47eb05fb870bb885b5ccfb13a9aa.png](/img/_resources/2f4f47eb05fb870bb885b5ccfb13a9aa.png)
+![2f4f47eb05fb870bb885b5ccfb13a9aa.png](/docs/img/_resources/2f4f47eb05fb870bb885b5ccfb13a9aa.png)
 确认安装结果，`Enter`退出SIMULIA安装程序。
 
 ## 3. 安装后配置
@@ -241,7 +241,7 @@ ${HOME}/opt/SIMULIA/License/2024/linux_a64/code/bin/licenseStartup.sh
 无解了，这要么是安装包有问题，要么是这个发行版缺少了某些运行库，等大佬出手吧。
 
 不过好在Windows版许可证可以正常安装，只需要将许可证路径指派到Windows机器上即可。首先在Windows防火墙中打开29100端口，新建防火墙入站规则：
-![33aec1f9e7b7132dc0d6143a9d9d25fe.png](/img/_resources/33aec1f9e7b7132dc0d6143a9d9d25fe.png)
+![33aec1f9e7b7132dc0d6143a9d9d25fe.png](/docs/img/_resources/33aec1f9e7b7132dc0d6143a9d9d25fe.png)
 
 然后将[3.1](#31-启动配置)中`custom_v6.env`文件的许可证地址修改如下：
 ```Bash
@@ -257,7 +257,7 @@ export LM_LICENSE_FILE=29100@172.25.64.1
 ```
 
 载入环境变量后，通过`abaqus cae`命令可以正常启动，不会再提示许可证问题。
-![截图 2025-03-21 15-16-50.png](/img/_resources/截图%202025-03-21%2015-16-50.png)
+![截图 2025-03-21 15-16-50.png](/docs/img/_resources/截图%202025-03-21%2015-16-50.png)
 
 不得不承认，Linux的图形界面确实不好用，但是谁关心呢？反正又不会在Linux下画图、处理网格，能提交计算就行了。
 

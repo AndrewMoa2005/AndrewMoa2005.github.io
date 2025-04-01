@@ -28,30 +28,30 @@ categories: [ "Linux" ]
 
 这里选择Ubuntu，前往官网下载最新的发行版。
 
-![2fd636d62e1453b3b54ad4074cde6c48.png](/docs/img/_resources/2fd636d62e1453b3b54ad4074cde6c48.png)
+![2fd636d62e1453b3b54ad4074cde6c48.png](/resources/2fd636d62e1453b3b54ad4074cde6c48.png)
 
 ### 2.2 开启Hyper-V支持
 
 在开始菜单搜索“启用或关闭Windows功能”，开启虚拟化支持。
 
-![973c3b93cf91c5138b89bbeaeb2bf103.png](/docs/img/_resources/973c3b93cf91c5138b89bbeaeb2bf103.png)
+![973c3b93cf91c5138b89bbeaeb2bf103.png](/resources/973c3b93cf91c5138b89bbeaeb2bf103.png)
 
 把Hyper-V勾上，安装并重启就行了。
 
-![4e7e7f54c61f0f16af1595cb8c0b220e.png](/docs/img/_resources/4e7e7f54c61f0f16af1595cb8c0b220e.png)
+![4e7e7f54c61f0f16af1595cb8c0b220e.png](/resources/4e7e7f54c61f0f16af1595cb8c0b220e.png)
 
 ## 3. 安装虚拟机系统
 
 Hyper-V启动界面，跟着向导一步步新建虚拟机即可。
 
-![25cb47dca10625386e38f7279396a047.png](/docs/img/_resources/25cb47dca10625386e38f7279396a047.png)
+![25cb47dca10625386e38f7279396a047.png](/resources/25cb47dca10625386e38f7279396a047.png)
 
 需要注意几点：
 - 虚拟机和虚拟磁盘最好指定在其他空余空间比较多的分区上，后面运行频繁读写会使虚拟磁盘文件膨胀的很大。
 - 第一次启动前最大内存分配小一点，不然启动很花时间，建议安装并配置完虚拟机系统后再调整到想要的内存大小。
 - 虚拟机设置可以打开TPM，但是要关掉安全启动（除非启用`Microsoft UEFI证书颁发机构`），否则无法载入安装盘。
 
-![e9ab97e9373fcdcdc872cf58a6e460e5.png](/docs/img/_resources/e9ab97e9373fcdcdc872cf58a6e460e5.png)
+![e9ab97e9373fcdcdc872cf58a6e460e5.png](/resources/e9ab97e9373fcdcdc872cf58a6e460e5.png)
 
 Ubuntu安装过程不仔细说明了，跟着向导界面一步步安装即可。
 
@@ -59,10 +59,10 @@ Ubuntu安装过程不仔细说明了，跟着向导界面一步步安装即可�
 
 ### 4.1 虚拟机分配IP地址
 我们需要通过端口映射访问虚拟机，因此需要给虚拟机指派一个固定的IP地址。由于虚拟机用的是默认的`Default Switch`桥接设置，需要查看宿主机给改适配器指派的IP地址，在网络连接选项中可以查看：
-![b8722552e9541a08ce84dd77b04c40ce.png](/docs/img/_resources/b8722552e9541a08ce84dd77b04c40ce.png)
+![b8722552e9541a08ce84dd77b04c40ce.png](/resources/b8722552e9541a08ce84dd77b04c40ce.png)
 
 上图显示的地址就是虚拟机访问宿主机的IP地址。接着在虚拟机中指派一个固定地址，网关和DNS填上面宿主机的IP地址，子网掩码保持一致，IP地址建议就用现在指派的IP地址。
-![e9b13a6df8bbefc3b56594a02c4ce0d7.png](/docs/img/_resources/e9b13a6df8bbefc3b56594a02c4ce0d7.png)
+![e9b13a6df8bbefc3b56594a02c4ce0d7.png](/resources/e9b13a6df8bbefc3b56594a02c4ce0d7.png)
 
 设置完成后ping一下google的DNS看看是否能正常联网：
 ```Bash
@@ -136,7 +136,7 @@ sudo ufw allow OpenSSH
 ```
 
 以下状态显示防火墙配置成功：
-![6180d2d720503ee25c376fd84c4b3954.png](/docs/img/_resources/6180d2d720503ee25c376fd84c4b3954.png)
+![6180d2d720503ee25c376fd84c4b3954.png](/resources/6180d2d720503ee25c376fd84c4b3954.png)
 
 ### 5.3 测试SSH连接
 
@@ -220,7 +220,7 @@ netsh interface portproxy delete v4tov4  listenaddress=192.168.100.135 listenpor
 ### 6.2 宿主机防火墙设置
 
 宿主机防火墙要开放端口，这样才能通过外网访问。首先打开`Windows Defender防火墙`，在`高级设置`里面新建入站规则。
-![f005bc29f02fae09166378349dac9e9d.png](/docs/img/_resources/f005bc29f02fae09166378349dac9e9d.png)
+![f005bc29f02fae09166378349dac9e9d.png](/resources/f005bc29f02fae09166378349dac9e9d.png)
 规则类型选择端口，端口号输入上面映射的端口(用英文半角逗号隔开)，后面全部确认即可。
 
 到此为止，终于实现外网用户通过宿主机的IP地址+端口号的形式访问该虚拟机了。

@@ -232,7 +232,7 @@
 <p>以下命令查看服务器共享出来的资源路径，确认挂载点：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>smbclient -L 172.25.64.1 -U <span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">username</span><span style="color:#f1fa8c">}</span>
 </span></span></code></pre></div><p>
-  <img src="/docs/img/_resources/915cf6282a8325b667b52d37dea315f0.png" alt="915cf6282a8325b667b52d37dea315f0.png">
+  <img src="/resources/915cf6282a8325b667b52d37dea315f0.png" alt="915cf6282a8325b667b52d37dea315f0.png">
 
 
 挂载点访问路径：<code>//172.25.64.1/Share</code></p>
@@ -251,7 +251,7 @@
 </span></span></code></pre></div><p>通过<code>mount</code>命令可以查看挂载情况：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>mount | grep cifs
 </span></span></code></pre></div><p>
-  <img src="/docs/img/_resources/b9e4cda2700bd92ba7d89159f79cc007.png" alt="b9e4cda2700bd92ba7d89159f79cc007.png">
+  <img src="/resources/b9e4cda2700bd92ba7d89159f79cc007.png" alt="b9e4cda2700bd92ba7d89159f79cc007.png">
 
 </p>
 <p>取消挂载通过<code>umount</code>命令：</p>
@@ -279,7 +279,7 @@
 </ol>
 <p>以上便完成了开机自动挂载设置，重启后可以通过<code>df -h</code>验证。
 
-  <img src="/docs/img/_resources/8bcbb069683deec77050415a12e0edc1.png" alt="8bcbb069683deec77050415a12e0edc1.png">
+  <img src="/resources/8bcbb069683deec77050415a12e0edc1.png" alt="8bcbb069683deec77050415a12e0edc1.png">
 
 </p>
 <h2 id="4-权限问题">4. 权限问题</h2>
@@ -287,7 +287,7 @@
 <p>默认情况下，NFS并不提供任何验证机制，因此不需要验证用户名密码，存在一定的安全风险。NFSv3根据客户端IP地址完成验证<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，可以通过指定客户端IP地址的方式提高安全性。</p>
 <p>Windows10可以通过第三方工具haneWIN<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>创建NFS共享文件夹，下载安装并通过图形界面配置即可，这里不详细介绍，可以参考其他相关文章<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>。注意配置完成后要在防火墙中开放相关端口。
 
-  <img src="/docs/img/_resources/4581ebf45d084151983b8c35aa9a88ac.png" alt="4581ebf45d084151983b8c35aa9a88ac.png">
+  <img src="/resources/4581ebf45d084151983b8c35aa9a88ac.png" alt="4581ebf45d084151983b8c35aa9a88ac.png">
 
 </p>
 <p>在Ubuntu上安装NFS相关工具，开启相关服务：</p>

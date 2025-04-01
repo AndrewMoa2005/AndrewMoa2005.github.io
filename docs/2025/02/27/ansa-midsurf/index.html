@@ -234,68 +234,68 @@
 <h2 id="1-skin方法">1. <code>Skin</code>方法</h2>
 <p><code>TOPO</code>→<code>Mid.Surfa.</code>→<code>Skin</code>，选中整个几何体然后无脑按鼠标中键就可以自动抽中面。
 
-  <img src="/docs/img/_resources/0f525cbbea14aa2904b78e9e80f86f98.png" alt="0f525cbbea14aa2904b78e9e80f86f98.png">
+  <img src="/resources/0f525cbbea14aa2904b78e9e80f86f98.png" alt="0f525cbbea14aa2904b78e9e80f86f98.png">
 
 </p>
 <p>适合一些厚度比较均匀的钣金结构件，没有筋条、凸台、凹坑等特征。
 
-  <img src="/docs/img/_resources/86e9dc3696bc04b9a2811e5e191d2ae8.png" alt="86e9dc3696bc04b9a2811e5e191d2ae8.png">
+  <img src="/resources/86e9dc3696bc04b9a2811e5e191d2ae8.png" alt="86e9dc3696bc04b9a2811e5e191d2ae8.png">
 
 </p>
 <p>抽出来的中面是几何不带网格，需要手动画网格，会自动删除原来的几何并添加厚度。
 
-  <img src="/docs/img/_resources/65641a61f8dc0512e7817886b49376ac.png" alt="65641a61f8dc0512e7817886b49376ac.png">
+  <img src="/resources/65641a61f8dc0512e7817886b49376ac.png" alt="65641a61f8dc0512e7817886b49376ac.png">
 
 </p>
 <p>对一些挤压件像挤压铝型材也支持，但是有圆角的话要先处理掉，不然抽出来的中面圆角会保留并放大。
 
-  <img src="/docs/img/_resources/943f3baab965a035e5eb414649bfc120.png" alt="943f3baab965a035e5eb414649bfc120.png">
+  <img src="/resources/943f3baab965a035e5eb414649bfc120.png" alt="943f3baab965a035e5eb414649bfc120.png">
 
 
 
-  <img src="/docs/img/_resources/68c5c4d9c15d8b0aa5963fcc69b65e0a.png" alt="68c5c4d9c15d8b0aa5963fcc69b65e0a.png">
+  <img src="/resources/68c5c4d9c15d8b0aa5963fcc69b65e0a.png" alt="68c5c4d9c15d8b0aa5963fcc69b65e0a.png">
 
 </p>
 <h2 id="2-castingextrusion方法">2. <code>Casting/Extrusion</code>方法</h2>
 <p>还有一种针对铸造和挤压件的抽中面方法，<code>TOPO</code>→<code>Mid.Surfa.</code>→<code>Casting/Extrusion</code>
 
-  <img src="/docs/img/_resources/ca523b08317e499e8d5b541abc272c63.png" alt="ca523b08317e499e8d5b541abc272c63.png">
+  <img src="/resources/ca523b08317e499e8d5b541abc272c63.png" alt="ca523b08317e499e8d5b541abc272c63.png">
 
 </p>
 <p>首先要确保几何是封闭的，没有错误面和边。
 
-  <img src="/docs/img/_resources/04aff45feacbd435a025c1fa4d939939.png" alt="04aff45feacbd435a025c1fa4d939939.png">
+  <img src="/resources/04aff45feacbd435a025c1fa4d939939.png" alt="04aff45feacbd435a025c1fa4d939939.png">
 
 </p>
 <p>在弹出选项卡选好要抽中面的零部件是铸造件还是挤压件，定义好最小厚度和面网格尺寸。抽中面之前最好先在网格参数中定义好特征孔参数，用于生成washer网格，因为抽完面之后就直接是面网格。
 
-  <img src="/docs/img/_resources/41aca4cbf0e00ad69276c8e89041a513.png" alt="41aca4cbf0e00ad69276c8e89041a513.png">
+  <img src="/resources/41aca4cbf0e00ad69276c8e89041a513.png" alt="41aca4cbf0e00ad69276c8e89041a513.png">
 
 </p>
 <p>最后生成的网格，厚度根据几何形状自动计算，不需要在PID里再设置厚度。
 
-  <img src="/docs/img/_resources/bd6e4eb9c3a4f72253bdd1c10eb452ad.png" alt="bd6e4eb9c3a4f72253bdd1c10eb452ad.png">
+  <img src="/resources/bd6e4eb9c3a4f72253bdd1c10eb452ad.png" alt="bd6e4eb9c3a4f72253bdd1c10eb452ad.png">
 
 </p>
 <h2 id="3-middle-multi手工处理">3. <code>Middle Multi.</code>手工处理</h2>
 <p>很麻烦，不推荐。但是对于一些复杂结构件，比如注塑件等，只能用这种办法。
 
-  <img src="/docs/img/_resources/410117bbbf085e19ff33ed0193e0f28f.png" alt="410117bbbf085e19ff33ed0193e0f28f.png">
+  <img src="/resources/410117bbbf085e19ff33ed0193e0f28f.png" alt="410117bbbf085e19ff33ed0193e0f28f.png">
 
 </p>
 <p>首先要把一些和筋条等特征共面的曲面按拓扑分割，方便后面处理。
 
-  <img src="/docs/img/_resources/33a2206ca7f19d97f0358ba9472d2cbd.png" alt="33a2206ca7f19d97f0358ba9472d2cbd.png">
+  <img src="/resources/33a2206ca7f19d97f0358ba9472d2cbd.png" alt="33a2206ca7f19d97f0358ba9472d2cbd.png">
 
 </p>
 <p>用红色和绿色标注中面的正反面，蓝色是侧面。
 
-  <img src="/docs/img/_resources/7469baf9dcb520788aa5d1389b4f0f99.png" alt="7469baf9dcb520788aa5d1389b4f0f99.png">
+  <img src="/resources/7469baf9dcb520788aa5d1389b4f0f99.png" alt="7469baf9dcb520788aa5d1389b4f0f99.png">
 
 </p>
 <p>抽完的中面会自动隐藏，方便处理剩下的模型。
 
-  <img src="/docs/img/_resources/652f8d7c29cef890403edda839b163f1.png" alt="652f8d7c29cef890403edda839b163f1.png">
+  <img src="/resources/652f8d7c29cef890403edda839b163f1.png" alt="652f8d7c29cef890403edda839b163f1.png">
 
 </p>
 <h2 id="4-总结">4. 总结</h2>

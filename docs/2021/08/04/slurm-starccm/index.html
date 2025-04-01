@@ -10,8 +10,8 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="/docs/img/post-bg-tech.jpg">
-    <meta property="twitter:image" content="/docs/img/post-bg-tech.jpg" />
+    <meta property="og:image" content="/resources/post-bg-tech.jpg">
+    <meta property="twitter:image" content="/resources/post-bg-tech.jpg" />
     
 
     
@@ -170,7 +170,7 @@
 
 <style type="text/css">
     header.intro-header {
-        background-image: url('/docs/img/post-bg-tech.jpg')
+        background-image: url('/resources/post-bg-tech.jpg')
     }
 </style>
 
@@ -237,14 +237,14 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>lsb_release -a
 </span></span></code></pre></div><p>可以了解到该平台发行版为CentOS，版本7.9.2009。</p>
 <p>
-  <img src="/docs/img/_resources/01-%e5%8f%91%e8%a1%8c%e7%89%88%e4%bf%a1%e6%81%af.png" alt="01-发行版信息.png">
+  <img src="/resources/01-%e5%8f%91%e8%a1%8c%e7%89%88%e4%bf%a1%e6%81%af.png" alt="01-发行版信息.png">
 
 </p>
 <p>该超算平台所用并行作业调度系统为开源的Slurm，可以通过以下命令查看可供调用的计算资源。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sinfo -a
 </span></span></code></pre></div><p>输出比较长，这里只截了一部分。下图中<code>amd_256</code>表示计算节点所在分区，记住它，后面编写脚本会用到。</p>
 <p>
-  <img src="/docs/img/_resources/02-%e8%ae%a1%e7%ae%97%e8%8a%82%e7%82%b9%e4%bf%a1%e6%81%af.png" alt="02-计算节点信息.png">
+  <img src="/resources/02-%e8%ae%a1%e7%ae%97%e8%8a%82%e7%82%b9%e4%bf%a1%e6%81%af.png" alt="02-计算节点信息.png">
 
 </p>
 <h2 id="2-软件安装">2. 软件安装</h2>
@@ -257,33 +257,33 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./STAR-CCM+16.06.010_01_linux-x86_64-2.17_gnu9.2-r8.sh -i console
 </span></span></code></pre></div><p>本文采用控制台方式进行安装。首先提示LICENSE，如下图所示，按<code>ENTER</code>继续。</p>
 <p>
-  <img src="/docs/img/_resources/03-LICENSE%e6%8f%90%e7%a4%ba.png" alt="03-LICENSE提示.png">
+  <img src="/resources/03-LICENSE%e6%8f%90%e7%a4%ba.png" alt="03-LICENSE提示.png">
 
 </p>
 <p>是否接受用户协议，输入<code>Y</code>，<code>ENTER</code>确认继续。</p>
 <p>
-  <img src="/docs/img/_resources/04-LICENSE%e7%a1%ae%e8%ae%a4.png" alt="04-LICENSE确认.png">
+  <img src="/resources/04-LICENSE%e7%a1%ae%e8%ae%a4.png" alt="04-LICENSE确认.png">
 
 </p>
 <p>用户体验计划，根据自己需要选择是否接受(Y/N)，不影响后续使用。</p>
 <p>
-  <img src="/docs/img/_resources/05-%e7%94%a8%e6%88%b7%e4%bd%93%e9%aa%8c%e8%ae%a1%e5%88%92.png" alt="05-用户体验计划.png">
+  <img src="/resources/05-%e7%94%a8%e6%88%b7%e4%bd%93%e9%aa%8c%e8%ae%a1%e5%88%92.png" alt="05-用户体验计划.png">
 
 </p>
 <p>安装位置，本文选择安装在<code>${HOME}/opt/Siemens</code>目录下，按提示输入绝对路径，<code>Y</code>确认。</p>
 <p>
-  <img src="/docs/img/_resources/06-%e8%be%93%e5%85%a5%e5%ae%89%e8%a3%85%e4%bd%8d%e7%bd%ae.png" alt="06-输入安装位置.png">
+  <img src="/resources/06-%e8%be%93%e5%85%a5%e5%ae%89%e8%a3%85%e4%bd%8d%e7%bd%ae.png" alt="06-输入安装位置.png">
 
 </p>
 <p>安装信息，<code>ENTER</code>确认，开始复制文件。</p>
 <p>
-  <img src="/docs/img/_resources/07-%e5%ae%89%e8%a3%85%e4%bf%a1%e6%81%af.png" alt="07-安装信息.png">
+  <img src="/resources/07-%e5%ae%89%e8%a3%85%e4%bf%a1%e6%81%af.png" alt="07-安装信息.png">
 
 </p>
 <p>安装完成，<code>ENTER</code>确认退出。记住安装路径：</p>
 <p><code>${HOME}/opt/Siemens/16.06.010-R8/STAR-CCM+16.06.010-R8</code></p>
 <p>
-  <img src="/docs/img/_resources/08-%e5%ae%89%e8%a3%85%e5%ae%8c%e6%88%90%e7%a1%ae%e8%ae%a4.png" alt="08-安装完成确认.png">
+  <img src="/resources/08-%e5%ae%89%e8%a3%85%e5%ae%8c%e6%88%90%e7%a1%ae%e8%ae%a4.png" alt="08-安装完成确认.png">
 
 </p>
 <p>和谐过程就免了，自行参考文档吧。支持正版，打击盗版。</p>
@@ -327,17 +327,17 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sbatch carbin_tcm.slurm
 </span></span></code></pre></div><p>提交后自动生成ID、排队，本算例ID号为899634。</p>
 <p>
-  <img src="/docs/img/_resources/09-%e6%8f%90%e4%ba%a4%e8%ae%a1%e7%ae%97.png" alt="09-提交计算.png">
+  <img src="/resources/09-%e6%8f%90%e4%ba%a4%e8%ae%a1%e7%ae%97.png" alt="09-提交计算.png">
 
 </p>
 <p>通过<code>squeue</code>命令查看计算任务队列。</p>
 <p>
-  <img src="/docs/img/_resources/10-%e8%ae%a1%e7%ae%97%e4%bb%bb%e5%8a%a1%e9%98%9f%e5%88%97.png" alt="10-计算任务队列.png">
+  <img src="/resources/10-%e8%ae%a1%e7%ae%97%e4%bb%bb%e5%8a%a1%e9%98%9f%e5%88%97.png" alt="10-计算任务队列.png">
 
 </p>
 <p>计算完成后，打包下载输出文件即可。</p>
 <p>
-  <img src="/docs/img/_resources/11-%e8%be%93%e5%87%ba%e6%96%87%e4%bb%b6.png" alt="11-输出文件.png">
+  <img src="/resources/11-%e8%be%93%e5%87%ba%e6%96%87%e4%bb%b6.png" alt="11-输出文件.png">
 
 </p>
 

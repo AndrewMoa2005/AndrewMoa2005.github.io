@@ -20,7 +20,7 @@
       <link>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</link>
       <pubDate>Mon, 10 Mar 2025 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</guid>
-      <description>&lt;h2 id=&#34;1-相关命令&#34;&gt;1. 相关命令&lt;/h2&gt;&#xA;&lt;p&gt;Ansa中，给Abaqus设置接触一般常用以下命令：&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/cb35dcf11a636abacef3aabe97112e62.png&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-接触对&#34;&gt;2. 接触对&lt;/h2&gt;&#xA;&lt;p&gt;最常用的接触对，一般通过&lt;code&gt;AUXILIARIES&lt;/code&gt;→ &lt;code&gt;CONTACT&lt;/code&gt;→&lt;code&gt;CONTACT&lt;/code&gt;调出创建对话框。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/docs/img/_resources/038dffae1f80e68c064572e228df00c6.png&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34;&gt;&#xA;&#xA;&#xA;常用设置一般为以下几个：&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;1-相关命令&#34;&gt;1. 相关命令&lt;/h2&gt;&#xA;&lt;p&gt;Ansa中，给Abaqus设置接触一般常用以下命令：&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/resources/cb35dcf11a636abacef3aabe97112e62.png&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-接触对&#34;&gt;2. 接触对&lt;/h2&gt;&#xA;&lt;p&gt;最常用的接触对，一般通过&lt;code&gt;AUXILIARIES&lt;/code&gt;→ &lt;code&gt;CONTACT&lt;/code&gt;→&lt;code&gt;CONTACT&lt;/code&gt;调出创建对话框。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/resources/038dffae1f80e68c064572e228df00c6.png&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34;&gt;&#xA;&#xA;&#xA;常用设置一般为以下几个：&lt;/p&gt;</description>
     </item>
     <item>
       <title>Abaqus提交命令</title>

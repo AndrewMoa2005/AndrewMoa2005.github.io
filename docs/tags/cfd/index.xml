@@ -6,8 +6,15 @@
     <description>Recent content in Cfd on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 08 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 08 Apr 2022 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://AndrewMoa2005.github.io/tags/cfd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>超算平台部署STAR-CCM&#43;</title>
+      <link>https://AndrewMoa2005.github.io/2022/04/08/slurm-starccm/</link>
+      <pubDate>Fri, 08 Apr 2022 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2022/04/08/slurm-starccm/</guid>
+      <description>&lt;p&gt;最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>扒一扒十沣科技国产CFD软件——QFlux及QMesh</title>
       <link>https://AndrewMoa2005.github.io/2021/09/08/tenfong/</link>
@@ -21,13 +28,6 @@
       <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2021/08/14/vmfl001/</guid>
       <description>&lt;p&gt;本文采用不同CFD求解器，对层流流动问题进行验证。通过列举不同求解器的操作过程和输出结果的差异，验证各个求解器的精度。&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;1-问题描述&#34;&gt;1. 问题描述&lt;/h2&gt;&#xA;&lt;p&gt;如下图，建立两个同心圆柱间的定常层流模型。流动由内筒以恒定角速度旋转而引起，而外筒保持静止。使用周期性边界，只需要对流域的一部分进行建模。物理模型和输入数据如下表所示。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>超算平台部署STAR-CCM&#43;</title>
-      <link>https://AndrewMoa2005.github.io/2021/08/04/slurm-starccm/</link>
-      <pubDate>Wed, 04 Aug 2021 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2021/08/04/slurm-starccm/</guid>
-      <description>&lt;p&gt;最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

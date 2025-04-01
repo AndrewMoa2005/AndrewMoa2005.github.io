@@ -149,6 +149,13 @@
       <description>&lt;p&gt;快捷键F11，或者下面这个按钮，定义Ansa网格质量&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/resources/0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34; alt=&#34;0cbaef5ad11449b3f2baffeb6cfbaa24.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;面网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/resources/8dba04bca8c14b3a47e4ed87d938ac49.png&#34; alt=&#34;8dba04bca8c14b3a47e4ed87d938ac49.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;体网格质量（Abaqus）&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/resources/1b8e7d21f062ee6d961c4975a0dedffd.png&#34; alt=&#34;1b8e7d21f062ee6d961c4975a0dedffd.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;最好把配置文件另存为到本地，下次重新打开配置文件覆盖即可。&lt;/p&gt;</description>
     </item>
     <item>
+      <title>超算平台部署STAR-CCM&#43;</title>
+      <link>https://AndrewMoa2005.github.io/2022/04/08/slurm-starccm/</link>
+      <pubDate>Fri, 08 Apr 2022 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2022/04/08/slurm-starccm/</guid>
+      <description>&lt;p&gt;最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>扒一扒十沣科技国产CFD软件——QFlux及QMesh</title>
       <link>https://AndrewMoa2005.github.io/2021/09/08/tenfong/</link>
       <pubDate>Wed, 08 Sep 2021 00:00:00 +0000</pubDate>
@@ -168,13 +175,6 @@
       <pubDate>Thu, 12 Aug 2021 00:00:00 +0000</pubDate>
       <guid>https://AndrewMoa2005.github.io/2021/08/12/archlinux-compile-openfoam/</guid>
       <description>&lt;h2 id=&#34;1-源代码下载&#34;&gt;1. 源代码下载&lt;/h2&gt;&#xA;&lt;h3 id=&#34;11-下载openfoam源代码&#34;&gt;1.1 下载OpenFOAM源代码&lt;/h3&gt;&#xA;&lt;p&gt;在&lt;code&gt;${HOME}&lt;/code&gt;目录下新建OpenFOAM目录：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#f1fa8c&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;HOME&lt;/span&gt;&lt;span style=&#34;color:#f1fa8c&#34;&gt;}&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir OpenFOAM &lt;span style=&#34;color:#ff79c6&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; OpenFOAM&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从github下载OpenFOAM和ThirdParty的源代码，放到&lt;code&gt;${HOME}/OpenFOAM&lt;/code&gt;目录中：&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>超算平台部署STAR-CCM&#43;</title>
-      <link>https://AndrewMoa2005.github.io/2021/08/04/slurm-starccm/</link>
-      <pubDate>Wed, 04 Aug 2021 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2021/08/04/slurm-starccm/</guid>
-      <description>&lt;p&gt;最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

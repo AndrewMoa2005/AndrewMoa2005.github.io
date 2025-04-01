@@ -5,7 +5,7 @@ description: ""
 excerpt: ""
 date:    2021-09-08
 author:  "Andrew Moa"
-image: "/resources/contact-bg.jpg"
+image: "/img/contact-bg.jpg"
 publishDate: 2021-09-08
 tags:
     - cfd

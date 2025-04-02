@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Andrew Moa Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://AndrewMoa2005.github.io//img/home-bg.jpg">
+    <meta property="twitter:image" content="https://AndrewMoa2005.github.io//img/home-bg.jpg" />
+    
+
+    
+    <meta name="title" content="一款基于Qt6的图片base64转换工具-Image2Base64" />
+    <meta property="og:title" content="一款基于Qt6的图片base64转换工具-Image2Base64" />
+    <meta property="twitter:title" content="一款基于Qt6的图片base64转换工具-Image2Base64" />
+    
+
+    
+    <meta name="description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。">
+    <meta property="og:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    <meta property="twitter:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="AndrewMoa, Andrew Moa, Andrew Moa的博客, Andrew Moa Blog, 博客, 个人网站, 仿真分析, CAE, CFD, Linux">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>一款基于Qt6的图片base64转换工具-Image2Base64 | Andrew Moa的博客 | Andrew Moa&#39;s Blog</title>
+
+    <link rel="canonical" href="/2025/04/02/qt-base-image-base64-convert-tool-image2base64/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Andrew Moa Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/ansa/">ansa</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/cfd/">cfd</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/code/">code</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/linux/">linux</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/zhihu/">zhihu</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
+                            虚拟机
+                        </a>
+                        
+                        <a class="tag" href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        <a class="tag" href="/tags/ubuntu" title="ubuntu">
+                            ubuntu
+                        </a>
+                        
+                    </div>
+                    <h1>一款基于Qt6的图片base64转换工具-Image2Base64</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Andrew Moa
+                             
+                            on 
+                            Wednesday, April 2, 2025
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>经常写Markdown的小伙伴都会遇到一个问题，那就是图片存储问题。Markdown本身并不支持图片内置，传统用法一般通过外链引用本机或网络上的图片。但是当文章在网络上发表时，存储图片就成了个问题，虽然可以通过图床上传，但是操作麻烦。</p>
+<p>好在Markdown支持通过base64<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>编码数据渲染图片，这里根据这个功能编写了一个小工具<a href="https://github.com/AndrewMoa2005/Image2Base64">Image2Base64</a>，可以方便地在图片文件和base64编码之间转换。</p>
+<h2 id="1-软件功能">1. 软件功能</h2>
+<p>下面就是这个软件的图形界面，这个截图就是通过base64渲染的。
+
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA&#43;oAAAIUCAIAAAACE0FYAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAgAElEQVR4nO3dfXBc5Z0n&#43;ue0XvwKUcC8T2IhbJzxJJNg&#43;2omkIU1juxrYBPslE3WO7VoqF2DKwko2YIp1bBjPMOUqnBtIkMyAmavVywV7gZv4ewMhrU0xMOtBe54bE8IGTPGjmLHIWxuPIlsya&#43;Suu8frZZaVsuSjKzWI38&#43;RVHS8enu32mpn&#43;fbz/mdVlJXVxcAmES6urryv33//fdDCJWVlcWpBoAxVRpC&#43;Na3vlXsMgAAgGF8/etfTxW7BgAAYKTEdwAAiIb4DgAA0RDfAQAgGuI7AABEo3QkO2UymcEbkyQZ62IAAIBzGT6&#43;//CHPzx58uTg7TNmzJg/f35p6YjeAAAAAB/e8OE7SZKPfexjl19&#43;ef7G9957r7Ozc&#43;/evRI8AACMmxH1vpeXl08bKJVKhRCyCb6np6fwzQ5suiW5ZdOBMay2WA5suiW5/9ViVwEAwHCScxrnSnbv3j14&#43;&#43;7duz9MJed56Wp3JpzqyXRnMp2dnfv37z/vh7/YvXp/7nfprHcHr96fTJK3PgAA4ywzhHEuY9euXZ&#43;95XNnJfjdu3d/9pbP7dq167zvdtR9Lwc&#43;&#43;NWenxxuP97bDT8tlUmXF&#43;iMDyGEOQ&#43;9kXnovCub/F69P3l8/v5MZs6gfzmw6fFnQ7i5CDUBADA2Fi5c&#43;NYb/&#43;uzt3zurTf&#43;18KFC0Muu/d9e35Gt/r&#43;/&#43;776es/PvDWW2/9/d/&#43;TdWMkr995a/37d&#43;/959P7D38v8&#43;7govVgU2P/7jxuYcGZ/dwYNO9L65uXDv&#43;JQEAMJb6Evzu3bvHJLuHUcX3n3zwq3cO/uL35/zWO7t2Hti//88bv/3B&#43;z9v&#43;/EPPza95I132351tPPsG/R3jL96f3LLplc33dLXJpJrGunvDznQ&#43;68D&#43;0j6mktu2bTp/ry9&#43;5tOhu8wObDplkG9KQP/dYRdKoU6XQqVXWjboIIPbHsxrA4bBx/FgU331n3y0YduHElFAABMbH0JfkyyexhVfP&#43;Hn/78n9750Vcfru/p6SkrLf34ddcmSfKLX/7qm99u&#43;vmhgz/86c/Pees36x4Pz2UymVfWPntHknz/7kwmk9nfGOo2vhpCCAc2bQzPZZuSXln77B19of&#43;O8Ep263PhxWdzd5VrOslkMpn9q1&#43;cO0Q0z6Xoe8Nzmcwzy4eoa85Db2SeC/cWbEAf4Nk7skXnV1io7AOb7q37ZG/VvQ9bqOD9e998s25v9h73N4a6e7MB/tX75764ev&#43;Q1QIATFQT55rRyW2k8f1UV/evO050n&#43;gIIZSXlf2Hugfv/vK/WfuH9yZJ0t3Tc/rYb37x66PnvIObextFlt&#43;9Ntzc&#43;PDyEEKYc&#43;Mnw4/fOxBCmPPQMw&#43;FbNy&#43;IxfTX/3&#43;s7kdQ5jz0KNr&#43;7eHN&#43;vmZn8T5ta92XsXAxzYdEsyd&#43;&#43;jmUwmk3kjv0Elbzm//0ZzHnojG6PnPz50hF/7Si5UL3&#43;48eZnv//qEGXPufGT4dk78u9/qIL7jm7OQ4&#43;uffPFbQfCq/ffMURDDQDABDfUBaNFuWx04ujrmenrovmQdzii&#43;P7eB0fe2PuTEMLtn6&#43;Z84n5v3Xt1cczJb861jnr2utKUqnS0tI/XLXiTHf3&#43;VdxYNMtvavkmcz&#43;xuEv2by5cX/eb8Mbg/PunIfeyIbxs9fUlz9T4Ea5dfq5ex89xzr9SMvOPkR2RT8X4gcXPHf&#43;oMPcv&#43;nx/px/R/bLWzaNuBoAACaW/H73/D74D3OfI4rvH59V8ZvjJ0MI77YdPNR24NDP3093/Ob6qy4/sPcfe9Lp7u7uZ//v/z69vPz8q9i/983c6vyBbS&#43;&#43;md24/O61b/b21uQ&#43;i2Xw9vDq/UMtl49oTT0c2HRLLoGfO7pn19tDtjvmzbV3Lx&#43;i7AObNmUX5t/Y33jzm3v3D1HwnDtX93XMHNj0&#43;LM3r75zeW/Bvc044ebG/Zk3fHQPAECUBl&#43;rOiYJfkQfHDm1rPSuRb/zd&#43;8d3P2z/ZXXXbv/pwe/8&#43;x/Li0t7e7uDiFccdlHr/itj3/8io&#43;edxFh&#43;cONj8&#43;dm9SFEG5eu7Z/GXt/4y1zs61SNzc2rg0vDt4e1r6Seebcd37uz68c8adbrg3fT5I7&#43;h5z&#43;VBlz3noxo15Oy4fquA5D73xyt4ke&#43;uw9pWMlhkAgDExQVrtFy1atGvXrrOuVc0m&#43;EWLFp13Q1FSV1f3rW996xx7vP3225dffvnll1/et&#43;WLf7iuK9cqc93VV9698kudmZIv3XzTJdOmnF8RI5K9/rNAowwAAFwUvv71rw&#43;/&#43;p7JZA4fPnz48OHstz8/mb6l5v/8zS9/cfOnP/m3u97&#43;&#43;Jy5nZmSpTf99gXI7gc23bLxxjdyH95yx7M3N&#43;6X3QEAuJgNH98/85nP5K/tHz1x6oorr3z/n2/oONP1LxYv/vgVl3268rqZF2Tdfc5Dz82/JdeHcnOjlXcAAC52I&#43;p9z&#43;8fqpgx7V9&#43;cu4Fq2egETemAwDAxWAUf7YJAAAoLvEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAARKM0hHD06NFilwEAAAzP6jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;j6/WuoqlTW0ffp/x0da0tGiltDUtraioqKh7vq&#43;G1rqKutYR33aEu47mbgEumA818hv04OIyNvF94gTOEEJf8ssxTsWnremB&#43;vlb2tvbG28pdinAyLTW5Y27Yzgl9N/vWYN5a90oHmfAvGBWAKI2aVffa7e099oSVhmsz0/Vupb2lnVVRXjkn&#43;zbWT3vhuLWAIxWdcOe3nF3fv2CMRl2W&#43;sqNs7rvdP2xpq8f2lr2th8ftXtadi7alRvL0a1tg1wwU3a&#43;N6vprF9T8PeVcZegHFyw7zqsbibtqaNexueLvT&#43;va3pga0rGmrP616r1j1cu3Pr9olzxhhgdMY8vrfWVSxtau09S1nX2n/es3&#43;tI&#43;8cZl6m7js/urSpKb8Xp/&#43;8aYHVkhE2Z1ctW1HdvK015BZRWuv67m50xZz10GfdsLUuu//Z1eadUl7VPPTzNnifQdUOODvdV2/ebuc4LzyKggc&#43;ft&#43;e4/Vjba2rWNUcdtYvqKioay287HXO34pB&#43;xSqp&#43;ANCzy9eY1hrXWFtgKDtG3furP2ztxaeaHBodC2QS/Ptu1bw4rw5ODXbFvTA/XzH143p/CDj&#43;aineFra62rWFC/MzSvKjAOD/Ewg3coOHSHoWeHAg9ReIgd4nENejC5lY5kpyNHjhTcPmvWrEKbd9ZvXLGnvb2qta5iVUVz7Zb29sbQ1rR0wZOt6xprQlvTk&#43;Hp9vaqkI1pdXe2N9aE1rqKVWFLe3tNCKGtaemCEBpCCP3nTat6t9fNGXj29Lw0r9q2pb29MYQwumLyFbxhCGFn/b6Hc8f7QNOylnVV&#43;fcWWusqVu0dXNG59smrtrWuYtXehj3t2aWo1rqKirotueejf7cB9ZxHwUM9beP3Y61pbN8SKjbO29Oyriq0NW0s8HQN/1tR6Ak59w0LP703zKveue8nIVSF1m17q6vDgbZQU9W6rbl6xZ7sUzXUqwPOzxDjavGNZCLYWb&#43;goj6EEEJ1w57eF1ehwaH36paWvBduoZdn2LdzZ/P8h9vbG0P&#43;GNVat2Drij0tNaF123kdSVvTxt5X8Ihqq2nfM2/pgn0PZ4eLYcefgSPJ4C39Q/dQI3&#43;hh7hh8DN2NoMeTA4jmQVGFN9HeF851b3nOmvurA175z1YE0IIVXPmh60H2kJNVdW6xnVtTUsr6neGEEKoDSGE1m3N/WN91bqHa&#43;uzka11W3PYGXLTQQih&#43;kBbqMkLmFXrWtrXjbCqbCt1CKF2S9/wNZpiBih0w&#43;yx9x7vshXVWwfdW/YpGXRn59ynv9rsbn1TQs2DDdULtrU21tQM3G3g9lEXPKRx/LGe28huXuAJCQVvmHe3hZ7exmUrquuzt9674umH9z2wvW3dsgN7q1c82LvnhA1bxGiCB6Nhf9urG/a0nB1SCw0OVXPmh/pVFXv7di/8up7TP0T1DiHb29bNeXLV3oY9jUOPGEPOC31vLvrKHFlt&#43;YYdf84aSQZvyR&#43;RCo78hR/inFVlqzfoQfxGOAuMe&#43;97W9PSiooHwtPZ64eG747suxKqvb29/XyvYWx9sj6sWDb4pqMt5sPfcIz1vycZxoUueJx/rOd989HdsHreDdk3NnsPtLVu27tiWdUN88LW7a3btxb8dQL61NxZG/YeaBtqcKhpbG9vb386PJDX0zH45Vmgg/5w08be1rpsv8nO&#43;gUjburoe4DcS3/ktRW8m/OflYYbugs8xHBVjeKuhivMoAcT3rjH95/s25lbxm3bvjW74hFq7qzdWf9kb69e3scJDNgeWusGNfyNpMcxe3qw4MVPoypm2BsWNJJ7G8k&#43;ud0e6O8eH/CeJNvaH7I9oXlNp6Mu&#43;PyM7Y/13EZ28wJPyLlvOOTTW7VsRdj6wMbm&#43;XOqsl9vNJHBcFq3NYf5c6qGGBzamppaQwhV61r2NGQ7NQq&#43;PKuWrQi5V2W242XZbeta&#43;sPoltpQ3bDn7Ew68t73EdaWb9jxZ8AOrU1NbUOOLaMaIc9dVQjBoAcXk3GP7zUPNoTehZMH9s3vX&#43;3Y07B3VfbqmQfCitpQYHvFtjtH0ffenLtVxcZ5g0b38ytm2BsWPuDGLbXN5763Ee0Tsj3h83sftqJiVdiSd1i1YVt284L6&#43;VsGt4KPouDzMl4/1pHfvNATcu4bDvn0Vi1bEXb2viWqWrYi7DSRQWE7819B2dddwcGhat2cvBdodr9CL8&#43;qdS25V&#43;WC&#43;vlbxvozZEdaW9WyFdW5S1eHHX/yd9g2p3fhvODYMtTIX&#43;ghClR1NoMeXDySurq6xx577Nw7HTlyZFx73bIX20yQD/ueUMUU1tbUf1nVBBbBMwlFNt6D7WhM5NoAJoeRjLSPPfbYBPnc97ampXmfHbaqubqY7/QnVDFR80wCAIyxkX7yzAVWte7peUsrKlaFEPI/u0AxcfNMAgCMsQkS30f1EZAX3oQqZnhV61rai13DECJ7JgEAJroJ0jwDAAAMT3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEY8L81VUAovXEE08UuwSAODzyyCMf8h7EdwDGwIefkAAmvTFZ7NA8AwAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGqXFLgCAYbz22mvj&#43;XBLliwZz4cDYFTEd4AILFq0aHweaNeuXePzQACcH80zAAAQDfEdAACiIb4DxKeru6u7p3vk2wGYNPS&#43;A0Smq7vr8f/xeElJyRdv&#43;uKnZ3962O0ATCZW3wEic&#43;LMidfeea2yqvLev7h3y1tbztr&#43;id/5xL1NA7YDMJmI7wDxOfzrw0l5svZLa//TK//psS2PdXV39W4/cnj6ldMf&#43;fePfGv7t/K3AzBpiO8AEZoSjnUcy5RmalfW/t3P/u4PvvMHRzqOZP/laOfR1PRU3b&#43;r&#43;4df/MMffLt/OwCTg/gOEKEp4fjJ450nOzvOdCy/ffm0y6Z94Ztf&#43;OGhH4YkdJ7s7DjZ0dnduXrl6suuvuwLT3zh7UNvF7tcAMaMS1cBIjQlHD99vCfVkypNneg5MXfe3I9e/tGv/revhimh83RnKpVKJanjqeOfXvTpK2dd&#43;W//4t8&#43;evejqz67qthFAzAGrL4DRGhKOH76eOepzs4znR2nO46dPjb1o1PvuP2Oy2ZddrzreMeZjs4znZ2nO4&#43;ePHrJ1Zf867v/9ROvPPHYf9cKDzAZWH0HiNCUcKLrxOlwOhVSJZmSVCaVyqRKykpuv/X2Y13HUkkqlaRKQkkqpFIhlSpPffGuL/7N//M37za9&#43;53a78y6ZFaxqwfg/Fl9B4jQlHC863hnV2dnV2dHd0dnT2dnT2dHd8exzLGO7o6O7o7O7s7eL7o6O890dnR3fO6znztRfuILT37h7Z9phQeImNV3gAiVJSd6ThzPHC8pKUn1pFKpVEmqpH/RPUmlQqoklKQyqVQ6VZIpSaVTqZ7UDVU3TJ8&#43;fc1//jeP/av1q/4PrfAAURLfAeKTlCYne052ZjpTPbmAnslF9mw7TUj1dtT0lKTSqZKeklR3KtWTuvSSS3937u/&#43;ySvrf/zBjx&#43;949Gy0rJiHwoAoyO&#43;A8QnKUtOdp/sSHeUpAcE994vklQqkyoJJal0KpVOlXSXpLpTqe5USXdJqiuVSqU&#43;87FP/49//Kt9v9r/7dVPaoUHiIved4AIlSQn0ifKy8tLp5SWlJekylNJeRKmhGRKEqaEUB5CeciUZnpKerqSrtPh9KnMqZM9J090nTjZdfLkmZNdXV03Xjo3lUo2tG7o7uku9sEAMApW3wHik5Qkvzz1y55MT0iFkITe/ychZEIIIWRC6A6hK6S6UsnpJHUqlZxKwsmQOZFJH09njmfSnemS0yW/e9Onr7&#43;2MiRFPhYARkV8B4hPUpqEsiSUhVAewpQQpobeRfeSEJIQ0iF0h3AmpJN0SIeerp7&#43;U61JCEkom16W&#43;njptMumf&#43;Nz3yhNmQgAYmLUBohPkkqF0kwoC70JvjyX4Etz8b0rtxjfE0JZCF0hlIZQEkIqTPvI9PSMzJd/&#43;57/ePujZSUuXQWIjPgOEKFUbxYPJSGU5iX48hBSIXSHkMqtwedSe/a/Sy/7SE8q86c3/8fVn1pd7GMA4HyI7wDxSZJUSNK9Xe/Z/7LL8NNCKAnhTAiZELpywT0JIQmlJaUzKy6dHmb8xeefuunam4p9BACcJ/EdID5JKnulau5a1ezlp6kwM5l5csrJnp6e/gtSMyGEMK10Wmn5lHkz5n1nyVNXzLxi/AsGYKz44EiA&#43;CRJkqST0BN6/&#43;sOoTt85HhF&#43;d9PKztVFs6E0JXb3hM&#43;UlKROl224mNf/O5dz8vuALGz&#43;g4QnyQkoScJXSF0hXAmhLJwZbjqxPunz2ROJR1JOBPC6RBOh9AVrgxXnfzNmccW/MnqT6wqdtUAjAGr7wDxSUIq6UrCmRDOhPLu8qvOXFv6v6d85zObkpBKOpLQEcLxUH66/OpT15a2T3n&#43;9v8iuwNMGlbfAeKThCScSUIqXDLz0impaZWZ2d9Z8lR5KE9CEjqScCZcEi6d0jFtdsns7yx/6ooZGmYAJg&#43;r7wDxSTJJaVfqyplXpaaV3zFr&#43;Xdve/6K6VeEEJKQlB5PXdl1VepI&#43;R2XL/9uzfOyO8AkY/UdID5TS8p&#43;e17Vj3p&#43;9sef&#43;KN75qwesH1G1Y9&#43;/rM//t0/uudGn&#43;wOMAmJ7wCRmTFlxo0zPtad7nruE3950xU3Ddh&#43;yce6j3c9d&#43;tf3nSlT3YHmJzEd4DIlJaUPv/7L2a/OHv7rQW2AzCZGOIB4jNUQBfcASY9l64CAEA0xHcAAIiG06wAEdi1a1exSwBgQhDfASa6JUuWFLsEACYKzTMAABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDRSmUym2DUAAADDy2Qy4jsAAMRBfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANDKZTCqdThe7DAAAYHjpdNrqOwAAxEHzDAAAREN8BwCAaIjvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQjUwmk0qn08UuAwAAGF46nbb6DgAAcchkMqmrrrqq2GUAAADDu&#43;qqq1JdXV3FLgMAABheV1dXqtg1AAAAIyW&#43;AwBANMR3AACIhvgOAADRSL3//vvFrgEAABje&#43;&#43;&#43;/n&#43;ro6Ch2GQAAwPA6OjpSn/rUp4pdBgAAMLxPfepTet8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIRuqdd94pdg0AAMDw3nnnndSsWbOKXQYAADC81KVXpU6fPl3sMgAAgOHNyJxIXXfddcUuAwAAGN51113n0lUAAIiG&#43;A4AAHE4deqU&#43;A4AAHGYOnWq&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaJQWuwAAhvHaa6&#43;N58MtWbJkPB8OgFER3wEisGjRovF5oF27do3PAwFwfjTPAABANFKnTp0qdg0AAMDwTp06ZfUdYDLr7unu6u4a&#43;XYAJrjU1KlTi10DABfE24fe/krzV55/6/mzkvpQ2wGY4KZOnZoqKysrdhkAjL0tb225t&#43;neW2&#43;5teXtlhNnTgzY/hf3/t6C3ztrOwATX1lZmU&#43;eAZhsurq7/nzrn7f8Y8sj//6RS2dd&#43;tY/vZXJZPq2/88f/c&#43;1X1pbPr38rfd6twMQEfEdYFI50nHkK//XV04lp&#43;r&#43;XV26JH2082gIIUmSIx1HvrL5K8e6j9V&#43;qbYn03O042iYUuxaARg9l64CTB5vH3r7C0984bKrL1u9cnVnd2fHyY7Ok50hCT889MMvfPML0y6btnzJ8o4zHZ0nOo&#43;fPC6&#43;A8TI6jvAJLHlrS2Pf//xu2vuvmb2Nb8&#43;8et0Jp3OpNPpdJgSvvrfvvr53/v8rCtm/ebEb3q6e9Jd6ZJ0ifgOECPxHSB6Xd1df/79P9/29rYv3/3lspllR08dTWfS6ZDuyfSETLhs1mU1n60pKS85dvpYNrunu9KlmVLxHSBG4jtA3I50HPlK81d&#43;eeqXX7zzi12lXafOnEqH3uyeDul0Jn37rbefDqd7unvS3el0dzrdle4501OeKRffAWIkvgNE7O2fvb3u&#43;XWXz7r8c5/5XEdPRzqdTifpnqSnN8GHnmwLTU&#43;6N7v3rb5PDVPFd4DofO973xPfAWK15e&#43;3PPbXGz4553euufqao6ePplPpdEm6J9WTTvJCfDa7p9PpdLon&#43;2VPuqe7J52kQ1lS7CMAYHTuuece8R0gPl3dXY&#43;/8viL/7DlM3M&#43;fckll3Sc6kiXptMl6Z50T7okF&#43;L7FuCzIT709Ef5nnQqlUpKxXeA&#43;IjvAJE50nHkqy8&#43;&#43;E//37uf&#43;a1PlyQlHac70qXpnkxP7&#43;WqycDV974tfb006XRPuqcslCVW3wEiJL4DxKS7p3tD64ZUKrlx5tyuM12nw&#43;nelfUknUllMiGTSTKhJITSEEp6/7ZHkklCT0hSSSpJJZkklUmVpEtOnDmheQYgOnrfAeJzyYxLf/7B&#43;2/v&#43;WHPlJ7UzFQyI0nNTCXTkzAtZKZm0lPTmSmZdHk6lIVQmvvrfOkQukPoDqErhDMhnA4lZ0qS6f5yH0Bk7rznHmM3QExKS0r/w&#43;e&#43;MfWyaaXzystmlGWbZLpC15lw5kxypqukq6e0J12eDlNDmB7C9BBmhDAjhOkhTAthSghTQygPoTwkZYned4AYie8Akbl8xuX/dXXzlxfek5pdOq1iekiFkAq9DTOlvem8N6lPz/03LYRpIUwNoSxkV&#43;WT0iRJmQIA4mPsBohPWUnZn9ZseHzxn6ZmlV466yO9CT4b4ktCKMsl&#43;Gl58X1Kf3bvbYs3AwDEZtv3vmfwBojV6k&#43;t/u6/&#43;q8zZ15a8dHLSktLQxJCkpfjy0KYkovvUwam9iQkqSRJTAEAkdH7DhC3m6696a9Wbp330XnTpv7G6ucAABBXSURBVMycVjYthBAyuX9LQkiFkvKSmcnMbGTvlQkhE5JMkqT0vgNEZqZTpwCxu2LmFd&#43;96/kVH/9i6kzZR0orQk/o/a87hK5Qdrqs/O&#43;mf6SzInTnNvaEkA5JJkkS8R0gPuI7QPTKSsr&#43;7F/86WML/yR9NLkyuSr70ZDhZAjHQ9KRnDxxsuedcGXHVeFMCF29/yXdSRLEd4D4iO8Ak8TqT6x6/vb/UnpsytVnri0/Ux5OhNAZks4kCanvfGZT6QdTrjp1bXlXeTgdwpmQdCWJKQAgQsZugMnjpqtv&#43;qvlL83OzL706EcvOX1p6AhJR5KE5KYrb/qrJS9VpmdfGj56SXJpOBWSM1bfAaIkvgNMKlfMuOK7Nc/fMWt56p/Lr&#43;y&#43;qux4SRKSTCZzxfQrvnvb83fMWp6aUn7ljKvKulJJRnwHiI/4DjDZlJWU/dnvb/jjT/7R6d&#43;kPzl97mVTp2WvUi0rKfuzRRv&#43;&#43;Lf/6HRF&#43;pM33njZlGmuXgWIjvgOMDndc&#43;Pq5279y2PHTn7iksoZU2b0b5&#43;z&#43;rnf&#43;8tj5Sc/MWPAdgCiUFrsAgC4UG668qatn//rEEJpyYDR/qYrbtp6W4HtAEx8Bm6AyWyogC64A0RK8wwAAERDfAcAgGg4eQoQgV27dhW7BAAmBPEdYKJbsmRJsUsAYKLQPAMAALH4QHwHAIBYXCO&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAESi8z3xHQAAItFxTHwHAIBIXLNIfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIxQfiOwAAxOIa8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgEp3vie8AABCJjmPiOwAAROKaReI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQCw&#43;EN8BACAW14jvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AAJHofE98BwCASHQcE98BACAS1ywS3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAABi8YH4DgAAsbhGfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIROd74jsAAESi45j4DgAAkbhmkfgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEIsPxHcAAIjFNeI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQCQ63xPfAQAgEh3HSotdAgCTwRNPPFHsEgAuAtcsEt8B&#43;LAeeeSRYpcAcLHQPAMAANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAACi4YMjYaJ77bXXil3ChbJkyZKC2y/CQwbGzUQeYQoOERO54A/JLHB&#43;xHeIwKJFi4pdwtjbtWvXOf71IjxkYNxMzBHmHEPExCz4QzILnDfNMwAAEA3xHQAAoqF5BgAmrRE22k7iVmOYfCZOfG9rWrpg38PtjTXFLgSACae1rmLjvD0t66qKXUiEhm23vZBNxiOY3P1sYXQ&#43;KFbzTFvT0oqKutYiPTpcVA5uXjm7T/2OYpczPgYc9MrNB4tdz&#43;TX1rTUoD6ZtDUtraioWNrUdtb21rqCm4nAjvpJNRP0H85kOJrRuaZI8b1t&#43;9ZQXd28bayHevMHFLRw/euHDh06dOj19ftqR5VlD25eGeHIuKN&#43;9m0v35U95EOHDr1&#43;18u3RXgUGNIvsMOHDy9fvnz79u1D7VBdHbZuHxDU25o2Nl/wurgAdtTPnl0bmnOj4tKWyFc1dtT3H87rc5&#43;66Ab44sT3tu1bw4qnH64d&#43;/wOnEvlfV9bs/vlHxwsdh0X1I762hfWNL90X2VuQ&#43;V9LzWveaH2ohvf4RwOHz68du3aG2644dZbbx1qn/krVoT6J/Mm6rbtW0NDQ&#43;04lDf5/OhHPxrhxgsgOyoealic27C4IW&#43;IjNDBn&#43;5buP7&#43;3sOpvO&#43;l/iO7SBQlvrdt3xpWLKuqubO2eeNZJ&#43;Ba6yp65a249G/s35y/KNP7dWtdxYL6naF5lfN6MAJ57SV9wXbgth31s2/bsDu8UNvXftJ/snLirtzsaHmhf1jPWbx0Tdj304Mhdz6h4FnXwUe3o372ys2b6yf6IU9c/aN3blRuratY2tRUN3Bj/p5Lm5rqKpY2tRUc0rfXnTUV9GtrWmroH7G&#43;7L5x48Zp06YNud&#43;cdQ/nT9StT9aHFcvm5O2QbbEpMD0X6rHJ7ty7X97Mvqo5b6cCM35rXf7vz1lbh/qNGrmhxoShXv59e67cvLl&#43;hONCZ2fn888/39LSkr&#43;xpaXl&#43;eef7&#43;zsHH3No1RwVMz9W39HzcCpYNBzcnDzyrzD3THSY78gKq&#43;ft3vDM4OXZM6e1wbUnPfNcHPZ8PNjkRUjvmdf/1Uh1NxZu3PAebnmVdvubG9vb29v31LbvCr7Cm2tq1i1t2FPe&#43;/2sGrIU6k1je17GqpD7Zb2dlfAQEEHNz/1wsK7bq8M4eDmZ8I3syce&#43;1amD27&#43;xoZ5uZOrDYvD4oZDr69fGNY0Hzr00n2VYUf97Kfmvt7fj1L8AWwUrp&#43;7cPf&#43;n/Z&#43;80Jty9Kzjn3Io9u9Yf/SbN9R2PANAX40shckZsfuPSu2LsiN3Tvr993Z3t7evqch1D/Q1Jbdc1XYkt3z6bC1OYRQaEjvv2H1oLUfzmH79u3Lly8/fPhw9tuRZvcQQnai7l2Ab2va2Fz7cP702tb0ZHj67Fk7hL7ZPH8ubq2rWLB1xZ729saagT/x9i21&#43;TsVmPFvmFe9c99PQgihddve6uq9B9pCCK3bmqtXLDvrFyP3GzVqhcaEUOjln9&#43;z8c3w8gsjvP&#43;ZM2euX7&#43;&#43;tbW1L8G3tLS0trauX79&#43;5syZ51Px2NhRP7t23/pco2FzqM0LpoOekwFnb3e0vLDma0VcwF/c0LzmhdqzkvTgeS2/5oM/eHn3mq&#43;NZC4byfxYZEWI73kvubPze&#43;2W3LXpNQ82ZFvjW7c1Vzc83TcC9G0HRmH3httmz549e/ZtL9/1evaUaeV9DfeF7FpCbW4Gqrx&#43;XnihdqgVlR0tL/Tdz&#43;zbNuzuXc2Ox8K51/d&#43;taY5N/guvn/9whdadpzj6HJrVpW337WwCEVHrHVbc9hZvyC7KrqgfmfIpq4QqhserAkhhKplK6pze&#43;a2hVC17uHaIe5x0A3zVa1rsXIzhFtvvfWGG25Yu3bt4cOHR5XdQ&#43;iddjc2tYXWJ&#43;tD348pq2pd47qQXX8fsIKeN5tnbcvG9dwPaMBPPNTcWdv71RAzftWyFblEsHfF0w/P37q9LbQd2JuLEuf&#43;xRiZAmNCCAVe/gOWsSvv&#43;9qakT9EfoKfGNm993C&#43;2RfCBxx7oedk8dJcFt7R8sKapcXNsIsbeq/n6s/whea1vpoP/uDl3WuWLh7JXDb6&#43;XGcdb43/vF9wIi&#43;qjnsHNBXNxLV8264MKXBpJW7dPVQrt3x4OaVs2d/I7u&#43;8Pr6XC5d3JBdUvrGEGcU&#43;&#43;5mwH1NMIuXrhl8UnXHMxt2z7u&#43;8pw3jOLo4lLdt47a3u60aPFMmzZt48aN2QQ/uuweQvYN1c6t25v6l95y2pqWVlQ8kF1/39NwjuTcvHdvdd/bt9GpnndDNpfvPdDWum3vimVVN8wLW7e3Zptwz&#43;MOi6kvwY93du&#43;P3cPqX&#43;YoeEf3rw8v/&#43;Dgwc1PFT29Z1Xe91L/CvkQ81r24A/&#43;4OXQ987r3KP9&#43;c2P46nj2LjH99ZtzaF2S/94vqU29K&#43;m933V1vRA/c7aO2t6z9s9cFbjXe8rtncsaNu&#43;defgB&#43;rrgxz8BfDT/btziy4Hf/Dy7uzGg5s37wghVN730uvr81pNeg2MxTvqJ2zvzOL71y98If8Ddg5uXln7Qv9KUgh960sHN39jQ3Y9Jpqji0de10UIobVu6I&#43;QGbDn&#43;X60iRH&#43;nPoS/Cizewih9wdUf1bjTAjhJ/t25hbLC0/EObUPt7TsWbF1Qa75daif&#43;JAzftWyFWHrAxub58&#43;pyn69cYzTe4ExoaABA8XBzU&#43;NtHmmTzbBj/u6&#43;&#43;L714cNtw1o4F&#43;5&#43;WD2cPqbAnc8syHcdXtl73cFn5PK2&#43;8KLz/zTF4SLo6Dm1cOGKQXzr1&#43;iHmt9z3HM8&#43;8nDu2YUf7Ec6Pfa30g7&#43;40K5ZNN5/timb3vPOqdXcWRtWbWttrLkhhFAbtlVUrAohhFC7pfePPNQ0tm&#43;pq1hQUR9y29dVhRCq1j3dsHXBgor6EKpra3Nv&#43;quWraiuX1XRXN2w5&#43;nxOyiIz&#43;L71z91222zN4QQFq5Z07u6UHnf9c/Mnl0bQghhTfOhxSF7znhD7ewXFq5//aX7Gl5fv/K22bNz/95QlMpHoPK&#43;lw7dvnll9vBCyK605C&#43;vrAkteceZjfWLYzm6iax5VUVz9qvqhj0t6xr3NCxdUFERQsiO6UPeriZvz&#43;qGhtqwNbs9b0hvmTPkrRmZadOmffvb3z6vm9Y82FDdvO/Os//yUs2DDRuz83D&#43;RDyEqnUt7XPqKioqQu2W9sbGLbUVvb8t&#43;T/xIWb8bH6vr699uCb39dYVT4/l2nuhMaGg/IFi4fr1a8LLo36sojTMVN730qHr62f3jYprmg81VIZQ2XCoeeDW/pGy8HNSed/X5s2u3bf&#43;9b79iqLyvm/OXZkrL1d3ZaF5LWTfc2zYMK/5UGX2&#43;&#43;FG&#43;xHOjwcvxIGNVFJXV/fYY4&#43;de6cjR47MmjVrXOoBzvbaa69dyL&#43;JWDS7du0a6s&#43;5X8hDPrh55W37v1acK4/OcchZE3mwHb/a/A3OMbVkyZKR/NXV1157bXzqmQgGjjAfYkzIXgM5dp12Qw0R4z4LnOs5GcODLtIsUExjMgs89thj4736DgADtTUtfXJOS/aMa2vdqubqhj2y&#43;xialDGoSA5uXvnM9b2fMr6jvvaFhcVehh5vBzc/9cKarx2qLHYdFzvxHYDiqlr39LyludbJ6gYr72PpolpWv/AGNG0sXD&#43;GK&#43;8R2FE/u/aFXGclRSW&#43;AxeVyvteOlTsGhikal1L&#43;7piF8HFaZRjQuV9Lx2674IVM0EUfk4WNxxyVdAEUZS/ugoAAJwPq&#43;8QgWGvPJt8LsJDBsZNdCNMdAV/eBfhIY&#43;c&#43;A4T3bmvUp&#43;ULsJDBsZNdCNMdAV/eBfhIY&#43;K5hkAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAWHwgvgMAQCyuEd8BACAa4jsAAERjpH&#43;26ciRIxe0DgAmOBMBwEQwovg&#43;a9asC10HABOZiQBggtA8AwAAkeh8T3wHAIBIdBwT3wEAIBLXLBLfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0Ujq6uqKXQMAY6mrqyv/2/fffz&#43;EUFlZOcKbv/vuu8ePX/3rgRuXLvrou&#43;&#43;&#43;&#43;6Mf/eiee&#43;4ZkyIBOD//P8Ohjj3a0SoUAAAAAElFTkSuQmCC" alt="4cdbc8106d0296e6261e6abdfa0b0096">
+
+</p>
+<p>软件界面左侧窗口是图片显示窗口，可以通过拖放打开图片，支持bmp、png、jpg等主流格式的图片(暂不支持gif动图显示)，支持右键菜单，支持图片放大缩小和重置等基本操作。</p>
+<p>左侧窗口下方的<code>Paste</code>按钮可以将剪贴板中的图像数据读取并显示出来，方便通过截图软件和剪贴板交互读取图像数据。</p>
+<p>右侧窗口是文本显示窗口，如果转换成功这里会图片对应的base64编码并显示出来。下方的Markdown复选框用于添加Markdown的图片语法标签，点击<code>Copy</code>按钮后可以将文本数据复制到剪贴板，之后就可以直接在MD文件中粘贴了。</p>
+<p>值得注意的是，<code>Copy</code>按钮左侧的组合框可以选择base64对应的图片格式。没错，base64也是有对应格式区分的，base64本质上是将二进制编码的文本化，因此不同图片原始格式的大小所导致的base64编码长度自然不一样，甚至图片的复杂程度和压缩比等因素base64编码长度都有影响。</p>
+<p>右侧窗口下方的<code>Save as</code>按钮支持将图片文件以原始格式或base64编码(txt文件)存储。通过中间的两个方向按钮可以实现将图片转换成base64编码，或者将base64编码转换成图片。需要注意的是，将base64编码转换成图片时，请不要包含markdown的语法标签，否则会报错。</p>
+<p>该软件经过测试，可以使用png格式base64编码，通过markdown语法标签在<a href="https://github.com/marktext/marktext">marktext</a>和<a href="https://joplinapp.org/">joplin</a>上渲染图片，其他格式不保证能成功，取决于markdown编辑器的渲染引擎。对于一般屏幕截图，推荐采用png格式。</p>
+<h2 id="2-代码解析">2. 代码解析</h2>
+<h3 id="21-c实现">2.1 C++实现</h3>
+<p>该软件基于Qt6实现，图片格式编码、渲染以及base64转换都是通过Qt实现的。</p>
+<p>图片显示通过QLabel实现，重载了QLabel类<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，并做了一些调整。</p>
+<p><code>photolabel.h</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#ifndef PHOTOLABEL_H
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#define PHOTOLABEL_H
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QObject&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QLabel&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QMenu&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QDragEnterEvent&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QDropEvent&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">PhotoLabel</span> <span style="color:#ff79c6">:</span> <span style="color:#ff79c6">public</span> QLabel
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	Q_OBJECT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">public</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">explicit</span> PhotoLabel(QWidget<span style="color:#ff79c6">*</span> parent <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">nullptr</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">openFile</span>(QString);     <span style="color:#6272a4">//打开图片文件
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">clearShow</span>();           <span style="color:#6272a4">//清空显示
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setImage</span>(QImage<span style="color:#ff79c6">&amp;</span>);     <span style="color:#6272a4">//设置图片
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">openAction</span>();          <span style="color:#6272a4">//调用打开文件对话框
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">pasteAction</span>();         <span style="color:#6272a4">//粘贴来自剪贴板的图片
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">const</span> QImage<span style="color:#ff79c6">&amp;</span> getImage();   <span style="color:#6272a4">//调用存储的图片数据
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">signals</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 图片加载成功信号
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> imageLoadSuccess();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">protected</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">void</span> contextMenuEvent(QContextMenuEvent<span style="color:#ff79c6">*</span> event) <span style="color:#ff79c6">override</span>;   <span style="color:#6272a4">//右键菜单
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">paintEvent</span>(QPaintEvent<span style="color:#ff79c6">*</span> event) <span style="color:#ff79c6">override</span>;               <span style="color:#6272a4">//QPaint画图
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">wheelEvent</span>(QWheelEvent<span style="color:#ff79c6">*</span> event) <span style="color:#ff79c6">override</span>;               <span style="color:#6272a4">//鼠标滚轮滚动
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">mousePressEvent</span>(QMouseEvent<span style="color:#ff79c6">*</span> event) <span style="color:#ff79c6">override</span>;          <span style="color:#6272a4">//鼠标摁下
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">mouseMoveEvent</span>(QMouseEvent<span style="color:#ff79c6">*</span> event) <span style="color:#ff79c6">override</span>;           <span style="color:#6272a4">//鼠标松开
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">mouseReleaseEvent</span>(QMouseEvent<span style="color:#ff79c6">*</span> event) <span style="color:#ff79c6">override</span>;        <span style="color:#6272a4">//鼠标发射事件
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">//拖放文件
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">dragEnterEvent</span>(QDragEnterEvent<span style="color:#ff79c6">*</span> event) <span style="color:#ff79c6">override</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">dragMoveEvent</span>(QDragMoveEvent<span style="color:#ff79c6">*</span> event) <span style="color:#ff79c6">override</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">dropEvent</span>(QDropEvent<span style="color:#ff79c6">*</span> event) <span style="color:#ff79c6">override</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">private</span> <span style="color:#8be9fd;font-style:italic">slots</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">void</span> initWidget();      <span style="color:#6272a4">//初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onSelectImage</span>();   <span style="color:#6272a4">//选择打开图片
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onPasteImage</span>();    <span style="color:#6272a4">//选择粘贴图片
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onZoomInImage</span>();   <span style="color:#6272a4">//图片放大
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onZoomOutImage</span>();  <span style="color:#6272a4">//图片缩小
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onPresetImage</span>();   <span style="color:#6272a4">//图片还原
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">private</span><span style="color:#ff79c6">:</span>
+</span></span><span style="display:flex;"><span>	QImage m_image;           <span style="color:#6272a4">//显示的图片
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	qreal m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1.0</span>;  <span style="color:#6272a4">//鼠标缩放值
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">int</span> m_xPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;    <span style="color:#6272a4">//平移X轴的值
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">int</span> m_yPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;    <span style="color:#6272a4">//平移Y轴的值
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	QPoint m_oldPos;          <span style="color:#6272a4">//旧的鼠标位置
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">bool</span> m_pressed <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">false</span>;   <span style="color:#6272a4">//鼠标是否被摁压
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	QString m_localFileName;  <span style="color:#6272a4">//文件名称
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	QMenu<span style="color:#ff79c6">*</span> m_menu;            <span style="color:#6272a4">//右键菜单
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">#endif </span><span style="color:#6272a4">// PHOTOLABEL_H
+</span></span></span></code></pre></div><p><code>photolabel.cpp</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&#34;photolabel.h&#34;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QPainter&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QDebug&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QWheelEvent&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QFileDialog&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QClipboard&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QApplication&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QMimeData&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QFileInfo&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;QMessageBox&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span>PhotoLabel<span style="color:#ff79c6">::</span>PhotoLabel(QWidget<span style="color:#ff79c6">*</span> parent) <span style="color:#ff79c6">:</span>QLabel(parent)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	initWidget();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>initWidget()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">//初始化右键菜单
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	m_menu <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> QMenu(<span style="color:#ff79c6">this</span>);
+</span></span><span style="display:flex;"><span>	QAction<span style="color:#ff79c6">*</span> loadImage <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> QAction;
+</span></span><span style="display:flex;"><span>	loadImage<span style="color:#ff79c6">-&gt;</span>setText(tr(<span style="color:#f1fa8c">&#34;&amp;Open new...&#34;</span>));
+</span></span><span style="display:flex;"><span>	connect(loadImage, <span style="color:#ff79c6">&amp;</span>QAction<span style="color:#ff79c6">::</span>triggered, <span style="color:#ff79c6">this</span>, <span style="color:#ff79c6">&amp;</span>PhotoLabel<span style="color:#ff79c6">::</span>onSelectImage);
+</span></span><span style="display:flex;"><span>	m_menu<span style="color:#ff79c6">-&gt;</span>addAction(loadImage);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QAction<span style="color:#ff79c6">*</span> pasteImage <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> QAction;
+</span></span><span style="display:flex;"><span>	pasteImage<span style="color:#ff79c6">-&gt;</span>setText(tr(<span style="color:#f1fa8c">&#34;&amp;Paste image&#34;</span>));
+</span></span><span style="display:flex;"><span>	connect(pasteImage, <span style="color:#ff79c6">&amp;</span>QAction<span style="color:#ff79c6">::</span>triggered, <span style="color:#ff79c6">this</span>, <span style="color:#ff79c6">&amp;</span>PhotoLabel<span style="color:#ff79c6">::</span>onPasteImage);
+</span></span><span style="display:flex;"><span>	m_menu<span style="color:#ff79c6">-&gt;</span>addAction(pasteImage);
+</span></span><span style="display:flex;"><span>	m_menu<span style="color:#ff79c6">-&gt;</span>addSeparator();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QAction<span style="color:#ff79c6">*</span> zoomInAction <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> QAction;
+</span></span><span style="display:flex;"><span>    zoomInAction<span style="color:#ff79c6">-&gt;</span>setText(tr(<span style="color:#f1fa8c">&#34;Zoom in &amp;+&#34;</span>));
+</span></span><span style="display:flex;"><span>	connect(zoomInAction, <span style="color:#ff79c6">&amp;</span>QAction<span style="color:#ff79c6">::</span>triggered, <span style="color:#ff79c6">this</span>, <span style="color:#ff79c6">&amp;</span>PhotoLabel<span style="color:#ff79c6">::</span>onZoomInImage);
+</span></span><span style="display:flex;"><span>	m_menu<span style="color:#ff79c6">-&gt;</span>addAction(zoomInAction);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QAction<span style="color:#ff79c6">*</span> zoomOutAction <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> QAction;
+</span></span><span style="display:flex;"><span>    zoomOutAction<span style="color:#ff79c6">-&gt;</span>setText(tr(<span style="color:#f1fa8c">&#34;Zoom out &amp;-&#34;</span>));
+</span></span><span style="display:flex;"><span>	connect(zoomOutAction, <span style="color:#ff79c6">&amp;</span>QAction<span style="color:#ff79c6">::</span>triggered, <span style="color:#ff79c6">this</span>, <span style="color:#ff79c6">&amp;</span>PhotoLabel<span style="color:#ff79c6">::</span>onZoomOutImage);
+</span></span><span style="display:flex;"><span>	m_menu<span style="color:#ff79c6">-&gt;</span>addAction(zoomOutAction);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QAction<span style="color:#ff79c6">*</span> presetAction <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> QAction;
+</span></span><span style="display:flex;"><span>	presetAction<span style="color:#ff79c6">-&gt;</span>setText(tr(<span style="color:#f1fa8c">&#34;&amp;Reset&#34;</span>));
+</span></span><span style="display:flex;"><span>	connect(presetAction, <span style="color:#ff79c6">&amp;</span>QAction<span style="color:#ff79c6">::</span>triggered, <span style="color:#ff79c6">this</span>, <span style="color:#ff79c6">&amp;</span>PhotoLabel<span style="color:#ff79c6">::</span>onPresetImage);
+</span></span><span style="display:flex;"><span>	m_menu<span style="color:#ff79c6">-&gt;</span>addAction(presetAction);
+</span></span><span style="display:flex;"><span>	m_menu<span style="color:#ff79c6">-&gt;</span>addSeparator();
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	QAction *clearAction = new QAction;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	clearAction-&gt;setText(&#34;Clear&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	connect(clearAction, &amp;QAction::triggered, this, &amp;PhotoLabel::clearShow);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	m_menu-&gt;addAction(clearAction);
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">	*/</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>openFile(QString path)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (path.isEmpty())
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>m_image.load(path))
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		QMessageBox<span style="color:#ff79c6">::</span>warning(<span style="color:#ff79c6">this</span>, tr(<span style="color:#f1fa8c">&#34;Error&#34;</span>), tr(<span style="color:#f1fa8c">&#34;Cannot load file!&#34;</span>));
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1.0</span>;
+</span></span><span style="display:flex;"><span>	m_xPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>	m_yPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	m_localFileName <span style="color:#ff79c6">=</span> path;
+</span></span><span style="display:flex;"><span>	emit <span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>imageLoadSuccess();
+</span></span><span style="display:flex;"><span>	update();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>clearShow()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	m_localFileName <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>	m_image <span style="color:#ff79c6">=</span> QImage();
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>clear();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>setImage(QImage<span style="color:#ff79c6">&amp;</span> img)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (img.isNull())
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1.0</span>;
+</span></span><span style="display:flex;"><span>	m_xPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>	m_yPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	m_localFileName <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>	m_image <span style="color:#ff79c6">=</span> img.copy(<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, img.width(), img.height());
+</span></span><span style="display:flex;"><span>	emit <span style="color:#50fa7b">imageLoadSuccess</span>();
+</span></span><span style="display:flex;"><span>	update();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>openAction()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>onSelectImage();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>pasteAction()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>onPasteImage();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">const</span> QImage<span style="color:#ff79c6">&amp;</span> PhotoLabel<span style="color:#ff79c6">::</span>getImage()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> m_image;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>paintEvent(QPaintEvent<span style="color:#ff79c6">*</span> event)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (m_image.isNull())
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> QWidget<span style="color:#ff79c6">::</span>paintEvent(event);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QPainter <span style="color:#50fa7b">painter</span>(<span style="color:#ff79c6">this</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 根据窗口计算应该显示的图片的大小
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#8be9fd">int</span> width <span style="color:#ff79c6">=</span> qMin(m_image.width(), <span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>width());
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">int</span> height <span style="color:#ff79c6">=</span> <span style="color:#8be9fd">int</span>(width <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1.0</span> <span style="color:#ff79c6">/</span> (m_image.width() <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1.0</span> <span style="color:#ff79c6">/</span> m_image.height()));
+</span></span><span style="display:flex;"><span>	height <span style="color:#ff79c6">=</span> qMin(height, <span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>height());
+</span></span><span style="display:flex;"><span>	width <span style="color:#ff79c6">=</span> <span style="color:#8be9fd">int</span>(height <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1.0</span> <span style="color:#ff79c6">*</span> (m_image.width() <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1.0</span> <span style="color:#ff79c6">/</span> m_image.height()));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 平移
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	painter.translate(<span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>width() <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">+</span> m_xPtInterval, <span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>height() <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">+</span> m_yPtInterval);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 缩放
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	painter.scale(m_zoomValue, m_zoomValue);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 绘制图像
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	QRect <span style="color:#50fa7b">picRect</span>(<span style="color:#ff79c6">-</span>width <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">2</span>, <span style="color:#ff79c6">-</span>height <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">2</span>, width, height);
+</span></span><span style="display:flex;"><span>	painter.drawImage(picRect, m_image);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QWidget<span style="color:#ff79c6">::</span>paintEvent(event);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>wheelEvent(QWheelEvent<span style="color:#ff79c6">*</span> event)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">int</span> value <span style="color:#ff79c6">=</span> event<span style="color:#ff79c6">-&gt;</span>angleDelta().y() <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">15</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (value <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>)  <span style="color:#6272a4">//放大
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		onZoomInImage();
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">else</span>            <span style="color:#6272a4">//缩小
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		onZoomOutImage();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	update();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>mousePressEvent(QMouseEvent<span style="color:#ff79c6">*</span> event)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	m_oldPos <span style="color:#ff79c6">=</span> event<span style="color:#ff79c6">-&gt;</span>pos();
+</span></span><span style="display:flex;"><span>	m_pressed <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">true</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>setCursor(Qt<span style="color:#ff79c6">::</span>ClosedHandCursor); <span style="color:#6272a4">//设置鼠标样式
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>mouseMoveEvent(QMouseEvent<span style="color:#ff79c6">*</span> event)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>m_pressed)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> QWidget<span style="color:#ff79c6">::</span>mouseMoveEvent(event);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QPoint pos <span style="color:#ff79c6">=</span> event<span style="color:#ff79c6">-&gt;</span>pos();
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">int</span> xPtInterval <span style="color:#ff79c6">=</span> pos.x() <span style="color:#ff79c6">-</span> m_oldPos.x();
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">int</span> yPtInterval <span style="color:#ff79c6">=</span> pos.y() <span style="color:#ff79c6">-</span> m_oldPos.y();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	m_xPtInterval <span style="color:#ff79c6">+=</span> xPtInterval;
+</span></span><span style="display:flex;"><span>	m_yPtInterval <span style="color:#ff79c6">+=</span> yPtInterval;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	m_oldPos <span style="color:#ff79c6">=</span> pos;
+</span></span><span style="display:flex;"><span>	update();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>mouseReleaseEvent(QMouseEvent*/<span style="color:#ff79c6">*</span>event*/)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	m_pressed <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">false</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>setCursor(Qt<span style="color:#ff79c6">::</span>ArrowCursor); <span style="color:#6272a4">//设置鼠标样式
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>dragEnterEvent(QDragEnterEvent<span style="color:#ff79c6">*</span> event)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (event<span style="color:#ff79c6">-&gt;</span>mimeData()<span style="color:#ff79c6">-&gt;</span>hasUrls())
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		event<span style="color:#ff79c6">-&gt;</span>acceptProposedAction();
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		event<span style="color:#ff79c6">-&gt;</span>ignore();
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>dragMoveEvent(QDragMoveEvent<span style="color:#ff79c6">*</span> event)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>dropEvent(QDropEvent<span style="color:#ff79c6">*</span> event)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	QList<span style="color:#ff79c6">&lt;</span>QUrl<span style="color:#ff79c6">&gt;</span> urls <span style="color:#ff79c6">=</span> event<span style="color:#ff79c6">-&gt;</span>mimeData()<span style="color:#ff79c6">-&gt;</span>urls();
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (urls.empty())
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QString fileName <span style="color:#ff79c6">=</span> urls.first().toLocalFile();
+</span></span><span style="display:flex;"><span>	QFileInfo <span style="color:#50fa7b">info</span>(fileName);
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>info.isFile())
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>openFile(fileName);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>contextMenuEvent(QContextMenuEvent<span style="color:#ff79c6">*</span> event)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	QPoint pos <span style="color:#ff79c6">=</span> event<span style="color:#ff79c6">-&gt;</span>pos();
+</span></span><span style="display:flex;"><span>	pos <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>mapToGlobal(pos);
+</span></span><span style="display:flex;"><span>	m_menu<span style="color:#ff79c6">-&gt;</span>exec(pos);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>onSelectImage()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	QString path <span style="color:#ff79c6">=</span> QFileDialog<span style="color:#ff79c6">::</span>getOpenFileName(<span style="color:#ff79c6">this</span>, tr(<span style="color:#f1fa8c">&#34;Open a image file&#34;</span>), <span style="color:#f1fa8c">&#34;./&#34;</span>, tr(<span style="color:#f1fa8c">&#34;Images (*.bmp *.png *.jpg *.jpeg *.gif *.tiff)</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">All files (*.*)&#34;</span>));
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (path.isEmpty())
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	openFile(path);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>onPasteImage()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	QClipboard<span style="color:#ff79c6">*</span> clipboard <span style="color:#ff79c6">=</span> QApplication<span style="color:#ff79c6">::</span>clipboard();
+</span></span><span style="display:flex;"><span>	QImage img <span style="color:#ff79c6">=</span> clipboard<span style="color:#ff79c6">-&gt;</span>image();
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (img.isNull())
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">this</span><span style="color:#ff79c6">-&gt;</span>setImage(img);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>onZoomInImage()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	m_zoomValue <span style="color:#ff79c6">+=</span> <span style="color:#bd93f9">0.05</span>;
+</span></span><span style="display:flex;"><span>	update();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>onZoomOutImage()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	m_zoomValue <span style="color:#ff79c6">-=</span> <span style="color:#bd93f9">0.05</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (m_zoomValue <span style="color:#ff79c6">&lt;=</span> <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0.05</span>;
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	update();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> PhotoLabel<span style="color:#ff79c6">::</span>onPresetImage()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1.0</span>;
+</span></span><span style="display:flex;"><span>	m_xPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>	m_yPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>	update();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>base64和图片转换的代码放在窗口控件的槽函数中。</p>
+<p><code>widget.cpp</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#8be9fd">void</span> Widget<span style="color:#ff79c6">::</span>updateCode() <span style="color:#6272a4">//图片数据转换成base64编码
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>{
+</span></span><span style="display:flex;"><span>	QImage image <span style="color:#ff79c6">=</span> ui<span style="color:#ff79c6">-&gt;</span>viewer<span style="color:#ff79c6">-&gt;</span>getImage();
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (image.isNull())
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		QMessageBox<span style="color:#ff79c6">::</span>warning(<span style="color:#ff79c6">this</span>, tr(<span style="color:#f1fa8c">&#34;Error&#34;</span>), tr(<span style="color:#f1fa8c">&#34;Please load an image file!&#34;</span>));
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	QByteArray ba;
+</span></span><span style="display:flex;"><span>	QBuffer <span style="color:#50fa7b">buf</span>(<span style="color:#ff79c6">&amp;</span>ba);
+</span></span><span style="display:flex;"><span>	image.save(<span style="color:#ff79c6">&amp;</span>buf, format.toStdString().c_str());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QByteArray md5 <span style="color:#ff79c6">=</span> QCryptographicHash<span style="color:#ff79c6">::</span>hash(ba, QCryptographicHash<span style="color:#ff79c6">::</span>Md5);
+</span></span><span style="display:flex;"><span>	QString strMd5 <span style="color:#ff79c6">=</span> md5.toHex();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QString head_md <span style="color:#ff79c6">=</span> QString<span style="color:#ff79c6">::</span>fromUtf8(<span style="color:#f1fa8c">&#34;![%1](%2)&#34;</span>);
+</span></span><span style="display:flex;"><span>	QString prefix <span style="color:#ff79c6">=</span> QString<span style="color:#ff79c6">::</span>fromUtf8(<span style="color:#f1fa8c">&#34;data:image/%1;base64,&#34;</span>).arg(format);
+</span></span><span style="display:flex;"><span>	QString code <span style="color:#ff79c6">=</span> QString<span style="color:#ff79c6">::</span>fromUtf8(ba.toBase64());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (ui<span style="color:#ff79c6">-&gt;</span>checkBox<span style="color:#ff79c6">-&gt;</span>isChecked())
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		ui<span style="color:#ff79c6">-&gt;</span>textEdit<span style="color:#ff79c6">-&gt;</span>setText(head_md.arg(strMd5).arg(prefix <span style="color:#ff79c6">+</span> code));
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		ui<span style="color:#ff79c6">-&gt;</span>textEdit<span style="color:#ff79c6">-&gt;</span>setText(prefix <span style="color:#ff79c6">+</span> code);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	buf.close();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd">int</span> num <span style="color:#ff79c6">=</span> ui<span style="color:#ff79c6">-&gt;</span>textEdit<span style="color:#ff79c6">-&gt;</span>toPlainText().length();
+</span></span><span style="display:flex;"><span>	ui<span style="color:#ff79c6">-&gt;</span>label<span style="color:#ff79c6">-&gt;</span>setText(tr(<span style="color:#f1fa8c">&#34;Length : &#34;</span>) <span style="color:#ff79c6">+</span> QString<span style="color:#ff79c6">::</span>number(num));
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">void</span> Widget<span style="color:#ff79c6">::</span>updateImage() <span style="color:#6272a4">// base64编码转换成图片数据
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>{
+</span></span><span style="display:flex;"><span>	QString p_b <span style="color:#ff79c6">=</span> ui<span style="color:#ff79c6">-&gt;</span>textEdit<span style="color:#ff79c6">-&gt;</span>toPlainText();
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (p_b.isEmpty())
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (p_b.contains(QRegularExpression(<span style="color:#f1fa8c">&#34;data:image[/a-z]*;base64,&#34;</span>)))
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// 清除base64编码的html标签
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		p_b <span style="color:#ff79c6">=</span> p_b.remove(QRegularExpression(<span style="color:#f1fa8c">&#34;data:image[/a-z]*;base64,&#34;</span>));
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	QImage image;
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> (<span style="color:#ff79c6">!</span>image.loadFromData(QByteArray<span style="color:#ff79c6">::</span>fromBase64(p_b.toLocal8Bit())))
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		QMessageBox<span style="color:#ff79c6">::</span>warning(<span style="color:#ff79c6">this</span>, tr(<span style="color:#f1fa8c">&#34;Error&#34;</span>), tr(<span style="color:#f1fa8c">&#34;Fail to decrypt codes!&#34;</span>));
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	ui<span style="color:#ff79c6">-&gt;</span>viewer<span style="color:#ff79c6">-&gt;</span>setImage(image);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="22-python实现">2.2 Python实现</h3>
+<p>同样的，该软件也提供了基于Python的实现，同样通过重载QLabel实现图片显示。</p>
+<p><code>photolabel.py</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#6272a4"># This Python file uses the following encoding: utf-8</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> sys
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> PySide6.QtCore <span style="color:#ff79c6">import</span> (Qt, qDebug, QFileInfo, QMimeData, QRect, QPoint)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> PySide6.QtGui <span style="color:#ff79c6">import</span> (QAction, QImage, QAction, QDragEnterEvent, QDragMoveEvent,
+</span></span><span style="display:flex;"><span>                           QDropEvent, QContextMenuEvent, QPaintEvent, QMouseEvent,
+</span></span><span style="display:flex;"><span>                           QWheelEvent, QPainter, QClipboard, QCursor)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> PySide6.QtWidgets <span style="color:#ff79c6">import</span> (QApplication, QLabel, QMenu, QMessageBox, QFileDialog)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">PhotoLabel</span>(QLabel):
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> __init__(self, parent):
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">super</span>()<span style="color:#ff79c6">.</span>__init__(parent)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_image <span style="color:#ff79c6">=</span> QImage()  <span style="color:#6272a4"># 显示的图片</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1.0</span>  <span style="color:#6272a4"># 鼠标缩放值</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_xPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>  <span style="color:#6272a4"># 平移X轴的值</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_yPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>  <span style="color:#6272a4"># 平移Y轴的值</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_oldPos <span style="color:#ff79c6">=</span> QPoint()  <span style="color:#6272a4"># 旧的鼠标位置</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_pressed <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">False</span>  <span style="color:#6272a4"># 鼠标是否被摁压</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_localFileName <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">None</span>  <span style="color:#6272a4"># 文件名称</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">None</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>initial_widget()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">initial_widget</span>(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu <span style="color:#ff79c6">=</span> QMenu(self)
+</span></span><span style="display:flex;"><span>        load_image <span style="color:#ff79c6">=</span> QAction(<span style="color:#f1fa8c">u</span><span style="color:#f1fa8c">&#34;&amp;Open new...&#34;</span>, self)
+</span></span><span style="display:flex;"><span>        load_image<span style="color:#ff79c6">.</span>triggered<span style="color:#ff79c6">.</span>connect(self<span style="color:#ff79c6">.</span>on_select_image)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu<span style="color:#ff79c6">.</span>addAction(load_image)
+</span></span><span style="display:flex;"><span>        paste_image <span style="color:#ff79c6">=</span> QAction(<span style="color:#f1fa8c">u</span><span style="color:#f1fa8c">&#34;&amp;Paste image&#34;</span>, self)
+</span></span><span style="display:flex;"><span>        paste_image<span style="color:#ff79c6">.</span>triggered<span style="color:#ff79c6">.</span>connect(self<span style="color:#ff79c6">.</span>on_paste_image)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu<span style="color:#ff79c6">.</span>addAction(paste_image)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu<span style="color:#ff79c6">.</span>addSeparator()
+</span></span><span style="display:flex;"><span>        zoom_in_action <span style="color:#ff79c6">=</span> QAction(<span style="color:#f1fa8c">u</span><span style="color:#f1fa8c">&#34;Zoom in &amp;+&#34;</span>, self)
+</span></span><span style="display:flex;"><span>        zoom_in_action<span style="color:#ff79c6">.</span>triggered<span style="color:#ff79c6">.</span>connect(self<span style="color:#ff79c6">.</span>on_zoom_in_image)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu<span style="color:#ff79c6">.</span>addAction(zoom_in_action)
+</span></span><span style="display:flex;"><span>        zoom_out_action <span style="color:#ff79c6">=</span> QAction(<span style="color:#f1fa8c">u</span><span style="color:#f1fa8c">&#34;Zoom out &amp;-&#34;</span>, self)
+</span></span><span style="display:flex;"><span>        zoom_out_action<span style="color:#ff79c6">.</span>triggered<span style="color:#ff79c6">.</span>connect(self<span style="color:#ff79c6">.</span>on_zoom_out_image)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu<span style="color:#ff79c6">.</span>addAction(zoom_out_action)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu<span style="color:#ff79c6">.</span>addSeparator()
+</span></span><span style="display:flex;"><span>        preset_action <span style="color:#ff79c6">=</span> QAction(<span style="color:#f1fa8c">u</span><span style="color:#f1fa8c">&#34;&amp;Reset&#34;</span>, self)
+</span></span><span style="display:flex;"><span>        preset_action<span style="color:#ff79c6">.</span>triggered<span style="color:#ff79c6">.</span>connect(self<span style="color:#ff79c6">.</span>on_preset_image)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu<span style="color:#ff79c6">.</span>addAction(preset_action)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu<span style="color:#ff79c6">.</span>addSeparator()
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># clear_action = QAction(u&#34;&amp;Reset&#34;, self)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># clear_action.triggered.connect(self.clear_show)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># self.m_menu.addAction(clear_action)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">open_file</span>(self, path: <span style="color:#8be9fd;font-style:italic">str</span>):  <span style="color:#6272a4"># 打开图片文件</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> path <span style="color:#ff79c6">is</span> <span style="color:#ff79c6">None</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> self<span style="color:#ff79c6">.</span>m_image<span style="color:#ff79c6">.</span>load(path) <span style="color:#ff79c6">is</span> <span style="color:#ff79c6">False</span>:
+</span></span><span style="display:flex;"><span>            QMessageBox<span style="color:#ff79c6">.</span>warning(self, <span style="color:#f1fa8c">&#34;Error&#34;</span>, <span style="color:#f1fa8c">&#34;Cannot load file!&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1.0</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_xPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_yPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_localFileName <span style="color:#ff79c6">=</span> path
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>update()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">clear_show</span>(self):  <span style="color:#6272a4"># 清空显示</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_localFileName <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">None</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_image <span style="color:#ff79c6">=</span> QImage()
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>clear()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">set_image</span>(self, image: QImage):  <span style="color:#6272a4"># 设置图片</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> image <span style="color:#ff79c6">is</span> <span style="color:#ff79c6">None</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1.0</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_xPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_yPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_localFileName <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">None</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_image <span style="color:#ff79c6">=</span> image<span style="color:#ff79c6">.</span>copy(<span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">0</span>, image<span style="color:#ff79c6">.</span>width(), image<span style="color:#ff79c6">.</span>height())
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>update()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">open_action</span>(self):  <span style="color:#6272a4"># 调用打开文件对话框</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>on_select_image()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">paste_action</span>(self):  <span style="color:#6272a4"># 粘贴来自剪贴板的图片</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>on_paste_image()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">get_image</span>(self) <span style="color:#ff79c6">-&gt;</span> QImage:  <span style="color:#6272a4"># 调用存储的图片数据</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> self<span style="color:#ff79c6">.</span>m_image
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">contextMenuEvent</span>(self, event: QContextMenuEvent):  <span style="color:#6272a4"># 右键菜单</span>
+</span></span><span style="display:flex;"><span>        pos <span style="color:#ff79c6">=</span> event<span style="color:#ff79c6">.</span>pos()
+</span></span><span style="display:flex;"><span>        pos <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>mapToGlobal(pos)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_menu<span style="color:#ff79c6">.</span>exec(pos)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">paintEvent</span>(self, event: QPaintEvent):  <span style="color:#6272a4"># QPaint画图</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> self<span style="color:#ff79c6">.</span>m_image<span style="color:#ff79c6">.</span>isNull():
+</span></span><span style="display:flex;"><span>            <span style="color:#6272a4"># super().paintEvent(event)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        painter <span style="color:#ff79c6">=</span> QPainter(self)
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 根据窗口计算应该显示的图片的大小</span>
+</span></span><span style="display:flex;"><span>        width <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">min</span>(self<span style="color:#ff79c6">.</span>m_image<span style="color:#ff79c6">.</span>width(), self<span style="color:#ff79c6">.</span>width())
+</span></span><span style="display:flex;"><span>        height <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">int</span>(width <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1.0</span> <span style="color:#ff79c6">/</span> (self<span style="color:#ff79c6">.</span>m_image<span style="color:#ff79c6">.</span>width() <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1.0</span> <span style="color:#ff79c6">/</span> self<span style="color:#ff79c6">.</span>m_image<span style="color:#ff79c6">.</span>height()))
+</span></span><span style="display:flex;"><span>        height <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">min</span>(height, self<span style="color:#ff79c6">.</span>height())
+</span></span><span style="display:flex;"><span>        width <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">int</span>(height <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1.0</span> <span style="color:#ff79c6">*</span> (self<span style="color:#ff79c6">.</span>m_image<span style="color:#ff79c6">.</span>width() <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1.0</span> <span style="color:#ff79c6">/</span> self<span style="color:#ff79c6">.</span>m_image<span style="color:#ff79c6">.</span>height()))
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 平移</span>
+</span></span><span style="display:flex;"><span>        painter<span style="color:#ff79c6">.</span>translate(self<span style="color:#ff79c6">.</span>width() <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">+</span> self<span style="color:#ff79c6">.</span>m_xPtInterval, self<span style="color:#ff79c6">.</span>height() <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">+</span> self<span style="color:#ff79c6">.</span>m_yPtInterval)
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 缩放</span>
+</span></span><span style="display:flex;"><span>        painter<span style="color:#ff79c6">.</span>scale(self<span style="color:#ff79c6">.</span>m_zoomValue, self<span style="color:#ff79c6">.</span>m_zoomValue)
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 绘制图像</span>
+</span></span><span style="display:flex;"><span>        pic_rect <span style="color:#ff79c6">=</span> QRect(<span style="color:#8be9fd;font-style:italic">int</span>(<span style="color:#ff79c6">-</span>width <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">2</span>), <span style="color:#8be9fd;font-style:italic">int</span>(<span style="color:#ff79c6">-</span>height <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">2</span>), width, height)
+</span></span><span style="display:flex;"><span>        painter<span style="color:#ff79c6">.</span>drawImage(pic_rect, self<span style="color:#ff79c6">.</span>m_image)
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># super().paintEvent(event)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">wheelEvent</span>(self, event: QWheelEvent):  <span style="color:#6272a4"># 鼠标滚轮滚动</span>
+</span></span><span style="display:flex;"><span>        value <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">int</span>(event<span style="color:#ff79c6">.</span>angleDelta()<span style="color:#ff79c6">.</span>y() <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">15</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> value <span style="color:#ff79c6">&lt;</span> <span style="color:#bd93f9">0</span>:  <span style="color:#6272a4"># 放大</span>
+</span></span><span style="display:flex;"><span>            self<span style="color:#ff79c6">.</span>on_zoom_in_image()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">else</span>:  <span style="color:#6272a4"># 缩小</span>
+</span></span><span style="display:flex;"><span>            self<span style="color:#ff79c6">.</span>on_zoom_out_image()
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>update()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">mousePressEvent</span>(self, event: QMouseEvent):  <span style="color:#6272a4"># 鼠标摁下</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_oldPos <span style="color:#ff79c6">=</span> event<span style="color:#ff79c6">.</span>pos()
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_pressed <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">True</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>setCursor(Qt<span style="color:#ff79c6">.</span>ClosedHandCursor)  <span style="color:#6272a4"># 设置鼠标样式</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">mouseMoveEvent</span>(self, event: QMouseEvent):  <span style="color:#6272a4"># 鼠标松开</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> self<span style="color:#ff79c6">.</span>m_pressed <span style="color:#ff79c6">is</span> <span style="color:#ff79c6">False</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#6272a4"># super().mouseMoveEvent(event)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        pos <span style="color:#ff79c6">=</span> event<span style="color:#ff79c6">.</span>pos()
+</span></span><span style="display:flex;"><span>        xp <span style="color:#ff79c6">=</span> pos<span style="color:#ff79c6">.</span>x() <span style="color:#ff79c6">-</span> self<span style="color:#ff79c6">.</span>m_oldPos<span style="color:#ff79c6">.</span>x()
+</span></span><span style="display:flex;"><span>        yp <span style="color:#ff79c6">=</span> pos<span style="color:#ff79c6">.</span>y() <span style="color:#ff79c6">-</span> self<span style="color:#ff79c6">.</span>m_oldPos<span style="color:#ff79c6">.</span>y()
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_xPtInterval <span style="color:#ff79c6">+=</span> xp
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_yPtInterval <span style="color:#ff79c6">+=</span> yp
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_oldPos <span style="color:#ff79c6">=</span> pos
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>update()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">mouseReleaseEvent</span>(self, event: QMouseEvent):  <span style="color:#6272a4"># 鼠标发射事件</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_pressed <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">False</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>setCursor(Qt<span style="color:#ff79c6">.</span>ArrowCursor)  <span style="color:#6272a4"># 设置鼠标样式</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 拖放文件</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">dragEnterEvent</span>(self, event: QDragEnterEvent):
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> event<span style="color:#ff79c6">.</span>mimeData()<span style="color:#ff79c6">.</span>hasUrls():
+</span></span><span style="display:flex;"><span>            event<span style="color:#ff79c6">.</span>acceptProposedAction()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">else</span>:
+</span></span><span style="display:flex;"><span>            event<span style="color:#ff79c6">.</span>ignore()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">dragMoveEvent</span>(self, event: QDragMoveEvent):
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">dropEvent</span>(self, event: QDropEvent):
+</span></span><span style="display:flex;"><span>        urls <span style="color:#ff79c6">=</span> event<span style="color:#ff79c6">.</span>mimeData()<span style="color:#ff79c6">.</span>urls()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> urls <span style="color:#ff79c6">is</span> <span style="color:#ff79c6">None</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        file_name <span style="color:#ff79c6">=</span> urls[<span style="color:#bd93f9">0</span>]<span style="color:#ff79c6">.</span>toLocalFile()
+</span></span><span style="display:flex;"><span>        info <span style="color:#ff79c6">=</span> QFileInfo(file_name)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> info<span style="color:#ff79c6">.</span>isFile() <span style="color:#ff79c6">is</span> <span style="color:#ff79c6">False</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>open_file(file_name)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">on_select_image</span>(self):  <span style="color:#6272a4"># 选择打开图片</span>
+</span></span><span style="display:flex;"><span>        path, _ <span style="color:#ff79c6">=</span> QFileDialog<span style="color:#ff79c6">.</span>getOpenFileName(self,
+</span></span><span style="display:flex;"><span>                                              <span style="color:#f1fa8c">&#34;Open a image file&#34;</span>, <span style="color:#f1fa8c">&#34;./&#34;</span>,
+</span></span><span style="display:flex;"><span>                                              <span style="color:#f1fa8c">&#34;Images (*.bmp *.png *.jpg *.jpeg *.gif *.tiff)</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">All files (*.*)&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> path <span style="color:#ff79c6">is</span> <span style="color:#ff79c6">None</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        info <span style="color:#ff79c6">=</span> QFileInfo(path)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> info<span style="color:#ff79c6">.</span>isFile() <span style="color:#ff79c6">is</span> <span style="color:#ff79c6">False</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>open_file(path)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">on_paste_image</span>(self):  <span style="color:#6272a4"># 选择粘贴图片</span>
+</span></span><span style="display:flex;"><span>        clipboard <span style="color:#ff79c6">=</span> QApplication<span style="color:#ff79c6">.</span>clipboard()
+</span></span><span style="display:flex;"><span>        img <span style="color:#ff79c6">=</span> clipboard<span style="color:#ff79c6">.</span>image()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> img<span style="color:#ff79c6">.</span>isNull():
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>set_image(img)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">on_zoom_in_image</span>(self):  <span style="color:#6272a4"># 图片放大</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_zoomValue <span style="color:#ff79c6">+=</span> <span style="color:#bd93f9">0.05</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>update()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">on_zoom_out_image</span>(self):  <span style="color:#6272a4"># 图片缩小</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_zoomValue <span style="color:#ff79c6">-=</span> <span style="color:#bd93f9">0.05</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> self<span style="color:#ff79c6">.</span>m_zoomValue <span style="color:#ff79c6">&lt;=</span> <span style="color:#bd93f9">0</span>:
+</span></span><span style="display:flex;"><span>            self<span style="color:#ff79c6">.</span>m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0.05</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>update()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">on_preset_image</span>(self):  <span style="color:#6272a4"># 图片还原</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_zoomValue <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1.0</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_xPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>m_yPtInterval <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>update()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> __name__ <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">pass</span>
+</span></span></code></pre></div><p>值得注意的是，python实现代码中，二进制数据到base64的转换是通过ptyhon的str函数完成的，因此输出字符串会包含<code>b'...'</code>的标签，需要通过字符串切片去除该标签。
+<code>widget.py</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">update_code</span>(self): <span style="color:#6272a4">#图片→base64</span>
+</span></span><span style="display:flex;"><span>        image <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>ui<span style="color:#ff79c6">.</span>viewLabel<span style="color:#ff79c6">.</span>get_image()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> image<span style="color:#ff79c6">.</span>isNull():
+</span></span><span style="display:flex;"><span>            QMessageBox<span style="color:#ff79c6">.</span>warning(self, <span style="color:#f1fa8c">&#34;Error&#34;</span>, <span style="color:#f1fa8c">&#34;Please load an image file!&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        ba <span style="color:#ff79c6">=</span> QByteArray()
+</span></span><span style="display:flex;"><span>        buf <span style="color:#ff79c6">=</span> QBuffer(ba)
+</span></span><span style="display:flex;"><span>        image<span style="color:#ff79c6">.</span>save(buf, self<span style="color:#ff79c6">.</span>m_format)
+</span></span><span style="display:flex;"><span>        md5 <span style="color:#ff79c6">=</span> QCryptographicHash<span style="color:#ff79c6">.</span>hash(ba, QCryptographicHash<span style="color:#ff79c6">.</span>Md5)
+</span></span><span style="display:flex;"><span>        strMd5 <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">str</span>(md5<span style="color:#ff79c6">.</span>toHex())[<span style="color:#bd93f9">2</span>:<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>]
+</span></span><span style="display:flex;"><span>        prefix <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;data:image/</span><span style="color:#f1fa8c">{}</span><span style="color:#f1fa8c">;base64,&#34;</span><span style="color:#ff79c6">.</span>format(self<span style="color:#ff79c6">.</span>m_format)
+</span></span><span style="display:flex;"><span>        code <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">str</span>(ba<span style="color:#ff79c6">.</span>toBase64())[<span style="color:#bd93f9">2</span>:<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> self<span style="color:#ff79c6">.</span>ui<span style="color:#ff79c6">.</span>checkBox<span style="color:#ff79c6">.</span>isChecked():
+</span></span><span style="display:flex;"><span>            self<span style="color:#ff79c6">.</span>ui<span style="color:#ff79c6">.</span>textEdit<span style="color:#ff79c6">.</span>setText(<span style="color:#f1fa8c">&#34;![</span><span style="color:#f1fa8c">{0}</span><span style="color:#f1fa8c">](</span><span style="color:#f1fa8c">{1}</span><span style="color:#f1fa8c">)&#34;</span><span style="color:#ff79c6">.</span>format(strMd5, prefix <span style="color:#ff79c6">+</span> code))
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">else</span>:
+</span></span><span style="display:flex;"><span>            self<span style="color:#ff79c6">.</span>ui<span style="color:#ff79c6">.</span>textEdit<span style="color:#ff79c6">.</span>setText(prefix <span style="color:#ff79c6">+</span> code)
+</span></span><span style="display:flex;"><span>        buf<span style="color:#ff79c6">.</span>close()
+</span></span><span style="display:flex;"><span>        num <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">len</span>(self<span style="color:#ff79c6">.</span>ui<span style="color:#ff79c6">.</span>textEdit<span style="color:#ff79c6">.</span>toPlainText())
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>ui<span style="color:#ff79c6">.</span>lengthLabel<span style="color:#ff79c6">.</span>setText(<span style="color:#f1fa8c">&#34;Length : &#34;</span> <span style="color:#ff79c6">+</span> <span style="color:#8be9fd;font-style:italic">str</span>(num))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">update_image</span>(self): <span style="color:#6272a4">#base64→图片</span>
+</span></span><span style="display:flex;"><span>        p_b <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>ui<span style="color:#ff79c6">.</span>textEdit<span style="color:#ff79c6">.</span>toPlainText()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">len</span>(p_b) <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> re<span style="color:#ff79c6">.</span><span style="color:#ff79c6">match</span>(<span style="color:#f1fa8c">&#34;data:image[/a-z]*;base64,&#34;</span>, p_b):
+</span></span><span style="display:flex;"><span>            p_b <span style="color:#ff79c6">=</span> re<span style="color:#ff79c6">.</span>sub(<span style="color:#f1fa8c">&#34;data:image[/a-z]*;base64,&#34;</span>, <span style="color:#f1fa8c">&#34;&#34;</span>, p_b, count<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>        image <span style="color:#ff79c6">=</span> QImage()
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> image<span style="color:#ff79c6">.</span>loadFromData(QByteArray<span style="color:#ff79c6">.</span>fromBase64(p_b<span style="color:#ff79c6">.</span>encode())) <span style="color:#ff79c6">is</span> <span style="color:#ff79c6">False</span>:
+</span></span><span style="display:flex;"><span>            QMessageBox<span style="color:#ff79c6">.</span>warning(self, <span style="color:#f1fa8c">&#34;Error&#34;</span>, <span style="color:#f1fa8c">&#34;Fail to decrypt codes!&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>ui<span style="color:#ff79c6">.</span>viewLabel<span style="color:#ff79c6">.</span>set_image(image)
+</span></span></code></pre></div><p>UI均通过QtDesigner实现，无论C++实现还是Python实现，软件界面效果均一致。</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://zh.wikipedia.org/wiki/Base64">Base64</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://blog.csdn.net/Viciower/article/details/135146355">15、Qt显示图片并支持缩放、移动等操作</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2025/03/27/openfoam-compile-cfmesh-and-ccm/" data-toggle="tooltip" data-placement="top" title="OpenFOAM编译安装cfmesh和ccm工具">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+
+
+<link href="https://xxx.xxx.com/dist/Artalk.css" rel="stylesheet" />
+<script src="https://xxx.xxx.com/dist/Artalk.js"></script>
+
+
+<div id="Comments"></div>
+
+<script>
+    Artalk.init({
+        el: '#Comments',
+        pageKey: 'https:\/\/AndrewMoa2005.github.io\/2025\/04\/02\/qt-base-image-base64-convert-tool-image2base64\/',
+        pageTitle: '一款基于Qt6的图片base64转换工具-Image2Base64',
+        server: 'https:\/\/xxx.xxx.com',
+        site: 'xxx blog',
+    })
+</script>
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/abaqus" title="abaqus">
+                            abaqus
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ansa" title="ansa">
+                            ansa
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/cae" title="cae">
+                            cae
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cfd" title="cfd">
+                            cfd
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cfx" title="cfx">
+                            cfx
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/fluent" title="fluent">
+                            fluent
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/openfoam" title="openfoam">
+                            openfoam
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/slurm" title="slurm">
+                            slurm
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
+                            star-ccm&#43;
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/su2" title="su2">
+                            su2
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ubuntu" title="ubuntu">
+                            ubuntu
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                            前处理
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
+                            虚拟机
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    <li>
+                        <a href="mailto:Andrew.Moa2005@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/AndrewMoa2005">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Andrew Moa Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Andrew Moa Blog 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow" title="' + t + '">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

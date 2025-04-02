@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="Ansa薄板网格建模" />
-    <meta property="og:title" content="Ansa薄板网格建模" />
-    <meta property="twitter:title" content="Ansa薄板网格建模" />
+    <meta name="title" content="" />
+    <meta property="og:title" content="" />
+    <meta property="twitter:title" content="" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="AndrewMoa, Andrew Moa, Andrew Moa的博客, Andrew Moa Blog, 博客, 个人网站, 仿真分析, CAE, CFD, Linux">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Ansa薄板网格建模 | Andrew Moa的博客 | Andrew Moa&#39;s Blog</title>
+    <title>Code | Andrew Moa的博客 | Andrew Moa&#39;s Blog</title>
 
-    <link rel="canonical" href="/2025/03/18/ansa-thin-mesh/">
+    <link rel="canonical" href="/categories/code/">
 
     
     
@@ -173,49 +173,14 @@
 
 
 
-
-<style type="text/css">
-    header.intro-header {
-        background-image: url('/img/home-bg.jpg')
-    }
-</style>
-
-<header class="intro-header" >
-
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                        <a class="tag" href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
-                            前处理
-                        </a>
-                        
-                        <a class="tag" href="/tags/ansa" title="ansa">
-                            ansa
-                        </a>
-                        
-                        <a class="tag" href="/tags/cae" title="cae">
-                            cae
-                        </a>
-                        
-                    </div>
-                    <h1>Ansa薄板网格建模</h1>
-                    <h2 class="subheading"></h2>
-                    <span class="meta">
-                        
-                            Posted by 
-                            
-                                Andrew Moa
-                             
-                            on 
-                            Tuesday, March 18, 2025
-                            
-                            
-                            
-                            
-                    </span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Andrew Moa Blog </h1>
+                    
+		    <span class="subheading">路漫漫其修远兮，吾将上下而求索</span>
                 </div>
             </div>
         </div>
@@ -224,248 +189,236 @@
 
 
 
-
-<article>
-    <div class="container">
-        <div class="row">
-
+  
+<div data-pagefind-ignore="all" class="container">
+    <div class="row">
+        
+        
+   	    <div class="
+            col-lg-8 col-lg-offset-1
+            col-md-8 col-md-offset-1
+            col-sm-12
+            col-xs-12
+            post-container
+        ">
             
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
+<div data-pagefind-ignore="all">
 
-                
-                <p>由于近期经常做一些冷板结构分析，涉及到薄板建模的。虽然尝试过用Shell单元进行分析，但相比于Solid单元，Shell单元做出来的结果应力、位移均有所偏大，而且涉及到接触问题更容易出现计算不收敛的情况。
-所幸Ansa提供了通过Shell单元拉伸生成体网格的方式，可以快速通过Shell单元生成Solid网格，极大地节省了建模时间。</p>
-<p>建模步骤如下：</p>
-<ol>
-<li>
-<p>薄板实体简化为Shell并划分网格，可以参考<a href="../Ansa/2025-02-27-Ansa%E6%8A%BD%E4%B8%AD%E9%9D%A2%E5%8A%9F%E8%83%BD.md">Ansa抽中面功能</a>。
+<div class="post-preview">
+    <a href="https://AndrewMoa2005.github.io/2025/04/02/qt-base-image-base64-convert-tool-image2base64/">
+        <h2 class="post-title">
+            一款基于Qt6的图片base64转换工具-Image2Base64
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            <p>经常写Markdown的小伙伴都会遇到一个问题，那就是图片存储问题。Markdown本身并不支持图片内置，传统用法一般通过外链引用本机或网络上的图片。但是当文章在网络上发表时，存储图片就成了个问题，虽然可以通过图床上传，但是操作麻烦。</p>
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Andrew Moa on Wednesday, April 2, 2025
+        
+        
+    
+    </p>
 
-  <img src="/resources/5c6da744441c0b43367e9d1ff0296ec1.png" alt="5c6da744441c0b43367e9d1ff0296ec1.png">
-
-</p>
-</li>
-<li>
-<p><code>Volume Mesh</code>→<code>Extrude</code>调出<code>Extrude</code>窗口，选中要拉伸的Shell单元。
-
-  <img src="/resources/02fe91f7f3a74047ccd442f4eaa42505.png" alt="02fe91f7f3a74047ccd442f4eaa42505.png">
-
-</p>
-</li>
-<li>
-<p>目标面选择<code>None</code>。
-
-  <img src="/resources/5818d8ffc832684765e7312eafe76ea9.png" alt="5818d8ffc832684765e7312eafe76ea9.png">
-
-</p>
-</li>
-<li>
-<p>拉伸方式选择<code>Offse</code>t，方向选择<code>Both sides (middle)</code>。
-
-  <img src="/resources/d464570c23719e82fcd4d152a9278f8d.png" alt="d464570c23719e82fcd4d152a9278f8d.png">
-
-</p>
-</li>
-<li>
-<p><code>Steps</code>选择层数，<code>Distance</code>输入薄板厚度，<code>Biasing</code>建议选择<code>Smooth</code>，<code>Finish</code>完成。
-
-  <img src="/resources/e3b90aaa49545a963c3f998a86a3a036.png" alt="e3b90aaa49545a963c3f998a86a3a036.png">
-
-</p>
-</li>
-<li>
-<p>检查生成的网格质量，修复差网格。
-
-  <img src="/resources/242f974310b6eff9061c0c8ce2230673.png" alt="242f974310b6eff9061c0c8ce2230673.png">
-
-</p>
-</li>
-</ol>
-<p>总结：这种方式比较适合厚度均匀的薄板生成体网格。但是当薄板厚度不均匀，或者存在T型连接（例如注塑件筋条等，如下图）的时候，就不适用了。
-
-  <img src="/resources/0ad79055f8a7a324c278b023ee79be6f.png" alt="0ad79055f8a7a324c278b023ee79be6f.png">
-
-</p>
+</div>
 <hr>
 
+</div>
 
-                
+            
 
-                
-                <hr>
-                <ul class="pager">
-                    
-                    <li class="previous">
-                        <a href="/2025/03/10/abaqus-connect-setup/" data-toggle="tooltip" data-placement="top" title="Abaqus接触设置">&larr;
-                            Previous Post</a>
-                    </li>
-                    
-                    
-                    <li class="next">
-                        <a href="/2025/03/19/hyperv-install-ubuntu/" data-toggle="tooltip" data-placement="top" title="Hyper-V安装Ubuntu24.04">Next
-                            Post &rarr;</a>
-                    </li>
-                    
+
+
+       	</div>
+        
+
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+	
+    <section class="visible-md visible-lg">
+	
+        <div class="short-about">
+            
+            <a href="/about">
+               <img src="/img/polarbear.jpg" alt="avatar" style="cursor: pointer" />
+            </a>
+            
+            
+                <p>CAE Engineer, Open Source Explorer</p>
+            
+           
+           <ul class="list-inline">
+               
+               <li>
+                   <a href="mailto:Andrew.Moa2005@163.com">
+                      <span class="fa-stack fa-lg">
+                          <i class="fa fa-circle fa-stack-2x"></i>
+                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                      </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+               <li>
+                   <a target="_blank" href="/img/wechat_qrcode.jpg">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               <li>
+                   <a target="_blank" href="https://github.com/AndrewMoa2005">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+            
+            
+               
+               
+               
+               
                 </ul>
-                
-
-                
-
-
-
-
-<link href="https://xxx.xxx.com/dist/Artalk.css" rel="stylesheet" />
-<script src="https://xxx.xxx.com/dist/Artalk.js"></script>
-
-
-<div id="Comments"></div>
-
-<script>
-    Artalk.init({
-        el: '#Comments',
-        pageKey: 'https:\/\/AndrewMoa2005.github.io\/2025\/03\/18\/ansa-thin-mesh\/',
-        pageTitle: 'Ansa薄板网格建模',
-        server: 'https:\/\/xxx.xxx.com',
-        site: 'xxx blog',
-    })
-</script>
-
-
             </div>
-
+    </section>
+	
+    
+    
+    
+    
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>FEATURED TAGS</h5>
+        <div class="tags">
             
             
-            <div class="
-                col-lg-2 col-lg-offset-0
-                visible-lg-block
-                sidebar-container
-                catalog-container">
-                <div class="side-catalog">
-                    <hr class="hidden-sm hidden-xs">
-                    <h5>
-                        <a class="catalog-toggle" href="#">CATALOG</a>
-                    </h5>
-                    <ul class="catalog-body"></ul>
-                </div>
-            </div>
+               
+                    <a href="/tags/abaqus" title="abaqus">
+                        abaqus
+                    </a>
+               
             
-
+               
+                    <a href="/tags/ansa" title="ansa">
+                        ansa
+                    </a>
+               
             
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-                
-                
-                <section>
-                    <hr class="hidden-sm hidden-xs">
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                        
-                        
-                        
-                        <a href="/tags/abaqus" title="abaqus">
-                            abaqus
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/ansa" title="ansa">
-                            ansa
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        <a href="/tags/cae" title="cae">
-                            cae
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/cfd" title="cfd">
-                            cfd
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/cfx" title="cfx">
-                            cfx
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/fluent" title="fluent">
-                            fluent
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/linux" title="linux">
-                            linux
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/openfoam" title="openfoam">
-                            openfoam
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        <a href="/tags/slurm" title="slurm">
-                            slurm
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
-                            star-ccm&#43;
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/su2" title="su2">
-                            su2
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/ubuntu" title="ubuntu">
-                            ubuntu
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
-                            前处理
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
-                            虚拟机
-                        </a>
-                        
-                        
-                    </div>
-                </section>
-                
-
-                
-                
-            </div>
+               
+            
+               
+                    <a href="/tags/cae" title="cae">
+                        cae
+                    </a>
+               
+            
+               
+                    <a href="/tags/cfd" title="cfd">
+                        cfd
+                    </a>
+               
+            
+               
+                    <a href="/tags/cfx" title="cfx">
+                        cfx
+                    </a>
+               
+            
+               
+                    <a href="/tags/fluent" title="fluent">
+                        fluent
+                    </a>
+               
+            
+               
+                    <a href="/tags/linux" title="linux">
+                        linux
+                    </a>
+               
+            
+               
+                    <a href="/tags/openfoam" title="openfoam">
+                        openfoam
+                    </a>
+               
+            
+               
+            
+               
+            
+               
+                    <a href="/tags/slurm" title="slurm">
+                        slurm
+                    </a>
+               
+            
+               
+                    <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
+                        star-ccm&#43;
+                    </a>
+               
+            
+               
+                    <a href="/tags/su2" title="su2">
+                        su2
+                    </a>
+               
+            
+               
+                    <a href="/tags/ubuntu" title="ubuntu">
+                        ubuntu
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                        前处理
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
+                        虚拟机
+                    </a>
+               
+            
         </div>
-    </div>
-</article>
+    </section>
+    
+
+    
+    
+    
+</div>
+
+	</div>
+</div>
+
 
 
 
@@ -525,7 +478,7 @@
             
            
                    <li>
-                       <a href='' rel="alternate" type="application/rss+xml" title="Andrew Moa Blog" >
+                       <a href='/categories/code/index.xml' rel="alternate" type="application/rss+xml" title="Andrew Moa Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fas fa-circle fa-stack-2x"></i>
                                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>

@@ -11,6 +11,7 @@ tags:
     - 前处理
     - ansa
     - cae
+    - abaqus
 URL: "/2025/04/03/ansa-abaqus-deck-bolt-pretension/"
 categories: [ "Ansa" ]    
 ---

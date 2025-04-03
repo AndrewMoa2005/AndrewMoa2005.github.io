@@ -6,8 +6,15 @@
     <description>Recent content in 前处理 on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 18 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 03 Apr 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://AndrewMoa2005.github.io/tags/%E5%89%8D%E5%A4%84%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ansa联合Abaqus分析螺栓预紧力设置</title>
+      <link>https://AndrewMoa2005.github.io/2025/04/03/ansa-abaqus-deck-bolt-pretension/</link>
+      <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>https://AndrewMoa2005.github.io/2025/04/03/ansa-abaqus-deck-bolt-pretension/</guid>
+      <description>&lt;p&gt;Ansa联合Abaqus分析经常遇到螺栓施加预紧力问题，除了设置复杂外还容易踩坑，一不小心就会遇到各种各样的问题。下面记录一下Ansa螺栓预紧力设置过程和一些坑，为后面相关分析作参考。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Ansa薄板网格建模</title>
       <link>https://AndrewMoa2005.github.io/2025/03/18/ansa-thin-mesh/</link>

@@ -23,7 +23,7 @@ home = ["HTML", "RSS", "Algolia"]
   SEOTitle = "Andrew Moa的博客 | Andrew Moa's Blog"
   description = "AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。"
   keyword = "AndrewMoa, Andrew Moa, Andrew Moa的博客, Andrew Moa Blog, 博客, 个人网站, 仿真分析, CAE, CFD, Linux"
-  slogan = "路漫漫其修远兮，吾将上下而求索"
+  slogan = "天行健，君子以自强不息"
   upstreamAttribution = true
 
   image_404 = "img/404-bg.jpg"
@@ -31,12 +31,12 @@ home = ["HTML", "RSS", "Algolia"]
   omit_categories = false
 
   # leancloud storage for page view counter
-  page_view_counter = false
-  leancloud_app_id = ""
-  leancloud_app_key = ""
+  page_view_counter = true
+  leancloud_app_id = "OhzpJkq9ZB3Qufsbkn2JXfca-gzGzoHsz"
+  leancloud_app_key = "FRRO8xHeZNKwmEXmCb5ALnpv"
 
   # algolia site search
-  algolia_search = true
+  algolia_search = false
   algolia_appId = ""
   algolia_indexName = ""
   algolia_apiKey = ""
@@ -142,3 +142,15 @@ params = ["categories", "tags"]
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+[params.giscus]
+data_repo="AndrewMoa2005/AndrewMoa2005.github.io"
+data_repo_id="R_kgDOOSI4_A"
+data_category="General"
+data_category_id="DIC_kwDOOSI4_M4Co1Kf"
+data_mapping="pathname"
+data_reactions_enabled="1"
+data_emit_metadata="0"
+data_theme="light"
+data_lang="zh-CN"
+crossorigin="anonymous"

@@ -3,7 +3,11 @@
 echo -e " Deploying updates to GitHub... "
 
 rm -rf public
-rm -rf docs
+# rm -rf docs
+
+cd docs
+find * | grep -v CNAME | xargs rm
+cd ..
 
 # hugo build
 hugo build -d docs

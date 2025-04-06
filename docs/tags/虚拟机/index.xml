@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>虚拟机 on Andrew Moa Blog</title>
-    <link>https://AndrewMoa2005.github.io/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/</link>
+    <link>https://andrewmoa.site/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/</link>
     <description>Recent content in 虚拟机 on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <lastBuildDate>Fri, 21 Mar 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://AndrewMoa2005.github.io/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://andrewmoa.site/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hyper-V虚拟交换机NAT设置静态IP</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/21/hyperv-setup-static-ipaddr-for-nat/</link>
+      <link>https://andrewmoa.site/2025/03/21/hyperv-setup-static-ipaddr-for-nat/</link>
       <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/21/hyperv-setup-static-ipaddr-for-nat/</guid>
+      <guid>https://andrewmoa.site/2025/03/21/hyperv-setup-static-ipaddr-for-nat/</guid>
       <description>&lt;p&gt;前面讲过用NAT+端口映射的方式访问虚拟机，但使用过程中发现一个问题：每次宿主机重启之后，默认的&lt;code&gt;Default Switch&lt;/code&gt;IP地址都会变更，造成虚拟机无法访问网关进而无法联网。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Hyper-V安装Ubuntu24.04</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/19/hyperv-install-ubuntu/</link>
+      <link>https://andrewmoa.site/2025/03/19/hyperv-install-ubuntu/</link>
       <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/19/hyperv-install-ubuntu/</guid>
+      <guid>https://andrewmoa.site/2025/03/19/hyperv-install-ubuntu/</guid>
       <description>&lt;h2 id=&#34;1-需求&#34;&gt;1. 需求&lt;/h2&gt;&#xA;&lt;p&gt;考虑在新电脑上安装Linux，不是双系统，因为还要满足日常办公。不喜欢折腾的可以用WSL，这里用Hyper-V实现，同时通过端口映射实现外网访问虚拟机。&lt;/p&gt;</description>
     </item>
   </channel>

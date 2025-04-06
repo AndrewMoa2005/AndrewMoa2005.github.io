@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Pbs on Andrew Moa Blog</title>
-    <link>https://AndrewMoa2005.github.io/tags/pbs/</link>
+    <link>https://andrewmoa.site/tags/pbs/</link>
     <description>Recent content in Pbs on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 12 Aug 2021 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://AndrewMoa2005.github.io/tags/pbs/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://andrewmoa.site/tags/pbs/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ArchLinux下OpenFOAM编译安装与PBS并行化</title>
-      <link>https://AndrewMoa2005.github.io/2021/08/12/archlinux-compile-openfoam/</link>
+      <link>https://andrewmoa.site/2021/08/12/archlinux-compile-openfoam/</link>
       <pubDate>Thu, 12 Aug 2021 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2021/08/12/archlinux-compile-openfoam/</guid>
+      <guid>https://andrewmoa.site/2021/08/12/archlinux-compile-openfoam/</guid>
       <description>&lt;h2 id=&#34;1-源代码下载&#34;&gt;1. 源代码下载&lt;/h2&gt;&#xA;&lt;h3 id=&#34;11-下载openfoam源代码&#34;&gt;1.1 下载OpenFOAM源代码&lt;/h3&gt;&#xA;&lt;p&gt;在&lt;code&gt;${HOME}&lt;/code&gt;目录下新建OpenFOAM目录：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#f1fa8c&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;HOME&lt;/span&gt;&lt;span style=&#34;color:#f1fa8c&#34;&gt;}&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir OpenFOAM &lt;span style=&#34;color:#ff79c6&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; OpenFOAM&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从github下载OpenFOAM和ThirdParty的源代码，放到&lt;code&gt;${HOME}/OpenFOAM&lt;/code&gt;目录中：&lt;/p&gt;</description>
     </item>
   </channel>

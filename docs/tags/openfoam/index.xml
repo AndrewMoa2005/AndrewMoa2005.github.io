@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Openfoam on Andrew Moa Blog</title>
-    <link>https://AndrewMoa2005.github.io/tags/openfoam/</link>
+    <link>https://andrewmoa.site/tags/openfoam/</link>
     <description>Recent content in Openfoam on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 27 Mar 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://AndrewMoa2005.github.io/tags/openfoam/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://andrewmoa.site/tags/openfoam/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>OpenFOAM编译安装cfmesh和ccm工具</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/27/openfoam-compile-cfmesh-and-ccm/</link>
+      <link>https://andrewmoa.site/2025/03/27/openfoam-compile-cfmesh-and-ccm/</link>
       <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/27/openfoam-compile-cfmesh-and-ccm/</guid>
+      <guid>https://andrewmoa.site/2025/03/27/openfoam-compile-cfmesh-and-ccm/</guid>
       <description>&lt;h2 id=&#34;1-编译cfmesh&#34;&gt;1. 编译cfmesh&lt;/h2&gt;&#xA;&lt;p&gt;前期编译安装的是com版的OpenFOAM，版本号是v2412，没有附带cfmesh的源码。&#xA;根据官方文档的提示，需要手动下载cfmesh的源码文件：&lt;/p&gt;</description>
     </item>
     <item>
       <title>求解器验证对比——旋转和静止同心圆柱之间的层流</title>
-      <link>https://AndrewMoa2005.github.io/2021/08/14/vmfl001/</link>
+      <link>https://andrewmoa.site/2021/08/14/vmfl001/</link>
       <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2021/08/14/vmfl001/</guid>
+      <guid>https://andrewmoa.site/2021/08/14/vmfl001/</guid>
       <description>&lt;p&gt;本文采用不同CFD求解器，对层流流动问题进行验证。通过列举不同求解器的操作过程和输出结果的差异，验证各个求解器的精度。&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;1-问题描述&#34;&gt;1. 问题描述&lt;/h2&gt;&#xA;&lt;p&gt;如下图，建立两个同心圆柱间的定常层流模型。流动由内筒以恒定角速度旋转而引起，而外筒保持静止。使用周期性边界，只需要对流域的一部分进行建模。物理模型和输入数据如下表所示。&lt;/p&gt;</description>
     </item>
   </channel>

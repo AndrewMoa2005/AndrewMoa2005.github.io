@@ -2,45 +2,45 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Slurm on Andrew Moa Blog</title>
-    <link>https://AndrewMoa2005.github.io/tags/slurm/</link>
+    <link>https://andrewmoa.site/tags/slurm/</link>
     <description>Recent content in Slurm on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 27 Mar 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://AndrewMoa2005.github.io/tags/slurm/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://andrewmoa.site/tags/slurm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ubuntu编译安装SU2</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/27/ubuntu-compile-and-install-su2/</link>
+      <link>https://andrewmoa.site/2025/03/27/ubuntu-compile-and-install-su2/</link>
       <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/27/ubuntu-compile-and-install-su2/</guid>
+      <guid>https://andrewmoa.site/2025/03/27/ubuntu-compile-and-install-su2/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://su2code.github.io/&#34;&gt;SU2&lt;/a&gt;是一款由斯坦福大学航空航天学院开发的开源CFD求解器，基于C++和Python开发，定位类似于OpenFOAM，但不支持多面体网格。相比OpenFOAM，SU2在高速可压缩流方面的求解更有优势。&lt;/p&gt;&#xA;&lt;p&gt;下载SU2源代码：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Bash&#34; data-lang=&#34;Bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code &lt;span style=&#34;color:#ff79c6&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#6272a4&#34;&gt;# 只clone最近commit版本，加快下载速度&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git clone https://github.com/su2code/SU2.git --depth&lt;span style=&#34;color:#ff79c6&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#bd93f9&#34;&gt;1&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;定义环境变量，新建配置文件&lt;code&gt;su2.env&lt;/code&gt;：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Bash&#34; data-lang=&#34;Bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;touch &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code/su2.env&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;chmod +x &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code/su2.env&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;vim &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code/su2.env&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在&lt;code&gt;su2.env&lt;/code&gt;文件中加入以下内容，保存退出：&lt;/p&gt;</description>
     </item>
     <item>
       <title>Slurm提交Fluent和CFX的计算脚本</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/26/slurm-script-for-fluent-and-cfx/</link>
+      <link>https://andrewmoa.site/2025/03/26/slurm-script-for-fluent-and-cfx/</link>
       <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/26/slurm-script-for-fluent-and-cfx/</guid>
+      <guid>https://andrewmoa.site/2025/03/26/slurm-script-for-fluent-and-cfx/</guid>
       <description>&lt;h2 id=&#34;1-fluent&#34;&gt;1. Fluent&lt;/h2&gt;&#xA;&lt;p&gt;首先要编写Fluent的jou脚本：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/read-case &amp;#34;small_fan.cas.h5&amp;#34; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/initialize/hyb-initialization &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/iterate 100 &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-case &amp;#34;small_fan_results.cas.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-data &amp;#34;small_fan_results.dat.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/exit ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个jou文件很简单，就是告诉Fluent读取哪个文件、怎么初始化、迭代多少步、如何保存直至最后退出。&#xA;如果计算比较复杂的，比如涉及到UDF加载或特殊条件初始化设置的，还需要增加相应的命令行。&#xA;不熟悉怎么编写TUI命令的话，可以通过Fluent图形界面下面的命令行窗口录制脚本。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ubuntu安装SIMULIA2024</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/21/ubuntu-install-simulia/</link>
+      <link>https://andrewmoa.site/2025/03/21/ubuntu-install-simulia/</link>
       <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/21/ubuntu-install-simulia/</guid>
+      <guid>https://andrewmoa.site/2025/03/21/ubuntu-install-simulia/</guid>
       <description>&lt;p&gt;为什么选择SIMULIA？首先是Abaqus功能强大，绝大多数结构问题都能求解。其次流固耦合方便，STAR-CCM+自带案例就手把手你怎么和Abaqus双向耦合。再次是过往经历的惯性，毕竟主机厂Abaqus用得可不少，不缺案例和资源。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ubuntu安装Slurm</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/20/ubuntu-install-slurm/</link>
+      <link>https://andrewmoa.site/2025/03/20/ubuntu-install-slurm/</link>
       <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/20/ubuntu-install-slurm/</guid>
+      <guid>https://andrewmoa.site/2025/03/20/ubuntu-install-slurm/</guid>
       <description>&lt;p&gt;Slurm，和PBS、LSF一样，超算上常用的任务管理系统。Slurm优点是开源免费、活跃度很高，近几年国内新兴的超算平台几乎都提供了Slurm作为主要的任务管理系统。PBS开源后活跃度低得可怜，更新到最新系统后安装一直出问题，提了issue也不见答复。LSF有版权风险，国内应用也不多，属于很少见的类型。至于命令和脚本，这三家都大差不差，学会了其中一家另外的也是手到擒来。&lt;/p&gt;</description>
     </item>
     <item>
       <title>超算平台部署STAR-CCM&#43;</title>
-      <link>https://AndrewMoa2005.github.io/2022/04/08/slurm-starccm/</link>
+      <link>https://andrewmoa.site/2022/04/08/slurm-starccm/</link>
       <pubDate>Fri, 08 Apr 2022 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2022/04/08/slurm-starccm/</guid>
+      <guid>https://andrewmoa.site/2022/04/08/slurm-starccm/</guid>
       <description>&lt;p&gt;最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。&lt;/p&gt;</description>
     </item>
   </channel>

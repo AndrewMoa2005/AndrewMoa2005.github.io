@@ -2,38 +2,38 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Abaqus on Andrew Moa Blog</title>
-    <link>https://AndrewMoa2005.github.io/tags/abaqus/</link>
+    <link>https://andrewmoa.site/tags/abaqus/</link>
     <description>Recent content in Abaqus on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 03 Apr 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://AndrewMoa2005.github.io/tags/abaqus/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://andrewmoa.site/tags/abaqus/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ansa联合Abaqus分析螺栓预紧力设置</title>
-      <link>https://AndrewMoa2005.github.io/2025/04/03/ansa-abaqus-deck-bolt-pretension/</link>
+      <link>https://andrewmoa.site/2025/04/03/ansa-abaqus-deck-bolt-pretension/</link>
       <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/04/03/ansa-abaqus-deck-bolt-pretension/</guid>
+      <guid>https://andrewmoa.site/2025/04/03/ansa-abaqus-deck-bolt-pretension/</guid>
       <description>&lt;p&gt;Ansa联合Abaqus分析经常遇到螺栓施加预紧力问题，除了设置复杂外还容易踩坑，一不小心就会遇到各种各样的问题。下面记录一下Ansa螺栓预紧力设置过程和一些坑，为后面相关分析作参考。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ubuntu安装SIMULIA2024</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/21/ubuntu-install-simulia/</link>
+      <link>https://andrewmoa.site/2025/03/21/ubuntu-install-simulia/</link>
       <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/21/ubuntu-install-simulia/</guid>
+      <guid>https://andrewmoa.site/2025/03/21/ubuntu-install-simulia/</guid>
       <description>&lt;p&gt;为什么选择SIMULIA？首先是Abaqus功能强大，绝大多数结构问题都能求解。其次流固耦合方便，STAR-CCM+自带案例就手把手你怎么和Abaqus双向耦合。再次是过往经历的惯性，毕竟主机厂Abaqus用得可不少，不缺案例和资源。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Abaqus接触设置</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</link>
+      <link>https://andrewmoa.site/2025/03/10/abaqus-connect-setup/</link>
       <pubDate>Mon, 10 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/10/abaqus-connect-setup/</guid>
-      <description>&lt;h2 id=&#34;1-相关命令&#34;&gt;1. 相关命令&lt;/h2&gt;&#xA;&lt;p&gt;Ansa中，给Abaqus设置接触一般常用以下命令：&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/resources/cb35dcf11a636abacef3aabe97112e62.png&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-接触对&#34;&gt;2. 接触对&lt;/h2&gt;&#xA;&lt;p&gt;最常用的接触对，一般通过&lt;code&gt;AUXILIARIES&lt;/code&gt;→ &lt;code&gt;CONTACT&lt;/code&gt;→&lt;code&gt;CONTACT&lt;/code&gt;调出创建对话框。&#xA;&#xA;  &lt;img src=&#34;https://AndrewMoa2005.github.io/resources/038dffae1f80e68c064572e228df00c6.png&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34;&gt;&#xA;&#xA;&#xA;常用设置一般为以下几个：&lt;/p&gt;</description>
+      <guid>https://andrewmoa.site/2025/03/10/abaqus-connect-setup/</guid>
+      <description>&lt;h2 id=&#34;1-相关命令&#34;&gt;1. 相关命令&lt;/h2&gt;&#xA;&lt;p&gt;Ansa中，给Abaqus设置接触一般常用以下命令：&#xA;&#xA;  &lt;img src=&#34;https://andrewmoa.site/resources/cb35dcf11a636abacef3aabe97112e62.png&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-接触对&#34;&gt;2. 接触对&lt;/h2&gt;&#xA;&lt;p&gt;最常用的接触对，一般通过&lt;code&gt;AUXILIARIES&lt;/code&gt;→ &lt;code&gt;CONTACT&lt;/code&gt;→&lt;code&gt;CONTACT&lt;/code&gt;调出创建对话框。&#xA;&#xA;  &lt;img src=&#34;https://andrewmoa.site/resources/038dffae1f80e68c064572e228df00c6.png&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34;&gt;&#xA;&#xA;&#xA;常用设置一般为以下几个：&lt;/p&gt;</description>
     </item>
     <item>
       <title>Abaqus提交命令</title>
-      <link>https://AndrewMoa2005.github.io/2025/03/06/abaqus-submit-command/</link>
+      <link>https://andrewmoa.site/2025/03/06/abaqus-submit-command/</link>
       <pubDate>Thu, 06 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/2025/03/06/abaqus-submit-command/</guid>
+      <guid>https://andrewmoa.site/2025/03/06/abaqus-submit-command/</guid>
       <description>&lt;p&gt;用Ansa输出inp文件之后，可以通过Abaqus CAE窗口界面提交inp文件进行计算，也可以通过命令行方式提交计算。使用命令行提交需要添加Path，Windows下通常是&lt;code&gt;[Abaqus安装目录]\Commands&lt;/code&gt;路径。&lt;/p&gt;</description>
     </item>
   </channel>

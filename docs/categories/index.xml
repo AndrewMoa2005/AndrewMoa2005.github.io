@@ -2,52 +2,52 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Andrew Moa Blog</title>
-    <link>https://AndrewMoa2005.github.io/categories/</link>
+    <link>https://andrewmoa.site/categories/</link>
     <description>Recent content in Categories on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 03 Apr 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://AndrewMoa2005.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://andrewmoa.site/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ansa</title>
-      <link>https://AndrewMoa2005.github.io/categories/ansa/</link>
+      <link>https://andrewmoa.site/categories/ansa/</link>
       <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/categories/ansa/</guid>
+      <guid>https://andrewmoa.site/categories/ansa/</guid>
       <description></description>
     </item>
     <item>
       <title>Code</title>
-      <link>https://AndrewMoa2005.github.io/categories/code/</link>
+      <link>https://andrewmoa.site/categories/code/</link>
       <pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/categories/code/</guid>
+      <guid>https://andrewmoa.site/categories/code/</guid>
       <description></description>
     </item>
     <item>
       <title>CFD</title>
-      <link>https://AndrewMoa2005.github.io/categories/cfd/</link>
+      <link>https://andrewmoa.site/categories/cfd/</link>
       <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/categories/cfd/</guid>
+      <guid>https://andrewmoa.site/categories/cfd/</guid>
       <description></description>
     </item>
     <item>
       <title>Linux</title>
-      <link>https://AndrewMoa2005.github.io/categories/linux/</link>
+      <link>https://andrewmoa.site/categories/linux/</link>
       <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/categories/linux/</guid>
+      <guid>https://andrewmoa.site/categories/linux/</guid>
       <description></description>
     </item>
     <item>
       <title>Tech</title>
-      <link>https://AndrewMoa2005.github.io/categories/tech/</link>
+      <link>https://andrewmoa.site/categories/tech/</link>
       <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/categories/tech/</guid>
+      <guid>https://andrewmoa.site/categories/tech/</guid>
       <description></description>
     </item>
     <item>
       <title>Zhihu</title>
-      <link>https://AndrewMoa2005.github.io/categories/zhihu/</link>
+      <link>https://andrewmoa.site/categories/zhihu/</link>
       <pubDate>Fri, 08 Apr 2022 00:00:00 +0000</pubDate>
-      <guid>https://AndrewMoa2005.github.io/categories/zhihu/</guid>
+      <guid>https://andrewmoa.site/categories/zhihu/</guid>
       <description></description>
     </item>
   </channel>

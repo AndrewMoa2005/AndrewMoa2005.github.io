@@ -6,7 +6,7 @@ rm -rf public
 # rm -rf docs
 
 cd docs
-find * | grep -v CNAME | xargs rm
+find * | grep -v CNAME | xargs rm -rf
 cd ..
 
 # hugo build

@@ -62,7 +62,7 @@
       <link>https://andrewmoa.site/2025/03/05/ansa-connector/</link>
       <pubDate>Wed, 05 Mar 2025 00:00:00 +0000</pubDate>
       <guid>https://andrewmoa.site/2025/03/05/ansa-connector/</guid>
-      <description>&lt;p&gt;Ansa可以通过Connection功能快速设置连接。&lt;/p&gt;&#xA;&lt;p&gt;这里以螺接为例，首先将所有螺钉单独显示出来。&#xA;使用&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Curves&lt;/code&gt;→&lt;code&gt;Tubes2Curve&lt;/code&gt;将螺接钉几何转换成曲线。&#xA;&#xA;  &lt;img src=&#34;https://andrewmoa.site/resources/cf8ec5657b55d755b53386ae1b4272be.png&#34; alt=&#34;cf8ec5657b55d755b53386ae1b4272be.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
+      <description>&lt;p&gt;Ansa可以通过Connection功能快速设置连接。&lt;/p&gt;&#xA;&lt;p&gt;这里以螺栓为例，首先将所有螺栓单独显示出来。&#xA;使用&lt;code&gt;TOPO&lt;/code&gt;→&lt;code&gt;Curves&lt;/code&gt;→&lt;code&gt;Tubes2Curve&lt;/code&gt;将螺栓几何转换成曲线。&#xA;&#xA;  &lt;img src=&#34;https://andrewmoa.site/resources/cf8ec5657b55d755b53386ae1b4272be.png&#34; alt=&#34;cf8ec5657b55d755b53386ae1b4272be.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ansa螺钉孔washer网格</title>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.145.0">
+	<meta name="generator" content="Hugo 0.146.3">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -206,6 +206,52 @@
 <div data-pagefind-ignore="all">
 
 <div class="post-preview">
+    <a href="https://andrewmoa.site/2025/03/24/ubuntu-setup-samba/">
+        <h2 class="post-title">
+            Ubuntu24.04搭建Samba服务器
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            <p>由于Ubuntu运行在虚拟机中，通过Ubuntu挂载Windows共享文件夹，在挂载点中运行某些CAE软件会出现计算报错。考虑将Ubuntu文件夹共享给Windows，因此需要在Ubuntu系统上搭建Samba服务器。</p>
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Andrew Moa on Monday, March 24, 2025
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="https://andrewmoa.site/2025/03/21/hyperv-setup-static-ipaddr-for-nat/">
+        <h2 class="post-title">
+            Hyper-V虚拟交换机NAT设置静态IP
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            <p>前面讲过用NAT+端口映射的方式访问虚拟机，但使用过程中发现一个问题：每次宿主机重启之后，默认的<code>Default Switch</code>IP地址都会变更，造成虚拟机无法访问网关进而无法联网。</p>
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Andrew Moa on Friday, March 21, 2025
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="https://andrewmoa.site/2025/03/21/ubuntu-install-simulia/">
         <h2 class="post-title">
             Ubuntu安装SIMULIA2024
@@ -267,54 +313,6 @@
     <p class="post-meta">
     
         Posted by Andrew Moa on Thursday, March 20, 2025
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://andrewmoa.site/2025/03/19/hyperv-install-ubuntu/">
-        <h2 class="post-title">
-            Hyper-V安装Ubuntu24.04
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            <h2 id="1-需求">1. 需求</h2>
-<p>考虑在新电脑上安装Linux，不是双系统，因为还要满足日常办公。不喜欢折腾的可以用WSL，这里用Hyper-V实现，同时通过端口映射实现外网访问虚拟机。</p>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Andrew Moa on Wednesday, March 19, 2025
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://andrewmoa.site/2025/03/18/ansa-thin-mesh/">
-        <h2 class="post-title">
-            Ansa薄板网格建模
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            <p>由于近期经常做一些冷板结构分析，涉及到薄板建模的。虽然尝试过用Shell单元进行分析，但相比于Solid单元，Shell单元做出来的结果应力、位移均有所偏大，而且涉及到接触问题更容易出现计算不收敛的情况。
-所幸Ansa提供了通过Shell单元拉伸生成体网格的方式，可以快速通过Shell单元生成Solid网格，极大地节省了建模时间。</p>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Andrew Moa on Tuesday, March 18, 2025
         
         
     

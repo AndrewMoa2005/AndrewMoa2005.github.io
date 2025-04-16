@@ -173,183 +173,14 @@
 
 
 
-
-<style type="text/css">
-    header.intro-header {
-        background-image: url('/img/home-bg.jpg')
-    }
-</style>
-
-<header class="intro-header" >
-
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                        <a class="tag" href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
-                            前处理
-                        </a>
-                        
-                        <a class="tag" href="/tags/ansa" title="ansa">
-                            ansa
-                        </a>
-                        
-                        <a class="tag" href="/tags/cae" title="cae">
-                            cae
-                        </a>
-                        
-                    </div>
-                    <h1>Ansa螺钉孔washer网格</h1>
-                    <h2 class="subheading"></h2>
-                    <span class="meta">
-                        
-                            Posted by 
-                            
-                                Andrew Moa
-                             
-                            on 
-                            Friday, February 28, 2025
-                            
-                                <span id="/2025/02/28/ansa-washer-mesh/" class="leancloud_visitors meta_data_item" data-flag-title="">
-    <span class="post-meta-item-icon">
-      <span class="octicon octicon-eye"></span> 
-    </span>
-    <i class="fa fa-eye"></i>
-    <span class="old-visitors-count" style="display: none;"></span>
-    <span class="leancloud-visitors-count"></span>
-</span>
-
-
-
-<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
-
-<script>
-	AV.initialize("OhzpJkq9ZB3Qufsbkn2JXfca-gzGzoHsz", "FRRO8xHeZNKwmEXmCb5ALnpv");
-</script>
-
-<script type="text/javascript">
-function showTime(Counter) {
-    var query = new AV.Query(Counter);
-    var entries = [];
-    var $visitors = $(".leancloud_visitors");
-
-    $visitors.each(function() {
-        entries.push($(this).attr("id").trim());
-    });
-
-    query.containedIn('url', entries);
-    query.find()
-        .done(function(results) {
-            var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-            var OLD_COUNT_CONTAINER_REF = '.old-visitors-count';
-
-            
-            
-            
-            
-
-            for (var i = 0; i < results.length; i++) {
-                var item = results[i];
-                var url = item.get('url');
-                var time = item.get('time');
-                var element = document.getElementById(url);
-
-                $(element).find(COUNT_CONTAINER_REF).text(time);
-            }
-            for (var i = 0; i < entries.length; i++) {
-                var url = entries[i];
-                var element = document.getElementById(url);
-                var countSpan = $(element).find(COUNT_CONTAINER_REF);
-                if (countSpan.text() == '') {
-                    var oldCountSpan = $(element).find(OLD_COUNT_CONTAINER_REF).text();
-                    if(oldCountSpan!=''){
-                        countSpan.text(0+parseInt(oldCountSpan));
-                    }else{
-                        countSpan.text(0);          
-                    }
-                }
-            }
-        })
-        .fail(function(object, error) {
-            console.log("Error: " + error.code + " " + error.message);
-        });
-}
-
-function addCount(Counter) {
-    var $visitors = $(".leancloud_visitors");
-    var url = $visitors.attr('id').trim();
-    var title = $visitors.attr('data-flag-title').trim();
-    var query = new AV.Query(Counter);
-
-    query.equalTo("url", url);
-    query.find({
-        success: function(results) {
-            if (results.length > 0) {
-                var counter = results[0];
-                counter.fetchWhenSave(true);
-                counter.increment("time");
-                counter.save(null, {
-                    success: function(counter) {
-                        var $element = $(document.getElementById(url));
-                        $element.find('.leancloud-visitors-count').text(counter.get('time'));
-                    },
-                    error: function(counter, error) {
-                        console.log('Failed to save Visitor num, with error message: ' + error.message);
-                    }
-                });
-            } else {
-                var newcounter = new Counter();
-                 
-                var acl = new AV.ACL();
-                acl.setPublicReadAccess(true);
-                acl.setPublicWriteAccess(true);
-                newcounter.setACL(acl);
-                 
-                newcounter.set("title", title);
-                newcounter.set("url", url);
-                var OLD_COUNT_CONTAINER_REF = '.old-visitors-count';
-                var $element = $(document.getElementById(url));
-                var oldCountSpan = $element.find(OLD_COUNT_CONTAINER_REF).text();
-                if(oldCountSpan!=''){
-                    newcounter.set("time", parseInt(oldCountSpan)+1);
-                }else{
- 	                    newcounter.set("time",  1);
-                }
-                newcounter.save(null, {
-                    success: function(newcounter) {
-                        var $element = $(document.getElementById(url));
-                        $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-                    },
-                    error: function(newcounter, error) {
-                        console.log('Failed to create');
-                    }
-                });
-            }
-        },
-        error: function(error) {
-            console.log('Error:' + error.code + " " + error.message);
-        }
-    });
-}
-$(function() {
-    var Counter = AV.Object.extend("Counter");
-    
-    
-    if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-    } else {
-        showTime(Counter);
-    }
-});
-</script>
-
-                            
-                            
-                            
-                            
-                    </span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Andrew Moa Blog </h1>
+                    
+		    <span class="subheading">天行健，君子以自强不息</span>
                 </div>
             </div>
         </div>
@@ -362,14 +193,14 @@ $(function() {
 <article>
     <div class="container">
         <div class="row">
-
             
             <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
-
-                
+            col-lg-8 col-lg-offset-1
+            col-md-8 col-md-offset-1
+            col-sm-12
+            col-xs-12
+            post-container">
+            
                 <p>使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。
 
   <img src="/resources/ff86c5fd4ac5cc0624c9013d21a1dab5.png" alt="ff86c5fd4ac5cc0624c9013d21a1dab5.png">
@@ -397,28 +228,9 @@ $(function() {
 </p>
 <hr>
 
-
-                
-
-                
-                <hr>
-                <ul class="pager">
-                    
-                    <li class="previous">
-                        <a href="/2025/02/27/ansa-midsurf/" data-toggle="tooltip" data-placement="top" title="Ansa抽中面功能">&larr;
-                            Previous Post</a>
-                    </li>
-                    
-                    
-                    <li class="next">
-                        <a href="/2025/03/05/ansa-connector/" data-toggle="tooltip" data-placement="top" title="Ansa快速设置连接">Next
-                            Post &rarr;</a>
-                    </li>
-                    
-                </ul>
-                
-
-                
+            
+             
+            
 <script src="https://giscus.app/client.js"
         data-repo="AndrewMoa2005/AndrewMoa2005.github.io"
         data-repo-id="R_kgDOOSI4_A"
@@ -454,142 +266,197 @@ $(function() {
 </script>
 
 
-            </div>
-
             
-            
-            <div class="
-                col-lg-2 col-lg-offset-0
-                visible-lg-block
-                sidebar-container
-                catalog-container">
-                <div class="side-catalog">
-                    <hr class="hidden-sm hidden-xs">
-                    <h5>
-                        <a class="catalog-toggle" href="#">CATALOG</a>
-                    </h5>
-                    <ul class="catalog-body"></ul>
-                </div>
             </div>
             
-
             
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
 
-                
-                
-                <section>
-                    <hr class="hidden-sm hidden-xs">
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                        
-                        
-                        
-                        <a href="/tags/abaqus" title="abaqus">
-                            abaqus
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/ansa" title="ansa">
-                            ansa
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        <a href="/tags/cae" title="cae">
-                            cae
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/cfd" title="cfd">
-                            cfd
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/cfx" title="cfx">
-                            cfx
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/fluent" title="fluent">
-                            fluent
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/linux" title="linux">
-                            linux
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/openfoam" title="openfoam">
-                            openfoam
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        <a href="/tags/slurm" title="slurm">
-                            slurm
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
-                            star-ccm&#43;
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/su2" title="su2">
-                            su2
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/ubuntu" title="ubuntu">
-                            ubuntu
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
-                            前处理
-                        </a>
-                        
-                        
-                        
-                        <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
-                            虚拟机
-                        </a>
-                        
-                        
-                    </div>
-                </section>
-                
-
-                
-                
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+	
+    <section class="visible-md visible-lg">
+	
+        <div class="short-about">
+            
+            <a href="/about">
+               <img src="/img/polarbear.jpg" alt="avatar" style="cursor: pointer" />
+            </a>
+            
+            
+                <p>CAE Engineer, Open Source Explorer</p>
+            
+           
+           <ul class="list-inline">
+               
+               <li>
+                   <a href="mailto:Andrew.Moa2005@163.com">
+                      <span class="fa-stack fa-lg">
+                          <i class="fa fa-circle fa-stack-2x"></i>
+                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                      </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+               <li>
+                   <a target="_blank" href="/img/wechat_qrcode.jpg">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               <li>
+                   <a target="_blank" href="https://github.com/AndrewMoa2005">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+            
+            
+               
+               
+               
+               
+                </ul>
             </div>
+    </section>
+	
+    
+    
+    
+    
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>FEATURED TAGS</h5>
+        <div class="tags">
+            
+            
+               
+                    <a href="/tags/abaqus" title="abaqus">
+                        abaqus
+                    </a>
+               
+            
+               
+                    <a href="/tags/ansa" title="ansa">
+                        ansa
+                    </a>
+               
+            
+               
+            
+               
+            
+               
+                    <a href="/tags/cae" title="cae">
+                        cae
+                    </a>
+               
+            
+               
+                    <a href="/tags/cfd" title="cfd">
+                        cfd
+                    </a>
+               
+            
+               
+                    <a href="/tags/cfx" title="cfx">
+                        cfx
+                    </a>
+               
+            
+               
+                    <a href="/tags/fluent" title="fluent">
+                        fluent
+                    </a>
+               
+            
+               
+                    <a href="/tags/linux" title="linux">
+                        linux
+                    </a>
+               
+            
+               
+                    <a href="/tags/openfoam" title="openfoam">
+                        openfoam
+                    </a>
+               
+            
+               
+            
+               
+            
+               
+            
+               
+            
+               
+                    <a href="/tags/slurm" title="slurm">
+                        slurm
+                    </a>
+               
+            
+               
+                    <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
+                        star-ccm&#43;
+                    </a>
+               
+            
+               
+                    <a href="/tags/su2" title="su2">
+                        su2
+                    </a>
+               
+            
+               
+                    <a href="/tags/ubuntu" title="ubuntu">
+                        ubuntu
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                        前处理
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
+                        虚拟机
+                    </a>
+               
+            
+        </div>
+    </section>
+    
+
+    
+    
+    
+</div>
+
         </div>
     </div>
 </article>

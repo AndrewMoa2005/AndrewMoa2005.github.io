@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.145.0">
+	<meta name="generator" content="Hugo 0.146.3">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -206,6 +206,54 @@
 <div data-pagefind-ignore="all">
 
 <div class="post-preview">
+    <a href="https://andrewmoa.site/2025/03/19/hyperv-install-ubuntu/">
+        <h2 class="post-title">
+            Hyper-V安装Ubuntu24.04
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            <h2 id="1-需求">1. 需求</h2>
+<p>考虑在新电脑上安装Linux，不是双系统，因为还要满足日常办公。不喜欢折腾的可以用WSL，这里用Hyper-V实现，同时通过端口映射实现外网访问虚拟机。</p>
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Andrew Moa on Wednesday, March 19, 2025
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="https://andrewmoa.site/2025/03/18/ansa-thin-mesh/">
+        <h2 class="post-title">
+            Ansa薄板网格建模
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            <p>由于近期经常做一些冷板结构分析，涉及到薄板建模的。虽然尝试过用Shell单元进行分析，但相比于Solid单元，Shell单元做出来的结果应力、位移均有所偏大，而且涉及到接触问题更容易出现计算不收敛的情况。
+所幸Ansa提供了通过Shell单元拉伸生成体网格的方式，可以快速通过Shell单元生成Solid网格，极大地节省了建模时间。</p>
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Andrew Moa on Tuesday, March 18, 2025
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="https://andrewmoa.site/2025/03/10/abaqus-connect-setup/">
         <h2 class="post-title">
             Abaqus接触设置
@@ -322,67 +370,6 @@
     <p class="post-meta">
     
         Posted by Andrew Moa on Wednesday, March 5, 2025
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://andrewmoa.site/2025/03/05/ansa-connector/">
-        <h2 class="post-title">
-            Ansa快速设置连接
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            <p>Ansa可以通过Connection功能快速设置连接。</p>
-<p>这里以螺栓为例，首先将所有螺栓单独显示出来。
-使用<code>TOPO</code>→<code>Curves</code>→<code>Tubes2Curve</code>将螺栓几何转换成曲线。
-
-  <img src="/resources/cf8ec5657b55d755b53386ae1b4272be.png" alt="cf8ec5657b55d755b53386ae1b4272be.png">
-
-</p>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Andrew Moa on Wednesday, March 5, 2025
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://andrewmoa.site/2025/02/28/ansa-washer-mesh/">
-        <h2 class="post-title">
-            Ansa螺钉孔washer网格
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            <p>使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。
-
-  <img src="/resources/ff86c5fd4ac5cc0624c9013d21a1dab5.png" alt="ff86c5fd4ac5cc0624c9013d21a1dab5.png">
-
-</p>
-<p>但默认设置生成的网格螺钉孔貌似都没有按washer处理。
-
-  <img src="/resources/6ea45853b136275e0c8325e7b4a47341.png" alt="6ea45853b136275e0c8325e7b4a47341.png">
-
-</p>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Andrew Moa on Friday, February 28, 2025
         
         
     

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.145.0">
+	<meta name="generator" content="Hugo 0.146.3">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -206,6 +206,71 @@
 <div data-pagefind-ignore="all">
 
 <div class="post-preview">
+    <a href="https://andrewmoa.site/2025/03/27/ubuntu-compile-and-install-su2/">
+        <h2 class="post-title">
+            Ubuntu编译安装SU2
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            <p><a href="https://su2code.github.io/">SU2</a>是一款由斯坦福大学航空航天学院开发的开源CFD求解器，基于C++和Python开发，定位类似于OpenFOAM，但不支持多面体网格。相比OpenFOAM，SU2在高速可压缩流方面的求解更有优势。</p>
+<p>下载SU2源代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>mkdir <span style="color:#8be9fd;font-style:italic">$HOME</span>/su2code <span style="color:#ff79c6">&amp;&amp;</span> <span style="color:#8be9fd;font-style:italic">cd</span> <span style="color:#8be9fd;font-style:italic">$HOME</span>/su2code
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 只clone最近commit版本，加快下载速度</span>
+</span></span><span style="display:flex;"><span>git clone https://github.com/su2code/SU2.git --depth<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>
+</span></span></code></pre></div><p>定义环境变量，新建配置文件<code>su2.env</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>touch <span style="color:#8be9fd;font-style:italic">$HOME</span>/su2code/su2.env
+</span></span><span style="display:flex;"><span>chmod +x <span style="color:#8be9fd;font-style:italic">$HOME</span>/su2code/su2.env
+</span></span><span style="display:flex;"><span>vim <span style="color:#8be9fd;font-style:italic">$HOME</span>/su2code/su2.env
+</span></span></code></pre></div><p>在<code>su2.env</code>文件中加入以下内容，保存退出：</p>
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Andrew Moa on Thursday, March 27, 2025
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="https://andrewmoa.site/2025/03/26/slurm-script-for-fluent-and-cfx/">
+        <h2 class="post-title">
+            Slurm提交Fluent和CFX的计算脚本
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            <h2 id="1-fluent">1. Fluent</h2>
+<p>首先要编写Fluent的jou脚本：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>/file/read-case &#34;small_fan.cas.h5&#34; 
+</span></span><span style="display:flex;"><span>/solve/initialize/hyb-initialization 
+</span></span><span style="display:flex;"><span>/solve/iterate 100 
+</span></span><span style="display:flex;"><span>/file/write-case &#34;small_fan_results.cas.h5&#34; ok 
+</span></span><span style="display:flex;"><span>/file/write-data &#34;small_fan_results.dat.h5&#34; ok 
+</span></span><span style="display:flex;"><span>/exit ok 
+</span></span></code></pre></div><p>这个jou文件很简单，就是告诉Fluent读取哪个文件、怎么初始化、迭代多少步、如何保存直至最后退出。
+如果计算比较复杂的，比如涉及到UDF加载或特殊条件初始化设置的，还需要增加相应的命令行。
+不熟悉怎么编写TUI命令的话，可以通过Fluent图形界面下面的命令行窗口录制脚本。</p>
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Andrew Moa on Wednesday, March 26, 2025
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="https://andrewmoa.site/2025/03/26/tabby-setup-msys2/">
         <h2 class="post-title">
             Tabby配置MSYS2
@@ -278,52 +343,6 @@
     <p class="post-meta">
     
         Posted by Andrew Moa on Tuesday, March 25, 2025
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://andrewmoa.site/2025/03/24/ubuntu-setup-samba/">
-        <h2 class="post-title">
-            Ubuntu24.04搭建Samba服务器
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            <p>由于Ubuntu运行在虚拟机中，通过Ubuntu挂载Windows共享文件夹，在挂载点中运行某些CAE软件会出现计算报错。考虑将Ubuntu文件夹共享给Windows，因此需要在Ubuntu系统上搭建Samba服务器。</p>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Andrew Moa on Monday, March 24, 2025
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://andrewmoa.site/2025/03/21/hyperv-setup-static-ipaddr-for-nat/">
-        <h2 class="post-title">
-            Hyper-V虚拟交换机NAT设置静态IP
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            <p>前面讲过用NAT+端口映射的方式访问虚拟机，但使用过程中发现一个问题：每次宿主机重启之后，默认的<code>Default Switch</code>IP地址都会变更，造成虚拟机无法访问网关进而无法联网。</p>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Andrew Moa on Friday, March 21, 2025
         
         
     

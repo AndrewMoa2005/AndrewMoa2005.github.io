@@ -11,7 +11,7 @@ tags:
     - abaqus
     - cfx
     - linux
-URL: "/2025/04/15/linux-mount-windows-share-dir-cannot-run abaqus-and-cfx/"
+URL: "/2025/04/15/linux-mount-windows-share-dir-cannot-run-abaqus-and-cfx/"
 categories: [ "Linux" ]    
 ---
 

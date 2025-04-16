@@ -2,16 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://andrewmoa.site/tags/abaqus/</loc>
-    <lastmod>2025-04-16T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://andrewmoa.site/</loc>
     <lastmod>2025-04-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrewmoa.site/categories/</loc>
-    <lastmod>2025-04-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://andrewmoa.site/tags/cfx/</loc>
     <lastmod>2025-04-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrewmoa.site/categories/linux/</loc>
@@ -20,7 +14,13 @@
     <loc>https://andrewmoa.site/tags/linux/</loc>
     <lastmod>2025-04-16T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://andrewmoa.site/tags/openfoam/</loc>
+    <lastmod>2025-04-16T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://andrewmoa.site/post/</loc>
+    <lastmod>2025-04-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://andrewmoa.site/tags/su2/</loc>
     <lastmod>2025-04-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrewmoa.site/tags/</loc>
@@ -28,6 +28,12 @@
   </url><url>
     <loc>https://andrewmoa.site/2025/04/16/solve-openmpi-authorization-warning/</loc>
     <lastmod>2025-04-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://andrewmoa.site/tags/abaqus/</loc>
+    <lastmod>2025-04-15T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://andrewmoa.site/tags/cfx/</loc>
+    <lastmod>2025-04-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrewmoa.site/2025/04/15/linux-mount-windows-share-dir-cannot-run-abaqus-and-cfx/</loc>
     <lastmod>2025-04-15T00:00:00+00:00</lastmod>
@@ -65,16 +71,10 @@
     <loc>https://andrewmoa.site/categories/cfd/</loc>
     <lastmod>2025-03-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrewmoa.site/tags/openfoam/</loc>
-    <lastmod>2025-03-27T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://andrewmoa.site/2025/03/27/openfoam-compile-cfmesh-and-ccm/</loc>
     <lastmod>2025-03-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrewmoa.site/tags/slurm/</loc>
-    <lastmod>2025-03-27T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://andrewmoa.site/tags/su2/</loc>
     <lastmod>2025-03-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrewmoa.site/tags/ubuntu/</loc>

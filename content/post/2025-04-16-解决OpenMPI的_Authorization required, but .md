@@ -8,8 +8,8 @@ author:  "Andrew Moa"
 image: ""
 publishDate: 2025-04-16
 tags:
-    - abaqus
-    - cfx
+    - openfoam
+    - su2
     - linux
 URL: "/2025/04/16/solve-openmpi-authorization-warning/"
 categories: [ "Linux" ]    

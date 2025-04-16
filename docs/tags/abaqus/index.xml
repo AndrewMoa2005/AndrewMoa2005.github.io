@@ -6,15 +6,8 @@
     <description>Recent content in Abaqus on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 16 Apr 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Apr 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/abaqus/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>解决OpenMPI的&#34;Authorization required, but no authorization protocol specified&#34;错误提示</title>
-      <link>https://andrewmoa.site/2025/04/16/solve-openmpi-authorization-warning/</link>
-      <pubDate>Wed, 16 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/04/16/solve-openmpi-authorization-warning/</guid>
-      <description>&lt;p&gt;最近在用OpenFOAM和SU2提交计算时，反复出现&amp;quot;Authorization required, but no authorization protocol specified&amp;quot;报错信息。尽管不理会它最终还是能完成计算，但总是出现的报错信息让人心里不安。&lt;/p&gt;</description>
-    </item>
     <item>
       <title>Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题</title>
       <link>https://andrewmoa.site/2025/04/15/linux-mount-windows-share-dir-cannot-run-abaqus-and-cfx/</link>

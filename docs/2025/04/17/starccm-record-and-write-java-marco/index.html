@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Andrew Moa Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://andrewmoa.site//img/home-bg.jpg">
+    <meta property="twitter:image" content="https://andrewmoa.site//img/home-bg.jpg" />
+    
+
+    
+    <meta name="title" content="STAR-CCM&#43;宏文件录制和编写" />
+    <meta property="og:title" content="STAR-CCM&#43;宏文件录制和编写" />
+    <meta property="twitter:title" content="STAR-CCM&#43;宏文件录制和编写" />
+    
+
+    
+    <meta name="description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。">
+    <meta property="og:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    <meta property="twitter:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="AndrewMoa, Andrew Moa, Andrew Moa的博客, Andrew Moa Blog, 博客, 个人网站, 仿真分析, CAE, CFD, Linux">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>STAR-CCM&#43;宏文件录制和编写 | Andrew Moa的博客 | Andrew Moa&#39;s Blog</title>
+
+    <link rel="canonical" href="/2025/04/17/starccm-record-and-write-java-marco/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Andrew Moa Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/ansa/">ansa</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/cfd/">cfd</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/code/">code</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/linux/">linux</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/zhihu/">zhihu</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Andrew Moa Blog </h1>
+                    
+		    <span class="subheading">不积小流，无以成江海</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+            
+            <div class="
+            col-lg-8 col-lg-offset-1
+            col-md-8 col-md-offset-1
+            col-sm-12
+            col-xs-12
+            post-container">
+            
+                <p>STAR-CCM+宏本质上就是一个java文件，语法和普通的java没有什么区别。使用宏可以帮助我们简化处理过程，尤其是一些重复的流程性的操作。通过编写宏文件完成一些流程操作可以极大地解放人力资源，甚至可以在求解过程中完成某些特定的操作。</p>
+<h2 id="1-操作入口">1. 操作入口</h2>
+<p>STAR-CCM+宏本质就是分析过程中的各种操作命令的集合，与其从头开始讲解复杂繁琐的java语法+API，不如直接从工程问题上手。</p>
+<p>STAR-CCM+宏操作的入口在左上角工具栏里，从左到右依次是“播放宏”、“开始录制”、“暂停录制”和“停止录制”按钮，相关操作选项也可以在“文件”菜单中找到。
+
+  <img src="/resources/8eb213bb22b885f81c06dcdb3eedd943.png" alt="8eb213bb22b885f81c06dcdb3eedd943.png">
+
+</p>
+<p>点击“开始录制”会弹出对话框，提示宏的保存位置。如果过程中用到一些场景化的图形操作，可以勾选上“包括图形命令”；但一般情况下不建议勾选，尤其是涉及到超算提交的场合。
+
+  <img src="/resources/07127786a188bff13345a15a58d3e7e4.png" alt="07127786a188bff13345a15a58d3e7e4.png">
+
+</p>
+<p>接下来就可以在输出窗口中看到录制java过程的代码，此时可以正常地执行分析操作，STAR-CCM+会把相关操作转换成对应的java代码，并显示在输出窗口中。
+
+  <img src="/resources/51fce847b53231bf3cda774399192e37.png" alt="51fce847b53231bf3cda774399192e37.png">
+
+</p>
+<p>当分析操作完成后点击“停止录制”，可以在输出窗口中看到完整的java代码，同时该代码也被保存到java文件中。</p>
+<h2 id="2-录制java宏">2. 录制java宏</h2>
+<p>下面的代码是一个简单的示例，将原有网格清除并重新划分体网格。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#6272a4">// Simcenter STAR-CCM+ macro: reGenerateMesh.java</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Written by Simcenter STAR-CCM+ 19.06.009</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 上面两行注释是录制时生成的，记录保存宏的文件名、STAR-CCM+版本信息</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">package</span> macro;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> java.util.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> star.common.*;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> star.meshing.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 类名和文件名要一致</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">reGenerateMesh</span> <span style="color:#8be9fd;font-style:italic">extends</span> StarMacro {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">//这个函数是整个宏的入口	</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">execute</span>() {
+</span></span><span style="display:flex;"><span>    execute0();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">//这个函数执行网格清除和划分操作</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">execute0</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> 
+</span></span><span style="display:flex;"><span>      getActiveSimulation();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    MeshPipelineController meshPipelineController_0 <span style="color:#ff79c6">=</span> 
+</span></span><span style="display:flex;"><span>      simulation_0.<span style="color:#50fa7b">get</span>(MeshPipelineController.<span style="color:#50fa7b">class</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">//清除原来的网格</span>
+</span></span><span style="display:flex;"><span>    meshPipelineController_0.<span style="color:#50fa7b">clearGeneratedMeshes</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">//生成体网格</span>
+</span></span><span style="display:flex;"><span>    meshPipelineController_0.<span style="color:#50fa7b">generateVolumeMesh</span>();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>具体代码的作用可以查看STAR-CCM+的帮助文件，不过大部分的API的命名都比较直观，根据其命名也能推测出来。
+
+  <img src="/resources/3f50c712cf6d83b26df0cd1ea4f56c30.png" alt="3f50c712cf6d83b26df0cd1ea4f56c30.png">
+
+</p>
+<p>如果要执行的操作比较复杂，流程很多。建议将流程进行分解，分别录制不同java文件，再将其组合起来。
+
+  <img src="/resources/8b5c8a7f67ad37f236f50b41843e93f1.png" alt="8b5c8a7f67ad37f236f50b41843e93f1.png">
+
+</p>
+<p>如果录制的操作需要运行求解器，可以换一个简单点的模型进行录制，也可以把参数调小一点，节省时间和资源。</p>
+<h2 id="3-编写java宏">3. 编写java宏</h2>
+<p>有了上面录制的java文件，下面的编写就简单多了。</p>
+<p>接下来将这些模块组合起来，编写一个新的java宏文件，作用是在读取sim文件之后自动划分网格，设置参数并运行求解，求解完成后输出相应的绘图和场景文件，并保存成指定文件名的结果文件。</p>
+<p>这里建议使用IDE工具，借助语法检查、代码高亮提示和自动完成可以减少出错的几率，对初学者十分友好。STAR-CCM+官方教程和帮助文件里演示的是<strong>NetBeans</strong>，也有人喜欢用<strong>Eclipse</strong>或<strong>IntelliJ IDEA</strong>，在这里区别都不大，根据个人喜好选择吧。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#6272a4">// Simcenter STAR-CCM+ macro: meshAndRun.java</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Written by Simcenter STAR-CCM+ 19.06.009</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">package</span> macro;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> java.util.*;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> star.common.*;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> star.meshing.*;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> star.base.neo.*;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> star.vis.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">meshAndRun</span> <span style="color:#8be9fd;font-style:italic">extends</span> StarMacro {
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 分析的输入参数</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">double</span> env_temp <span style="color:#ff79c6">=</span> 25.<span style="color:#50fa7b">0</span>; <span style="color:#6272a4">// Unit: C</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">double</span> fan_speed <span style="color:#ff79c6">=</span> 2450.<span style="color:#50fa7b">0</span>; <span style="color:#6272a4">// Unit: rpm</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 一些设置参数</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">boolean</span> autoSave <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">true</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> maxStep <span style="color:#ff79c6">=</span> 10;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">int</span> autoSaveStep <span style="color:#ff79c6">=</span> 1000;
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd">boolean</span> saveAsResultsFile <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">true</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 这里最好写完整路径，否则Windows下会默认保存到${HOME}目录</span>
+</span></span><span style="display:flex;"><span>  String resultsFileName <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;final_results.sim&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 宏操作入口</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">execute</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 执行分析操作</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (autoSave) {
+</span></span><span style="display:flex;"><span>      enableAutoSave();
+</span></span><span style="display:flex;"><span>    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>      disableAutoSave();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    generateMesh();
+</span></span><span style="display:flex;"><span>    modifyParameters();
+</span></span><span style="display:flex;"><span>    modifyMaxStep();
+</span></span><span style="display:flex;"><span>    run();
+</span></span><span style="display:flex;"><span>    exportPlot();
+</span></span><span style="display:flex;"><span>    exportScene();
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> (saveAsResultsFile) {
+</span></span><span style="display:flex;"><span>      saveAs();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 生成体网格</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">generateMesh</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    MeshPipelineController meshPipelineController_0 <span style="color:#ff79c6">=</span> simulation_0.<span style="color:#50fa7b">get</span>(MeshPipelineController.<span style="color:#50fa7b">class</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// meshPipelineController_0.clearGeneratedMeshes();</span>
+</span></span><span style="display:flex;"><span>    meshPipelineController_0.<span style="color:#50fa7b">generateVolumeMesh</span>();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 设置自动保存</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">enableAutoSave</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    AutoSave autoSave_0 <span style="color:#ff79c6">=</span> simulation_0.<span style="color:#50fa7b">getSimulationIterator</span>().<span style="color:#50fa7b">getAutoSave</span>();
+</span></span><span style="display:flex;"><span>    autoSave_0.<span style="color:#50fa7b">setAutoSaveBatch</span>(<span style="color:#ff79c6">true</span>);
+</span></span><span style="display:flex;"><span>    autoSave_0.<span style="color:#50fa7b">setAutoSaveMesh</span>(<span style="color:#ff79c6">true</span>);
+</span></span><span style="display:flex;"><span>    AutoSaveFileSet autoSaveFileSet_0 <span style="color:#ff79c6">=</span> ((AutoSaveFileSet) autoSave_0.<span style="color:#50fa7b">getAutoSaveFileSetManager</span>()
+</span></span><span style="display:flex;"><span>        .<span style="color:#50fa7b">getObject</span>(<span style="color:#f1fa8c">&#34;Auto Save File Set 1&#34;</span>));
+</span></span><span style="display:flex;"><span>    StarUpdate starUpdate_0 <span style="color:#ff79c6">=</span> autoSaveFileSet_0.<span style="color:#50fa7b">getStarUpdate</span>();
+</span></span><span style="display:flex;"><span>    IterationUpdateFrequency iterationUpdateFrequency_0 <span style="color:#ff79c6">=</span> starUpdate_0.<span style="color:#50fa7b">getIterationUpdateFrequency</span>();
+</span></span><span style="display:flex;"><span>    IntegerValue integerValue_0 <span style="color:#ff79c6">=</span> iterationUpdateFrequency_0.<span style="color:#50fa7b">getIterationFrequencyQuantity</span>();
+</span></span><span style="display:flex;"><span>    integerValue_0.<span style="color:#50fa7b">getQuantity</span>().<span style="color:#50fa7b">setValue</span>(autoSaveStep);
+</span></span><span style="display:flex;"><span>    starUpdate_0.<span style="color:#50fa7b">setEnabled</span>(<span style="color:#ff79c6">true</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 取消自动保存</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">disableAutoSave</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    AutoSave autoSave_0 <span style="color:#ff79c6">=</span> simulation_0.<span style="color:#50fa7b">getSimulationIterator</span>().<span style="color:#50fa7b">getAutoSave</span>();
+</span></span><span style="display:flex;"><span>    autoSave_0.<span style="color:#50fa7b">setAutoSaveMesh</span>(<span style="color:#ff79c6">false</span>);
+</span></span><span style="display:flex;"><span>    autoSave_0.<span style="color:#50fa7b">setAutoSaveBatch</span>(<span style="color:#ff79c6">false</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 设置分析的输入参数</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">modifyParameters</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    ScalarGlobalParameter scalarGlobalParameter_0 <span style="color:#ff79c6">=</span> ((ScalarGlobalParameter) simulation_0
+</span></span><span style="display:flex;"><span>        .<span style="color:#50fa7b">get</span>(GlobalParameterManager.<span style="color:#50fa7b">class</span>).<span style="color:#50fa7b">getObject</span>(<span style="color:#f1fa8c">&#34;env_temp&#34;</span>));
+</span></span><span style="display:flex;"><span>    Units units_0 <span style="color:#ff79c6">=</span> ((Units) simulation_0.<span style="color:#50fa7b">getUnitsManager</span>().<span style="color:#50fa7b">getObject</span>(<span style="color:#f1fa8c">&#34;C&#34;</span>));
+</span></span><span style="display:flex;"><span>    scalarGlobalParameter_0.<span style="color:#50fa7b">getQuantity</span>().<span style="color:#50fa7b">setValueAndUnits</span>(env_temp, units_0);
+</span></span><span style="display:flex;"><span>    ScalarGlobalParameter scalarGlobalParameter_1 <span style="color:#ff79c6">=</span> ((ScalarGlobalParameter) simulation_0
+</span></span><span style="display:flex;"><span>        .<span style="color:#50fa7b">get</span>(GlobalParameterManager.<span style="color:#50fa7b">class</span>).<span style="color:#50fa7b">getObject</span>(<span style="color:#f1fa8c">&#34;fan_speed&#34;</span>));
+</span></span><span style="display:flex;"><span>    Units units_1 <span style="color:#ff79c6">=</span> ((Units) simulation_0.<span style="color:#50fa7b">getUnitsManager</span>().<span style="color:#50fa7b">getObject</span>(<span style="color:#f1fa8c">&#34;rpm&#34;</span>));
+</span></span><span style="display:flex;"><span>    scalarGlobalParameter_1.<span style="color:#50fa7b">getQuantity</span>().<span style="color:#50fa7b">setValueAndUnits</span>(fan_speed, units_1);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 设置最大步数</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">modifyMaxStep</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    StepStoppingCriterion stepStoppingCriterion_0 <span style="color:#ff79c6">=</span> ((StepStoppingCriterion) simulation_0
+</span></span><span style="display:flex;"><span>        .<span style="color:#50fa7b">getSolverStoppingCriterionManager</span>().<span style="color:#50fa7b">getSolverStoppingCriterion</span>(<span style="color:#f1fa8c">&#34;Maximum Steps&#34;</span>));
+</span></span><span style="display:flex;"><span>    IntegerValue integerValue_0 <span style="color:#ff79c6">=</span> stepStoppingCriterion_0.<span style="color:#50fa7b">getMaximumNumberStepsObject</span>();
+</span></span><span style="display:flex;"><span>    integerValue_0.<span style="color:#50fa7b">getQuantity</span>().<span style="color:#50fa7b">setValue</span>(maxStep);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 运行求解器</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">run</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// ResidualPlot residualPlot_0 = ((ResidualPlot)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// simulation_0.getPlotManager().getPlot(&#34;Residuals&#34;));</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// residualPlot_0.openInteractive();</span>
+</span></span><span style="display:flex;"><span>    simulation_0.<span style="color:#50fa7b">getSimulationIterator</span>().<span style="color:#50fa7b">run</span>();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 输出绘图</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">exportPlot</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    MonitorPlot monitorPlot_0 <span style="color:#ff79c6">=</span> ((MonitorPlot) simulation_0.<span style="color:#50fa7b">getPlotManager</span>().<span style="color:#50fa7b">getPlot</span>(<span style="color:#f1fa8c">&#34;mass_flow&#34;</span>));
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 这里可以用相对路径，也可以用绝对路径</span>
+</span></span><span style="display:flex;"><span>    monitorPlot_0.<span style="color:#50fa7b">export</span>(resolvePath(<span style="color:#f1fa8c">&#34;mass_flow.csv&#34;</span>), <span style="color:#f1fa8c">&#34;,&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 输出场景</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">exportScene</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    Scene scene_0 <span style="color:#ff79c6">=</span> simulation_0.<span style="color:#50fa7b">getSceneManager</span>().<span style="color:#50fa7b">getScene</span>(<span style="color:#f1fa8c">&#34;Geometry&#34;</span>);
+</span></span><span style="display:flex;"><span>    scene_0.<span style="color:#50fa7b">export3DSceneFileAndWait</span>(resolvePath(<span style="color:#f1fa8c">&#34;Geometry.sce&#34;</span>), <span style="color:#f1fa8c">&#34;Geometry&#34;</span>, <span style="color:#f1fa8c">&#34;&#34;</span>, <span style="color:#ff79c6">false</span>, SceneFileCompressionLevel.<span style="color:#50fa7b">OFF</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 保存结果</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">saveAs</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    simulation_0.<span style="color:#50fa7b">saveState</span>(resultsFileName);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="4-运行java宏">4. 运行java宏</h2>
+<p>编写完成后可以尝试运行以下，看看有没有报错。
+尝试运行求解的话可以把求解步数调小一点，看输出的文件是否正确。
+更改条件和参数，多测试几次，经过完整测试没有报错才可以用于生产环境。</p>
+<p>如果要提交超算运行，应在<code>-batch</code>开关后附加java宏文件路径<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>starccm+ <span style="color:#ff79c6">[</span>path-to-sim-file<span style="color:#ff79c6">]</span> -batch <span style="color:#ff79c6">[</span>path-to-java-file<span style="color:#ff79c6">]</span> -np <span style="color:#ff79c6">[</span>number-of-threads<span style="color:#ff79c6">]</span> ...
+</span></span></code></pre></div><hr>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://www.topcfd.cn/Ebook/STARCCMP/GUID-8A0803A8-C91B-4996-9C4B-FF6658C63985.html">编制应用程序脚本</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+            
+             
+            
+<script src="https://giscus.app/client.js"
+        data-repo="AndrewMoa2005/AndrewMoa2005.github.io"
+        data-repo-id="R_kgDOOSI4_A"
+        data-category="General"
+        data-category-id="DIC_kwDOOSI4_M4Co1Kf"
+        data-mapping="pathname"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-theme="light"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+
+
+
+<link href="https://xxx.xxx.com/dist/Artalk.css" rel="stylesheet" />
+<script src="https://xxx.xxx.com/dist/Artalk.js"></script>
+
+
+<div id="Comments"></div>
+
+<script>
+    Artalk.init({
+        el: '#Comments',
+        pageKey: 'https:\/\/andrewmoa.site\/2025\/04\/17\/starccm-record-and-write-java-marco\/',
+        pageTitle: 'STAR-CCM\u002b宏文件录制和编写',
+        server: 'https:\/\/xxx.xxx.com',
+        site: 'xxx blog',
+    })
+</script>
+
+
+            
+            </div>
+            
+            
+
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+	
+    <section class="visible-md visible-lg">
+	
+        <div class="short-about">
+            
+            <a href="/about">
+               <img src="/img/polarbear.jpg" alt="avatar" style="cursor: pointer" />
+            </a>
+            
+            
+                <p>CAE Engineer, Open Source Explorer</p>
+            
+           
+           <ul class="list-inline">
+               
+               <li>
+                   <a href="mailto:Andrew.Moa2005@163.com">
+                      <span class="fa-stack fa-lg">
+                          <i class="fa fa-circle fa-stack-2x"></i>
+                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                      </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+               <li>
+                   <a target="_blank" href="/img/wechat_qrcode.jpg">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               <li>
+                   <a target="_blank" href="https://github.com/AndrewMoa2005">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+            
+            
+               
+               
+               
+               
+                </ul>
+            </div>
+    </section>
+	
+    
+    
+    
+    
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>FEATURED TAGS</h5>
+        <div class="tags">
+            
+            
+               
+                    <a href="/tags/abaqus" title="abaqus">
+                        abaqus
+                    </a>
+               
+            
+               
+                    <a href="/tags/ansa" title="ansa">
+                        ansa
+                    </a>
+               
+            
+               
+            
+               
+            
+               
+                    <a href="/tags/cae" title="cae">
+                        cae
+                    </a>
+               
+            
+               
+                    <a href="/tags/cfd" title="cfd">
+                        cfd
+                    </a>
+               
+            
+               
+                    <a href="/tags/cfx" title="cfx">
+                        cfx
+                    </a>
+               
+            
+               
+                    <a href="/tags/fluent" title="fluent">
+                        fluent
+                    </a>
+               
+            
+               
+                    <a href="/tags/java" title="java">
+                        java
+                    </a>
+               
+            
+               
+                    <a href="/tags/linux" title="linux">
+                        linux
+                    </a>
+               
+            
+               
+                    <a href="/tags/openfoam" title="openfoam">
+                        openfoam
+                    </a>
+               
+            
+               
+            
+               
+            
+               
+            
+               
+            
+               
+                    <a href="/tags/slurm" title="slurm">
+                        slurm
+                    </a>
+               
+            
+               
+                    <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
+                        star-ccm&#43;
+                    </a>
+               
+            
+               
+                    <a href="/tags/su2" title="su2">
+                        su2
+                    </a>
+               
+            
+               
+                    <a href="/tags/ubuntu" title="ubuntu">
+                        ubuntu
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                        前处理
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
+                        虚拟机
+                    </a>
+               
+            
+        </div>
+    </section>
+    
+
+    
+    
+    
+</div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    <li>
+                        <a href="mailto:Andrew.Moa2005@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/AndrewMoa2005">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Andrew Moa Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Andrew Moa Blog 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow" title="' + t + '">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

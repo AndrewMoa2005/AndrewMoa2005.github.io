@@ -181,7 +181,7 @@
                 <div class="site-heading">
                     <h1>Andrew Moa Blog </h1>
                     
-		    <span class="subheading">天行健，君子以自强不息</span>
+		    <span class="subheading">不积小流，无以成江海</span>
                 </div>
             </div>
         </div>
@@ -204,6 +204,96 @@
         ">
             
 <div data-pagefind-ignore="all">
+
+<div class="post-preview">
+    <a href="https://andrewmoa.site/2025/03/06/abaqus-submit-command/">
+        <h2 class="post-title">
+            Abaqus提交命令
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            <p>用Ansa输出inp文件之后，可以通过Abaqus CAE窗口界面提交inp文件进行计算，也可以通过命令行方式提交计算。使用命令行提交需要添加Path，Windows下通常是<code>[Abaqus安装目录]\Commands</code>路径。</p>
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Andrew Moa on Thursday, March 6, 2025
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="https://andrewmoa.site/2025/03/05/ansa-unit/">
+        <h2 class="post-title">
+            Ansa单位制
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            <p>Ansa导入step模型默认长度单位是mm，重量是ton。但我们常用的SI单位制长度是m，重量是kg。
+关于两种单位的转换如下表所示。</p>
+<table>
+  <thead>
+      <tr>
+          <th>LENGTH</th>
+          <th>MASS</th>
+          <th>TIME</th>
+          <th>FORCE</th>
+          <th>STRESS</th>
+          <th>ENERGY</th>
+          <th>DENSITY</th>
+          <th>YOUNG’s MUDULUS</th>
+          <th>Velocity (56.3KPH)</th>
+          <th>GRAVITY</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>m</td>
+          <td>kg</td>
+          <td>s</td>
+          <td>N</td>
+          <td>Pa</td>
+          <td>Joule</td>
+          <td>7.83E+03</td>
+          <td>2.07E+11</td>
+          <td>15.64</td>
+          <td>9.81</td>
+      </tr>
+      <tr>
+          <td>mm</td>
+          <td>ton</td>
+          <td>s</td>
+          <td>N</td>
+          <td>MPa</td>
+          <td>N-mm</td>
+          <td>7.83E-09</td>
+          <td>2.07E+05</td>
+          <td>1.564E+04</td>
+          <td>9.81E+03</td>
+      </tr>
+  </tbody>
+</table>
+<p>在定义模型参数时，应注意根据长度选择对应的单位制。</p>
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Andrew Moa on Wednesday, March 5, 2025
+        
+        
+    
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
     <a href="https://andrewmoa.site/2025/03/05/ansa-connector/">
@@ -287,67 +377,6 @@
     <p class="post-meta">
     
         Posted by Andrew Moa on Thursday, February 27, 2025
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://andrewmoa.site/2025/02/27/ansa-mesh-quality/">
-        <h2 class="post-title">
-            Ansa网格质量设置
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            <p>快捷键F11，或者下面这个按钮，定义Ansa网格质量
-
-  <img src="/resources/0cbaef5ad11449b3f2baffeb6cfbaa24.png" alt="0cbaef5ad11449b3f2baffeb6cfbaa24.png">
-
-</p>
-<p>面网格质量（Abaqus）
-
-  <img src="/resources/8dba04bca8c14b3a47e4ed87d938ac49.png" alt="8dba04bca8c14b3a47e4ed87d938ac49.png">
-
-</p>
-<p>体网格质量（Abaqus）
-
-  <img src="/resources/1b8e7d21f062ee6d961c4975a0dedffd.png" alt="1b8e7d21f062ee6d961c4975a0dedffd.png">
-
-</p>
-<p>最好把配置文件另存为到本地，下次重新打开配置文件覆盖即可。</p>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Andrew Moa on Thursday, February 27, 2025
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://andrewmoa.site/2022/04/08/slurm-starccm/">
-        <h2 class="post-title">
-            超算平台部署STAR-CCM&#43;
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            <p>最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。</p>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by Andrew Moa on Friday, April 8, 2022
         
         
     
@@ -496,6 +525,12 @@
                
                     <a href="/tags/fluent" title="fluent">
                         fluent
+                    </a>
+               
+            
+               
+                    <a href="/tags/java" title="java">
+                        java
                     </a>
                
             

@@ -6,8 +6,22 @@
     <description>Recent content on Andrew Moa Blog</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 16 Apr 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 18 Apr 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用VSCode调试STAR-CCM&#43;宏</title>
+      <link>https://andrewmoa.site/2025/04/18/vscode-debug-starccm-java-marco/</link>
+      <pubDate>Fri, 18 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>https://andrewmoa.site/2025/04/18/vscode-debug-starccm-java-marco/</guid>
+      <description>&lt;p&gt;前面讲过STAR-CCM+宏文件的录制和编写，宏文件的本质就是java文件，因此可以用java编程的方法来对它进行开发和调试。如果涉及到复杂的业务场景，需要增加额外的功能，程序本身比较复杂，很难等到整个程序编写完成后再对它进行测试，免不了要在开发过程中进行调试。官方文档采用的开发工具是古早版本的&lt;strong&gt;NetBeans&lt;/strong&gt;，很多功能已经发生变化，加之官方文档描述过于简略，大多数人阅读完后对于STAR-CCM+的调试过程还是一头雾水。&lt;a href=&#34;https://code.visualstudio.com/&#34;&gt;&lt;strong&gt;VSCode&lt;/strong&gt;&lt;/a&gt;作为新兴IDE的佼佼者，不仅可以通过拓展支持java编程，还可以通过&lt;a href=&#34;https://copilot.microsoft.com/chats/Uz4t8yZbNmpyo1CVtqKWP&#34;&gt;&lt;strong&gt;copilot&lt;/strong&gt;&lt;/a&gt;拓展集成强大的AI编程能力，本文便采用&lt;strong&gt;VSCode&lt;/strong&gt;演示一下STAR-CCM+宏文件的调试过程。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>STAR-CCM&#43;宏文件录制和编写</title>
+      <link>https://andrewmoa.site/2025/04/17/starccm-record-and-write-java-marco/</link>
+      <pubDate>Fri, 18 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>https://andrewmoa.site/2025/04/17/starccm-record-and-write-java-marco/</guid>
+      <description>&lt;p&gt;STAR-CCM+宏本质上就是一个java文件，语法和普通的java没有什么区别。使用宏可以帮助我们简化处理过程，尤其是一些重复的流程性的操作。通过编写宏文件完成一些流程操作可以极大地解放人力资源，甚至可以在求解过程中完成某些特定的操作。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>解决OpenMPI的&#34;Authorization required, but no authorization protocol specified&#34;错误提示</title>
       <link>https://andrewmoa.site/2025/04/16/solve-openmpi-authorization-warning/</link>

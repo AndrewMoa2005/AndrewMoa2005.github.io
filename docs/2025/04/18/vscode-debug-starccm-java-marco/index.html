@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Andrew Moa Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://andrewmoa.site//img/home-bg.jpg">
+    <meta property="twitter:image" content="https://andrewmoa.site//img/home-bg.jpg" />
+    
+
+    
+    <meta name="title" content="使用VSCode调试STAR-CCM&#43;宏" />
+    <meta property="og:title" content="使用VSCode调试STAR-CCM&#43;宏" />
+    <meta property="twitter:title" content="使用VSCode调试STAR-CCM&#43;宏" />
+    
+
+    
+    <meta name="description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。">
+    <meta property="og:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    <meta property="twitter:description" content="AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="AndrewMoa, Andrew Moa, Andrew Moa的博客, Andrew Moa Blog, 博客, 个人网站, 仿真分析, CAE, CFD, Linux">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>使用VSCode调试STAR-CCM&#43;宏 | Andrew Moa的博客 | Andrew Moa&#39;s Blog</title>
+
+    <link rel="canonical" href="/2025/04/18/vscode-debug-starccm-java-marco/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Andrew Moa Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/ansa/">ansa</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/cfd/">cfd</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/code/">code</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/linux/">linux</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/zhihu/">zhihu</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Andrew Moa Blog </h1>
+                    
+		    <span class="subheading">不积小流，无以成江海</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+            
+            <div class="
+            col-lg-8 col-lg-offset-1
+            col-md-8 col-md-offset-1
+            col-sm-12
+            col-xs-12
+            post-container">
+            
+                <p>前面讲过STAR-CCM+宏文件的录制和编写，宏文件的本质就是java文件，因此可以用java编程的方法来对它进行开发和调试。如果涉及到复杂的业务场景，需要增加额外的功能，程序本身比较复杂，很难等到整个程序编写完成后再对它进行测试，免不了要在开发过程中进行调试。官方文档采用的开发工具是古早版本的<strong>NetBeans</strong>，很多功能已经发生变化，加之官方文档描述过于简略，大多数人阅读完后对于STAR-CCM+的调试过程还是一头雾水。<a href="https://code.visualstudio.com/"><strong>VSCode</strong></a>作为新兴IDE的佼佼者，不仅可以通过拓展支持java编程，还可以通过<a href="https://copilot.microsoft.com/chats/Uz4t8yZbNmpyo1CVtqKWP"><strong>copilot</strong></a>拓展集成强大的AI编程能力，本文便采用<strong>VSCode</strong>演示一下STAR-CCM+宏文件的调试过程。</p>
+<h2 id="1-vscode配置">1. VSCode配置</h2>
+<p>首先要在VSCode中安装支持java的拓展，至少要安装下面几个：</p>
+<ol>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=redhat.java">Language Support for Java(TM) by Red Hat</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-debug">Debugger for Java</a></li>
+<li><a href="https://marketplace.visualstudio.com/items/?itemName=vscjava.vscode-java-dependency">Project Manager for Java</a></li>
+</ol>
+<p>也可以直接安装这个拓展包，一次性把所有需要用到的java拓展都装齐了：
+<a href="https://marketplace.visualstudio.com/items/?itemName=vscjava.vscode-java-pack">Extension Pack for Java</a></p>
+<p>下载一个JDK并安装，如果不想下载JDK的话，也可以在STAR-CCM+安装路径中找到安装包附带的JDK，把它添加到环境变量中。
+
+  <img src="/resources/53d9d7c07aca055269657c5ccf18a81f.png" alt="53d9d7c07aca055269657c5ccf18a81f.png">
+
+</p>
+<h2 id="2-建立java项目">2. 建立java项目</h2>
+<p>在VSCode命令面板(Ctrl+Shift+P)中输入<code>Java: Create Java Project</code>，创建一个新的java项目。
+
+  <img src="/resources/56a3e9ec89aa1f165d0bbf43818f8843.png" alt="56a3e9ec89aa1f165d0bbf43818f8843.png">
+
+</p>
+<p>项目类型选择<code>No build tools</code>。
+
+  <img src="/resources/e3fe06a5c9f45db8e2bb95dd2229afb3.png" alt="e3fe06a5c9f45db8e2bb95dd2229afb3.png">
+
+</p>
+<p>在弹出对话框选择项目文件夹位置，然后输入项目名称(例如：starccm)，新建项目完成，可以看到java项目的结构。
+
+  <img src="/resources/4f796690032a038647929f935871897e.png" alt="4f796690032a038647929f935871897e.png">
+
+</p>
+<p>将<code>[STAR-CCM+_Installation]/star/lib/java/platform/modules/ext</code>文件夹复制到新建项目的lib文件夹中<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。
+
+  <img src="/resources/6ee3b58e9ea5f952aef77f34dccd5a18.png" alt="6ee3b58e9ea5f952aef77f34dccd5a18.png">
+
+</p>
+<p>将之前录制或编写的java宏复制到项目生成的java文件中，可以看到语法检查和代码高亮提示已经生效了，这时候修改代码就能通过自动完成补充代码片段，也可以通过“Ctrl+I”调用copilot自动填写和纠正代码错误。
+
+  <img src="/resources/de9b21474ee4bb138a6ada6e449eefb9.png" alt="de9b21474ee4bb138a6ada6e449eefb9.png">
+
+</p>
+<h2 id="3-配置调试">3. 配置调试</h2>
+<p>在项目文件夹的<code>.vscode</code>目录下修改<code>launch.json</code>文件，编辑代码如下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;version&#34;</span>: <span style="color:#f1fa8c">&#34;0.2.0&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;configurations&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;type&#34;</span>: <span style="color:#f1fa8c">&#34;java&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;name&#34;</span>: <span style="color:#f1fa8c">&#34;Debug (Attach)&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;projectName&#34;</span>: <span style="color:#f1fa8c">&#34;starccm&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;request&#34;</span>: <span style="color:#f1fa8c">&#34;attach&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;hostName&#34;</span>: <span style="color:#f1fa8c">&#34;localhost&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">&#34;port&#34;</span>: <span style="color:#bd93f9">8765</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如果<code>.vscode</code>下面没有<code>launch.json</code>这个文件，可以点击VSCode左侧的<code>运行与调试</code>按钮，根据提示生成该文件，然后按照上面的内容进行编辑。
+
+  <img src="/resources/fe42c7df2354ce038014d8fab7610fd6.png" alt="fe42c7df2354ce038014d8fab7610fd6.png">
+
+</p>
+<p>通过命令行方式启动STAR-CCM+主程序，注意要在<code>starccm+</code>后面附加启动参数，<code>address</code>后面的端口号要与上面<code>launch.json</code>文件中填写的端口号一致。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>&lt;InstallationDirectory&gt;/star/bin/starccm+ -jvmargs <span style="color:#f1fa8c">&#39;-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8765&#39;</span>
+</span></span></code></pre></div><p>
+  <img src="/resources/9d3195c2a43a1987c82be84179648cd9.png" alt="9d3195c2a43a1987c82be84179648cd9.png">
+
+</p>
+<p>上面配置完成之后，接下来就可以在STAR-CCM+中正常打开或者新建sim文件，用于测试我们编写的java程序。</p>
+<p>接着点击VSCode左侧的<code>运行与调试</code>按钮，进入调试模式。成功进入调试模式后，会在调式页面中显示调用的堆栈和断点信息。
+
+  <img src="/resources/77e492c6e2f6b2b11616ee8b5074332d.png" alt="77e492c6e2f6b2b11616ee8b5074332d.png">
+
+</p>
+<p>如果进入调试模式失败，会弹出对话框提醒。需要确认STAR-CCM+有没有正常启动、有没有附加启动参数，以及<code>launch.json</code>文件编写有没有错误。
+
+  <img src="/resources/d917ee07dd6acd9fb56eaa4168bed927.png" alt="d917ee07dd6acd9fb56eaa4168bed927.png">
+
+</p>
+<h2 id="4-调试过程">4. 调试过程</h2>
+<p>下面编写一个简单的java文件，用于演示调试过程。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#6272a4">// 下面这一行是录制时自动生成的，没什么作用，可以注释掉。</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// package macro;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> star.common.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">testCCMDebug</span> <span style="color:#8be9fd;font-style:italic">extends</span> StarMacro {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 宏操作入口</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">execute</span>() {
+</span></span><span style="display:flex;"><span>    pringMsg();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 演示打印消息的函数</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">pringMsg</span>() {
+</span></span><span style="display:flex;"><span>    Simulation simulation_0 <span style="color:#ff79c6">=</span> getActiveSimulation();
+</span></span><span style="display:flex;"><span>    simulation_0.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;Hello, starccm+!&#34;</span>);
+</span></span><span style="display:flex;"><span>    simulation_0.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;This is a macro example.&#34;</span>);
+</span></span><span style="display:flex;"><span>    simulation_0.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;This macro is used to test STAR-CCM+ debug mode.&#34;</span>);
+</span></span><span style="display:flex;"><span>    String fileName <span style="color:#ff79c6">=</span> simulation_0.<span style="color:#50fa7b">getPresentationName</span>() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;.sim&#34;</span>;
+</span></span><span style="display:flex;"><span>    simulation_0.<span style="color:#50fa7b">println</span>(<span style="color:#f1fa8c">&#34;The simulation file name is: &#34;</span> <span style="color:#ff79c6">+</span> fileName);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然后在其中加入断点。
+
+  <img src="/resources/41ef0c76c1932fe320359a8e84dad63f.png" alt="41ef0c76c1932fe320359a8e84dad63f.png">
+
+
+
+  <img src="/resources/c4a225cbb85bb7496366d8687c44f7ee.png" alt="c4a225cbb85bb7496366d8687c44f7ee.png">
+
+</p>
+<p>关键的地方来了<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，<strong>一定要在STAR-CCM+中使用“播放宏”加载java文件</strong>。等执行到断点时，会在VSCode中提示中断，这样就可以通过VSCode控制调试的执行进程。
+
+  <img src="/resources/5aac9b5a398c7733e445025ae69624da.png" alt="5aac9b5a398c7733e445025ae69624da.png">
+
+</p>
+<p>最终执行效果：
+
+  <img src="/resources/9b5db179b2483fe30352d7bb840cfe77.png" alt="9b5db179b2483fe30352d7bb840cfe77.png">
+
+</p>
+<p>调试执行到断点，过程中STAR-CCM+会进入暂停状态，这时候点击取消按钮（进度条旁边红色的X）是没有用的。
+
+  <img src="/resources/ed8fa3bd5401c2c409ca23368d142cc2.png" alt="ed8fa3bd5401c2c409ca23368d142cc2.png">
+
+</p>
+<p>VSCode调试执行完成之后，想要再次进入调试，需要在STAR-CCM+中使用&quot;播放宏&quot;重新加载java文件。</p>
+<hr>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://www.topcfd.cn/Ebook/STARCCMP/GUID-C9B469BA-DE86-4824-9094-9207D72099D1.html">使用 IDE 调试宏</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://www.jishulink.com/post/1893585">学习STAR-CCM+编程语言：在Eclipse中进行二次开发调试</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+            
+             
+            
+<script src="https://giscus.app/client.js"
+        data-repo="AndrewMoa2005/AndrewMoa2005.github.io"
+        data-repo-id="R_kgDOOSI4_A"
+        data-category="General"
+        data-category-id="DIC_kwDOOSI4_M4Co1Kf"
+        data-mapping="pathname"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-theme="light"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+
+
+
+<link href="https://xxx.xxx.com/dist/Artalk.css" rel="stylesheet" />
+<script src="https://xxx.xxx.com/dist/Artalk.js"></script>
+
+
+<div id="Comments"></div>
+
+<script>
+    Artalk.init({
+        el: '#Comments',
+        pageKey: 'https:\/\/andrewmoa.site\/2025\/04\/18\/vscode-debug-starccm-java-marco\/',
+        pageTitle: '使用VSCode调试STAR-CCM\u002b宏',
+        server: 'https:\/\/xxx.xxx.com',
+        site: 'xxx blog',
+    })
+</script>
+
+
+            
+            </div>
+            
+            
+
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+	
+    <section class="visible-md visible-lg">
+	
+        <div class="short-about">
+            
+            <a href="/about">
+               <img src="/img/polarbear.jpg" alt="avatar" style="cursor: pointer" />
+            </a>
+            
+            
+                <p>CAE Engineer, Open Source Explorer</p>
+            
+           
+           <ul class="list-inline">
+               
+               <li>
+                   <a href="mailto:Andrew.Moa2005@163.com">
+                      <span class="fa-stack fa-lg">
+                          <i class="fa fa-circle fa-stack-2x"></i>
+                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                      </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+               <li>
+                   <a target="_blank" href="/img/wechat_qrcode.jpg">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               <li>
+                   <a target="_blank" href="https://github.com/AndrewMoa2005">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+            
+            
+               
+               
+               
+               
+                </ul>
+            </div>
+    </section>
+	
+    
+    
+    
+    
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>FEATURED TAGS</h5>
+        <div class="tags">
+            
+            
+               
+                    <a href="/tags/abaqus" title="abaqus">
+                        abaqus
+                    </a>
+               
+            
+               
+                    <a href="/tags/ansa" title="ansa">
+                        ansa
+                    </a>
+               
+            
+               
+            
+               
+            
+               
+                    <a href="/tags/cae" title="cae">
+                        cae
+                    </a>
+               
+            
+               
+                    <a href="/tags/cfd" title="cfd">
+                        cfd
+                    </a>
+               
+            
+               
+                    <a href="/tags/cfx" title="cfx">
+                        cfx
+                    </a>
+               
+            
+               
+                    <a href="/tags/fluent" title="fluent">
+                        fluent
+                    </a>
+               
+            
+               
+                    <a href="/tags/java" title="java">
+                        java
+                    </a>
+               
+            
+               
+                    <a href="/tags/linux" title="linux">
+                        linux
+                    </a>
+               
+            
+               
+                    <a href="/tags/openfoam" title="openfoam">
+                        openfoam
+                    </a>
+               
+            
+               
+            
+               
+            
+               
+            
+               
+            
+               
+                    <a href="/tags/slurm" title="slurm">
+                        slurm
+                    </a>
+               
+            
+               
+                    <a href="/tags/star-ccm&#43;" title="star-ccm&#43;">
+                        star-ccm&#43;
+                    </a>
+               
+            
+               
+                    <a href="/tags/su2" title="su2">
+                        su2
+                    </a>
+               
+            
+               
+                    <a href="/tags/ubuntu" title="ubuntu">
+                        ubuntu
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E5%89%8D%E5%A4%84%E7%90%86" title="前处理">
+                        前处理
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA" title="虚拟机">
+                        虚拟机
+                    </a>
+               
+            
+        </div>
+    </section>
+    
+
+    
+    
+    
+</div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    <li>
+                        <a href="mailto:Andrew.Moa2005@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/AndrewMoa2005">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Andrew Moa Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Andrew Moa Blog 2025
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow" title="' + t + '">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

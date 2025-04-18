@@ -23,7 +23,7 @@ home = ["HTML", "RSS", "Algolia"]
   SEOTitle = "Andrew Moa的博客 | Andrew Moa's Blog"
   description = "AndrewMoa，仿真攻城狮，开源世界探索者 | 这里是 Andrew Moa 的博客，与你一起遨游知识的海洋。"
   keyword = "AndrewMoa, Andrew Moa, Andrew Moa的博客, Andrew Moa Blog, 博客, 个人网站, 仿真分析, CAE, CFD, Linux"
-  slogan = "天行健，君子以自强不息"
+  slogan = "不积小流，无以成江海"
   upstreamAttribution = true
 
   image_404 = "img/404-bg.jpg"

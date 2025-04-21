@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Deploy STAR-CCM&#43; on supercomputing platform :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Recently, there are many platforms that provide supercomputing trials, and many platforms have free trial applications. Due to work needs, I applied for an account on a supercomputing platform and conducted related trials. I made a simple record of the process of deploying STAR-CCM&#43; software and applications on the supercomputing platform, which also provides a reference for subsequent related applications.
+1. Supercomputer platform information You can log in to the supercomputer remotely through SSH connection. Some platforms also provide webSSH and webVNC connections, which support connecting to the command line or graphical interface through a browser. For specific login methods, please refer to the relevant documents provided by the platform.
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/post/2022-04-08-deploy-starccm-on-scp/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Deploy STAR-CCM&#43; on supercomputing platform">
+  <meta property="og:description" content="Recently, there are many platforms that provide supercomputing trials, and many platforms have free trial applications. Due to work needs, I applied for an account on a supercomputing platform and conducted related trials. I made a simple record of the process of deploying STAR-CCM&#43; software and applications on the supercomputing platform, which also provides a reference for subsequent related applications.
+1. Supercomputer platform information You can log in to the supercomputer remotely through SSH connection. Some platforms also provide webSSH and webVNC connections, which support connecting to the command line or graphical interface through a browser. For specific login methods, please refer to the relevant documents provided by the platform.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2022-04-08T00:00:00+00:00">
+    <meta property="article:modified_time" content="2022-04-08T00:00:00+00:00">
+    <meta property="article:tag" content="Cfd">
+    <meta property="article:tag" content="Slurm">
+    <meta property="article:tag" content="Star-Ccm&#43;">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Deploy STAR-CCM&#43; on supercomputing platform">
+  <meta name="twitter:description" content="Recently, there are many platforms that provide supercomputing trials, and many platforms have free trial applications. Due to work needs, I applied for an account on a supercomputing platform and conducted related trials. I made a simple record of the process of deploying STAR-CCM&#43; software and applications on the supercomputing platform, which also provides a reference for subsequent related applications.
+1. Supercomputer platform information You can log in to the supercomputer remotely through SSH connection. Some platforms also provide webSSH and webVNC connections, which support connecting to the command line or graphical interface through a browser. For specific login methods, please refer to the relevant documents provided by the platform.">
+
+
+<link rel="canonical" href="https://andrewmoa.site/post/2022-04-08-deploy-starccm-on-scp/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2022-04-08T00:00:00Z","datePublished":"2022-04-08T00:00:00Z","description":"Recently, there are many platforms that provide supercomputing trials, and many platforms have free trial applications. Due to work needs, I applied for an account on a supercomputing platform and conducted related trials. I made a simple record of the process of deploying STAR-CCM+ software and applications on the supercomputing platform, which also provides a reference for subsequent related applications.\n1. Supercomputer platform information You can log in to the supercomputer remotely through SSH connection. Some platforms also provide webSSH and webVNC connections, which support connecting to the command line or graphical interface through a browser. For specific login methods, please refer to the relevant documents provided by the platform.\n","image":"/images/post-bg-tech.jpg","name":"Deploy STAR-CCM+ on supercomputing platform","url":"https://andrewmoa.site/post/2022-04-08-deploy-starccm-on-scp/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">Open main menu</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/post/" title="Post">Post</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/about/" title="About">About</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">Open language switcher</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">English</span>
+            </li>
+        
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/zh-cn/post/2022-04-08-deploy-starccm-on-scp/" title="中文">中文</a></li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">Search</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="Toggle dark mode">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="Toggle dark mode">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/post/2022-04-08-deploy-starccm-on-scp/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/post-bg-tech.jpg"
+      alt="Deploy STAR-CCM&#43; on supercomputing platform" title="Deploy STAR-CCM&#43; on supercomputing platform"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/post/2022-04-08-deploy-starccm-on-scp/">Deploy STAR-CCM+ on supercomputing platform</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/categories/zhihu/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Zhihu
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/tags/cfd/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cfd</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/slurm/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Slurm</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2022-04-08T00:00:00&#43;00:00">
+      2022-04-08
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      5 minutes to read
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>Table of Contents</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-supercomputer-platform-information">1. Supercomputer platform information</a></li>
+    <li><a href="#2-software-installation">2. Software installation</a></li>
+    <li><a href="#3-prepare-slurm-scripts">3. Prepare SLURM scripts</a></li>
+    <li><a href="#4-submit-calculation-tasks">4. Submit calculation tasks</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>Recently, there are many platforms that provide supercomputing trials, and many platforms have free trial applications. Due to work needs, I applied for an account on a supercomputing platform and conducted related trials. I made a simple record of the process of deploying STAR-CCM+ software and applications on the supercomputing platform, which also provides a reference for subsequent related applications.</p>
+<h2 id="1-supercomputer-platform-information">1. Supercomputer platform information</h2>
+<p>You can log in to the supercomputer remotely through SSH connection. Some platforms also provide webSSH and webVNC connections, which support connecting to the command line or graphical interface through a browser. For specific login methods, please refer to the relevant documents provided by the platform.</p>
+<p>Before logging in for the first time to install and deploy software, you should first understand the configuration of the supercomputer platform and determine whether the platform supports the software to be installed. Use the following command to understand the distribution information of the supercomputer platform.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">lsb_release -a
+</span></span></code></pre></div><p>It can be see that the platform distribution version is CentOS, version 7.9.2009.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_69a9fa85e9dc37c7.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_68626ded0948fc0a.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_c6660f9e8382d4c4.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_b8d9ec5f5deda9e6.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_b8d9ec5f5deda9e6.jpg" width="821" height="159" alt="01-发行版信息.png" title="01-发行版信息.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The parallel job scheduling system used by this supercomputing platform is open source Slurm, and you can view the computing resources available for call through the following commands.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sinfo -a
+</span></span></code></pre></div><p>The output is relatively long, only a part of it is cut off here. In the picture below <code>amd_256</code> It indicates the partition where the computing node is located. Remember it, and you will use it after writing scripts.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_23ab3e0550b301be.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_6ec65493eeb0837f.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_b6af80631d2e6bf3.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_2ae6168b5cda1058.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_2ae6168b5cda1058.jpg" width="820" height="441" alt="02-计算节点信息.png" title="02-计算节点信息.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="2-software-installation">2. Software installation</h2>
+<p>Please refer to the relevant documents provided by the platform for software upload and storage.</p>
+<p>This article is installed with the 16.06.010 double precision Linux version. Decompression <code>tar.gz</code> package by following the following command.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tar xvzf <span class="o">[</span>file-name<span class="o">]</span>.tar.gz
+</span></span></code></pre></div><p>The installation file is unzipped <code>starccm+_16.06.010</code> In the directory, enter the directory to run <code>.sh</code> The file starts to be installed. Note that root user permission is not required here (in most cases, the platform will not provide a root account, but it does not affect the software installation).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./STAR-CCM+16.06.010_01_linux-x86_64-2.17_gnu9.2-r8.sh
+</span></span></code></pre></div><p>If you connect with VNC, you can install it through the graphical interface. If you do not want to install it through the graphical interface, you can force it through the console with the following command.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./STAR-CCM+16.06.010_01_linux-x86_64-2.17_gnu9.2-r8.sh -i console
+</span></span></code></pre></div><p>This article is installed using the console method. First, prompt LICENSE, as shown in the figure below, press <code>ENTER</code> continue.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_f0cd6b5b705a6fdd.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_eca3229eb4dc00c2.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_ca52d1957af5bdbb.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_604e7647a8d33916.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_604e7647a8d33916.jpg" width="820" height="465" alt="03-LICENSE提示.png" title="03-LICENSE提示.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Whether to accept the user agreement, enter <code>Y</code> ，<code>ENTER</code> Confirm to continue.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/04-LICENSE%E7%A1%AE%E8%AE%A4_hu_88d0b3fadd105b71.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/04-LICENSE%E7%A1%AE%E8%AE%A4_hu_813831c66431e395.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/04-LICENSE%E7%A1%AE%E8%AE%A4_hu_7dd4ad370134654e.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/04-LICENSE%E7%A1%AE%E8%AE%A4_hu_7e7f28d829e5f16.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/04-LICENSE%E7%A1%AE%E8%AE%A4_hu_7e7f28d829e5f16.jpg" width="819" height="459" alt="04-LICENSE确认.png" title="04-LICENSE确认.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>User experience plan, choose whether to accept (Y/N) according to your needs, and will not affect subsequent use.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/05-%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E8%AE%A1%E5%88%92_hu_358f47e061615d08.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/05-%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E8%AE%A1%E5%88%92_hu_b803727d40404b7.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/05-%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E8%AE%A1%E5%88%92_hu_cd5c59f2d4de9df9.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/05-%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E8%AE%A1%E5%88%92_hu_eea4b32318dfdd5b.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/05-%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E8%AE%A1%E5%88%92_hu_eea4b32318dfdd5b.jpg" width="819" height="459" alt="05-用户体验计划.png" title="05-用户体验计划.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Installation location, this article selects installation in <code>${HOME}/opt/Siemens</code> In the directory, enter the absolute path as prompted. <code>Y</code> confirm.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/06-%E8%BE%93%E5%85%A5%E5%AE%89%E8%A3%85%E4%BD%8D%E7%BD%AE_hu_5ca4c097844ab156.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/06-%E8%BE%93%E5%85%A5%E5%AE%89%E8%A3%85%E4%BD%8D%E7%BD%AE_hu_eab1d7b798aa835f.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/06-%E8%BE%93%E5%85%A5%E5%AE%89%E8%A3%85%E4%BD%8D%E7%BD%AE_hu_23f2722d9b119818.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/06-%E8%BE%93%E5%85%A5%E5%AE%89%E8%A3%85%E4%BD%8D%E7%BD%AE_hu_c3933fab7e49aee7.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/06-%E8%BE%93%E5%85%A5%E5%AE%89%E8%A3%85%E4%BD%8D%E7%BD%AE_hu_c3933fab7e49aee7.jpg" width="814" height="456" alt="06-输入安装位置.png" title="06-输入安装位置.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Installation information,<code>ENTER</code>Confirm and start copying the file.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/07-%E5%AE%89%E8%A3%85%E4%BF%A1%E6%81%AF_hu_cdbd5cdf50d6ed5c.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/07-%E5%AE%89%E8%A3%85%E4%BF%A1%E6%81%AF_hu_bd0400cbf88f3886.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/07-%E5%AE%89%E8%A3%85%E4%BF%A1%E6%81%AF_hu_f00a42c433dbe6a5.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/07-%E5%AE%89%E8%A3%85%E4%BF%A1%E6%81%AF_hu_6bb0c670e27a3182.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/07-%E5%AE%89%E8%A3%85%E4%BF%A1%E6%81%AF_hu_6bb0c670e27a3182.jpg" width="819" height="459" alt="07-安装信息.png" title="07-安装信息.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Installation is complete, <code>ENTER</code> Confirm to exit. Remember the installation path:</p>
+<p><code>${HOME}/opt/Siemens/16.06.010-R8/STAR-CCM+16.06.010-R8</code></p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/08-%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90%E7%A1%AE%E8%AE%A4_hu_d444f36a731d436a.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/08-%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90%E7%A1%AE%E8%AE%A4_hu_2942c26631cde5a4.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/08-%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90%E7%A1%AE%E8%AE%A4_hu_5063a156051c86b7.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/08-%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90%E7%A1%AE%E8%AE%A4_hu_da2d11d5550bbc3c.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/08-%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90%E7%A1%AE%E8%AE%A4_hu_da2d11d5550bbc3c.jpg" width="814" height="460" alt="08-安装完成确认.png" title="08-安装完成确认.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The harmonious process is gone, please refer to the document yourself. Support genuine versions and combat piracy.</p>
+<h2 id="3-prepare-slurm-scripts">3. Prepare SLURM scripts</h2>
+<p>Let’s write a SLURM script below and submit a study to test it briefly.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash 
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --job-name=carbin_tcm </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --partition=amd_256 </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --output=%j.out </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --error=%j.err </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 2 </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --ntasks-per-node=64 </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MPI_TYPE</span><span class="o">=</span>openmpi <span class="c1"># intel platform openmpi </span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">DIR</span><span class="o">=</span>/***/home/***/opt/Siemens/16.06.010-R8/STAR-CCM+16.06.010-R8/star/bin 
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">CDLMD_LICENSE_FILE</span><span class="o">=</span>/***/home/***/opt/Siemens/license.dat 
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SIM_FILE</span><span class="o">=</span>carbin_tcm.sim 
+</span></span><span class="line"><span class="cl"><span class="c1">#export JAVA_FILE=carbin_tcm.java </span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MACHINEFILE</span><span class="o">=</span><span class="nv">$SLURM_JOBID</span>.node 
+</span></span><span class="line"><span class="cl">scontrol show hostnames <span class="nv">$SLURM_JOB_NODELIST</span> &gt; <span class="nv">$MACHINEFILE</span> 
+</span></span><span class="line"><span class="cl"><span class="nv">$DIR</span>/starccm+ <span class="nv">$SIM_FILE</span> -batch <span class="nv">$JAVA_FILE</span> -np <span class="nv">$SLURM_NPROCS</span> -machinefile <span class="nv">$MACHINEFILE</span> -mpi <span class="nv">$MPI_TYPE</span> -rsh ssh -power 
+</span></span></code></pre></div><p><code>--job-name</code> The specified name is the case, which can be <code>squeue</code> The name displayed in the command.</p>
+<p><code>--partition</code> The specified is the partition where the compute node is located, and the call here is <code>amd_256</code> Compute nodes in partition.</p>
+<p><code>--output</code> Specify the output file name, <code>%j</code> or <code>$SLURM_JOBID</code> Indicates the current job ID, specified by the platform itself.</p>
+<p><code>--error</code> Specifies the output error file name.</p>
+<p><code>-N</code> Specify the number of nodes called in this case, and 2 compute nodes are called here.</p>
+<p><code>--ntasks-per-node</code> Specify the number of processes per node, where 64 threads are called per node are specified.</p>
+<p>variable <code>$SLURM_NPROCS</code> It represents the total number of calculation processes, which can be automatically calculated based on the above two parameters, and the total calculation process is 128.</p>
+<p>parameter <code>MPI_TYPE</code> Specify the call type of mpi, recommended <code>intel</code> or <code>openmpi</code> ，<code>platform</code> Higher versions are no longer supported.</p>
+<p>parameter <code>DIR</code> Specify the STAR-CCM+ installation path, that is <code>starccm</code> + The path to which the file is located.</p>
+<p>parameter <code>CDLMD_LICENSE_FILE</code> Specify the access path of LICENSE, which can be the file path ** or the port number@host address** .</p>
+<p>parameter <code>SIM_FILE</code> Specify the test case file name.</p>
+<p>parameter <code>JAVA_FILE</code> Specify the macro file name. If a macro is used, you can remove the comments on this line and change the file name to the called macro file name.</p>
+<p>parameter <code>MACHINEFILE</code> Specify the node file.</p>
+<p>Order <code>scontrol show hostnames SLURM_JOB_NODELIST &gt; MACHINEFILE</code> Used to output hostname to node file.</p>
+<p>Save the study script file as <code>carbin_tcm.slurm</code> , the test case file is <code>carbin_tcm.sim</code> , a total of 2 files, uploaded. Calculate the time step, the number of iterations, etc. <code>.sim</code> First define it in the file, generate a grid, configure boundary conditions and then upload and calculate it.</p>
+<p>If the study file is relatively large, you can compress and upload it and then decompress it. You can also clear the grid and upload it, and regenerate the grid, define boundary conditions, and calculate by playing the macro.</p>
+<h2 id="4-submit-calculation-tasks">4. Submit calculation tasks</h2>
+<p>pass <code>sbatch</code> Command submits calculation tasks.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sbatch carbin_tcm.slurm
+</span></span></code></pre></div><p>After submission, the ID is automatically generated and queued. The ID number of this study is 899634.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/09-%E6%8F%90%E4%BA%A4%E8%AE%A1%E7%AE%97_hu_d6669fea959b0cdb.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/09-%E6%8F%90%E4%BA%A4%E8%AE%A1%E7%AE%97_hu_e9e548ee496c38bc.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/09-%E6%8F%90%E4%BA%A4%E8%AE%A1%E7%AE%97_hu_6f32d36cccd61d4f.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/09-%E6%8F%90%E4%BA%A4%E8%AE%A1%E7%AE%97_hu_2e28eba949afb903.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/09-%E6%8F%90%E4%BA%A4%E8%AE%A1%E7%AE%97_hu_2e28eba949afb903.jpg" width="817" height="91" alt="09-提交计算.png" title="09-提交计算.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>pass <code>squeue</code> Command to view the compute task queue.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/10-%E8%AE%A1%E7%AE%97%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97_hu_c0d4a0349a92048a.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/10-%E8%AE%A1%E7%AE%97%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97_hu_c3821942cacbee44.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/10-%E8%AE%A1%E7%AE%97%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97_hu_cc322288a9d2c862.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/10-%E8%AE%A1%E7%AE%97%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97_hu_9ce9ebd854bb2b3b.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/10-%E8%AE%A1%E7%AE%97%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97_hu_9ce9ebd854bb2b3b.jpg" width="817" height="91" alt="10-计算任务队列.png" title="10-计算任务队列.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>After the calculation is completed, just package and download the output file.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/11-%E8%BE%93%E5%87%BA%E6%96%87%E4%BB%B6_hu_7c9e820680938f17.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/11-%E8%BE%93%E5%87%BA%E6%96%87%E4%BB%B6_hu_2544c679151102ed.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/11-%E8%BE%93%E5%87%BA%E6%96%87%E4%BB%B6_hu_d08d77a06bb25e57.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/11-%E8%BE%93%E5%87%BA%E6%96%87%E4%BB%B6_hu_c80de031afc3c8e6.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/11-%E8%BE%93%E5%87%BA%E6%96%87%E4%BB%B6_hu_c80de031afc3c8e6.jpg" width="825" height="122" alt="11-输出文件.png" title="11-输出文件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

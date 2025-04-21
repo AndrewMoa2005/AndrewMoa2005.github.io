@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Install Ansys2025R1 on Ubuntu24.04 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="1. Preparation 161GB of disk space is required for the full installation. Please ensure that the remaining available disk space meets the requirements. You can choose the installation content according to your needs. At least 8GB of memory is required during the installation process, and 16~32GB of memory is recommended.
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Install Ansys2025R1 on Ubuntu24.04">
+  <meta property="og:description" content="1. Preparation 161GB of disk space is required for the full installation. Please ensure that the remaining available disk space meets the requirements. You can choose the installation content according to your needs. At least 8GB of memory is required during the installation process, and 16~32GB of memory is recommended.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-03-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-03-25T00:00:00+00:00">
+    <meta property="article:tag" content="Ansys">
+    <meta property="article:tag" content="Cae">
+    <meta property="article:tag" content="Linux">
+    <meta property="article:tag" content="Ubuntu">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Install Ansys2025R1 on Ubuntu24.04">
+  <meta name="twitter:description" content="1. Preparation 161GB of disk space is required for the full installation. Please ensure that the remaining available disk space meets the requirements. You can choose the installation content according to your needs. At least 8GB of memory is required during the installation process, and 16~32GB of memory is recommended.">
+
+
+<link rel="canonical" href="https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-03-25T00:00:00Z","datePublished":"2025-03-25T00:00:00Z","description":"1. Preparation 161GB of disk space is required for the full installation. Please ensure that the remaining available disk space meets the requirements. You can choose the installation content according to your needs. At least 8GB of memory is required during the installation process, and 16~32GB of memory is recommended.\n","image":"/images/ubuntu-bg.jpg","name":"Install Ansys2025R1 on Ubuntu24.04","url":"https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">Open main menu</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/post/" title="Post">Post</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/about/" title="About">About</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">Open language switcher</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">English</span>
+            </li>
+        
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/zh-cn/post/2025-03-25-ubuntu24.04-install-ansys2025r1/" title="中文">中文</a></li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">Search</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="Toggle dark mode">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="Toggle dark mode">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Install Ansys2025R1 on Ubuntu24.04" title="Install Ansys2025R1 on Ubuntu24.04"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/">Install Ansys2025R1 on Ubuntu24.04</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/tags/ansys/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ansys</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-25T00:00:00&#43;00:00">
+      2025-03-25
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      6 minutes to read
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>Table of Contents</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-preparation">1. Preparation</a></li>
+    <li><a href="#2-install-the-license-server">2. Install the license server</a>
+      <ul>
+        <li><a href="#21-install-ansys-license-manager">2.1 Install Ansys License Manager</a></li>
+        <li><a href="#22-configure-the-license-server">2.2 Configure the license server</a></li>
+        <li><a href="#23-add-custom-service">2.3 Add custom service</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-install-the-main-program">3. Install the main program</a></li>
+    <li><a href="#4-configure-the-main-program-license">4. Configure the main program license</a>
+      <ul>
+        <li><a href="#41-method-1--configure-environment-variables">4.1 Method 1 → Configure environment variables</a></li>
+        <li><a href="#42-method-2ansys-licensing-settings">4.2 Method 2→Ansys Licensing Settings</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-start-the-main-program">5. Start the main program</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <h2 id="1-preparation">1. Preparation</h2>
+<p>161GB of disk space is required for the full installation. Please ensure that the remaining available disk space meets the requirements. You can choose the installation content according to your needs.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_e6df891d02f49e3b.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_be31c8832fc1a078.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_485a5ec525d78a02.jpg" width="603" height="456" alt="e8b6a55779447694ef28a8a9560f2bab.png" title="e8b6a55779447694ef28a8a9560f2bab.png" loading="lazy" />
+  </picture>
+</div>
+
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_311d2c221ce0c964.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_55ea2f9a1de38f2b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_c64a9486d469e79c.jpg" width="597" height="498" alt="3f912a7795844465627dc878eb409e95.png" title="3f912a7795844465627dc878eb409e95.png" loading="lazy" />
+  </picture>
+</div>
+
+At least 8GB of memory is required during the installation process, and 16~32GB of memory is recommended.</p>
+<p>Dependent tools during the installation process:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install libnsl2 libpcre3 lsb-* ldap-utils libunistring5 xfonts-100dpi xfonts-75dpi
+</span></span></code></pre></div><p>For installation of other runtime dependent tools, please refer to the official documentation.</p>
+<p>The Ansys2025R1 installation file contains 9 <code>.iso</code> installation files. Use the following command to mount the <code>.iso</code> file to the specified path:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1
+</span></span><span class="line"><span class="cl">sudo mount <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/Share/Ansys/ANSYS2025R1_LINX64_DISK1.iso <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1 -o loop
+</span></span></code></pre></div><p>In the same way, mount the remaining installation packages to other folders.</p>
+<h2 id="2-install-the-license-server">2. Install the license server</h2>
+<h3 id="21-install-ansys-license-manager">2.1 Install Ansys License Manager</h3>
+<p>Since Ansys installation requires a graphical interface, you need to first access the Ubuntu desktop system through a remote connection.</p>
+<p>Enter the mount point of the first installation package and run the installer:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1
+</span></span><span class="line"><span class="cl">sudo ./INSTALL <span class="c1"># Since it needs to be run as a service, it is recommended to run the installer with administrator user privileges</span>
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_5831ab07b17cae41.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_e334336d3856452d.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_fe3867f407d36e29.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_7f1fb588b6f2c0d1.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_a73fd8dcf1dc600a.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_92fa09b75d1ad315.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_a73fd8dcf1dc600a.jpg" width="1041" height="647" alt="598ba0142449e130e1d6680aef25e2db.png" title="598ba0142449e130e1d6680aef25e2db.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>License installation path selection: <code>/opt/ansys_inc</code>:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/5a06611a2b8026902f761f7ff6953b86_hu_abffa4cb39778021.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/5a06611a2b8026902f761f7ff6953b86_hu_bb91bb4dd81b4c98.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/5a06611a2b8026902f761f7ff6953b86_hu_62b4bc0e69dd47e3.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/5a06611a2b8026902f761f7ff6953b86_hu_dc47f6b1d64455ac.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/5a06611a2b8026902f761f7ff6953b86_hu_e87de8ad43b00ffd.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/5a06611a2b8026902f761f7ff6953b86_hu_2bc962b38fd9e580.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/5a06611a2b8026902f761f7ff6953b86_hu_e87de8ad43b00ffd.jpg" width="1035" height="650" alt="5a06611a2b8026902f761f7ff6953b86.png" title="5a06611a2b8026902f761f7ff6953b86.png" loading="lazy" />
+  </picture>
+</div>
+
+After the installation is complete, exit the installer.</p>
+<p>Verify that the Ansys License Server daemon is running:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">ps -eaf <span class="p">|</span> grep ansyslmd
+</span></span></code></pre></div><p>If the ansyslmd process is running, kill it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">kill</span> -s <span class="m">9</span> <span class="o">[</span>PID<span class="o">]</span> <span class="c1"># [PID] Fill in the PID of the ansyslmd process</span>
+</span></span></code></pre></div><h3 id="22-configure-the-license-server">2.2 Configure the license server</h3>
+<p>We need to unzip the files in the <code>/shared_files</code> folder in the <code>ansys.2025r1.linx64-ssq.tar.gz</code> compressed package to the installation directory and overwrite:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">tar xvzf ansys.2025r1.linx64-ssq.tar.gz
+</span></span><span class="line"><span class="cl">sudo cp -r shared_files /opt/ansys_inc/
+</span></span></code></pre></div><p>Next, configure the license service. The following command runs the license configuration program:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo /opt/ansys_inc/shared_files/licensing/init_ansyslm_tomcat start
+</span></span></code></pre></div><p>Then use the browser to open the address: <code>http://localhost:1084/ANSYSLMCenter.html</code>, locate the <code>Get System Hostid information</code> column, find <code>HOSTID</code>, copy it and use it later:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/a52950f2db9ae12884303cbf17f8bdc2_hu_6732d09d122d4e01.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/a52950f2db9ae12884303cbf17f8bdc2_hu_cc21efbeb07900f6.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/a52950f2db9ae12884303cbf17f8bdc2_hu_2dc87adb6857c95b.webp 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/a52950f2db9ae12884303cbf17f8bdc2_hu_e76405c47219bded.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/a52950f2db9ae12884303cbf17f8bdc2_hu_c8209eb8acd51421.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/a52950f2db9ae12884303cbf17f8bdc2_hu_400d6b6e0b468272.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/a52950f2db9ae12884303cbf17f8bdc2_hu_7d31fc74eb54f0f1.jpg 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/a52950f2db9ae12884303cbf17f8bdc2_hu_229d4d42da253ce8.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/a52950f2db9ae12884303cbf17f8bdc2_hu_400d6b6e0b468272.jpg" width="1454" height="783" alt="a52950f2db9ae12884303cbf17f8bdc2.png" title="a52950f2db9ae12884303cbf17f8bdc2.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Open the <code>license_2024.12.15.txt</code> file, replace <code>XXXXXXXXXXXX</code> with the <code>HOSTID</code> copied above in the line <code>SERVER localhost XXXXXXXXXXXX 1055</code> at the beginning, and save the file.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/98784654bd0673c67c268b30c410841d_hu_5ec3851a3c92f115.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/98784654bd0673c67c268b30c410841d_hu_110399e7f1c5c5e8.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/98784654bd0673c67c268b30c410841d_hu_4429811843db5ade.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/98784654bd0673c67c268b30c410841d_hu_97994acece50d917.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/98784654bd0673c67c268b30c410841d_hu_97994acece50d917.jpg" width="712" height="529" alt="98784654bd0673c67c268b30c410841d.png" title="98784654bd0673c67c268b30c410841d.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Locate the <code>Add a License File</code> column and load the <code>license_2024.12.15.txt</code> file that you just edited.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8b20a3edf84fd2d7ed3014bb482ebaa3_hu_8ef51b6c4d66cb52.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8b20a3edf84fd2d7ed3014bb482ebaa3_hu_1ef918ab317c1543.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8b20a3edf84fd2d7ed3014bb482ebaa3_hu_f61611022ddc10f8.webp 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8b20a3edf84fd2d7ed3014bb482ebaa3_hu_c04103cd98500b86.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8b20a3edf84fd2d7ed3014bb482ebaa3_hu_7554b63f56fba0cb.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8b20a3edf84fd2d7ed3014bb482ebaa3_hu_8b87bf284add060c.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8b20a3edf84fd2d7ed3014bb482ebaa3_hu_359a73a8bfea1b1f.jpg 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8b20a3edf84fd2d7ed3014bb482ebaa3_hu_3ef9373034a8fc5a.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8b20a3edf84fd2d7ed3014bb482ebaa3_hu_8b87bf284add060c.jpg" width="1441" height="779" alt="8b20a3edf84fd2d7ed3014bb482ebaa3.png" title="8b20a3edf84fd2d7ed3014bb482ebaa3.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>There is a problem here, prompting that <code>lmgrd</code> cannot be found and the server daemon cannot be started. Run the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo cp /opt/ansys_inc/shared_files/licensing/linx64/update/lmgrd /opt/ansys_inc/shared_files/licensing/linx64/lmgrd
+</span></span></code></pre></div><p>Just load the file again:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3d393bbce991d531ef2829ec57b3f0d2_hu_40eabfed78a89fcc.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3d393bbce991d531ef2829ec57b3f0d2_hu_5d5a5585c6e5321d.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3d393bbce991d531ef2829ec57b3f0d2_hu_41425f8a1c7aeb65.webp 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3d393bbce991d531ef2829ec57b3f0d2_hu_a6a097fd835bf306.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3d393bbce991d531ef2829ec57b3f0d2_hu_a2f0bb4a9907a70b.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3d393bbce991d531ef2829ec57b3f0d2_hu_1cb5f9a5bfdf2ec6.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3d393bbce991d531ef2829ec57b3f0d2_hu_87618d4721d26a8e.jpg 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3d393bbce991d531ef2829ec57b3f0d2_hu_6527627cf96779bf.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3d393bbce991d531ef2829ec57b3f0d2_hu_1cb5f9a5bfdf2ec6.jpg" width="1445" height="777" alt="3d393bbce991d531ef2829ec57b3f0d2.png" title="3d393bbce991d531ef2829ec57b3f0d2.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Locate the <code>View Status/Start/Stop License Manager</code> column and confirm the server running status:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/fc01fe3a22a3f809c25540c512c61df0_hu_7f14e927a49c00b.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/fc01fe3a22a3f809c25540c512c61df0_hu_92d56168e7d56ff0.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/fc01fe3a22a3f809c25540c512c61df0_hu_174117536828c395.webp 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/fc01fe3a22a3f809c25540c512c61df0_hu_d3d58cedd1344f82.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/fc01fe3a22a3f809c25540c512c61df0_hu_654ff9fb6b7857bc.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/fc01fe3a22a3f809c25540c512c61df0_hu_7c1febd12d54df9c.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/fc01fe3a22a3f809c25540c512c61df0_hu_5af54293d14cddb8.jpg 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/fc01fe3a22a3f809c25540c512c61df0_hu_9315198bef12cdac.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/fc01fe3a22a3f809c25540c512c61df0_hu_7c1febd12d54df9c.jpg" width="1451" height="778" alt="fc01fe3a22a3f809c25540c512c61df0.png" title="fc01fe3a22a3f809c25540c512c61df0.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Exit the browser and close the license configuration program, and confirm whether the daemon is running:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo /opt/ansys_inc/shared_files/licensing/init_ansyslm_tomcat stop
+</span></span><span class="line"><span class="cl">ps -eaf <span class="p">|</span> grep ansyslmd
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/edac3b8a6905bbabd6bbe9ab46101f0f_hu_5be9e45e7ecd7a67.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/edac3b8a6905bbabd6bbe9ab46101f0f_hu_75dae9c1f7f4ffc7.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/edac3b8a6905bbabd6bbe9ab46101f0f_hu_28e72704276c9982.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/edac3b8a6905bbabd6bbe9ab46101f0f_hu_cd918ebfa68dbf1.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/edac3b8a6905bbabd6bbe9ab46101f0f_hu_cd918ebfa68dbf1.jpg" width="807" height="156" alt="edac3b8a6905bbabd6bbe9ab46101f0f.png" title="edac3b8a6905bbabd6bbe9ab46101f0f.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>If the license server and the main program are installed on different machines, you need to open port 1055 of the license server in the firewall:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo ufw allow from any to any port <span class="m">1055</span> proto tcp
+</span></span></code></pre></div><h3 id="23-add-custom-service">2.3 Add custom service</h3>
+<p>After completing the above settings, when the server is restarted, the system will not automatically start the daemon process. You need to start ansyslmd with the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo /opt/ansys_inc/shared_files/licensing/start_ansyslmd
+</span></span></code></pre></div><p>In order to prevent the server from being unable to calculate due to license issues after power failure and restart, the following custom service is added through systemd to realize the automatic start of the daemon process at startup. The following command creates a new ansyslmd service:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo touch /usr/lib/systemd/system/ansyslmd.service
+</span></span><span class="line"><span class="cl">sudo vim /usr/lib/systemd/system/ansyslmd.service
+</span></span><span class="line"><span class="cl">sudo chmod <span class="m">754</span> /usr/lib/systemd/system/ansyslmd.service
+</span></span></code></pre></div><p>Add the following content and save and exit:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-systemd" data-lang="systemd"><span class="line"><span class="cl"><span class="k">[Unit]</span>
+</span></span><span class="line"><span class="cl"><span class="na">Description</span><span class="o">=</span><span class="s">Ansys License Deamon</span>
+</span></span><span class="line"><span class="cl"><span class="na">After</span><span class="o">=</span><span class="s">ansyslmd.service</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="k">[Service]</span>
+</span></span><span class="line"><span class="cl"><span class="na">Type</span><span class="o">=</span><span class="s">forking</span>
+</span></span><span class="line"><span class="cl"><span class="na">User</span><span class="o">=</span><span class="s">root</span>
+</span></span><span class="line"><span class="cl"><span class="na">Group</span><span class="o">=</span><span class="s">root</span>
+</span></span><span class="line"><span class="cl"><span class="na">ExecStart</span><span class="o">=</span><span class="s">/opt/ansys_inc/shared_files/licensing/start_ansyslmd</span>
+</span></span><span class="line"><span class="cl"><span class="na">ExecReload</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="na">ExecStop</span><span class="o">=</span><span class="s">/opt/ansys_inc/shared_files/licensing/stop_ansyslmd</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="k">[Install]</span>
+</span></span><span class="line"><span class="cl"><span class="na">WantedBy</span><span class="o">=</span><span class="s">multi-user.target</span>
+</span></span></code></pre></div><p>Start the service with the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> ansyslmd
+</span></span><span class="line"><span class="cl">sudo systemctl start ansyslmd
+</span></span></code></pre></div><p>Check the service status:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo systemctl status ansyslmd
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/936bafa551b8e5f366e60560bc7a3cb1_hu_6bd1edea2ffc9bee.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/936bafa551b8e5f366e60560bc7a3cb1_hu_64d9089e7200a124.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/936bafa551b8e5f366e60560bc7a3cb1_hu_6bdb1cb0eac0eb4e.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/936bafa551b8e5f366e60560bc7a3cb1_hu_82f0df84b46bce9b.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/936bafa551b8e5f366e60560bc7a3cb1_hu_82f0df84b46bce9b.jpg" width="911" height="241" alt="936bafa551b8e5f366e60560bc7a3cb1.png" title="936bafa551b8e5f366e60560bc7a3cb1.png" loading="lazy" />
+  </picture>
+</div>
+
+The service is started successfully. After the installation is complete, you can restart it to verify.</p>
+<h2 id="3-install-the-main-program">3. Install the main program</h2>
+<p>You also need to enter the Ubuntu desktop system to install the main program.</p>
+<p>Enter the mount point of the first installation package and run the installation program:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1
+</span></span><span class="line"><span class="cl">sudo ./INSTALL <span class="c1"># Install with root privileges</span>
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6933ca38adf2f53214ee6da37be02675_hu_706cbfaca2da315b.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6933ca38adf2f53214ee6da37be02675_hu_821093963eba56f9.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6933ca38adf2f53214ee6da37be02675_hu_6d1ccb49bf3095cf.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6933ca38adf2f53214ee6da37be02675_hu_918490f1a7861659.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6933ca38adf2f53214ee6da37be02675_hu_e037ace5d96e9c20.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6933ca38adf2f53214ee6da37be02675_hu_a56203164dbd63d0.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6933ca38adf2f53214ee6da37be02675_hu_e037ace5d96e9c20.jpg" width="1034" height="645" alt="6933ca38adf2f53214ee6da37be02675.png" title="6933ca38adf2f53214ee6da37be02675.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Solve the same choice to install in: <code>/opt/ansys_inc</code>
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/93a9af6a6829b4c21c211ed56a9089a2_hu_febf6770a5b55e95.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/93a9af6a6829b4c21c211ed56a9089a2_hu_11e8a5c68f85bb85.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/93a9af6a6829b4c21c211ed56a9089a2_hu_32441a5ba67db1df.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/93a9af6a6829b4c21c211ed56a9089a2_hu_73ca1c772db57cb.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/93a9af6a6829b4c21c211ed56a9089a2_hu_2bbb81a8bd04b5e9.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/93a9af6a6829b4c21c211ed56a9089a2_hu_f731bc7a6d2ca97b.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/93a9af6a6829b4c21c211ed56a9089a2_hu_2bbb81a8bd04b5e9.jpg" width="1035" height="648" alt="93a9af6a6829b4c21c211ed56a9089a2.png" title="93a9af6a6829b4c21c211ed56a9089a2.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Choose what to install according to your needs:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/921717f7b3c0f69710ca2d0de4f8a702_hu_c37794f4d008e1bc.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/921717f7b3c0f69710ca2d0de4f8a702_hu_311586e7487ff1c6.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/921717f7b3c0f69710ca2d0de4f8a702_hu_11b60e380e95cbad.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/921717f7b3c0f69710ca2d0de4f8a702_hu_22cb5a7c26970794.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/921717f7b3c0f69710ca2d0de4f8a702_hu_573b48628f825be9.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/921717f7b3c0f69710ca2d0de4f8a702_hu_22d9a78ce5865250.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/921717f7b3c0f69710ca2d0de4f8a702_hu_573b48628f825be9.jpg" width="1036" height="646" alt="921717f 7b3c0f69710ca2d0de4f8a702.png" title="921717f 7b3c0f69710ca2d0de4f8a702.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Configure CAD geometry interface. CAD software is not installed on this machine. Select Skip:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3905fc228e5b13ede8a3389f6997b76f_hu_f0cd34352a519199.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3905fc228e5b13ede8a3389f6997b76f_hu_109b38e4cc5c8f1f.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3905fc228e5b13ede8a3389f6997b76f_hu_73fc503ff355859a.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3905fc228e5b13ede8a3389f6997b76f_hu_cbd73b6b5af37fbf.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3905fc228e5b13ede8a3389f6997b76f_hu_8105b008af0de78e.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3905fc228e5b13ede8a3389f6997b76f_hu_5273be472ad94e9.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3905fc228e5b13ede8a3389f6997b76f_hu_8105b008af0de78e.jpg" width="1032" height="650" alt="3905fc228e5b13ede8a3389f6997b76f.png" title="3905fc228e5b13ede8a3389f6997b76f.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Depending on the installation content selected earlier, a bunch of configuration file paths will be asked later. Set them according to your needs. If there is no such a thing, just click Next.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/1ae7bc0a6a670019f24a6b43a6a45e7b_hu_d2d8fed39160d851.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/1ae7bc0a6a670019f24a6b43a6a45e7b_hu_e59aa1779bb2a6d6.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/1ae7bc0a6a670019f24a6b43a6a45e7b_hu_c5921ef1466e997f.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/1ae7bc0a6a670019f24a6b43a6a45e7b_hu_c4605192591fc645.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/1ae7bc0a6a670019f24a6b43a6a45e7b_hu_34c1c564b9b28f99.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/1ae7bc0a6a670019f24a6b43a6a45e7b_hu_5d166840725e445f.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/1ae7bc0a6a670019f24a6b43a6a45e7b_hu_34c1c564b9b28f99.jpg" width="1035" height="647" alt="1ae7bc0a6a670019f24a6b43a6a45e7b.png" title="1ae7bc0a6a670019f24a6b43a6a45e7b.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Choose whether to create a desktop shortcut. Select it. It may be useful.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/40ec3516e05c8562ad9e52ed6703e3ef_hu_2291a30aee9a1b4.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/40ec3516e05c8562ad9e52ed6703e3ef_hu_ebfb943e17b8c53c.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/40ec3516e05c8562ad9e52ed6703e3ef_hu_63f2f5d909fc65e4.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/40ec3516e05c8562ad9e52ed6703e3ef_hu_a2292a0933e49c9.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/40ec3516e05c8562ad9e52ed6703e3ef_hu_7d5553eafb2a3542.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/40ec3516e05c8562ad9e52ed6703e3ef_hu_58e3f8b95f7258c1.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/40ec3516e05c8562ad9e52ed6703e3ef_hu_7d5553eafb2a3542.jpg" width="1036" height="653" alt="40ec3516e05c8562ad9e52ed6703e3ef.png" title="40ec3516e05c8562ad9e52ed6703e3ef.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Confirm the installation content and click Next to start copying files:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/bdaa34603562269aeb94f1634682c3e5_hu_2fac0e6483e20eab.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/bdaa34603562269aeb94f1634682c3e5_hu_c7e55413482557cc.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/bdaa34603562269aeb94f1634682c3e5_hu_8beba4bb67a751c9.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/bdaa34603562269aeb94f1634682c3e5_hu_e10bc63baf5a04f2.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/bdaa34603562269aeb94f1634682c3e5_hu_ca462df15bd19d53.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/bdaa34603562269aeb94f1634682c3e5_hu_57190d2d3b602e8a.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/bdaa34603562269aeb94f1634682c3e5_hu_ca462df15bd19d53.jpg" width="1034" height="651" alt="bdaa34603562269aeb94f1634682c3e5.png" title="bdaa34603562269aeb94f1634682c3e5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>You can check the installation progress. During the installation, you will be asked to load other <code>.iso</code> file mount paths.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6e6129bc46d805ef3d32b5269fdddbf0_hu_edf60ef22d97bed6.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6e6129bc46d805ef3d32b5269fdddbf0_hu_8d68d88fcba4cd82.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6e6129bc46d805ef3d32b5269fdddbf0_hu_b1b9636ba084d221.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6e6129bc46d805ef3d32b5269fdddbf0_hu_c9f1bb98d1064a8f.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6e6129bc46d805ef3d32b5269fdddbf0_hu_7090668c7bdccce2.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6e6129bc46d805ef3d32b5269fdddbf0_hu_41db8ad282c1e2f7.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/6e6129bc46d805ef3d32b5269fdddbf0_hu_7090668c7bdccce2.jpg" width="1033" height="648" alt="6e6129bc46d805ef3d32b5269fdddbf0.png" title="6e6129bc46d805ef3d32b5269fdddbf0.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The installation is complete, and there are some errors. Ignore it and exit.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8329e891f49681100884f8cd734a3685_hu_1bc61f064abce61c.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8329e891f49681100884f8cd734a3685_hu_f68ae368a13edb75.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8329e891f49681100884f8cd734a3685_hu_28c9f1902793d87e.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8329e891f49681100884f8cd734a3685_hu_f060cdb8eb222fb5.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8329e891f49681100884f8cd734a3685_hu_1195c69ac0cc515c.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8329e891f49681100884f8cd734a3685_hu_ec45e86f348d3d6b.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/8329e891f49681100884f8cd734a3685_hu_1195c69ac0cc515c.jpg" width="1032" height="646" alt="8329e891f49681100884f8cd734a3685.png" title="8329e891f49681100884f8cd734a3685.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Next, unzip the files in the <code>v251</code> folder in the <code>ansys.2025r1.linx64-ssq.tar.gz</code> compressed package to the installation directory and overwrite:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">tar xvzf ansys.2025r1.linx64-ssq.tar.gz
+</span></span><span class="line"><span class="cl">sudo cp -r v251 /opt/ansys_inc/
+</span></span></code></pre></div><p>After the main program is installed, unmount the mount point of the <code>.iso</code> file:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo umount <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1
+</span></span></code></pre></div><p>Unmount the remaining mount points in the same way.</p>
+<h2 id="4-configure-the-main-program-license">4. Configure the main program license</h2>
+<p>After installing the main program, you need to configure the license for the main program. There are two ways.</p>
+<h3 id="41-method-1--configure-environment-variables">4.1 Method 1 → Configure environment variables</h3>
+<p>Create and edit the environment variable file in <code>${HOME}/opt/</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">touch <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/ansys2025r1.env
+</span></span><span class="line"><span class="cl">chmod +x <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/ansys2025r1.env
+</span></span><span class="line"><span class="cl">vim <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/ansys2025r1.env
+</span></span></code></pre></div><p>Add the following content, save and exit:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ANSYSLMD_LICENSE_FILE</span><span class="o">=</span>1055@localhost
+</span></span></code></pre></div><p>You can load the environment variables with the following command later.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">source</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/ansys2025r1.env
+</span></span></code></pre></div><p>You can add the above command line to the <code>${HOME}/.bashrc</code> file, so that the environment variables will be automatically loaded every time you log in.</p>
+<h3 id="42-method-2ansys-licensing-settings">4.2 Method 2→Ansys Licensing Settings</h3>
+<p>Run the following command to start the <code>Licensing Settings</code> program:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">/ansys_inc/v251/licensingclient/linx64/LicensingSettings
+</span></span></code></pre></div><p>Follow the steps to set the following:</p>
+<ol>
+<li>Change the configuration file level from Installion to User</li>
+<li>Set the status to Enable</li>
+<li>Fill in 1055 for the port number</li>
+<li>Fill in localhost for the Server1 address</li>
+<li>Click the Test button to test</li>
+<li>Click Save to save the configuration</li>
+</ol>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/4a20e58eeea7df3348c81b7cd2b1dd5c_hu_6f0b48bbc3abc564.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/4a20e58eeea7df3348c81b7cd2b1dd5c_hu_9e4c01b7630bc872.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/4a20e58eeea7df3348c81b7cd2b1dd5c_hu_3abc9dd7d1639166.webp 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/4a20e58eeea7df3348c81b7cd2b1dd5c_hu_e0952abddb9e8810.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/4a20e58eeea7df3348c81b7cd2b1dd5c_hu_2b7df0383cee71b9.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/4a20e58eeea7df3348c81b7cd2b1dd5c_hu_a85af25f2b5826b9.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/4a20e58eeea7df3348c81b7cd2b1dd5c_hu_bad1fd45343a631f.jpg 960w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/4a20e58eeea7df3348c81b7cd2b1dd5c_hu_86ef60216b1d1cd.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/4a20e58eeea7df3348c81b7cd2b1dd5c_hu_a85af25f2b5826b9.jpg" width="1294" height="851" alt="4a20e58eeea7df3348c81b7cd2b1dd5c.png" title="4a20e58eeea7df3348c81b7cd2b1dd5c.png" loading="lazy" />
+  </picture>
+</div>
+
+Save and exit to complete the license configuration.</p>
+<h2 id="5-start-the-main-program">5. Start the main program</h2>
+<p>After configuring the license, start <code>Workbench</code> with the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">/ansys_inc/v251/Framework/bin/Linux64/runwb2
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3294556c73209acc5799dc0203469459_hu_1df0f384422c36f9.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3294556c73209acc5799dc0203469459_hu_b40113df9f6b9e06.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3294556c73209acc5799dc0203469459_hu_880f8d5c18a803a6.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3294556c73209acc5799dc0203469459_hu_8581844c5279bfb9.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3294556c73209acc5799dc0203469459_hu_cc34d91e85c72f99.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3294556c73209acc5799dc0203469459_hu_b1c52f2db2fbc8ec.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3294556c73209acc5799dc0203469459_hu_cc34d91e85c72f99.jpg" width="1033" height="815" alt="3294556c73209acc5799dc0203469459.png" title="3294556c73209acc5799dc0203469459.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Similarly, the entry points of some key main programs are as follows:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Application</th>
+          <th>How to Launch</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>ACP</td>
+          <td>/ansys_inc/v251/ACP/ACP.sh</td>
+      </tr>
+      <tr>
+          <td>CFD-Post</td>
+          <td>/ansys_inc/v251/cfdpost</td>
+      </tr>
+      <tr>
+          <td>CFX</td>
+          <td>/ansys_inc/v251/CFX/bin/cfx5<sup>(Note)</td>
+      </tr>
+      <tr>
+          <td>FLUENT</td>
+          <td>/ansys_inc/v251/fluent/bin/fluent</td>
+      </tr>
+      <tr>
+          <td>ICEM CFD</td>
+          <td>/ansys_inc/v251/icemcfd/icemcfd</td>
+      </tr>
+      <tr>
+          <td>ICEPAK</td>
+          <td>/ansys_inc/v251/icepak/icepak</td>
+      </tr>
+      <tr>
+          <td>Motion</td>
+          <td>/ansys_inc/v251/Motion/solver/rundfs.sh</td>
+      </tr>
+      <tr>
+          <td>Polyflow Classic</td>
+          <td>/ansys_inc/v251/polyflow/bin/polyflow</td>
+      </tr>
+      <tr>
+          <td>TurboGrid</td>
+          <td>/ansys_inc/v251/TurboGrid/bin/cfxtg</td>
+      </tr>
+      <tr>
+          <td>Sherlock</td>
+          <td>/ansys_inc/v251/sherlock/runSherlock</td>
+      </tr>
+      <tr>
+          <td>Workbench</td>
+          <td>/ansys_inc/v251/Framework/bin/Linux64/runwb2</td>
+      </tr>
+      <tr>
+          <td>Electronics</td>
+          <td>/ansys_inc/v251/AnsysEM/ansysedt</td>
+      </tr>
+  </tbody>
+</table>
+<p><sup>(Note): cfx5 can be replaced by cfx5launch, cfx5pre, cfx5solve or cfx5post. They correspond to different functional modules.</p>
+<p>At this point, Ansys is installed.</p>
+<hr>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

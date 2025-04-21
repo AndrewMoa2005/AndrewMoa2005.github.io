@@ -1,68 +1,71 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ubuntu on Andrew Moa Blog</title>
+    <title>Ubuntu on Andrew Moa Blog Site</title>
     <link>https://andrewmoa.site/tags/ubuntu/</link>
-    <description>Recent content in Ubuntu on Andrew Moa Blog</description>
+    <description>Recent content in Ubuntu on Andrew Moa Blog Site</description>
     <generator>Hugo</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Thu, 27 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <language>en-US</language>
+    <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
+    <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
+    <copyright>Andrew Moa</copyright>
+    <lastBuildDate>Tue, 15 Apr 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Ubuntu编译安装SU2</title>
-      <link>https://andrewmoa.site/2025/03/27/ubuntu-compile-and-install-su2/</link>
-      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/27/ubuntu-compile-and-install-su2/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://su2code.github.io/&#34;&gt;SU2&lt;/a&gt;是一款由斯坦福大学航空航天学院开发的开源CFD求解器，基于C++和Python开发，定位类似于OpenFOAM，但不支持多面体网格。相比OpenFOAM，SU2在高速可压缩流方面的求解更有优势。&lt;/p&gt;&#xA;&lt;p&gt;下载SU2源代码：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Bash&#34; data-lang=&#34;Bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code &lt;span style=&#34;color:#ff79c6&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#6272a4&#34;&gt;# 只clone最近commit版本，加快下载速度&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git clone https://github.com/su2code/SU2.git --depth&lt;span style=&#34;color:#ff79c6&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#bd93f9&#34;&gt;1&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;定义环境变量，新建配置文件&lt;code&gt;su2.env&lt;/code&gt;：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Bash&#34; data-lang=&#34;Bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;touch &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code/su2.env&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;chmod +x &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code/su2.env&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;vim &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$HOME&lt;/span&gt;/su2code/su2.env&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在&lt;code&gt;su2.env&lt;/code&gt;文件中加入以下内容，保存退出：&lt;/p&gt;</description>
+      <title>Abaqus and CFX solvers cannot be run in Linux mounts Windows shared folders</title>
+      <link>https://andrewmoa.site/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/</link>
+      <pubDate>Tue, 15 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/</guid>
+      <description>&lt;p&gt;Recently, a problem was discovered that Abaqus and CFX cannot perform calculations on Windows shared folders mounted on Linux. Linux is deployed on a virtual machine. Although there will be no error when starting the calculation program on the local path of the virtual machine, it will cause the virtual disk to occupy more space and have a certain impact on the read and write efficiency.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-smb-version-problem&#34;&gt;1. SMB version problem&lt;/h2&gt;&#xA;&lt;h3 id=&#34;11-smbv3&#34;&gt;1.1 SMBv3&lt;/h3&gt;&#xA;&lt;p&gt;When using cifs to mount a shared folder before, I did not pay close attention to the version of the SMB protocol&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;. The following command line does not specify the protocol version:&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Ubuntu24.04安装Ansys2025R1</title>
-      <link>https://andrewmoa.site/2025/03/25/ubuntu-install-ansys/</link>
-      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/25/ubuntu-install-ansys/</guid>
-      <description>&lt;h2 id=&#34;1-准备工作&#34;&gt;1. 准备工作&lt;/h2&gt;&#xA;&lt;p&gt;全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。&#xA;&#xA;  &lt;img src=&#34;https://andrewmoa.site/resources/e8b6a55779447694ef28a8a9560f2bab.png&#34; alt=&#34;e8b6a55779447694ef28a8a9560f2bab.png&#34;&gt;&#xA;&#xA;&#xA;&#xA;  &lt;img src=&#34;https://andrewmoa.site/resources/3f912a7795844465627dc878eb409e95.png&#34; alt=&#34;3f912a7795844465627dc878eb409e95.png&#34;&gt;&#xA;&#xA;&#xA;安装过程中至少需要8GB内存，推荐内存16~32GB。&lt;/p&gt;</description>
+      <title>Ubuntu compile and install SU2</title>
+      <link>https://andrewmoa.site/post/2025-03-27-ubuntu-compile-su2/</link>
+      <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-27-ubuntu-compile-su2/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://su2code.github.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;SU2&lt;/a&gt;&#xA; is an open source CFD solver developed by the School of Aeronautics and Astronautics at Stanford University. It is based on C++ and Python and is similar to OpenFOAM, but does not support polyhedral meshes. Compared with OpenFOAM, SU2 has more advantages in solving high-speed compressible flows.&lt;/p&gt;&#xA;&lt;p&gt;Download SU2 source code:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Bash&#34; data-lang=&#34;Bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkdir &lt;span class=&#34;nv&#34;&gt;$HOME&lt;/span&gt;/su2code &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$HOME&lt;/span&gt;/su2code&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Only clone the latest commit version to speed up downloading&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git clone https://github.com/su2code/SU2.git --depth&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Define environment variables and create a new configuration file &lt;code&gt;su2.env&lt;/code&gt;:&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Ubuntu24.04搭建Samba服务器</title>
-      <link>https://andrewmoa.site/2025/03/24/ubuntu-setup-samba/</link>
-      <pubDate>Mon, 24 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/24/ubuntu-setup-samba/</guid>
-      <description>&lt;p&gt;由于Ubuntu运行在虚拟机中，通过Ubuntu挂载Windows共享文件夹，在挂载点中运行某些CAE软件会出现计算报错。考虑将Ubuntu文件夹共享给Windows，因此需要在Ubuntu系统上搭建Samba服务器。&lt;/p&gt;</description>
+      <title>Install Ansys2025R1 on Ubuntu24.04</title>
+      <link>https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/</link>
+      <pubDate>Tue, 25 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/</guid>
+      <description>&lt;h2 id=&#34;1-preparation&#34;&gt;1. Preparation&lt;/h2&gt;&#xA;&lt;p&gt;161GB of disk space is required for the full installation. Please ensure that the remaining available disk space meets the requirements. You can choose the installation content according to your needs.&lt;div class=&#34;not-prose&#34;&gt;&#xA;&lt;picture&gt;&#xA;    &lt;source type=&#34;image/webp&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_e6df891d02f49e3b.webp 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;source type=&#34;image/jpeg&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_be31c8832fc1a078.jpg 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;img class=&#34;h-auto max-w-full rounded-lg&#34; src=&#34;https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_485a5ec525d78a02.jpg&#34; width=&#34;603&#34; height=&#34;456&#34; alt=&#34;e8b6a55779447694ef28a8a9560f2bab.png&#34; title=&#34;e8b6a55779447694ef28a8a9560f2bab.png&#34; loading=&#34;lazy&#34; /&gt;&#xA;  &lt;/picture&gt;&#xA;&lt;/div&gt;&#xA;&#xA;&lt;div class=&#34;not-prose&#34;&gt;&#xA;&lt;picture&gt;&#xA;    &lt;source type=&#34;image/webp&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_311d2c221ce0c964.webp 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;source type=&#34;image/jpeg&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_55ea2f9a1de38f2b.jpg 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;img class=&#34;h-auto max-w-full rounded-lg&#34; src=&#34;https://andrewmoa.site/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_c64a9486d469e79c.jpg&#34; width=&#34;597&#34; height=&#34;498&#34; alt=&#34;3f912a7795844465627dc878eb409e95.png&#34; title=&#34;3f912a7795844465627dc878eb409e95.png&#34; loading=&#34;lazy&#34; /&gt;&#xA;  &lt;/picture&gt;&#xA;&lt;/div&gt;&#xA;&#xA;At least 8GB of memory is required during the installation process, and 16~32GB of memory is recommended.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Ubuntu安装SIMULIA2024</title>
-      <link>https://andrewmoa.site/2025/03/21/ubuntu-install-simulia/</link>
-      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/21/ubuntu-install-simulia/</guid>
-      <description>&lt;p&gt;为什么选择SIMULIA？首先是Abaqus功能强大，绝大多数结构问题都能求解。其次流固耦合方便，STAR-CCM+自带案例就手把手你怎么和Abaqus双向耦合。再次是过往经历的惯性，毕竟主机厂Abaqus用得可不少，不缺案例和资源。&lt;/p&gt;</description>
+      <title>Ubuntu24.04 builds Samba server</title>
+      <link>https://andrewmoa.site/post/2025-03-24-ubuntu24.04-samba-serve/</link>
+      <pubDate>Mon, 24 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-24-ubuntu24.04-samba-serve/</guid>
+      <description>&lt;p&gt;Since Ubuntu runs in a virtual machine, when you mount a Windows shared folder through Ubuntu, some CAE software will report a calculation error when running it in the mount point. Consider sharing the Ubuntu folder with Windows, so you need to build a Samba server on the Ubuntu system.&lt;/p&gt;&#xA;&lt;p&gt;First, install the samba package on Ubuntu:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Bash&#34; data-lang=&#34;Bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo apt install samba -y&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Create a shared folder:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Bash&#34; data-lang=&#34;Bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkdir &lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;HOME&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;/LinuxShare&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Edit the Samba configuration file &lt;code&gt;/etc/samba/smb.conf&lt;/code&gt;:&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Ubuntu安装Slurm</title>
-      <link>https://andrewmoa.site/2025/03/20/ubuntu-install-slurm/</link>
-      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/20/ubuntu-install-slurm/</guid>
-      <description>&lt;p&gt;Slurm，和PBS、LSF一样，超算上常用的任务管理系统。Slurm优点是开源免费、活跃度很高，近几年国内新兴的超算平台几乎都提供了Slurm作为主要的任务管理系统。PBS开源后活跃度低得可怜，更新到最新系统后安装一直出问题，提了issue也不见答复。LSF有版权风险，国内应用也不多，属于很少见的类型。至于命令和脚本，这三家都大差不差，学会了其中一家另外的也是手到擒来。&lt;/p&gt;</description>
+      <title>Ubuntu Install SIMULIA2024</title>
+      <link>https://andrewmoa.site/post/2025-03-21-ubuntu-install-simulia2024/</link>
+      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-21-ubuntu-install-simulia2024/</guid>
+      <description>&lt;p&gt;Why did you choose SIMULIA? First, Abaqus is powerful and can solve most structural problems. Second, fluid-structure coupling is convenient. STAR-CCM+ comes with a case that shows you how to couple with Abaqus bidirectionally. Third, it is the inertia of past experience. After all, automobile companies use Abaqus a lot, and there are a lot of cases and resources.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-preparation&#34;&gt;1. Preparation&lt;/h2&gt;&#xA;&lt;p&gt;First install the development environment and some necessary software:&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Ubuntu挂载Windows共享文件夹(cifs&#43;nfs)</title>
-      <link>https://andrewmoa.site/2025/03/20/ubuntu-mount-windows-share-folder/</link>
-      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/20/ubuntu-mount-windows-share-folder/</guid>
-      <description>&lt;p&gt;在虚拟机中运行计算文件，会导致虚拟磁盘膨胀，占用太多磁盘空间。这个时候可以通过挂载宿主机文件夹的形式，把计算文件转移到宿主机磁盘上，避免了虚拟磁盘膨胀的问题。&#xA;在Windows中建立共享文件夹，这里省略了，只需要确保虚拟机能通过IP地址访问宿主机即可。&lt;/p&gt;</description>
+      <title>Ubuntu Install Slurm</title>
+      <link>https://andrewmoa.site/post/2025-03-20-ubuntu-install-slurm/</link>
+      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-20-ubuntu-install-slurm/</guid>
+      <description>&lt;p&gt;Slurm, like PBS and LSF, is a commonly used task management system for supercomputers. The advantages of Slurm are that it is open source, free, and highly active. In recent years, almost all emerging supercomputer platforms in China have provided Slurm as the main task management system. After PBS was open sourced, its activity was pitifully low. After updating to the latest system, there were always problems with installation, and no response was received for the issues raised. LSF has copyright risks and is not widely used in China. It is a very rare type. As for commands and scripts, these three are similar. Once you learn one, you can easily learn the other.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Hyper-V安装Ubuntu24.04</title>
-      <link>https://andrewmoa.site/2025/03/19/hyperv-install-ubuntu/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/19/hyperv-install-ubuntu/</guid>
-      <description>&lt;h2 id=&#34;1-需求&#34;&gt;1. 需求&lt;/h2&gt;&#xA;&lt;p&gt;考虑在新电脑上安装Linux，不是双系统，因为还要满足日常办公。不喜欢折腾的可以用WSL，这里用Hyper-V实现，同时通过端口映射实现外网访问虚拟机。&lt;/p&gt;</description>
+      <title>Ubuntu mounts Windows shared folder (cifs&#43;nfs)</title>
+      <link>https://andrewmoa.site/post/2025-03-20-ubuntu-mount-windows-share-dir/</link>
+      <pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-20-ubuntu-mount-windows-share-dir/</guid>
+      <description>&lt;p&gt;Running calculation files in a virtual machine will cause the virtual disk to expand and take up too much disk space. At this time, you can transfer the calculation files to the host disk by mounting the host folder, avoiding the problem of virtual disk expansion.&#xA;Creating a shared folder in Windows is omitted here. You only need to ensure that the virtual machine can access the host through the IP address.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>ArchLinux下OpenFOAM编译安装与PBS并行化</title>
-      <link>https://andrewmoa.site/2021/08/12/archlinux-compile-openfoam/</link>
-      <pubDate>Thu, 12 Aug 2021 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2021/08/12/archlinux-compile-openfoam/</guid>
-      <description>&lt;h2 id=&#34;1-源代码下载&#34;&gt;1. 源代码下载&lt;/h2&gt;&#xA;&lt;h3 id=&#34;11-下载openfoam源代码&#34;&gt;1.1 下载OpenFOAM源代码&lt;/h3&gt;&#xA;&lt;p&gt;在&lt;code&gt;${HOME}&lt;/code&gt;目录下新建OpenFOAM目录：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#f1fa8c&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;HOME&lt;/span&gt;&lt;span style=&#34;color:#f1fa8c&#34;&gt;}&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir OpenFOAM &lt;span style=&#34;color:#ff79c6&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;cd&lt;/span&gt; OpenFOAM&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从github下载OpenFOAM和ThirdParty的源代码，放到&lt;code&gt;${HOME}/OpenFOAM&lt;/code&gt;目录中：&lt;/p&gt;</description>
+      <title>Hyper-V Installation Ubuntu24.04</title>
+      <link>https://andrewmoa.site/post/2025-03-19-hyperv-install-ubuntu24/</link>
+      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-19-hyperv-install-ubuntu24/</guid>
+      <description>&lt;h2 id=&#34;1-requirements&#34;&gt;1. Requirements&lt;/h2&gt;&#xA;&lt;p&gt;Consider installing Linux on a new computer, not a dual system, because it also needs to meet daily office work. If you don’t like to mess around, you can use WSL, which is implemented using Hyper-V, and at the same time, you can access the virtual machine through port mapping.&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-preparation&#34;&gt;2. Preparation&lt;/h2&gt;&#xA;&lt;h3 id=&#34;21-download-ubuntu&#34;&gt;2.1 Download Ubuntu&lt;/h3&gt;&#xA;&lt;p&gt;I am a CFD, so I naturally cannot do without Fluent. This thing is a distribution version. Confirm which distribution is supported from the official website information, and install which one is supported, so as not to reinstall the system later.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

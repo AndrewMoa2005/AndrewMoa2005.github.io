@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Hyper-V Installation Ubuntu24.04 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="1. Requirements Consider installing Linux on a new computer, not a dual system, because it also needs to meet daily office work. If you don’t like to mess around, you can use WSL, which is implemented using Hyper-V, and at the same time, you can access the virtual machine through port mapping.
+2. Preparation 2.1 Download Ubuntu I am a CFD, so I naturally cannot do without Fluent. This thing is a distribution version. Confirm which distribution is supported from the official website information, and install which one is supported, so as not to reinstall the system later.
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/post/2025-03-19-hyperv-install-ubuntu24/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Hyper-V Installation Ubuntu24.04">
+  <meta property="og:description" content="1. Requirements Consider installing Linux on a new computer, not a dual system, because it also needs to meet daily office work. If you don’t like to mess around, you can use WSL, which is implemented using Hyper-V, and at the same time, you can access the virtual machine through port mapping.
+2. Preparation 2.1 Download Ubuntu I am a CFD, so I naturally cannot do without Fluent. This thing is a distribution version. Confirm which distribution is supported from the official website information, and install which one is supported, so as not to reinstall the system later.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-03-19T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-03-19T00:00:00+00:00">
+    <meta property="article:tag" content="Linux">
+    <meta property="article:tag" content="Ubuntu">
+    <meta property="article:tag" content="Virtual-Machine">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hyper-V Installation Ubuntu24.04">
+  <meta name="twitter:description" content="1. Requirements Consider installing Linux on a new computer, not a dual system, because it also needs to meet daily office work. If you don’t like to mess around, you can use WSL, which is implemented using Hyper-V, and at the same time, you can access the virtual machine through port mapping.
+2. Preparation 2.1 Download Ubuntu I am a CFD, so I naturally cannot do without Fluent. This thing is a distribution version. Confirm which distribution is supported from the official website information, and install which one is supported, so as not to reinstall the system later.">
+
+
+<link rel="canonical" href="https://andrewmoa.site/post/2025-03-19-hyperv-install-ubuntu24/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-03-19T00:00:00Z","datePublished":"2025-03-19T00:00:00Z","description":"1. Requirements Consider installing Linux on a new computer, not a dual system, because it also needs to meet daily office work. If you don’t like to mess around, you can use WSL, which is implemented using Hyper-V, and at the same time, you can access the virtual machine through port mapping.\n2. Preparation 2.1 Download Ubuntu I am a CFD, so I naturally cannot do without Fluent. This thing is a distribution version. Confirm which distribution is supported from the official website information, and install which one is supported, so as not to reinstall the system later.\n","image":"/images/hyperv-bg.png","name":"Hyper-V Installation Ubuntu24.04","url":"https://andrewmoa.site/post/2025-03-19-hyperv-install-ubuntu24/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">Open main menu</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/post/" title="Post">Post</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/about/" title="About">About</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">Open language switcher</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">English</span>
+            </li>
+        
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/zh-cn/post/2025-03-19-hyperv-install-ubuntu24/" title="中文">中文</a></li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">Search</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="Toggle dark mode">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="Toggle dark mode">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/post/2025-03-19-hyperv-install-ubuntu24/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/hyperv-bg.png"
+      alt="Hyper-V Installation Ubuntu24.04" title="Hyper-V Installation Ubuntu24.04"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/post/2025-03-19-hyperv-install-ubuntu24/">Hyper-V Installation Ubuntu24.04</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/virtual-machine/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Virtual-Machine</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-19T00:00:00&#43;00:00">
+      2025-03-19
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      7 minutes to read
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>Table of Contents</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-requirements">1. Requirements</a></li>
+    <li><a href="#2-preparation">2. Preparation</a>
+      <ul>
+        <li><a href="#21-download-ubuntu">2.1 Download Ubuntu</a></li>
+        <li><a href="#22-turn-on-hyper-v-support">2.2 Turn on Hyper-V support</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-install-the-virtual-machine-system">3. Install the virtual machine system</a></li>
+    <li><a href="#4-configure-the-virtual-machine-grid">4. Configure the virtual machine grid</a>
+      <ul>
+        <li><a href="#41-virtual-machine-assigns-ip-address">4.1 Virtual machine assigns IP address</a></li>
+        <li><a href="#42-turn-on-the-remote-desktop-on-the-virtual-machine">4.2 Turn on the remote desktop on the virtual machine</a></li>
+        <li><a href="#43-check-the-virtual-machine-firewall-status">4.3 Check the virtual machine firewall status</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-turn-on-virtual-machine-related-services">5. Turn on virtual machine-related services</a>
+      <ul>
+        <li><a href="#51-turn-on-ssh-service-on-the-virtual-machine">5.1 Turn on SSH service on the virtual machine</a></li>
+        <li><a href="#52-add-firewall-rules-for-virtual-machines">5.2 Add firewall rules for virtual machines</a></li>
+        <li><a href="#53-testing-ssh-connection">5.3 Testing SSH connection</a></li>
+        <li><a href="#54-testing-sftp-connection">5.4 Testing SFTP connection</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-port-mapping">6. Port Mapping</a>
+      <ul>
+        <li><a href="#61-host-port-mapping">6.1 Host port mapping</a></li>
+        <li><a href="#62-host-firewall-settings">6.2 Host firewall settings</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <h2 id="1-requirements">1. Requirements</h2>
+<p>Consider installing Linux on a new computer, not a dual system, because it also needs to meet daily office work. If you don’t like to mess around, you can use WSL, which is implemented using Hyper-V, and at the same time, you can access the virtual machine through port mapping.</p>
+<h2 id="2-preparation">2. Preparation</h2>
+<h3 id="21-download-ubuntu">2.1 Download Ubuntu</h3>
+<p>I am a CFD, so I naturally cannot do without Fluent. This thing is a distribution version. Confirm which distribution is supported from the official website information, and install which one is supported, so as not to reinstall the system later.</p>
+<p><a href="https://www.ansys.com/content/dam/it-solutions/platform-support/2024-r1/ansys-platform-support-strategy-plans-january-2024.pdf" target="_blank" rel="noopener">Ansys Computing Platform Support 2024R1</a>
+</p>
+<p>Choose Ubuntu here and go to the official website to download the latest release.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_9e76efa233b8f578.webp 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_95d8b2287d054749.webp 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_9f2c89122d2967fb.webp 960w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_a97ab8b9de571179.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_b7a04ca03356fb6f.jpg 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_10366ec9244ebdf6.jpg 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_19787a07f12c5c16.jpg 960w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_8fcee50eb8dfc6fd.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_10366ec9244ebdf6.jpg" width="1348" height="422" alt="2fd636d62e1453b3b54ad4074cde6c48.png" title="2fd636d62e1453b3b54ad4074cde6c48.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="22-turn-on-hyper-v-support">2.2 Turn on Hyper-V support</h3>
+<p>Search &ldquo;Enable or Turn off Windows Features&rdquo; in the Start Menu to enable virtualization support.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_82d66e112c2e31bf.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_15261c51b798312b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_45517c4355f2a6a5.jpg" width="359" height="223" alt="973c3b93cf91c5138b89bbeaeb2bf103.png" title="973c3b93cf91c5138b89bbeaeb2bf103.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Just hook Hyper-V, install and restart.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_65e8bfb420337851.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_ac27ca9d65ae1408.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_744e82011576ebce.jpg" width="410" height="398" alt="4e7e7f54c61f0f16af1595cb8c0b220e.png" title="4e7e7f54c61f0f16af1595cb8c0b220e.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="3-install-the-virtual-machine-system">3. Install the virtual machine system</h2>
+<p>To start the Hyper-V interface, follow the wizard to create a new virtual machine step by step.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/25cb47dca10625386e38f7279396a047_hu_357a8f511eed3a9c.webp 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/25cb47dca10625386e38f7279396a047_hu_d8bb8060fddbb179.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/25cb47dca10625386e38f7279396a047_hu_b7a2822a02575793.jpg 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/25cb47dca10625386e38f7279396a047_hu_d4d959586bb6cbe5.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/25cb47dca10625386e38f7279396a047_hu_d4d959586bb6cbe5.jpg" width="946" height="721" alt="25cb47dca10625386e38f7279396a047.png" title="25cb47dca10625386e38f7279396a047.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>A few points to note:</p>
+<ul>
+<li>It is best to specify virtual machines and virtual disks on other partitions with more spare space. Frequent reading and writing are performed later, which will greatly swell the virtual disk files.</li>
+<li>The maximum memory allocation is smaller before the first startup, otherwise it will take a lot of time to start. It is recommended to adjust the memory size to the desired memory after installing and configuring the virtual machine system.</li>
+<li>Virtual machine settings can turn on TPM, but turn off Secure Boot (unless enabled <code>Microsoft UEFI Certification Authority</code> ), otherwise the installation disk cannot be loaded.</li>
+</ul>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/e9ab97e9373fcdcdc872cf58a6e460e5_hu_c8c92507560f4796.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/e9ab97e9373fcdcdc872cf58a6e460e5_hu_ffba13e5f33adb9e.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/e9ab97e9373fcdcdc872cf58a6e460e5_hu_abbfa1ccbbd0bc3e.jpg" width="504" height="121" alt="e9ab97e9373fcdcdc872cf58a6e460e5.png" title="e9ab97e9373fcdcdc872cf58a6e460e5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The Ubuntu installation process will not be explained carefully, just follow the wizard interface to install it step by step.</p>
+<h2 id="4-configure-the-virtual-machine-grid">4. Configure the virtual machine grid</h2>
+<h3 id="41-virtual-machine-assigns-ip-address">4.1 Virtual machine assigns IP address</h3>
+<p>We need to access the virtual machine through port mapping, so we need to assign a fixed IP address to the virtual machine. Since the virtual machine uses the default <code>Default Switch</code> For bridge settings, you need to view the IP address assigned by the host to the adapter. You can view it in the network connection options:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/b8722552e9541a08ce84dd77b04c40ce_hu_6d2307c919ff5742.webp 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/b8722552e9541a08ce84dd77b04c40ce_hu_1174d856969a8c73.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/b8722552e9541a08ce84dd77b04c40ce_hu_45f473851b883993.jpg 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/b8722552e9541a08ce84dd77b04c40ce_hu_90f9ca7ba1fe6ab1.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/b8722552e9541a08ce84dd77b04c40ce_hu_90f9ca7ba1fe6ab1.jpg" width="859" height="573" alt="b8722552e9541a08ce84dd77b04c40ce.png" title="b8722552e9541a08ce84dd77b04c40ce.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The address shown in the figure above is the IP address of the virtual machine accessing the host. Then assign a fixed address to the virtual machine, and fill in the IP address of the gateway and DNS on the host. The subnet mask remains the same. It is recommended to use the IP address assigned now.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/e9b13a6df8bbefc3b56594a02c4ce0d7_hu_eef39c20b85ab23.webp 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/e9b13a6df8bbefc3b56594a02c4ce0d7_hu_741794e76e244eb4.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/e9b13a6df8bbefc3b56594a02c4ce0d7_hu_b173214f7b11d3cb.jpg 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/e9b13a6df8bbefc3b56594a02c4ce0d7_hu_b9a665aee08f783f.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/e9b13a6df8bbefc3b56594a02c4ce0d7_hu_b9a665aee08f783f.jpg" width="751" height="623" alt="e9b13a6df8bbefc3b56594a02c4ce0d7.png" title="e9b13a6df8bbefc3b56594a02c4ce0d7.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>After the setup is complete, ping Google&rsquo;s DNS to see if it can be connected to the Internet normally:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">ping 8.8.8.8
+</span></span></code></pre></div><h3 id="42-turn-on-the-remote-desktop-on-the-virtual-machine">4.2 Turn on the remote desktop on the virtual machine</h3>
+<p>Ubuntu provides a graphical interface to configure the remote desktop, which will not be introduced here. The following is the content of configuring the RPD remote desktop through the command line.
+Install third-party software:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install xrdp
+</span></span></code></pre></div><p>Enable XRDP service:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> xrdp
+</span></span><span class="line"><span class="cl">sudo systemctl start xrdp
+</span></span></code></pre></div><p>Check service status:
+Enable XRDP service:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo systemctl sattus xrdp
+</span></span></code></pre></div><h3 id="43-check-the-virtual-machine-firewall-status">4.3 Check the virtual machine firewall status</h3>
+<p>Ubuntu is usually ufw(Uncomplicated Firewall), the following command checks whether the firewall on the system is enabled and displays its current configuration.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo ufw status
+</span></span></code></pre></div><p>If the firewall is not enabled, the following command enables the firewall:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo ufw <span class="nb">enable</span>
+</span></span></code></pre></div><p>The following command opens port 3389 in the firewall:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo ufw allow from any to any port <span class="m">3389</span> proto tcp
+</span></span></code></pre></div><p>At this time, we can connect to the Ubuntu virtual machine through the remote desktop instead of the virtual machine&rsquo;s small window.
+Tip: Ubuntu needs to log out of the user in the virtual machine window before using the remote connection, otherwise there will be problems such as black screen and flashback. I don&rsquo;t know when this bug will be fixed.</p>
+<h2 id="5-turn-on-virtual-machine-related-services">5. Turn on virtual machine-related services</h2>
+<h3 id="51-turn-on-ssh-service-on-the-virtual-machine">5.1 Turn on SSH service on the virtual machine</h3>
+<p>Install OpenSSH:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install openssh-server
+</span></span></code></pre></div><p>Check SSH server status:</p>
+<pre tabindex="0"><code class="language-Base" data-lang="Base">sudo systemctl status ssh
+</code></pre><p>If the output displays <code>Active: active (running)</code> , indicating that the SSH server is running.</p>
+<p>If the ssh service shows <code>Active: inactive (dead)</code> , enable the ssh service through the following command:</p>
+<pre tabindex="0"><code class="language-Base" data-lang="Base">sudo systemctl enable ssh
+sudo systemctl start ssh
+</code></pre><p>The configuration file of the OpenSSH server is located in the default <code>/etc/ssh/sshd_config</code> . Users can repair this configuration file as needed to change the relevant configuration, such as listening to ports, allowing or prohibiting password login, restricting logged in users, etc.</p>
+<h3 id="52-add-firewall-rules-for-virtual-machines">5.2 Add firewall rules for virtual machines</h3>
+<p>The following command adds SSH rules to the firewall:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo ufw allow OpenSSH
+</span></span></code></pre></div><p>The following status indicates that the firewall configuration is successful:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/6180d2d720503ee25c376fd84c4b3954_hu_f3d05892e630ca41.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/6180d2d720503ee25c376fd84c4b3954_hu_e41eecd13b6d99fe.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/6180d2d720503ee25c376fd84c4b3954_hu_ba7dcfc2c90c7d65.jpg" width="583" height="186" alt="6180d2d720503ee25c376fd84c4b3954.png" title="6180d2d720503ee25c376fd84c4b3954.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="53-testing-ssh-connection">5.3 Testing SSH connection</h3>
+<p>The IP address of the Ubuntu virtual machine can be viewed in the Hyper-V manager window, or can be obtained in the virtual machine through the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">ip addr show <span class="p">|</span> grep inet
+</span></span><span class="line"><span class="cl">ip a <span class="p">|</span> grep inet    <span class="c1"># Same effect</span>
+</span></span></code></pre></div><p>Using bash or powershell client, connect to the server via the following command, <code>username</code> and <code>ip_address</code> Replace the username and IP address of the virtual machine respectively, and you will be prompted to enter your password:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">ssh username@ip_address
+</span></span></code></pre></div><h3 id="54-testing-sftp-connection">5.4 Testing SFTP connection</h3>
+<p>After enabling ssh, sftp will be enabled by default. The port number is 22 like ssh. Connect sftp through the following command, enter your password according to the prompts to log in:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sftp username@ip_address
+</span></span></code></pre></div><p>Upload file <code>put</code> : Put the local server <code>D:\temp\test</code> The following directory<code>test.txt</code>Upload files to remote server <code>/home/username/test</code> In the directory.</p>
+<pre tabindex="0"><code class="language-sftp" data-lang="sftp">sftp&gt; lcd D:/temp/test
+sftp&gt; cd /home/username/test
+sftp&gt; put test.txt 
+</code></pre><p>Upload folder <code>put</code> : Put the local server <code>D:\temp\test</code> The following directory <code>logs</code> Upload folder to remote server <code>/home/username/test</code> In the directory.</p>
+<pre tabindex="0"><code class="language-sftp" data-lang="sftp">sftp&gt; lcd D:/temp/test
+sftp&gt; cd /home/username/test
+sftp&gt; put -r logs
+</code></pre><p>Download command: <code>get</code> , usage is similar to put.
+Common sftp commands can be passed <code>help</code> Check. It is recommended to use third-party tools, such as <code>FileZilla</code> Go to log in.</p>
+<h2 id="6-port-mapping">6. Port Mapping</h2>
+<h3 id="61-host-port-mapping">6.1 Host port mapping</h3>
+<p>First, check the port occupancy of the host. exist <code>PowerShell</code> or <code>CMD</code> Check it through the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="n">netstat</span> <span class="n">-ano</span> <span class="c"># View all ports</span>
+</span></span><span class="line"><span class="cl"><span class="n">netstat</span> <span class="n">-ano</span> <span class="p">|</span> <span class="n">findstr</span> <span class="mf">8022</span> <span class="c"># 8022 is the query port number</span>
+</span></span><span class="line"><span class="cl"><span class="n">tasklist</span> <span class="p">|</span> <span class="n">findstr</span> <span class="mf">5748</span> <span class="c"># 5748 refers to the pid corresponding to port 8022, which is used to check the program occupying the port.</span>
+</span></span></code></pre></div><p>Open it in the host using administrator privileges <code>PowerShell</code> or <code>CMD</code> Window, query, add, and delete port mappings through the following commands.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="c"># Query port mapping</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">show</span> <span class="n">v4tov4</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="c"># Query the specified IP port mapping</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">show</span> <span class="n">v4tov4</span><span class="p">|</span><span class="n">findstr</span> <span class="s2">&#34;192.168.100.135&#34;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="cm">&lt;# Add a port mapping
+</span></span></span><span class="line"><span class="cl"><span class="cm">netsh interface portproxy add v4tov4 listenport=[Host port] listenaddress=[Host IP] connectaddress=[Virtual machine IP] connectport=[Virtual machine port]
+</span></span></span><span class="line"><span class="cl"><span class="cm">#&gt;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="c"># Access SSH by mapping the host machine&#39;s port 8022 to the virtual machine&#39;s port 22</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">add</span> <span class="n">v4tov4</span> <span class="n">listenport</span><span class="p">=</span><span class="mf">8022</span> <span class="n">listenaddress</span><span class="p">=</span><span class="mf">192.168</span><span class="p">.</span><span class="py">100</span><span class="p">.</span><span class="py">135</span> <span class="n">connectaddress</span><span class="p">=</span><span class="mf">172.25</span><span class="p">.</span><span class="py">68</span><span class="p">.</span><span class="py">88</span> <span class="n">connectport</span><span class="p">=</span><span class="mf">22</span>
+</span></span><span class="line"><span class="cl"><span class="c"># Access the remote desktop by mapping the host machine&#39;s ports 63389 and 63390 to the virtual machine&#39;s ports 3389 and 3390</span>
+</span></span><span class="line"><span class="cl"><span class="c"># Port number range: 1-65535, cannot exceed this range</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">add</span> <span class="n">v4tov4</span> <span class="n">listenport</span><span class="p">=</span><span class="mf">63389</span> <span class="n">listenaddress</span><span class="p">=</span><span class="mf">192.168</span><span class="p">.</span><span class="py">100</span><span class="p">.</span><span class="py">135</span> <span class="n">connectaddress</span><span class="p">=</span><span class="mf">172.25</span><span class="p">.</span><span class="py">68</span><span class="p">.</span><span class="py">88</span> <span class="n">connectport</span><span class="p">=</span><span class="mf">3389</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">add</span> <span class="n">v4tov4</span> <span class="n">listenport</span><span class="p">=</span><span class="mf">63390</span> <span class="n">listenaddress</span><span class="p">=</span><span class="mf">192.168</span><span class="p">.</span><span class="py">100</span><span class="p">.</span><span class="py">135</span> <span class="n">connectaddress</span><span class="p">=</span><span class="mf">172.25</span><span class="p">.</span><span class="py">68</span><span class="p">.</span><span class="py">88</span> <span class="n">connectport</span><span class="p">=</span><span class="mf">3390</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="cm">&lt;# Delete a port mapping
+</span></span></span><span class="line"><span class="cl"><span class="cm">netsh interface portproxy delete v4tov4 listenaddress=[Host IP] listenport=[Host port]
+</span></span></span><span class="line"><span class="cl"><span class="cm">#&gt;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="c"># Delete the port mapping defined above</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">delete</span> <span class="n">v4tov4</span>  <span class="n">listenaddress</span><span class="p">=</span><span class="mf">192.168</span><span class="p">.</span><span class="py">100</span><span class="p">.</span><span class="py">135</span> <span class="n">listenport</span><span class="p">=</span><span class="mf">8022</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">delete</span> <span class="n">v4tov4</span>  <span class="n">listenaddress</span><span class="p">=</span><span class="mf">192.168</span><span class="p">.</span><span class="py">100</span><span class="p">.</span><span class="py">135</span> <span class="n">listenport</span><span class="p">=</span><span class="mf">63389</span>
+</span></span><span class="line"><span class="cl"><span class="n">netsh</span> <span class="n">interface</span> <span class="n">portproxy</span> <span class="n">delete</span> <span class="n">v4tov4</span>  <span class="n">listenaddress</span><span class="p">=</span><span class="mf">192.168</span><span class="p">.</span><span class="py">100</span><span class="p">.</span><span class="py">135</span> <span class="n">listenport</span><span class="p">=</span><span class="mf">63390</span>
+</span></span></code></pre></div><p>After configuring the port mapping, you can access it in the remote desktop <code>IP address:Port number</code> The form of the virtual machine desktop is connected to the form of the virtual machine desktop.</p>
+<h3 id="62-host-firewall-settings">6.2 Host firewall settings</h3>
+<p>The host firewall must open the port so that it can be accessed through the external network. Open first <code>Windows Defender Firewall</code> ,exist <code>Advanced</code> Create new inbound rules in it.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/f005bc29f02fae09166378349dac9e9d_hu_5174fea019a55f4.webp 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/f005bc29f02fae09166378349dac9e9d_hu_c68a3e70cda34b90.webp 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/f005bc29f02fae09166378349dac9e9d_hu_d6bf70dccbf6379c.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/f005bc29f02fae09166378349dac9e9d_hu_9e742243f035b394.jpg 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/f005bc29f02fae09166378349dac9e9d_hu_910132f865b37189.jpg 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/f005bc29f02fae09166378349dac9e9d_hu_2536f81e7cf465c4.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/f005bc29f02fae09166378349dac9e9d_hu_910132f865b37189.jpg" width="1047" height="784" alt="f005bc29f02fae09166378349dac9e9d.png" title="f005bc29f02fae09166378349dac9e9d.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the port for the rule type, enter the port number to enter the port number (separated by English half-width commas), and then confirm all of it later.</p>
+<p>Until now, it was finally realized that the external network user accessed the virtual machine through the host&rsquo;s IP address + port number.</p>
+<hr>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

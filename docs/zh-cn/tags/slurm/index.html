@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>Slurm :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content=""
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/tags/slurm/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Slurm">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Slurm">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/tags/slurm/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/tags/slurm/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+
+  
+  
+
+  
+  
+  
+  
+
+  <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
+    <div class="flex flex-row">
+      <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-27-ubuntu-compile-su2/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Ubuntu编译安装SU2" title="Ubuntu编译安装SU2"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-27-ubuntu-compile-su2/">Ubuntu编译安装SU2</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p><a href="https://su2code.github.io/" target="_blank" rel="noopener">SU2</a>
+是一款由斯坦福大学航空航天学院开发的开源CFD求解器，基于C++和Python开发，定位类似于OpenFOAM，但不支持多面体网格。相比OpenFOAM，SU2在高速可压缩流方面的求解更有优势。</p>
+<p>下载SU2源代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir <span class="nv">$HOME</span>/su2code <span class="o">&amp;&amp;</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/su2code
+</span></span><span class="line"><span class="cl"><span class="c1"># 只clone最近commit版本，加快下载速度</span>
+</span></span><span class="line"><span class="cl">git clone https://github.com/su2code/SU2.git --depth<span class="o">=</span><span class="m">1</span>
+</span></span></code></pre></div><p>定义环境变量，新建配置文件<code>su2.env</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">touch <span class="nv">$HOME</span>/su2code/su2.env
+</span></span><span class="line"><span class="cl">chmod +x <span class="nv">$HOME</span>/su2code/su2.env
+</span></span><span class="line"><span class="cl">vim <span class="nv">$HOME</span>/su2code/su2.env
+</span></span></code></pre></div><p>在<code>su2.env</code>文件中加入以下内容，保存退出：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="cp">#!/bin/sh
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 定义SU2环境变量</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SU2_RUN</span><span class="o">=</span><span class="nv">$HOME</span>/su2code/bin	<span class="c1"># 编译完成后su2的安装路径</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SU2_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/su2code/SU2	<span class="c1"># 下载su2的源码的文件夹路径</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SU2_RUN</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$SU2_RUN</span>:<span class="nv">$PYTHONPATH</span>
+</span></span></code></pre></div><p>编译程序的配置文件<code>meson_options.txt</code>位于SU2源代码文件夹下，根据自己的需求调整其中的编译选项：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vim <span class="nv">$HOME</span>/su2code/SU2/meson_options.txt
+</span></span></code></pre></div><p>这里打开mpi和blas支持，修改以下两行的value：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="line"><span class="cl"><span class="n">option</span><span class="p">(</span><span class="s1">&#39;with-mpi&#39;</span><span class="p">,</span>   <span class="nb">type</span> <span class="p">:</span> <span class="s1">&#39;feature&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="s1">&#39;enabled&#39;</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="s1">&#39;enable MPI support&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">option</span><span class="p">(</span><span class="s1">&#39;enable-openblas&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="p">:</span> <span class="s1">&#39;boolean&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="n">true</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="s1">&#39;enable BLAS and LAPACK support via OpenBLAS&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><p>如果是Intel的机器，建议打开mkl支持。</p>
+<p>默认支持的blas库是openblas，要先下载openblas库：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install libopenblas-dev -y
+</span></span></code></pre></div><p>进入下载的源码目录，运行编译程序</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># 载入环境变量</span>
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> <span class="nv">$HOME</span>/su2code/su2.env
+</span></span><span class="line"><span class="cl"><span class="c1"># 进入源码文件夹</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$SU2_HOME</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置编译器，生成ninja构建文件</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置过程中会自动从git上下载外部依赖</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 非常花时间……</span>
+</span></span><span class="line"><span class="cl">./meson.py build --prefix<span class="o">=</span><span class="nv">$SU2_RUN</span>/..
+</span></span><span class="line"><span class="cl"><span class="c1"># 开始编译并安装</span>
+</span></span><span class="line"><span class="cl">./ninja -C build install
+</span></span></code></pre></div><p>验证是否安装成功：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">SU2_CFD --help
+</span></span></code></pre></div><p>安装成功会输出软件版本号和帮助信息。</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/slurm/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Slurm</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/su2/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Su2</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-27T00:00:00&#43;00:00">
+      2025-03-27
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-26-slurm-submit-fluent-and-cfx-script/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/vortex-bg.jpg"
+      alt="Slurm提交Fluent和CFX的计算脚本" title="Slurm提交Fluent和CFX的计算脚本"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-26-slurm-submit-fluent-and-cfx-script/">Slurm提交Fluent和CFX的计算脚本</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <h2 id="1-fluent">1. Fluent</h2>
+<p>首先要编写Fluent的jou脚本：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">/file/read-case &#34;small_fan.cas.h5&#34; 
+</span></span><span class="line"><span class="cl">/solve/initialize/hyb-initialization 
+</span></span><span class="line"><span class="cl">/solve/iterate 100 
+</span></span><span class="line"><span class="cl">/file/write-case &#34;small_fan_results.cas.h5&#34; ok 
+</span></span><span class="line"><span class="cl">/file/write-data &#34;small_fan_results.dat.h5&#34; ok 
+</span></span><span class="line"><span class="cl">/exit ok 
+</span></span></code></pre></div><p>这个jou文件很简单，就是告诉Fluent读取哪个文件、怎么初始化、迭代多少步、如何保存直至最后退出。如果计算比较复杂的，比如涉及到UDF加载或特殊条件初始化设置的，还需要增加相应的命令行。不熟悉怎么编写TUI命令的话，可以通过Fluent图形界面下面的命令行窗口录制脚本。</p>
+<p>编写Slurm脚本：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash 
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --job-name=fluent_test	# 任务名称</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --partition=debug </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --output=%j.out </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --error=%j.err </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 1	# 计算节点数</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --ntasks-per-node=32	# 每节点计算进程数</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$SLURM_SUBMIT_DIR</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/ansys2025r1.env	<span class="c1"># 载入许可证设置环境变量，这里应该使用绝对路径</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">FLUENT</span><span class="o">=</span>/ansys_inc/v251/fluent/bin/fluent	<span class="c1"># fluent可执行文件路径</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MPI_TYPE</span><span class="o">=</span>intel <span class="c1"># intel or openmpi </span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">JOU_FILE</span><span class="o">=</span><span class="sb">`</span>find . -name <span class="s2">&#34;*.jou&#34;</span><span class="sb">`</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MACHINEFILE</span><span class="o">=</span><span class="nv">$SLURM_JOBID</span>.node 
+</span></span><span class="line"><span class="cl">scontrol show hostnames <span class="nv">$SLURM_JOB_NODELIST</span> &gt; <span class="nv">$MACHINEFILE</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#注意fluent根据2维3维单双精度的不同有4钟计算模式：2d、3d、2ddp、3ddp，根据自己的需求选择对应的计算模式</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$FLUENT</span> 3ddp -g -t<span class="nv">$SLURM_NPROCS</span> -cnf<span class="o">=</span><span class="nv">$MACHINEFILE</span> -mpi<span class="o">=</span><span class="nv">$MPI_TYPE</span> -ssh -i <span class="nv">$JOU_FILE</span>
+</span></span></code></pre></div><p>保存以上脚本，将待提交的cas文件和jou文件放到脚本所在文件夹，通过<code>sbatch</code>命令提交脚本即可。计算完成后将输出的结果文件下载到本地机器上处理。</p>
+<h2 id="2-cfx">2. CFX</h2>
+<p>相比fluent，cfx计算脚本简单很多：</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/cfx/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cfx</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/fluent/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Fluent</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/slurm/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Slurm</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-26T00:00:00&#43;00:00">
+      2025-03-26
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-21-ubuntu-install-simulia2024/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Ubuntu安装SIMULIA2024" title="Ubuntu安装SIMULIA2024"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-21-ubuntu-install-simulia2024/">Ubuntu安装SIMULIA2024</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>为什么选择SIMULIA？首先是Abaqus功能强大，绝大多数结构问题都能求解。其次流固耦合方便，STAR-CCM+自带案例就手把手你怎么和Abaqus双向耦合。再次是过往经历的惯性，毕竟主机厂Abaqus用得可不少，不缺案例和资源。</p>
+<h2 id="1-准备工作">1. 准备工作</h2>
+<p>首先安装开发环境和一些必要的软件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt update <span class="c1"># 更新软件源</span>
+</span></span><span class="line"><span class="cl">sudo apt upgrade <span class="c1"># 更新本地安装的软件</span>
+</span></span><span class="line"><span class="cl">sudo apt install build-essential <span class="c1"># 安装开发环境</span>
+</span></span><span class="line"><span class="cl">sudo apt install csh tcsh ksh gcc g++ gfortran libstdc++5 build-essential make libjpeg62 libmotif-dev
+</span></span></code></pre></div><p>解压安装包：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir iso <span class="c1"># 新建一个iso文件夹，用于存放解压出来的文件</span>
+</span></span><span class="line"><span class="cl">tar xvzf DS.SIMULIA.SUITE.2024.LINX64.tar.gz -C ./iso <span class="c1"># 解压到iso文件夹中</span>
+</span></span></code></pre></div><h2 id="2-安装过程">2. 安装过程</h2>
+<h3 id="21-启动安装程序">2.1 启动安装程序</h3>
+<p>首先定义环境变量，不然无法启动安装程序：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># 可以把下面的内容加到${HOME}/.bashrc里，然后重新启动终端</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> DSYAuthOS_<span class="sb">`</span>lsb_release -si<span class="sb">`</span><span class="o">=</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">DSY_Force_OS</span><span class="o">=</span>linux_a64
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">NOLICENSECHECK</span><span class="o">=</span><span class="nb">true</span>
+</span></span></code></pre></div><p>进入<code>/iso/1</code>文件夹，运行安装程序。启动图形化界面在终端运行<code>./StartGUI.sh</code>，类似Windows下的安装方式，跟着向导一步步安装即可。</p>
+<p>这里选择文本界面：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">./StartTUI.sh <span class="c1"># 启动文本界面安装向导</span>
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_9c925859e18a2c80.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_d174a16dd769eec3.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_d827ba69e5f438ef.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_9bae9785b4295cee.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_9bae9785b4295cee.jpg" width="769" height="485" alt="7222cbf4b6f8545b9766ce654edf28ba.png" title="7222cbf4b6f8545b9766ce654edf28ba.png" loading="lazy" />
+  </picture>
+</div>
+<p><code>Enter</code>下一步。</p></p>
+
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/abaqus/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Abaqus</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/slurm/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Slurm</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-21T00:00:00&#43;00:00">
+      2025-03-21
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长2分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+      </section>
+      <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
+        <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
+  <form class="" action=/zh-cn/search/ method="get">
+    <div class="flex">
+      <input type="text" name="search" id="search-input" required placeholder="搜索..." class="rounded-none rounded-s-lg border border-gray-300 text-slate-800 focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-3  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-slate-200 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      <button class="inline-flex items-center px-3 text-sm text-slate-900 bg-slate-200 border border-e-0 border-gray-300 rounded-e-lg dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
+        <i class="h-6 w-6 flex-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+        </i>
+      </button>
+    </div>
+  </form>
+</section>
+
+
+  
+
+<section class="flex flex-col w-full gap-y-3 pl-6 py-3 mt-6 text-slate-800 dark:text-slate-200">
+  <div class="flex flex-row">
+    <a class="flex flex-row" href='/zh-cn/categories/'>
+      <i class="h-6 w-6 flex-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-category-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M14 4h6v6h-6z"></path>
+   <path d="M4 14h6v6h-6z"></path>
+   <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M7 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+</svg>
+
+      </i>
+      <h2 class="pl-1 uppercase">
+        分类
+      </h2>
+    </a>
+  </div>
+
+  <ul class="flex flex-row flex-wrap">
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/linux/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Linux
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/ansa/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ansa
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/cfd/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cfd
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/zhihu/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Zhihu
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/code/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Code
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/tech/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Tech
+      </a>
+    </li>
+    
+  </ul>
+</section>
+
+  
+
+  
+
+  
+
+<section class="flex flex-col w-full gap-y-3 pl-6 py-3 mt-6 text-slate-800 dark:text-slate-200">
+  <div class="flex flex-row">
+    <a class="flex flex-row" href='/zh-cn/tags/'>
+      <i class="h-6 w-6 flex-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+      </i>
+      <h2 class="pl-1 uppercase">
+        标签
+      </h2>
+    </a>
+  </div>
+
+  <ul class="flex flex-row flex-wrap">
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/cae/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cae
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/linux/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Linux
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/ansa/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ansa
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/ubuntu/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ubuntu
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/abaqus/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Abaqus
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/slurm/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Slurm
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/star-ccm&#43;/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Star-Ccm&#43;
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/cfd/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cfd
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/cfx/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cfx
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/openfoam/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Openfoam
+      </a>
+    </li>
+    
+  </ul>
+</section>
+
+  
+
+
+      </aside>
+    </div>
+
+    
+<div class="flex flex-row justify-center mt-6 gap-2">
+  
+  
+    <a href="/zh-cn/tags/slurm/page/2/"
+      class="flex flex-row text-base font-semibold rounded-md text-slate-700 dark:text-slate-300 bg-slate-200 dark:bg-gray-700 p-2 pl-3">
+      <span>旧文章</span>
+      <i class="h-6 w-6 flex-none ml-1"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-caret-right" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M10 18l6 -6l-6 -6v12"></path>
+</svg>
+</i>
+    </a>
+  
+</div>
+
+
+  </div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+
+
+
+</body>
+</html>

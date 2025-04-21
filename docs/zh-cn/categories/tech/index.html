@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>Tech :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content=""
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/categories/tech/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Tech">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Tech">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/categories/tech/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/categories/tech/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+
+  
+  
+
+  
+  
+  
+  
+
+  <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
+    <div class="flex flex-row">
+      <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-26-tabby-setup-msys2/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="Tabby配置MSYS2" title="Tabby配置MSYS2"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-26-tabby-setup-msys2/">Tabby配置MSYS2</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p><a href="https://tabby.sh/" target="_blank" rel="noopener">Tabby</a>
+是一款颜值很高的终端工具，最开始用它是为了替代本机终端，用着用着后来发现越来越多的优点。首先它内置支持SSH连接方式，同时支持SFTP传输文件，设置操作简单，避免了在Windows终端中的繁琐设置。其次，可以用来替代MSYS2、Cygwin原有的Mintty界面，实现不同终端之间无缝切换。关于Tabby终端中如何调用MSYS2，下面记录一下配置方法：</p>
+<ol>
+<li>
+<p>首先在Tabby设置中克隆一个CMD配置：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_a88f8abea316a4f5.webp 320w, /post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_9d02ec4074d710c.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_195ccebc5b4d58dd.jpg 320w, /post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_35350b4d67f9f040.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_35350b4d67f9f040.jpg" width="938" height="600" alt="d3078fcb85ac34f312416cd671b2cb58.png" title="d3078fcb85ac34f312416cd671b2cb58.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>在名称中填写要调用的MSYS2工具链：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_301baee55ee3800e.webp 320w, /post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_3d2a78c7588e4e1.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_881c711f90d9b858.jpg 320w, /post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_fbd4f1fa418e815d.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_fbd4f1fa418e815d.jpg" width="938" height="600" alt="462779a7512334158043be9cbd1a265c.png" title="462779a7512334158043be9cbd1a265c.png" loading="lazy" />
+  </picture>
+</div>
+<p>注意，图标这里不能直接指派ico文件，Tabby无法识别，必须将ico图标转换成svg格式。这种ico2svg在线转换资源很多，网上一搜一大把：</p></p>
+<ul>
+<li><a href="https://www.aconvert.com/cn/image/ico-to-svg/" target="_blank" rel="noopener">ACCONVERT - ICO转SVG</a>
+</li>
+<li><a href="https://cdkm.com/cn/ico-to-svg" target="_blank" rel="noopener">CDKM - ICO转SVG</a>
+</li>
+<li><a href="https://www.freeconvert.com/zh/ico-to-svg" target="_blank" rel="noopener">FreeConvert - ICO到SVG转换器 </a>
+</li>
+</ul>
+<p>转换完成后下载svg文件，用文本工具打开将svg源码复制粘贴到上面的图标栏里，Tabby就可以正常显示图标了。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-svg" data-lang="svg"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; standalone=&#34;no&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">&lt;!DOCTYPE svg PUBLIC &#34;-//W3C//DTD SVG 1.1//EN&#34; &#34;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#34;&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;svg</span> <span class="na">version=</span><span class="s">&#34;1.1&#34;</span> <span class="na">id=</span><span class="s">&#34;Layer_1&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;http://www.w3.org/2000/svg&#34;</span> <span class="na">xmlns:xlink=</span><span class="s">&#34;http://www.w3.org/1999/xlink&#34;</span> <span class="na">x=</span><span class="s">&#34;0px&#34;</span> <span class="na">y=</span><span class="s">&#34;0px&#34;</span> <span class="na">width=</span><span class="s">&#34;16px&#34;</span> <span class="na">height=</span><span class="s">&#34;16px&#34;</span> <span class="na">viewBox=</span><span class="s">&#34;0 0 16 16&#34;</span> <span class="na">enable-background=</span><span class="s">&#34;new 0 0 16 16&#34;</span> <span class="na">xml:space=</span><span class="s">&#34;preserve&#34;</span><span class="nt">&gt;</span>  <span class="nt">&lt;image</span> <span class="na">id=</span><span class="s">&#34;image0&#34;</span> <span class="na">width=</span><span class="s">&#34;16&#34;</span> <span class="na">height=</span><span class="s">&#34;16&#34;</span> <span class="na">x=</span><span class="s">&#34;0&#34;</span> <span class="na">y=</span><span class="s">&#34;0&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="na">xlink:href=</span><span class="s">&#34;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAIGNIUk0AAHomAACAhAAA+gAAAIDo
+</span></span></span><span class="line"><span class="cl"><span class="s">AAB1MAAA6mAAADqYAAAXcJy6UTwAAADPUExURb5kPsBpRdWbgtSZgL9lQMBoQ8+McMyEZsJuS/36
+</span></span></span><span class="line"><span class="cl"><span class="s">+P///9uplL5lP+3UyevOws2HafDc1NCPdOjHuejIur9mQO3TyeXCs8NxTv37+vv18sh7W8h8XP/+
+</span></span></span><span class="line"><span class="cl"><span class="s">/uS+rt2umtOXfuXBsvfs6Pjv6+bDtMFqRvny7vHf1/36+dyrlvXn4e/a0dadhMBpRP79/f7+/fz4
+</span></span></span><span class="line"><span class="cl"><span class="s">9sJuSvHe1vnw7PPi2+O9rNqmkN2tmeC2pP78+8Z3Vfft6L9mQfz59+fFt8JtSdKVe79nQsuDZcV0
+</span></span></span><span class="line"><span class="cl"><span class="s">UtGSd8NvTFLhcR8AAAABYktHRApo0PRWAAAAB3RJTUUH6QMaAysVnHCKGgAAAJpJREFUGNONj1cS
+</span></span></span><span class="line"><span class="cl"><span class="s">ggAUA2NBIdi7WAErYEFFBRXr/c8k7QC8n8zuRyYPSHWZbC4fhFAoJkKUKAOlMiuJqJI1oE42EtEk
+</span></span></span><span class="line"><span class="cl"><span class="s">pRbaZCfmbq9PKoMhOYrFmDI5maoa9Yhn84VC6svVmkYkZJrWhtvd3qYkBmwdNAFH8hR2O4FweAYu
+</span></span></span><span class="line"><span class="cl"><span class="s">vLowSc/CzbMtwL0/gqUGVR/+8xUWvT/h9u8vxaN/UKUNLao7WagAAAAldEVYdGRhdGU6Y3JlYXRl
+</span></span></span><span class="line"><span class="cl"><span class="s">ADIwMjUtMDMtMjZUMDM6NDM6MjArMDA6MDDH702KAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI1LTAz
+</span></span></span><span class="line"><span class="cl"><span class="s">LTI2VDAzOjQzOjIwKzAwOjAwtrL1NgAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNS0wMy0yNlQw
+</span></span></span><span class="line"><span class="cl"><span class="s">Mzo0MzoyMSswMDowMEfQ310AAAAASUVORK5CYII=&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/svg&gt;</span>
+</span></span></code></pre></div><p>禁用动态标签页标题：根据自己需要设置，建议选上。分组：需要先新建配置文件组，然后再在这里选。</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/tech/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Tech
+        </a>
+      </li>
+      
+    
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-26T00:00:00&#43;00:00">
+      2025-03-26
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+      </section>
+      <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
+        <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
+  <form class="" action=/zh-cn/search/ method="get">
+    <div class="flex">
+      <input type="text" name="search" id="search-input" required placeholder="搜索..." class="rounded-none rounded-s-lg border border-gray-300 text-slate-800 focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-3  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-slate-200 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      <button class="inline-flex items-center px-3 text-sm text-slate-900 bg-slate-200 border border-e-0 border-gray-300 rounded-e-lg dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
+        <i class="h-6 w-6 flex-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+        </i>
+      </button>
+    </div>
+  </form>
+</section>
+
+
+  
+
+<section class="flex flex-col w-full gap-y-3 pl-6 py-3 mt-6 text-slate-800 dark:text-slate-200">
+  <div class="flex flex-row">
+    <a class="flex flex-row" href='/zh-cn/categories/'>
+      <i class="h-6 w-6 flex-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-category-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M14 4h6v6h-6z"></path>
+   <path d="M4 14h6v6h-6z"></path>
+   <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M7 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+</svg>
+
+      </i>
+      <h2 class="pl-1 uppercase">
+        分类
+      </h2>
+    </a>
+  </div>
+
+  <ul class="flex flex-row flex-wrap">
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/linux/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Linux
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/ansa/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ansa
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/cfd/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cfd
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/zhihu/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Zhihu
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/code/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Code
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/tech/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Tech
+      </a>
+    </li>
+    
+  </ul>
+</section>
+
+  
+
+  
+
+  
+
+<section class="flex flex-col w-full gap-y-3 pl-6 py-3 mt-6 text-slate-800 dark:text-slate-200">
+  <div class="flex flex-row">
+    <a class="flex flex-row" href='/zh-cn/tags/'>
+      <i class="h-6 w-6 flex-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+      </i>
+      <h2 class="pl-1 uppercase">
+        标签
+      </h2>
+    </a>
+  </div>
+
+  <ul class="flex flex-row flex-wrap">
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/cae/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cae
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/linux/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Linux
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/ansa/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ansa
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/ubuntu/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ubuntu
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/abaqus/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Abaqus
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/slurm/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Slurm
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/star-ccm&#43;/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Star-Ccm&#43;
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/cfd/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cfd
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/cfx/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cfx
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/openfoam/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Openfoam
+      </a>
+    </li>
+    
+  </ul>
+</section>
+
+  
+
+
+      </aside>
+    </div>
+
+    
+
+  </div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+
+
+
+</body>
+</html>

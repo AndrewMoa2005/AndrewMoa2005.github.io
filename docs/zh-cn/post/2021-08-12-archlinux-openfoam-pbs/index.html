@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>ArchLinux下OpenFOAM编译安装与PBS并行化 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="1. 源代码下载 1.1 下载OpenFOAM源代码 在${HOME}目录下新建OpenFOAM目录：
+cd ${HOME} mkdir OpenFOAM &amp;&amp; cd OpenFOAM 从github下载OpenFOAM和ThirdParty的源代码，放到${HOME}/OpenFOAM目录中：
+git clone https://github.com/OpenFOAM/OpenFOAM-dev --depth=1 git clone https://github.com/OpenFOAM/ThirdParty-dev --depth=1 1.2 下载Torque(PBS)源码包 本文用的是AUR中的Torque，CentOS、Debian和SUSE系的操作系统可以从Github上的OpenPBS下载现成的二进制包。采用OpenPBS或PBS Pro请跳过本文第3节，参照其他文档进行PBS配置。
+从AUR上下载Torque(PBS)源文件：
+git clone https://aur.archlinux.org/torque.git cd torque wget http://wpfilebase.s3.amazonaws.com/torque/torque-6.1.1.1.tar.gz 2. 编译安装OpenFOAM 2.1 设置环境变量 编辑${HOME}/.bashrc文件，添加以下两行：
+#OpenFOAM source ${HOME}/OpenFOAM/OpenFOAM-dev/etc/bashrc WM_MPLIB=OPENMPI 末尾的WM_MPLIB=OPENMPI表示使用重新编译的OpenMPI库。
+更新环境变量：
+source ${HOME}/.bashrc 验证环境变量是否正确：
+echo $WM_PROJECT_DIR echo $WM_THIRD_PARTY_DIR 可以正确输出OpenFOAM编译目录，则表示环境变量设置正确。
+2.2 编译第三方库 进入ThirdParty-dev目录，编译第三方库：
+cd $WM_THIRD_PARTY_DIR wget https://download.open-mpi.org/release/open-mpi/v2.1/openmpi-2.1.1.tar.gz tar -xvzf openmpi-2.1.1.tar.gz ./Allwmake 由于前面指定了WM_MPLIB=OPENMPI，此处需要手动下载OpenMPI源码文件，使用wget下载OpenMPI源码包并解压。Allwmake后面可以增加-jN选项开启多核并行编译，这里的N应替换成并行数，Allwmake会自动编译OpenMPI。
+which mpirun &gt;${WM_THIRD_PARTY_DIR}/platforms/linux64Gcc/openmpi-2.1.1/bin/mpirun which mpicc &gt;${WM_THIRD_PARTY_DIR}/platforms/linux64Gcc/openmpi-2.1.1/bin/mpicc 2.3 编译ParaView 继续在ThirdParty-dev目录里编译ParaView：
+cd $WM_THIRD_PARTY_DIR ./makeParaView -mpi wmRefresh 编译完成后运行wmRefresh刷新环境变量。
+2.4 编译OpenFOAM 切换到OpenFOAM-dev目录编译OpenFOAM：
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2021-08-12-archlinux-openfoam-pbs/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="ArchLinux下OpenFOAM编译安装与PBS并行化">
+  <meta property="og:description" content="1. 源代码下载 1.1 下载OpenFOAM源代码 在${HOME}目录下新建OpenFOAM目录：
+cd ${HOME} mkdir OpenFOAM &amp;&amp; cd OpenFOAM 从github下载OpenFOAM和ThirdParty的源代码，放到${HOME}/OpenFOAM目录中：
+git clone https://github.com/OpenFOAM/OpenFOAM-dev --depth=1 git clone https://github.com/OpenFOAM/ThirdParty-dev --depth=1 1.2 下载Torque(PBS)源码包 本文用的是AUR中的Torque，CentOS、Debian和SUSE系的操作系统可以从Github上的OpenPBS下载现成的二进制包。采用OpenPBS或PBS Pro请跳过本文第3节，参照其他文档进行PBS配置。
+从AUR上下载Torque(PBS)源文件：
+git clone https://aur.archlinux.org/torque.git cd torque wget http://wpfilebase.s3.amazonaws.com/torque/torque-6.1.1.1.tar.gz 2. 编译安装OpenFOAM 2.1 设置环境变量 编辑${HOME}/.bashrc文件，添加以下两行：
+#OpenFOAM source ${HOME}/OpenFOAM/OpenFOAM-dev/etc/bashrc WM_MPLIB=OPENMPI 末尾的WM_MPLIB=OPENMPI表示使用重新编译的OpenMPI库。
+更新环境变量：
+source ${HOME}/.bashrc 验证环境变量是否正确：
+echo $WM_PROJECT_DIR echo $WM_THIRD_PARTY_DIR 可以正确输出OpenFOAM编译目录，则表示环境变量设置正确。
+2.2 编译第三方库 进入ThirdParty-dev目录，编译第三方库：
+cd $WM_THIRD_PARTY_DIR wget https://download.open-mpi.org/release/open-mpi/v2.1/openmpi-2.1.1.tar.gz tar -xvzf openmpi-2.1.1.tar.gz ./Allwmake 由于前面指定了WM_MPLIB=OPENMPI，此处需要手动下载OpenMPI源码文件，使用wget下载OpenMPI源码包并解压。Allwmake后面可以增加-jN选项开启多核并行编译，这里的N应替换成并行数，Allwmake会自动编译OpenMPI。
+which mpirun &gt;${WM_THIRD_PARTY_DIR}/platforms/linux64Gcc/openmpi-2.1.1/bin/mpirun which mpicc &gt;${WM_THIRD_PARTY_DIR}/platforms/linux64Gcc/openmpi-2.1.1/bin/mpicc 2.3 编译ParaView 继续在ThirdParty-dev目录里编译ParaView：
+cd $WM_THIRD_PARTY_DIR ./makeParaView -mpi wmRefresh 编译完成后运行wmRefresh刷新环境变量。
+2.4 编译OpenFOAM 切换到OpenFOAM-dev目录编译OpenFOAM：">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2021-08-12T00:00:00+00:00">
+    <meta property="article:modified_time" content="2021-08-12T00:00:00+00:00">
+    <meta property="article:tag" content="Linux">
+    <meta property="article:tag" content="Pbs">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="ArchLinux下OpenFOAM编译安装与PBS并行化">
+  <meta name="twitter:description" content="1. 源代码下载 1.1 下载OpenFOAM源代码 在${HOME}目录下新建OpenFOAM目录：
+cd ${HOME} mkdir OpenFOAM &amp;&amp; cd OpenFOAM 从github下载OpenFOAM和ThirdParty的源代码，放到${HOME}/OpenFOAM目录中：
+git clone https://github.com/OpenFOAM/OpenFOAM-dev --depth=1 git clone https://github.com/OpenFOAM/ThirdParty-dev --depth=1 1.2 下载Torque(PBS)源码包 本文用的是AUR中的Torque，CentOS、Debian和SUSE系的操作系统可以从Github上的OpenPBS下载现成的二进制包。采用OpenPBS或PBS Pro请跳过本文第3节，参照其他文档进行PBS配置。
+从AUR上下载Torque(PBS)源文件：
+git clone https://aur.archlinux.org/torque.git cd torque wget http://wpfilebase.s3.amazonaws.com/torque/torque-6.1.1.1.tar.gz 2. 编译安装OpenFOAM 2.1 设置环境变量 编辑${HOME}/.bashrc文件，添加以下两行：
+#OpenFOAM source ${HOME}/OpenFOAM/OpenFOAM-dev/etc/bashrc WM_MPLIB=OPENMPI 末尾的WM_MPLIB=OPENMPI表示使用重新编译的OpenMPI库。
+更新环境变量：
+source ${HOME}/.bashrc 验证环境变量是否正确：
+echo $WM_PROJECT_DIR echo $WM_THIRD_PARTY_DIR 可以正确输出OpenFOAM编译目录，则表示环境变量设置正确。
+2.2 编译第三方库 进入ThirdParty-dev目录，编译第三方库：
+cd $WM_THIRD_PARTY_DIR wget https://download.open-mpi.org/release/open-mpi/v2.1/openmpi-2.1.1.tar.gz tar -xvzf openmpi-2.1.1.tar.gz ./Allwmake 由于前面指定了WM_MPLIB=OPENMPI，此处需要手动下载OpenMPI源码文件，使用wget下载OpenMPI源码包并解压。Allwmake后面可以增加-jN选项开启多核并行编译，这里的N应替换成并行数，Allwmake会自动编译OpenMPI。
+which mpirun &gt;${WM_THIRD_PARTY_DIR}/platforms/linux64Gcc/openmpi-2.1.1/bin/mpirun which mpicc &gt;${WM_THIRD_PARTY_DIR}/platforms/linux64Gcc/openmpi-2.1.1/bin/mpicc 2.3 编译ParaView 继续在ThirdParty-dev目录里编译ParaView：
+cd $WM_THIRD_PARTY_DIR ./makeParaView -mpi wmRefresh 编译完成后运行wmRefresh刷新环境变量。
+2.4 编译OpenFOAM 切换到OpenFOAM-dev目录编译OpenFOAM：">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2021-08-12-archlinux-openfoam-pbs/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2021-08-12T00:00:00Z","datePublished":"2021-08-12T00:00:00Z","description":"1. 源代码下载 1.1 下载OpenFOAM源代码 在${HOME}目录下新建OpenFOAM目录：\ncd ${HOME} mkdir OpenFOAM \u0026amp;\u0026amp; cd OpenFOAM 从github下载OpenFOAM和ThirdParty的源代码，放到${HOME}/OpenFOAM目录中：\ngit clone https://github.com/OpenFOAM/OpenFOAM-dev --depth=1 git clone https://github.com/OpenFOAM/ThirdParty-dev --depth=1 1.2 下载Torque(PBS)源码包 本文用的是AUR中的Torque，CentOS、Debian和SUSE系的操作系统可以从Github上的OpenPBS下载现成的二进制包。采用OpenPBS或PBS Pro请跳过本文第3节，参照其他文档进行PBS配置。\n从AUR上下载Torque(PBS)源文件：\ngit clone https://aur.archlinux.org/torque.git cd torque wget http://wpfilebase.s3.amazonaws.com/torque/torque-6.1.1.1.tar.gz 2. 编译安装OpenFOAM 2.1 设置环境变量 编辑${HOME}/.bashrc文件，添加以下两行：\n#OpenFOAM source ${HOME}/OpenFOAM/OpenFOAM-dev/etc/bashrc WM_MPLIB=OPENMPI 末尾的WM_MPLIB=OPENMPI表示使用重新编译的OpenMPI库。\n更新环境变量：\nsource ${HOME}/.bashrc 验证环境变量是否正确：\necho $WM_PROJECT_DIR echo $WM_THIRD_PARTY_DIR 可以正确输出OpenFOAM编译目录，则表示环境变量设置正确。\n2.2 编译第三方库 进入ThirdParty-dev目录，编译第三方库：\ncd $WM_THIRD_PARTY_DIR wget https://download.open-mpi.org/release/open-mpi/v2.1/openmpi-2.1.1.tar.gz tar -xvzf openmpi-2.1.1.tar.gz ./Allwmake 由于前面指定了WM_MPLIB=OPENMPI，此处需要手动下载OpenMPI源码文件，使用wget下载OpenMPI源码包并解压。Allwmake后面可以增加-jN选项开启多核并行编译，这里的N应替换成并行数，Allwmake会自动编译OpenMPI。\nwhich mpirun \u0026gt;${WM_THIRD_PARTY_DIR}/platforms/linux64Gcc/openmpi-2.1.1/bin/mpirun which mpicc \u0026gt;${WM_THIRD_PARTY_DIR}/platforms/linux64Gcc/openmpi-2.1.1/bin/mpicc 2.3 编译ParaView 继续在ThirdParty-dev目录里编译ParaView：\ncd $WM_THIRD_PARTY_DIR ./makeParaView -mpi wmRefresh 编译完成后运行wmRefresh刷新环境变量。\n2.4 编译OpenFOAM 切换到OpenFOAM-dev目录编译OpenFOAM：\n","image":"/images/post-bg-tech.jpg","name":"ArchLinux下OpenFOAM编译安装与PBS并行化","url":"https://andrewmoa.site/zh-cn/post/2021-08-12-archlinux-openfoam-pbs/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2021-08-12-archlinux-openfoam-pbs/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2021-08-12-archlinux-openfoam-pbs/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/post-bg-tech.jpg"
+      alt="ArchLinux下OpenFOAM编译安装与PBS并行化" title="ArchLinux下OpenFOAM编译安装与PBS并行化"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2021-08-12-archlinux-openfoam-pbs/">ArchLinux下OpenFOAM编译安装与PBS并行化</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/zhihu/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Zhihu
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/pbs/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Pbs</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2021-08-12T00:00:00&#43;00:00">
+      2021-08-12
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长3分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-源代码下载">1. 源代码下载</a>
+      <ul>
+        <li><a href="#11-下载openfoam源代码">1.1 下载OpenFOAM源代码</a></li>
+        <li><a href="#12-下载torquepbs源码包">1.2 下载Torque(PBS)源码包</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-编译安装openfoam">2. 编译安装OpenFOAM</a>
+      <ul>
+        <li><a href="#21-设置环境变量">2.1 设置环境变量</a></li>
+        <li><a href="#22-编译第三方库">2.2 编译第三方库</a></li>
+        <li><a href="#23-编译paraview">2.3 编译ParaView</a></li>
+        <li><a href="#24-编译openfoam">2.4 编译OpenFOAM</a></li>
+        <li><a href="#25-测试">2.5 测试</a></li>
+        <li><a href="#26-更新">2.6 更新</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-编译安装torquepbs">3. 编译安装Torque(PBS)</a>
+      <ul>
+        <li><a href="#31-安装torque">3.1 安装Torque</a></li>
+        <li><a href="#32-服务器配置">3.2 服务器配置</a></li>
+        <li><a href="#33-计算节点设置">3.3 计算节点设置</a></li>
+        <li><a href="#34-重启服务端进程">3.4 重启服务端进程</a></li>
+        <li><a href="#35-启动计算节点进程">3.5 启动计算节点进程</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-openfoam并行化提交作业">4. OpenFOAM并行化提交作业</a>
+      <ul>
+        <li><a href="#41-准备算例">4.1 准备算例</a></li>
+        <li><a href="#42-提交作业">4.2 提交作业</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <h2 id="1-源代码下载">1. 源代码下载</h2>
+<h3 id="11-下载openfoam源代码">1.1 下载OpenFOAM源代码</h3>
+<p>在<code>${HOME}</code>目录下新建OpenFOAM目录：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">mkdir OpenFOAM <span class="o">&amp;&amp;</span> <span class="nb">cd</span> OpenFOAM
+</span></span></code></pre></div><p>从github下载OpenFOAM和ThirdParty的源代码，放到<code>${HOME}/OpenFOAM</code>目录中：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone https://github.com/OpenFOAM/OpenFOAM-dev --depth<span class="o">=</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl">git clone https://github.com/OpenFOAM/ThirdParty-dev --depth<span class="o">=</span><span class="m">1</span>
+</span></span></code></pre></div><h3 id="12-下载torquepbs源码包">1.2 下载Torque(PBS)源码包</h3>
+<p>本文用的是AUR中的Torque，CentOS、Debian和SUSE系的操作系统可以从Github上的OpenPBS下载现成的二进制包。采用OpenPBS或PBS Pro请跳过本文第3节，参照其他文档进行PBS配置。</p>
+<p>从AUR上下载Torque(PBS)源文件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone https://aur.archlinux.org/torque.git
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> torque
+</span></span><span class="line"><span class="cl">wget http://wpfilebase.s3.amazonaws.com/torque/torque-6.1.1.1.tar.gz
+</span></span></code></pre></div><h2 id="2-编译安装openfoam">2. 编译安装OpenFOAM</h2>
+<h3 id="21-设置环境变量">2.1 设置环境变量</h3>
+<p>编辑<code>${HOME}/.bashrc</code>文件，添加以下两行：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#OpenFOAM</span>
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/OpenFOAM/OpenFOAM-dev/etc/bashrc <span class="nv">WM_MPLIB</span><span class="o">=</span>OPENMPI
+</span></span></code></pre></div><p>末尾的<code>WM_MPLIB=OPENMPI</code>表示使用重新编译的OpenMPI库。</p>
+<p>更新环境变量：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">source</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.bashrc
+</span></span></code></pre></div><p>验证环境变量是否正确：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">echo</span> <span class="nv">$WM_PROJECT_DIR</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="nv">$WM_THIRD_PARTY_DIR</span>
+</span></span></code></pre></div><p>可以正确输出OpenFOAM编译目录，则表示环境变量设置正确。</p>
+<h3 id="22-编译第三方库">2.2 编译第三方库</h3>
+<p>进入<code>ThirdParty-dev</code>目录，编译第三方库：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_THIRD_PARTY_DIR</span>
+</span></span><span class="line"><span class="cl">wget https://download.open-mpi.org/release/open-mpi/v2.1/openmpi-2.1.1.tar.gz
+</span></span><span class="line"><span class="cl">tar -xvzf openmpi-2.1.1.tar.gz
+</span></span><span class="line"><span class="cl">./Allwmake
+</span></span></code></pre></div><p>由于前面指定了<code>WM_MPLIB=OPENMPI</code>，此处需要手动下载OpenMPI源码文件，使用<code>wget</code>下载OpenMPI源码包并解压。<code>Allwmake</code>后面可以增加<code>-jN</code>选项开启多核并行编译，这里的<code>N</code>应替换成并行数，<code>Allwmake</code>会自动编译OpenMPI。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">which mpirun
+</span></span><span class="line"><span class="cl">&gt;<span class="si">${</span><span class="nv">WM_THIRD_PARTY_DIR</span><span class="si">}</span>/platforms/linux64Gcc/openmpi-2.1.1/bin/mpirun
+</span></span><span class="line"><span class="cl">which mpicc
+</span></span><span class="line"><span class="cl">&gt;<span class="si">${</span><span class="nv">WM_THIRD_PARTY_DIR</span><span class="si">}</span>/platforms/linux64Gcc/openmpi-2.1.1/bin/mpicc
+</span></span></code></pre></div><h3 id="23-编译paraview">2.3 编译ParaView</h3>
+<p>继续在<code>ThirdParty-dev</code>目录里编译ParaView：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_THIRD_PARTY_DIR</span>
+</span></span><span class="line"><span class="cl">./makeParaView -mpi
+</span></span><span class="line"><span class="cl">wmRefresh
+</span></span></code></pre></div><p>编译完成后运行<code>wmRefresh</code>刷新环境变量。</p>
+<h3 id="24-编译openfoam">2.4 编译OpenFOAM</h3>
+<p>切换到<code>OpenFOAM-dev</code>目录编译OpenFOAM：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>
+</span></span><span class="line"><span class="cl">./Allwmake -jN
+</span></span></code></pre></div><p>OpenFOAM编译时间较长，建议开启多核心并行编译，这里的<code>N</code>应替换成核心数。</p>
+<h3 id="25-测试">2.5 测试</h3>
+<p>执行以下命令从OpenFOAM自带的实例文件中拷贝cavity文件夹到当前路径下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir <span class="nv">$FOAM_RUN</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> <span class="nv">$FOAM_RUN</span>
+</span></span><span class="line"><span class="cl">cp -r <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDaily .
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> pitzDaily
+</span></span></code></pre></div><p>生成网格：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">blockMesh
+</span></span></code></pre></div><p>执行计算：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">simpleFoam <span class="p">|</span> tee simpleFoam.log
+</span></span></code></pre></div><p>启动ParaView进行后处理：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">paraFoam
+</span></span></code></pre></div><h3 id="26-更新">2.6 更新</h3>
+<p>使用<code>git</code>命令更新<code>OpenFOAM-dev</code>及<code>ThirdParty-dev</code>目录中的源代码文件，然后重新编译安装：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git pull
+</span></span><span class="line"><span class="cl">wcleanPlatform
+</span></span><span class="line"><span class="cl">./Allwmake -jN
+</span></span></code></pre></div><h2 id="3-编译安装torquepbs">3. 编译安装Torque(PBS)</h2>
+<h3 id="31-安装torque">3.1 安装Torque</h3>
+<p>进入<code>torque</code>目录：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/OpenFOAM/torque
+</span></span></code></pre></div><p>编译Torque：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">makepkg
+</span></span></code></pre></div><p>安装Torque：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo pacman -U torque-6.1.1.1-2-x86_64.pkg.tar.zst
+</span></span></code></pre></div><p>启动服务（<code>pbs_mom.service</code>和<code>pbs_sched.service</code>在源代码的<code>src/torque-6.1.1.1/contrib/systemd</code>目录中，需要手动复制过来）：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> pbs_server
+</span></span><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> trqauthd
+</span></span><span class="line"><span class="cl">sudo systemctl start pbs_server
+</span></span><span class="line"><span class="cl">sudo systemctl start trqauthd
+</span></span><span class="line"><span class="cl">sudo cp pbs_mom.service /usr/lib/systemd/system
+</span></span><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> pbs_mom
+</span></span><span class="line"><span class="cl">sudo systemctl start pbs_mom
+</span></span><span class="line"><span class="cl">sudo cp pbs_sched.service /usr/lib/systemd/system
+</span></span><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> pbs_sched
+</span></span><span class="line"><span class="cl">sudo systemctl start pbs_sched
+</span></span></code></pre></div><h3 id="32-服务器配置">3.2 服务器配置</h3>
+<p>参考<a href="https://wiki.archlinux.org/index.php/TORQUE" target="_blank" rel="noopener">archlinux wiki</a>
+，完成Torque配置。</p>
+<p>编辑<code>/etc/hosts</code>文件（示例），添加服务器节点和计算节点IP地址：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">192.168.100.101    master
+</span></span><span class="line"><span class="cl"><span class="c1">#192.168.100.102    cluster01</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#192.168.100.103    cluster02</span>
+</span></span></code></pre></div><p>更改<code>/var/spool/torque/server_name</code>文件中的主机名为服务器节点主机名：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">master
+</span></span></code></pre></div><p>执行以下命令，选择Y新建服务器端配置文件（只运行一次，提示会覆盖现有配置文件）：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo pbs_server -t create
+</span></span></code></pre></div><p>执行以下命令，运行服务器端守护进程：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo trqauthd
+</span></span></code></pre></div><p>初始化默认设置：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo qmgr -c <span class="s2">&#34;set server acl_hosts = master&#34;</span>
+</span></span><span class="line"><span class="cl">sudo qmgr -c <span class="s2">&#34;set server scheduling=true&#34;</span>
+</span></span><span class="line"><span class="cl">sudo qmgr -c <span class="s2">&#34;create queue batch queue_type=execution&#34;</span>
+</span></span><span class="line"><span class="cl">sudo qmgr -c <span class="s2">&#34;set queue batch started=true&#34;</span>
+</span></span><span class="line"><span class="cl">sudo qmgr -c <span class="s2">&#34;set queue batch enabled=true&#34;</span>
+</span></span><span class="line"><span class="cl">sudo qmgr -c <span class="s2">&#34;set queue batch resources_default.nodes=1&#34;</span>
+</span></span><span class="line"><span class="cl">sudo qmgr -c <span class="s2">&#34;set queue batch resources_default.walltime=3600&#34;</span>
+</span></span><span class="line"><span class="cl">sudo qmgr -c <span class="s2">&#34;set server default_queue=batch&#34;</span>
+</span></span><span class="line"><span class="cl">sudo qmgr -c <span class="s2">&#34;set server keep_completed = 60&#34;</span>
+</span></span></code></pre></div><p>验证设置：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">qmgr -c <span class="s1">&#39;p s&#39;</span>
+</span></span></code></pre></div><p>编辑<code>/var/spool/torque/server_priv/nodes</code>文件，添加计算节点（服务器也可以是计算节点）。格式为<code>HOSTNAME np=x gpus=y</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">master <span class="nv">np</span><span class="o">=</span><span class="m">8</span> <span class="nv">gpus</span><span class="o">=</span><span class="m">1</span>
+</span></span></code></pre></div><h3 id="33-计算节点设置">3.3 计算节点设置</h3>
+<p>编辑<code>/var/spool/torque/mom_priv/config</code>文件，添加以下信息：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pbsserver    master    <span class="c1"># 服务器主机名，与nodes一致</span>
+</span></span><span class="line"><span class="cl">logevent    <span class="m">255</span>    <span class="c1"># 日志记录事件数</span>
+</span></span></code></pre></div><p>生成并注册密钥文件，确保主机间ssh访问通畅：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$HOME</span>/.ssh
+</span></span><span class="line"><span class="cl">ssh-keygen -t rsa
+</span></span><span class="line"><span class="cl">cp id_rsa.pub authorized_keys
+</span></span></code></pre></div><h3 id="34-重启服务端进程">3.4 重启服务端进程</h3>
+<p>在服务器端执行以下命令，重启服务端进程。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo killall -s <span class="m">9</span> pbs_server
+</span></span><span class="line"><span class="cl">sudo pbs_server
+</span></span></code></pre></div><h3 id="35-启动计算节点进程">3.5 启动计算节点进程</h3>
+<p>执行以下命令，启动计算节点进程</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo pbs_mom
+</span></span></code></pre></div><p>执行以下命令，显示计算节点状态：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pbsnodes -a
+</span></span></code></pre></div><p>输出以下信息（示例），表示配置成功：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">master
+</span></span><span class="line"><span class="cl">     <span class="nv">state</span> <span class="o">=</span> free
+</span></span><span class="line"><span class="cl">     <span class="nv">power_state</span> <span class="o">=</span> Running
+</span></span><span class="line"><span class="cl">     <span class="nv">np</span> <span class="o">=</span> <span class="m">4</span>
+</span></span><span class="line"><span class="cl">     <span class="nv">ntype</span> <span class="o">=</span> cluster
+</span></span><span class="line"><span class="cl">     <span class="nv">mom_service_port</span> <span class="o">=</span> <span class="m">15002</span>
+</span></span><span class="line"><span class="cl">     <span class="nv">mom_manager_port</span> <span class="o">=</span> <span class="m">15003</span>
+</span></span><span class="line"><span class="cl">     <span class="nv">gpus</span> <span class="o">=</span> <span class="m">1</span>
+</span></span></code></pre></div><p>若节点state显示为down，表示该节点不可用。可以用以下命令强制使节点释放：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo qmgr -a -c <span class="s1">&#39;set node master state=free&#39;</span>
+</span></span></code></pre></div><p>我们可以编写systemd服务脚本，自动释放节点。脚本内容如下，另存为<code>/usr/lib/systemd/system/pbs_autofree.service</code>文件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>Unit<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Description</span><span class="o">=</span>Auto free pbs_server
+</span></span><span class="line"><span class="cl"><span class="nv">Requires</span><span class="o">=</span>network.target
+</span></span><span class="line"><span class="cl"><span class="nv">After</span><span class="o">=</span>network.target trqauthd.service pbs_server.service pbs_mom.service
+</span></span><span class="line"><span class="cl"><span class="nv">StartLimitIntervalSec</span><span class="o">=</span><span class="m">0</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Service<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Type</span><span class="o">=</span>simple
+</span></span><span class="line"><span class="cl"><span class="nv">Restart</span><span class="o">=</span>always
+</span></span><span class="line"><span class="cl"><span class="nv">RestartSec</span><span class="o">=</span><span class="m">30</span>
+</span></span><span class="line"><span class="cl"><span class="nv">User</span><span class="o">=</span>root
+</span></span><span class="line"><span class="cl"><span class="nv">ExecStart</span><span class="o">=</span>qmgr -a -c <span class="s1">&#39;set node master state=free&#39;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Install<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
+</span></span></code></pre></div><p>启动服务：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> pbs_autofree
+</span></span><span class="line"><span class="cl">sudo systemctl start pbs_autofree
+</span></span></code></pre></div><p>关闭服务以节省资源：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo systemctl disable pbs_autofree
+</span></span><span class="line"><span class="cl">sudo systemctl stop pbs_autofree
+</span></span></code></pre></div><h2 id="4-openfoam并行化提交作业">4. OpenFOAM并行化提交作业</h2>
+<h3 id="41-准备算例">4.1 准备算例</h3>
+<p>执行以下命令从OpenFOAM自带的实例文件中拷贝cavity文件夹到当前路径下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$FOAM_RUN</span>
+</span></span><span class="line"><span class="cl">mkdir cluster <span class="o">&amp;&amp;</span> <span class="nb">cd</span> cluster
+</span></span><span class="line"><span class="cl">cp -r <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDaily .
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> pitzDaily
+</span></span></code></pre></div><p>在<code>system</code>目录下新建<code>decomposeParDict</code>文件，用于网格分区，为并行化作准备。文件内容如下，网格分区数为2：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">FoamFile
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    version     2.0<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    format      ascii<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    class       dictionary<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    note        <span class="s2">&#34;mesh decomposition control dictionary&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    object      decomposeParDict<span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">numberOfSubdomains  2<span class="p">;</span>
+</span></span><span class="line"><span class="cl">method          scotch<span class="p">;</span>
+</span></span></code></pre></div><h3 id="42-提交作业">4.2 提交作业</h3>
+<p>新建脚本文件，命名为<code>pitzDaily.pbs</code>，用于提交并行作业。文件内容如下，使用1个节点、每节点2个CPU核心进行计算（<code>nodes=1:ppn=2</code>），线程数2（<code>mpirun -np 2</code>），这些与<code>decomposeParDict</code>文件中网格分区数目要保持一致：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">#PBS -l nodes=1:ppn=2</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#PBS -N pitzDaily</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#PBS -A OpenFOAM</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#PBS -o pitzDaily.out</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#PBS -e pitzDaily.err</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/OpenFOAM/OpenFOAM-dev/etc/bashrc <span class="nv">WM_MPLIB</span><span class="o">=</span>OPENMPI
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">RUN_DIR</span><span class="o">=</span><span class="si">${</span><span class="nv">FOAM_RUN</span><span class="si">}</span>/cluster/pitzDaily
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="si">${</span><span class="nv">RUN_DIR</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">blockMesh
+</span></span><span class="line"><span class="cl">decomposePar
+</span></span><span class="line"><span class="cl">mpirun -np <span class="m">2</span> simpleFoam -parallel <span class="p">|</span> tee simpleFoam.log
+</span></span><span class="line"><span class="cl">reconstructPar
+</span></span><span class="line"><span class="cl">tar -Jcvf pitzDaily_results.tar.xz *
+</span></span></code></pre></div><p>使用qsub提交作业：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">chmod <span class="m">755</span> pitzDaily.pbs
+</span></span><span class="line"><span class="cl">qsub pitzDaily.pbs
+</span></span></code></pre></div><p>使用qstat检查作业状态：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">qstat -a
+</span></span></code></pre></div><p>计算结束后，下载<code>pitzDaily_results.tar.xz</code>文件并解压缩，启动ParaView进行后处理：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">paraFoam
+</span></span></code></pre></div>
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

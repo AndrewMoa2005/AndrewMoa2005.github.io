@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Java on Andrew Moa Blog</title>
+    <title>Java on Andrew Moa Blog Site</title>
     <link>https://andrewmoa.site/tags/java/</link>
-    <description>Recent content in Java on Andrew Moa Blog</description>
+    <description>Recent content in Java on Andrew Moa Blog Site</description>
     <generator>Hugo</generator>
-    <language>zh-CN</language>
+    <language>en-US</language>
+    <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
+    <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
+    <copyright>Andrew Moa</copyright>
     <lastBuildDate>Fri, 18 Apr 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/java/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>使用VSCode调试STAR-CCM&#43;宏</title>
-      <link>https://andrewmoa.site/2025/04/18/vscode-debug-starccm-java-marco/</link>
-      <pubDate>Fri, 18 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/04/18/vscode-debug-starccm-java-marco/</guid>
-      <description>&lt;p&gt;前面讲过STAR-CCM+宏文件的录制和编写，宏文件的本质就是java文件，因此可以用java编程的方法来对它进行开发和调试。如果涉及到复杂的业务场景，需要增加额外的功能，程序本身比较复杂，很难等到整个程序编写完成后再对它进行测试，免不了要在开发过程中进行调试。官方文档采用的开发工具是古早版本的&lt;strong&gt;NetBeans&lt;/strong&gt;，很多功能已经发生变化，加之官方文档描述过于简略，大多数人阅读完后对于STAR-CCM+的调试过程还是一头雾水。&lt;a href=&#34;https://code.visualstudio.com/&#34;&gt;&lt;strong&gt;VSCode&lt;/strong&gt;&lt;/a&gt;作为新兴IDE的佼佼者，不仅可以通过拓展支持java编程，还可以通过&lt;a href=&#34;https://copilot.microsoft.com/chats/Uz4t8yZbNmpyo1CVtqKWP&#34;&gt;&lt;strong&gt;copilot&lt;/strong&gt;&lt;/a&gt;拓展集成强大的AI编程能力，本文便采用&lt;strong&gt;VSCode&lt;/strong&gt;演示一下STAR-CCM+宏文件的调试过程。&lt;/p&gt;</description>
+      <title>Debug STAR-CCM&#43; macros with VSCode</title>
+      <link>https://andrewmoa.site/post/2025-04-18-use-vscode-debug-starccm-marco/</link>
+      <pubDate>Fri, 18 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-04-18-use-vscode-debug-starccm-marco/</guid>
+      <description>&lt;p&gt;As mentioned earlier, the recording and writing of STAR-CCM+ macro files are essentially Java files, so it can be developed and debugged using Java programming methods. If complex business scenarios are involved, additional functions need to be added. The program itself is relatively complex, and it is difficult to wait until the entire program is written before testing it. It is inevitable to debug during the development process. The development tool used by the official document is the old version of &lt;strong&gt;NetBeans&lt;/strong&gt;. Many functions have changed. In addition, the official document description is too simple. Most people are still confused about the debugging process of STAR-CCM+ after reading it.&lt;a href=&#34;https://code.visualstudio.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;strong&gt;VSCode&lt;/strong&gt;&lt;/a&gt;&#xA; As a leader in emerging IDE, you can not only support Java programming through expansion, but also &lt;a href=&#34;https://copilot.microsoft.com/chats/Uz4t8yZbNmpyo1CVtqKWP&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;strong&gt;copilot&lt;/strong&gt;&lt;/a&gt;&#xA; To expand the integrated powerful AI programming capabilities, this article uses &lt;strong&gt;VSCode&lt;/strong&gt; to demonstrate the debugging process of STAR-CCM+ macro files.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>STAR-CCM&#43;宏文件录制和编写</title>
-      <link>https://andrewmoa.site/2025/04/17/starccm-record-and-write-java-marco/</link>
-      <pubDate>Fri, 18 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/04/17/starccm-record-and-write-java-marco/</guid>
-      <description>&lt;p&gt;STAR-CCM+宏本质上就是一个java文件，语法和普通的java没有什么区别。使用宏可以帮助我们简化处理过程，尤其是一些重复的流程性的操作。通过编写宏文件完成一些流程操作可以极大地解放人力资源，甚至可以在求解过程中完成某些特定的操作。&lt;/p&gt;</description>
+      <title>STAR-CCM&#43; macro file recording and writing</title>
+      <link>https://andrewmoa.site/post/2025-04-17-starccm-record-and-write-marco/</link>
+      <pubDate>Thu, 17 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-04-17-starccm-record-and-write-marco/</guid>
+      <description>&lt;p&gt;STAR-CCM+ macro is essentially a java file, and the syntax is no different from ordinary java. Using macros can help us simplify the processing process, especially some repetitive process operations. Completing some process operations by writing macro files can greatly liberate human resources, and even complete certain operations during the solution process.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-record-macros&#34;&gt;1. Record macros&lt;/h2&gt;&#xA;&lt;p&gt;The essence of STAR-CCM+ macro is a collection of various operation commands in the analysis process. Instead of explaining the complex and cumbersome java syntax + API from scratch, it is better to start with engineering issues directly.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

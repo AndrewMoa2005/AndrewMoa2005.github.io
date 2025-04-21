@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Cfx on Andrew Moa Blog</title>
+    <title>Cfx on Andrew Moa Blog Site</title>
     <link>https://andrewmoa.site/tags/cfx/</link>
-    <description>Recent content in Cfx on Andrew Moa Blog</description>
+    <description>Recent content in Cfx on Andrew Moa Blog Site</description>
     <generator>Hugo</generator>
-    <language>zh-CN</language>
+    <language>en-US</language>
+    <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
+    <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
+    <copyright>Andrew Moa</copyright>
     <lastBuildDate>Tue, 15 Apr 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/cfx/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题</title>
-      <link>https://andrewmoa.site/2025/04/15/linux-mount-windows-share-dir-cannot-run-abaqus-and-cfx/</link>
-      <pubDate>Wed, 16 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/04/15/linux-mount-windows-share-dir-cannot-run-abaqus-and-cfx/</guid>
-      <description>&lt;p&gt;近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。&lt;/p&gt;</description>
+      <title>Abaqus and CFX solvers cannot be run in Linux mounts Windows shared folders</title>
+      <link>https://andrewmoa.site/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/</link>
+      <pubDate>Tue, 15 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/</guid>
+      <description>&lt;p&gt;Recently, a problem was discovered that Abaqus and CFX cannot perform calculations on Windows shared folders mounted on Linux. Linux is deployed on a virtual machine. Although there will be no error when starting the calculation program on the local path of the virtual machine, it will cause the virtual disk to occupy more space and have a certain impact on the read and write efficiency.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-smb-version-problem&#34;&gt;1. SMB version problem&lt;/h2&gt;&#xA;&lt;h3 id=&#34;11-smbv3&#34;&gt;1.1 SMBv3&lt;/h3&gt;&#xA;&lt;p&gt;When using cifs to mount a shared folder before, I did not pay close attention to the version of the SMB protocol&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;. The following command line does not specify the protocol version:&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Slurm提交Fluent和CFX的计算脚本</title>
-      <link>https://andrewmoa.site/2025/03/26/slurm-script-for-fluent-and-cfx/</link>
-      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/26/slurm-script-for-fluent-and-cfx/</guid>
-      <description>&lt;h2 id=&#34;1-fluent&#34;&gt;1. Fluent&lt;/h2&gt;&#xA;&lt;p&gt;首先要编写Fluent的jou脚本：&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/read-case &amp;#34;small_fan.cas.h5&amp;#34; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/initialize/hyb-initialization &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/solve/iterate 100 &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-case &amp;#34;small_fan_results.cas.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/file/write-data &amp;#34;small_fan_results.dat.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/exit ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这个jou文件很简单，就是告诉Fluent读取哪个文件、怎么初始化、迭代多少步、如何保存直至最后退出。&#xA;如果计算比较复杂的，比如涉及到UDF加载或特殊条件初始化设置的，还需要增加相应的命令行。&#xA;不熟悉怎么编写TUI命令的话，可以通过Fluent图形界面下面的命令行窗口录制脚本。&lt;/p&gt;</description>
+      <title>Slurm submits Fluent and CFX calculation scripts</title>
+      <link>https://andrewmoa.site/post/2025-03-26-slurm-submit-fluent-and-cfx-script/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-26-slurm-submit-fluent-and-cfx-script/</guid>
+      <description>&lt;h2 id=&#34;1-fluent&#34;&gt;1. Fluent&lt;/h2&gt;&#xA;&lt;p&gt;First, write the Fluent jou script:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/file/read-case &amp;#34;small_fan.cas.h5&amp;#34; &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/solve/initialize/hyb-initialization &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/solve/iterate 100 &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/file/write-case &amp;#34;small_fan_results.cas.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/file/write-data &amp;#34;small_fan_results.dat.h5&amp;#34; ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/exit ok &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This jou file is very simple. It tells Fluent which file to read, how to initialize, how many steps to iterate, and how to save until the final exit.&#xA;If the calculation is more complicated, such as involving UDF loading or special condition initialization settings, you need to add corresponding command lines.&#xA;If you are not familiar with how to write TUI commands, you can record scripts through the command line window under the Fluent graphical interface.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>求解器验证对比——旋转和静止同心圆柱之间的层流</title>
-      <link>https://andrewmoa.site/2021/08/14/vmfl001/</link>
-      <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2021/08/14/vmfl001/</guid>
-      <description>&lt;p&gt;本文采用不同CFD求解器，对层流流动问题进行验证。通过列举不同求解器的操作过程和输出结果的差异，验证各个求解器的精度。&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;1-问题描述&#34;&gt;1. 问题描述&lt;/h2&gt;&#xA;&lt;p&gt;如下图，建立两个同心圆柱间的定常层流模型。流动由内筒以恒定角速度旋转而引起，而外筒保持静止。使用周期性边界，只需要对流域的一部分进行建模。物理模型和输入数据如下表所示。&lt;/p&gt;</description>
+      <title>Solver Verification Comparison - Laminar Flow Between Rotating and Static Concentric Cylinders</title>
+      <link>https://andrewmoa.site/post/2021-08-14-solver-verification-comparison/</link>
+      <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2021-08-14-solver-verification-comparison/</guid>
+      <description>&lt;p&gt;This paper uses different CFD solvers to verify the laminar flow problem. Verify the accuracy of each solver by listing the operating procedures and differences in the output results of different solvers.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;1-problem-description&#34;&gt;1. Problem description&lt;/h2&gt;&#xA;&lt;p&gt;As shown in the figure below, a fixed-constant laminar flow model between two concentric cylinders is established. The flow is caused by the rotation of the inner cylinder at a constant angular velocity, while the outer cylinder remains stationary. Using periodic boundaries, only a portion of the basin needs to be modeled. The physical model and input data are shown in the following table.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

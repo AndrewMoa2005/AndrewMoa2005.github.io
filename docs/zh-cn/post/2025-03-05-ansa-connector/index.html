@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>Ansa快速设置连接 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Ansa可以通过Connection功能快速设置连接。
+这里以螺接为例，首先将所有螺栓单独显示出来。使用TOPO→Curves→Tubes2Curve将螺栓几何转换成曲线。 保留曲线，将螺栓几何曲面全删掉。 再使用Topo→Points→Edges将曲线转换成3D点，删除掉曲线。 根据3D点生成螺栓连接点，框选上一步生成的3D点。除了根据曲线定义连接点意外，还可以根据点和面生成连接点。但不同的几何形式对应不同的连接类型，应注意根据需要的连接类型选择对应的几何。这里列出一些常用的连接类型和几何对应关系：
+3D点：螺接、铆接、焊点 线段：粘胶、焊缝、包边、螺接(直线段) 面：粘胶 螺栓连接点可以根据3D点或直线段生成，这里选择用3D点生成。 "
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2025-03-05-ansa-connector/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Ansa快速设置连接">
+  <meta property="og:description" content="Ansa可以通过Connection功能快速设置连接。
+这里以螺接为例，首先将所有螺栓单独显示出来。使用TOPO→Curves→Tubes2Curve将螺栓几何转换成曲线。 保留曲线，将螺栓几何曲面全删掉。 再使用Topo→Points→Edges将曲线转换成3D点，删除掉曲线。 根据3D点生成螺栓连接点，框选上一步生成的3D点。除了根据曲线定义连接点意外，还可以根据点和面生成连接点。但不同的几何形式对应不同的连接类型，应注意根据需要的连接类型选择对应的几何。这里列出一些常用的连接类型和几何对应关系：
+3D点：螺接、铆接、焊点 线段：粘胶、焊缝、包边、螺接(直线段) 面：粘胶 螺栓连接点可以根据3D点或直线段生成，这里选择用3D点生成。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-03-05T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-03-05T00:00:00+00:00">
+    <meta property="article:tag" content="Ansa">
+    <meta property="article:tag" content="Cae">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Ansa快速设置连接">
+  <meta name="twitter:description" content="Ansa可以通过Connection功能快速设置连接。
+这里以螺接为例，首先将所有螺栓单独显示出来。使用TOPO→Curves→Tubes2Curve将螺栓几何转换成曲线。 保留曲线，将螺栓几何曲面全删掉。 再使用Topo→Points→Edges将曲线转换成3D点，删除掉曲线。 根据3D点生成螺栓连接点，框选上一步生成的3D点。除了根据曲线定义连接点意外，还可以根据点和面生成连接点。但不同的几何形式对应不同的连接类型，应注意根据需要的连接类型选择对应的几何。这里列出一些常用的连接类型和几何对应关系：
+3D点：螺接、铆接、焊点 线段：粘胶、焊缝、包边、螺接(直线段) 面：粘胶 螺栓连接点可以根据3D点或直线段生成，这里选择用3D点生成。">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2025-03-05-ansa-connector/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-03-05T00:00:00Z","datePublished":"2025-03-05T00:00:00Z","description":"Ansa可以通过Connection功能快速设置连接。\n这里以螺接为例，首先将所有螺栓单独显示出来。使用TOPO→Curves→Tubes2Curve将螺栓几何转换成曲线。 保留曲线，将螺栓几何曲面全删掉。 再使用Topo→Points→Edges将曲线转换成3D点，删除掉曲线。 根据3D点生成螺栓连接点，框选上一步生成的3D点。除了根据曲线定义连接点意外，还可以根据点和面生成连接点。但不同的几何形式对应不同的连接类型，应注意根据需要的连接类型选择对应的几何。这里列出一些常用的连接类型和几何对应关系：\n3D点：螺接、铆接、焊点 线段：粘胶、焊缝、包边、螺接(直线段) 面：粘胶 螺栓连接点可以根据3D点或直线段生成，这里选择用3D点生成。 ","image":"/images/grid-bg.jpg","name":"Ansa快速设置连接","url":"https://andrewmoa.site/zh-cn/post/2025-03-05-ansa-connector/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2025-03-05-ansa-connector/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2025-03-05-ansa-connector/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
+      alt="Ansa快速设置连接" title="Ansa快速设置连接"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2025-03-05-ansa-connector/">Ansa快速设置连接</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/ansa/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Ansa
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/ansa/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ansa</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-05T00:00:00&#43;00:00">
+      2025-03-05
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents"></nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>Ansa可以通过Connection功能快速设置连接。</p>
+<p>这里以螺接为例，首先将所有螺栓单独显示出来。使用<code>TOPO</code>→<code>Curves</code>→<code>Tubes2Curve</code>将螺栓几何转换成曲线。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/cf8ec5657b55d755b53386ae1b4272be_hu_c0b2ed066968899e.jpg" width="104" height="197" alt="cf8ec5657b55d755b53386ae1b4272be.png" title="cf8ec5657b55d755b53386ae1b4272be.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>保留曲线，将螺栓几何曲面全删掉。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/0b4b65d233db1e00fd74584da04b96d7_hu_b4eded76a1859adf.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/0b4b65d233db1e00fd74584da04b96d7_hu_cfc5aa76ddeb635d.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/0b4b65d233db1e00fd74584da04b96d7_hu_ae062229fc7cd2fc.jpg" width="348" height="387" alt="0b4b65d233db1e00fd74584da04b96d7.png" title="0b4b65d233db1e00fd74584da04b96d7.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>再使用<code>Topo</code>→<code>Points</code>→<code>Edges</code>将曲线转换成3D点，删除掉曲线。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/dc9424dd60a768365c03f1153fc031f5_hu_eaa4e75d07fe3318.jpg" width="173" height="164" alt="dc9424dd60a768365c03f1153fc031f5.png" title="dc9424dd60a768365c03f1153fc031f5.png" loading="lazy" />
+  </picture>
+</div>
+
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/1ebe0dfd2e017056e6564ad06ba1e3f5_hu_81b35f1c42a2c455.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/1ebe0dfd2e017056e6564ad06ba1e3f5_hu_86540ee5c9d12e7d.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/1ebe0dfd2e017056e6564ad06ba1e3f5_hu_806a05152a5d4c43.jpg" width="345" height="424" alt="1ebe0dfd2e017056e6564ad06ba1e3f5.png" title="1ebe0dfd2e017056e6564ad06ba1e3f5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>根据3D点生成螺栓连接点，框选上一步生成的3D点。除了根据曲线定义连接点意外，还可以根据点和面生成连接点。但不同的几何形式对应不同的连接类型，应注意根据需要的连接类型选择对应的几何。这里列出一些常用的连接类型和几何对应关系：</p>
+<ul>
+<li>3D点：螺接、铆接、焊点</li>
+<li>线段：粘胶、焊缝、包边、螺接(直线段)</li>
+<li>面：粘胶</li>
+</ul>
+<p>螺栓连接点可以根据3D点或直线段生成，这里选择用3D点生成。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_9911f1ba7f620bb1.webp 320w, /post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_3efd5fb3c2163465.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_6c64fa9793a5ff1.jpg 320w, /post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_ba417bf55bf635a1.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_ba417bf55bf635a1.jpg" width="661" height="514" alt="4331a76dc0794af78759754fbb601025.png" title="4331a76dc0794af78759754fbb601025.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>在模型树中可以看到生成的连接类型为螺栓。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/c791ca537a4743fa0d63ee7987037fa1_hu_10d7bb2b50bc17c4.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/c791ca537a4743fa0d63ee7987037fa1_hu_6ec3dbc13d236770.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/c791ca537a4743fa0d63ee7987037fa1_hu_dab5e8cd97b2ac18.jpg" width="416" height="92" alt="c791ca537a4743fa0d63ee7987037fa1.png" title="c791ca537a4743fa0d63ee7987037fa1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>将所有的螺栓连接点都扔到一个Part里，Part显示为连接类型。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/8af2a1ab4dad7113ad593f1f58a12f58_hu_593cfd88d34af41a.webp 320w, /post/2025-03-05-ansa-connector/images/8af2a1ab4dad7113ad593f1f58a12f58_hu_5dfa7899407c0536.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/8af2a1ab4dad7113ad593f1f58a12f58_hu_f415d9b018d726b.jpg 320w, /post/2025-03-05-ansa-connector/images/8af2a1ab4dad7113ad593f1f58a12f58_hu_dbc7ca64579db787.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/8af2a1ab4dad7113ad593f1f58a12f58_hu_dbc7ca64579db787.jpg" width="844" height="551" alt="8af2a1ab4dad7113ad593f1f58a12f58.png" title="8af2a1ab4dad7113ad593f1f58a12f58.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>选择连接管理器Connection Manager，框选要定义的连接点然后鼠标中键，进入连接定义对话框<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/53e86de73bce9bcf48d5f9a94e78ce03_hu_c23b0631133baaa1.webp 320w, /post/2025-03-05-ansa-connector/images/53e86de73bce9bcf48d5f9a94e78ce03_hu_230bed9550df359.webp 640w, /post/2025-03-05-ansa-connector/images/53e86de73bce9bcf48d5f9a94e78ce03_hu_6c2460a43d1a7aa9.webp 960w, /post/2025-03-05-ansa-connector/images/53e86de73bce9bcf48d5f9a94e78ce03_hu_3f87c07c7ad1e282.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/53e86de73bce9bcf48d5f9a94e78ce03_hu_14b4e0b1a3f1bf73.jpg 320w, /post/2025-03-05-ansa-connector/images/53e86de73bce9bcf48d5f9a94e78ce03_hu_c57bf7360b1ae659.jpg 640w, /post/2025-03-05-ansa-connector/images/53e86de73bce9bcf48d5f9a94e78ce03_hu_95ecc44b49394983.jpg 960w, /post/2025-03-05-ansa-connector/images/53e86de73bce9bcf48d5f9a94e78ce03_hu_b0cac544f015ec2b.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/53e86de73bce9bcf48d5f9a94e78ce03_hu_c57bf7360b1ae659.jpg" width="1429" height="652" alt="53e86de73bce9bcf48d5f9a94e78ce03.png" title="53e86de73bce9bcf48d5f9a94e78ce03.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>连接方式选择<code>BOLT</code>，搜索距离根据几何尺寸填写。框选部分选择需要连接的PID，双击进入编辑然后输入英文半角符号<code>?</code>可以打开选择对话框，最多支持4个PID连接。这里ANSA默认连接方式是按Part搜索，需要手动改成PID。补充螺栓半径和其他连接信息，按<code>Realize</code>生成连接。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/452ade2ba664f49f46e72dfb029f11a1_hu_c6684fecc5f503eb.webp 320w, /post/2025-03-05-ansa-connector/images/452ade2ba664f49f46e72dfb029f11a1_hu_8d94d1774fccae35.webp 640w, /post/2025-03-05-ansa-connector/images/452ade2ba664f49f46e72dfb029f11a1_hu_c57c1336f8a7d939.webp 960w, /post/2025-03-05-ansa-connector/images/452ade2ba664f49f46e72dfb029f11a1_hu_3889c90f81e4bf48.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/452ade2ba664f49f46e72dfb029f11a1_hu_5d1aaa87914603e3.jpg 320w, /post/2025-03-05-ansa-connector/images/452ade2ba664f49f46e72dfb029f11a1_hu_e26343f6fd9674d.jpg 640w, /post/2025-03-05-ansa-connector/images/452ade2ba664f49f46e72dfb029f11a1_hu_f0d31d755b5f0858.jpg 960w, /post/2025-03-05-ansa-connector/images/452ade2ba664f49f46e72dfb029f11a1_hu_50a50a719f47063a.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/452ade2ba664f49f46e72dfb029f11a1_hu_e26343f6fd9674d.jpg" width="1369" height="772" alt="452ade2ba664f49f46e72dfb029f11a1.png" title="452ade2ba664f49f46e72dfb029f11a1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>BEAM需要设置材料和截面尺寸，在弹出的PID对话框中设置。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/241c9eaa6309725edb610cafc31f4daf_hu_5c191f22fd60a3b0.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/241c9eaa6309725edb610cafc31f4daf_hu_a685928dbade7e0c.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/241c9eaa6309725edb610cafc31f4daf_hu_9eed5c59495aa02f.jpg" width="636" height="712" alt="241c9eaa6309725edb610cafc31f4daf.png" title="241c9eaa6309725edb610cafc31f4daf.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>连接效果如下。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/32339600fef4ea6b7c7078c6a0d19fd3_hu_24417d10cf248ded.webp 320w, /post/2025-03-05-ansa-connector/images/32339600fef4ea6b7c7078c6a0d19fd3_hu_29c827f933d73307.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/32339600fef4ea6b7c7078c6a0d19fd3_hu_90b4e3f918314f7f.jpg 320w, /post/2025-03-05-ansa-connector/images/32339600fef4ea6b7c7078c6a0d19fd3_hu_1e813e97ecf5c7eb.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/32339600fef4ea6b7c7078c6a0d19fd3_hu_1e813e97ecf5c7eb.jpg" width="879" height="678" alt="32339600fef4ea6b7c7078c6a0d19fd3.png" title="32339600fef4ea6b7c7078c6a0d19fd3.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>PS：如果是SHELL网格，可以通过上面的3D点生成的螺栓连接点的方式生成螺接网格（如上图）。但如果是实体网格的话，就必须要通过直线段生成的螺栓连接点连接螺栓孔，生成带方向的连接点，连接类型还必须选择<code>BOLT ON SOLID</code>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/91f23d42ef3b6bef725cff838c7bb392_hu_6c5091d87ef4d2b7.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/91f23d42ef3b6bef725cff838c7bb392_hu_89d391aeaf28589.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/91f23d42ef3b6bef725cff838c7bb392_hu_b27bcd219dab060f.jpg" width="439" height="296" alt="91f23d42ef3b6bef725cff838c7bb392.png" title="91f23d42ef3b6bef725cff838c7bb392.png" loading="lazy" />
+  </picture>
+</div>
+
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/e5ad09f455baef060628b84040161fb8_hu_c339cd2c422a79d6.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/e5ad09f455baef060628b84040161fb8_hu_62078c512583ad6e.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/e5ad09f455baef060628b84040161fb8_hu_f6b2c4b3fa301397.jpg" width="493" height="349" alt="e5ad09f455baef060628b84040161fb8.png" title="e5ad09f455baef060628b84040161fb8.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<hr>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+
+
+
+</body>
+</html>

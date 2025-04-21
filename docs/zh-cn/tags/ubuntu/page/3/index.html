@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>Ubuntu :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content=""
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/tags/ubuntu/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Ubuntu">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Ubuntu">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/tags/ubuntu/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/tags/ubuntu/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+
+  
+  
+
+  
+  
+  
+  
+
+  <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
+    <div class="flex flex-row">
+      <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-20-ubuntu-mount-windows-share-dir/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Ubuntu挂载Windows共享文件夹(cifs&#43;nfs)" title="Ubuntu挂载Windows共享文件夹(cifs&#43;nfs)"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-20-ubuntu-mount-windows-share-dir/">Ubuntu挂载Windows共享文件夹(cifs+nfs)</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>在虚拟机中运行计算文件，会导致虚拟磁盘膨胀，占用太多磁盘空间。这个时候可以通过挂载宿主机文件夹的形式，把计算文件转移到宿主机磁盘上，避免了虚拟磁盘膨胀的问题。在Windows中建立共享文件夹，这里省略了，只需要确保虚拟机能通过IP地址访问宿主机即可。</p>
+<h2 id="1-查看资源路径">1. 查看资源路径</h2>
+<p>以下命令查看服务器共享出来的资源路径，确认挂载点：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">smbclient -L 172.25.64.1 -U <span class="si">${</span><span class="nv">username</span><span class="si">}</span>
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_c192e2bce1f485c8.webp 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_506eabc87bacb862.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_d803d65d8047713a.jpg 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_5db2d441c865d431.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_5db2d441c865d431.jpg" width="679" height="204" alt="915cf6282a8325b667b52d37dea315f0.png" title="915cf6282a8325b667b52d37dea315f0.png" loading="lazy" />
+  </picture>
+</div>
+<p>挂载点访问路径：<code>//172.25.64.1/Share</code></p></p>
+<h2 id="2-挂载方法">2. 挂载方法</h2>
+<p>想要在Ubuntu中访问Windows共享文件夹，首先得安装cifs工具：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install cifs-utils
+</span></span></code></pre></div><p>然后通过<code>mount</code>命令挂载共享文件夹：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mount -t cifs //172.25.64.1/Share /mnt -o <span class="nv">username</span><span class="o">=</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span>,password<span class="o">=</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span>
+</span></span></code></pre></div><p>这里的IP地址<code>172.25.64.1</code>是虚拟机中访问的宿主机的网关地址，<code>Share</code>是宿主机共享的文件夹，<code>/mnt</code>是要挂载到的虚拟机本地访问路径，把命令后面的<code>${username}</code>和<code>${password}</code>替换成访问用户名和密码即可。需要注意的是，Windows本地用户的用户名需要写成<code>${计算机名}\${用户名}</code>的形式，用反斜杠连接，例如：<code>xxx-desktop\administrator</code>。如果是在线账户的话就需要填写完整的邮件账户名称。如果密码中包含逗号等特殊转义字符的话，命令行就不要包含<code>,password=</code>及后面的内容，后续根据提示输入密码登录。</p>
+<p>如果出现无读写权限的问题，挂载命令中增加<code>dir_mode=0777,file_mode=0777</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mount -t cifs //172.25.64.1/Share /mnt -o <span class="nv">dir_mode</span><span class="o">=</span>0777,file_mode<span class="o">=</span>0777,username<span class="o">=</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span>,password<span class="o">=</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span>
+</span></span></code></pre></div><p>如果想只添加某些特定用户的读写权限，通过<code>uid</code>和<code>gid</code>指定用户和组：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mount -t cifs //172.25.64.1/Share /mnt -o <span class="nv">uid</span><span class="o">=</span>user,gid<span class="o">=</span>group,username<span class="o">=</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span>,password<span class="o">=</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span>
+</span></span></code></pre></div><p>通过<code>mount</code>命令可以查看挂载情况：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mount <span class="p">|</span> grep cifs
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_23f5dce8296e2676.webp 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_700d4def140a2f83.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_46ea7d4f801f831e.jpg 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_34277bed754a257c.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_34277bed754a257c.jpg" width="762" height="84" alt="b9e4cda2700bd92ba7d89159f79cc007.png" title="b9e4cda2700bd92ba7d89159f79cc007.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-20T00:00:00&#43;00:00">
+      2025-03-20
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-19-hyperv-install-ubuntu24/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/hyperv-bg.png"
+      alt="Hyper-V安装Ubuntu24.04" title="Hyper-V安装Ubuntu24.04"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-19-hyperv-install-ubuntu24/">Hyper-V安装Ubuntu24.04</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <h2 id="1-需求">1. 需求</h2>
+<p>考虑在新电脑上安装Linux，不是双系统，因为还要满足日常办公。不喜欢折腾的可以用WSL，这里用Hyper-V实现，同时通过端口映射实现外网访问虚拟机。</p>
+<h2 id="2-准备工作">2. 准备工作</h2>
+<h3 id="21-下载ubuntu">2.1 下载Ubuntu</h3>
+<p>笔者是做CFD的，自然离不开Fluent，这玩意儿挑发行版的。从官网资料确认支持哪个发行版，支持哪个就装哪个，免得后面倒腾回来重装系统。</p>
+<p><a href="https://www.ansys.com/content/dam/it-solutions/platform-support/2024-r1/ansys-platform-support-strategy-plans-january-2024.pdf" target="_blank" rel="noopener">Ansys Computing Platform Support 2024R1</a>
+</p>
+<p>这里选择Ubuntu，前往官网下载最新的发行版。</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_9e76efa233b8f578.webp 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_95d8b2287d054749.webp 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_9f2c89122d2967fb.webp 960w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_a97ab8b9de571179.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_b7a04ca03356fb6f.jpg 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_10366ec9244ebdf6.jpg 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_19787a07f12c5c16.jpg 960w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_8fcee50eb8dfc6fd.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_10366ec9244ebdf6.jpg" width="1348" height="422" alt="2fd636d62e1453b3b54ad4074cde6c48.png" title="2fd636d62e1453b3b54ad4074cde6c48.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="22-开启hyper-v支持">2.2 开启Hyper-V支持</h3>
+<p>在开始菜单搜索“启用或关闭Windows功能”，开启虚拟化支持。</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_82d66e112c2e31bf.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_15261c51b798312b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_45517c4355f2a6a5.jpg" width="359" height="223" alt="973c3b93cf91c5138b89bbeaeb2bf103.png" title="973c3b93cf91c5138b89bbeaeb2bf103.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>把Hyper-V勾上，安装并重启就行了。</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_65e8bfb420337851.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_ac27ca9d65ae1408.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_744e82011576ebce.jpg" width="410" height="398" alt="4e7e7f54c61f0f16af1595cb8c0b220e.png" title="4e7e7f54c61f0f16af1595cb8c0b220e.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/virtual-machine/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Virtual-Machine</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-19T00:00:00&#43;00:00">
+      2025-03-19
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长2分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+      </section>
+      <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
+        <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
+  <form class="" action=/zh-cn/search/ method="get">
+    <div class="flex">
+      <input type="text" name="search" id="search-input" required placeholder="搜索..." class="rounded-none rounded-s-lg border border-gray-300 text-slate-800 focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-3  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-slate-200 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      <button class="inline-flex items-center px-3 text-sm text-slate-900 bg-slate-200 border border-e-0 border-gray-300 rounded-e-lg dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
+        <i class="h-6 w-6 flex-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+        </i>
+      </button>
+    </div>
+  </form>
+</section>
+
+
+  
+
+<section class="flex flex-col w-full gap-y-3 pl-6 py-3 mt-6 text-slate-800 dark:text-slate-200">
+  <div class="flex flex-row">
+    <a class="flex flex-row" href='/zh-cn/categories/'>
+      <i class="h-6 w-6 flex-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-category-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M14 4h6v6h-6z"></path>
+   <path d="M4 14h6v6h-6z"></path>
+   <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M7 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+</svg>
+
+      </i>
+      <h2 class="pl-1 uppercase">
+        分类
+      </h2>
+    </a>
+  </div>
+
+  <ul class="flex flex-row flex-wrap">
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/linux/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Linux
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/ansa/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ansa
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/cfd/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cfd
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/zhihu/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Zhihu
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/code/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Code
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/categories/tech/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Tech
+      </a>
+    </li>
+    
+  </ul>
+</section>
+
+  
+
+  
+
+  
+
+<section class="flex flex-col w-full gap-y-3 pl-6 py-3 mt-6 text-slate-800 dark:text-slate-200">
+  <div class="flex flex-row">
+    <a class="flex flex-row" href='/zh-cn/tags/'>
+      <i class="h-6 w-6 flex-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+      </i>
+      <h2 class="pl-1 uppercase">
+        标签
+      </h2>
+    </a>
+  </div>
+
+  <ul class="flex flex-row flex-wrap">
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/cae/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cae
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/linux/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Linux
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/ansa/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ansa
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/ubuntu/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ubuntu
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/abaqus/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Abaqus
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/slurm/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Slurm
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/star-ccm&#43;/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Star-Ccm&#43;
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/cfd/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cfd
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/cfx/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Cfx
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/openfoam/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Openfoam
+      </a>
+    </li>
+    
+  </ul>
+</section>
+
+  
+
+
+      </aside>
+    </div>
+
+    
+<div class="flex flex-row justify-center mt-6 gap-2">
+  
+    <a href="/zh-cn/tags/ubuntu/page/2/"
+      class="flex flex-row text-base font-semibold rounded-md text-slate-700 dark:text-slate-300 bg-slate-200 dark:bg-gray-700 p-2 pr-3">
+      <i class="h-6 w-6 flex-none mr-1"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-caret-left" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M14 6l-6 6l6 6v-12"></path>
+</svg>
+</i>
+      <span>新文章</span>
+    </a>
+  
+  
+</div>
+
+
+  </div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+
+
+
+</body>
+</html>

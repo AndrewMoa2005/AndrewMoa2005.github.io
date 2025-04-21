@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Virtual-Machine on Andrew Moa Blog Site</title>
+    <link>https://andrewmoa.site/tags/virtual-machine/</link>
+    <description>Recent content in Virtual-Machine on Andrew Moa Blog Site</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
+    <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
+    <copyright>Andrew Moa</copyright>
+    <lastBuildDate>Fri, 21 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://andrewmoa.site/tags/virtual-machine/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hyper-V Virtual Switch NAT Setting Static IP</title>
+      <link>https://andrewmoa.site/post/2025-03-21-hyperv-switch-static-ip-address/</link>
+      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-21-hyperv-switch-static-ip-address/</guid>
+      <description>&lt;p&gt;I have mentioned before that you can use NAT+port mapping to access a virtual machine, but I found a problem during use: every time the host machine is restarted, the default &lt;code&gt;Default Switch&lt;/code&gt; IP address will change, causing the virtual machine to be unable to access the gateway and thus unable to connect to the Internet.&lt;/p&gt;&#xA;&lt;p&gt;In order to ensure that the virtual machine is connected to the Internet, you must manually set the IP address of the adapter corresponding to the &lt;code&gt;Default Switch&lt;/code&gt; every time you restart the machine, which is very inconvenient. The following is a solution given in reference to the &lt;a href=&#34;https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/user-guide/setup-nat-network&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Microsoft official document&lt;/a&gt;&#xA;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Hyper-V Installation Ubuntu24.04</title>
+      <link>https://andrewmoa.site/post/2025-03-19-hyperv-install-ubuntu24/</link>
+      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-19-hyperv-install-ubuntu24/</guid>
+      <description>&lt;h2 id=&#34;1-requirements&#34;&gt;1. Requirements&lt;/h2&gt;&#xA;&lt;p&gt;Consider installing Linux on a new computer, not a dual system, because it also needs to meet daily office work. If you don’t like to mess around, you can use WSL, which is implemented using Hyper-V, and at the same time, you can access the virtual machine through port mapping.&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-preparation&#34;&gt;2. Preparation&lt;/h2&gt;&#xA;&lt;h3 id=&#34;21-download-ubuntu&#34;&gt;2.1 Download Ubuntu&lt;/h3&gt;&#xA;&lt;p&gt;I am a CFD, so I naturally cannot do without Fluent. This thing is a distribution version. Confirm which distribution is supported from the official website information, and install which one is supported, so as not to reinstall the system later.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

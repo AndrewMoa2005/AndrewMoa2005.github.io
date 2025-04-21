@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Ubuntu Install SIMULIA2024 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Why did you choose SIMULIA? First, Abaqus is powerful and can solve most structural problems. Second, fluid-structure coupling is convenient. STAR-CCM&#43; comes with a case that shows you how to couple with Abaqus bidirectionally. Third, it is the inertia of past experience. After all, automobile companies use Abaqus a lot, and there are a lot of cases and resources.
+1. Preparation First install the development environment and some necessary software:
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/post/2025-03-21-ubuntu-install-simulia2024/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Ubuntu Install SIMULIA2024">
+  <meta property="og:description" content="Why did you choose SIMULIA? First, Abaqus is powerful and can solve most structural problems. Second, fluid-structure coupling is convenient. STAR-CCM&#43; comes with a case that shows you how to couple with Abaqus bidirectionally. Third, it is the inertia of past experience. After all, automobile companies use Abaqus a lot, and there are a lot of cases and resources.
+1. Preparation First install the development environment and some necessary software:">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-03-21T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-03-21T00:00:00+00:00">
+    <meta property="article:tag" content="Abaqus">
+    <meta property="article:tag" content="Cae">
+    <meta property="article:tag" content="Linux">
+    <meta property="article:tag" content="Slurm">
+    <meta property="article:tag" content="Ubuntu">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Ubuntu Install SIMULIA2024">
+  <meta name="twitter:description" content="Why did you choose SIMULIA? First, Abaqus is powerful and can solve most structural problems. Second, fluid-structure coupling is convenient. STAR-CCM&#43; comes with a case that shows you how to couple with Abaqus bidirectionally. Third, it is the inertia of past experience. After all, automobile companies use Abaqus a lot, and there are a lot of cases and resources.
+1. Preparation First install the development environment and some necessary software:">
+
+
+<link rel="canonical" href="https://andrewmoa.site/post/2025-03-21-ubuntu-install-simulia2024/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-03-21T00:00:00Z","datePublished":"2025-03-21T00:00:00Z","description":"Why did you choose SIMULIA? First, Abaqus is powerful and can solve most structural problems. Second, fluid-structure coupling is convenient. STAR-CCM+ comes with a case that shows you how to couple with Abaqus bidirectionally. Third, it is the inertia of past experience. After all, automobile companies use Abaqus a lot, and there are a lot of cases and resources.\n1. Preparation First install the development environment and some necessary software:\n","image":"/images/ubuntu-bg.jpg","name":"Ubuntu Install SIMULIA2024","url":"https://andrewmoa.site/post/2025-03-21-ubuntu-install-simulia2024/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">Open main menu</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/post/" title="Post">Post</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/about/" title="About">About</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">Open language switcher</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">English</span>
+            </li>
+        
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/zh-cn/post/2025-03-21-ubuntu-install-simulia2024/" title="中文">中文</a></li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">Search</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="Toggle dark mode">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="Toggle dark mode">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/post/2025-03-21-ubuntu-install-simulia2024/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Ubuntu Install SIMULIA2024" title="Ubuntu Install SIMULIA2024"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/post/2025-03-21-ubuntu-install-simulia2024/">Ubuntu Install SIMULIA2024</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/tags/abaqus/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Abaqus</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/slurm/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Slurm</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-21T00:00:00&#43;00:00">
+      2025-03-21
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      6 minutes to read
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>Table of Contents</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-preparation">1. Preparation</a></li>
+    <li><a href="#2-installation-process">2. Installation process</a>
+      <ul>
+        <li><a href="#21-start-the-installation-program">2.1 Start the installation program</a></li>
+        <li><a href="#22-installing-the-license-server">2.2 Installing the License Server</a></li>
+        <li><a href="#23-install-the-solver">2.3 Install the solver</a></li>
+        <li><a href="#24-install-caa-api">2.4 Install CAA API</a></li>
+        <li><a href="#25-install-isight">2.5 Install Isight</a></li>
+        <li><a href="#26-installation-completed">2.6 Installation completed</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-post-installation-configuration">3. Post-installation configuration</a>
+      <ul>
+        <li><a href="#31-startup-configuration">3.1 Startup configuration</a></li>
+        <li><a href="#32-license-installation-problem">3.2 License installation problem</a></li>
+        <li><a href="#33-submit-cluster-calculation">3.3 Submit cluster calculation</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>Why did you choose SIMULIA? First, Abaqus is powerful and can solve most structural problems. Second, fluid-structure coupling is convenient. STAR-CCM+ comes with a case that shows you how to couple with Abaqus bidirectionally. Third, it is the inertia of past experience. After all, automobile companies use Abaqus a lot, and there are a lot of cases and resources.</p>
+<h2 id="1-preparation">1. Preparation</h2>
+<p>First install the development environment and some necessary software:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt update <span class="c1"># Update software sources</span>
+</span></span><span class="line"><span class="cl">sudo apt upgrade <span class="c1"># Update locally installed software</span>
+</span></span><span class="line"><span class="cl">sudo apt install build-essential <span class="c1"># Installing the Development Environment</span>
+</span></span><span class="line"><span class="cl">sudo apt install csh tcsh ksh gcc g++ gfortran libstdc++5 build-essential make libjpeg62 libmotif-dev
+</span></span></code></pre></div><p>解压安装包：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir iso <span class="c1"># Create a new iso folder to store the decompressed files</span>
+</span></span><span class="line"><span class="cl">tar xvzf DS.SIMULIA.SUITE.2024.LINX64.tar.gz -C ./iso <span class="c1"># Unzip to the iso folder</span>
+</span></span></code></pre></div><h2 id="2-installation-process">2. Installation process</h2>
+<h3 id="21-start-the-installation-program">2.1 Start the installation program</h3>
+<p>First, define the environment variables, otherwise the installation program cannot be started:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># You can add the following content to ${HOME}/.bashrc and restart the terminal</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> DSYAuthOS_<span class="sb">`</span>lsb_release -si<span class="sb">`</span><span class="o">=</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">DSY_Force_OS</span><span class="o">=</span>linux_a64
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">NOLICENSECHECK</span><span class="o">=</span><span class="nb">true</span>
+</span></span></code></pre></div><p>Enter the <code>/iso/1</code> folder and run the installer. Start the graphical interface and run <code>./StartGUI.sh</code> in the terminal. It is similar to the installation method under Windows. Just follow the wizard step by step.</p>
+<p>Select the text interface here:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">./StartTUI.sh <span class="c1"># Start the text interface installation wizard</span>
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_9c925859e18a2c80.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_d174a16dd769eec3.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_d827ba69e5f438ef.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_9bae9785b4295cee.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_9bae9785b4295cee.jpg" width="769" height="485" alt="7222cbf4b6f8545b9766ce654edf28ba.png" title="7222cbf4b6f8545b9766ce654edf28ba.png" loading="lazy" />
+  </picture>
+</div>
+
+<code>Enter</code> to next step.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/32a37d1807765cbc529f11c58e35ea12_hu_7f770697e755b739.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/32a37d1807765cbc529f11c58e35ea12_hu_5dc7094fc9e3b765.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/32a37d1807765cbc529f11c58e35ea12_hu_bb0c7018c5d9e875.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/32a37d1807765cbc529f11c58e35ea12_hu_a242759911f38a98.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/32a37d1807765cbc529f11c58e35ea12_hu_a242759911f38a98.jpg" width="649" height="330" alt="32a37d1807765cbc529f11c58e35ea12.png" title="32a37d1807765cbc529f11c58e35ea12.png" loading="lazy" />
+  </picture>
+</div>
+
+Remember to select <code>4</code>, which means <code>FLEXnet License Server</code>. Type <code>4</code> and then <code>Enter</code> to continue.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/e29968284f99250e82746af3a935d704_hu_282d86d2c37b7af.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/e29968284f99250e82746af3a935d704_hu_2609d2d556940639.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/e29968284f99250e82746af3a935d704_hu_80e72a2cbc0c9860.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/e29968284f99250e82746af3a935d704_hu_b0acc0a9a218c902.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/e29968284f99250e82746af3a935d704_hu_b0acc0a9a218c902.jpg" width="684" height="261" alt="e29968284f99250e82746af3a935d704.png" title="e29968284f99250e82746af3a935d704.png" loading="lazy" />
+  </picture>
+</div>
+
+Confirm the installation content and press <code>Enter</code> to start the relevant installation program.</p>
+<h3 id="22-installing-the-license-server">2.2 Installing the License Server</h3>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2b46aa33180c36f27a537a1ab8418f3a_hu_6d5d434d9964cc23.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2b46aa33180c36f27a537a1ab8418f3a_hu_e82135fa33732a65.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/2b46aa33180c36f27a537a1ab8418f3a_hu_567f2dca79ec74c8.jpg" width="449" height="244" alt="2b46aa33180c36f27a537a1ab8418f3a.png" title="2b46aa33180c36f27a537a1ab8418f3a.png" loading="lazy" />
+  </picture>
+</div>
+
+Select <code>P</code> and enter the absolute path to the <code>/iso/4</code> folder.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/98b4844bd00955f5d423ca362fe2b553_hu_47a13e30c8640e60.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/98b4844bd00955f5d423ca362fe2b553_hu_c84a469abe87416.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/98b4844bd00955f5d423ca362fe2b553_hu_e9ac6ad96ad55772.jpg" width="624" height="181" alt="98b4844bd00955f5d423ca362fe2b553.png" title="98b4844bd00955f5d423ca362fe2b553.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the installation path of the license server. Here, choose to install it in the path <code>${HOME}/opt/SIMULIA/License/2024</code>. Enter the absolute path.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/da9c6aa1f933df48fe6027e382c878d5_hu_a2aea7d4408b3bc4.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/da9c6aa1f933df48fe6027e382c878d5_hu_6f3526a799639352.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/da9c6aa1f933df48fe6027e382c878d5_hu_8c15d412feda0d5e.jpg" width="599" height="194" alt="da9c6aa1f933df48fe6027e382c878d5.png" title="da9c6aa1f933df48fe6027e382c878d5.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the default here and start the license server after installation.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/842cf6835291e50d2a108b92c793ae29_hu_a2aea7d4408b3bc4.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/842cf6835291e50d2a108b92c793ae29_hu_6f3526a799639352.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/842cf6835291e50d2a108b92c793ae29_hu_8c15d412feda0d5e.jpg" width="599" height="194" alt="842cf6835291e50d2a108b92c793ae29.png" title="842cf6835291e50d2a108b92c793ae29.png" loading="lazy" />
+  </picture>
+</div>
+
+Select License File Path and enter the absolute path.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/0a7fcef173dc84dbae5cd0fd3561f1d0_hu_1cb25bf8a4f02150.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/0a7fcef173dc84dbae5cd0fd3561f1d0_hu_d5a0dab95479b90b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/0a7fcef173dc84dbae5cd0fd3561f1d0_hu_eae54b8f0ddcfdd1.jpg" width="438" height="242" alt="0a7fcef173dc84dbae5cd0fd3561f1d0.png" title="0a7fcef173dc84dbae5cd0fd3561f1d0.png" loading="lazy" />
+  </picture>
+</div>
+
+After entering the license file, a message appears stating that retrieval of the host ID failed. Ignore it and enter <code>2</code> to continue.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/3cdf57da3ac4f813368bc21959fd50cc_hu_7fe208c10ee27a25.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/3cdf57da3ac4f813368bc21959fd50cc_hu_1ad9cf203523fc34.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/3cdf57da3ac4f813368bc21959fd50cc_hu_db8a498dd551c566.jpg" width="599" height="301" alt="3cdf57da3ac4f813368bc21959fd50cc.png" title="3cdf57da3ac4f813368bc21959fd50cc.png" loading="lazy" />
+  </picture>
+</div>
+
+Continue to select <code>2</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/37278e435bdf4ce57cc8753974ed4262_hu_7276c3a291711c93.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/37278e435bdf4ce57cc8753974ed4262_hu_f46ea36c437a7093.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/37278e435bdf4ce57cc8753974ed4262_hu_4e9684c1084698c8.jpg" width="618" height="289" alt="37278e435bdf4ce57cc8753974ed4262.png" title="37278e435bdf4ce57cc8753974ed4262.png" loading="lazy" />
+  </picture>
+</div>
+
+Confirm the installation information.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/d98331d9aec49934746e4780dc8a570f_hu_26223977d124d40f.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/d98331d9aec49934746e4780dc8a570f_hu_7a4454da8c2c699c.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/d98331d9aec49934746e4780dc8a570f_hu_2fb6ec1799a8f897.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/d98331d9aec49934746e4780dc8a570f_hu_994aa99b8d2ed074.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/d98331d9aec49934746e4780dc8a570f_hu_994aa99b8d2ed074.jpg" width="745" height="243" alt="d98331d9aec49934746e4780dc8a570f.png" title="d98331d9aec49934746e4780dc8a570f.png" loading="lazy" />
+  </picture>
+</div>
+
+The installation is complete, press <code>Enter</code> to continue the next program installation.</p>
+<h3 id="23-install-the-solver">2.3 Install the solver</h3>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/e63e9f0c584011800a215af5d2c128a7_hu_13210fc85ee079d2.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/e63e9f0c584011800a215af5d2c128a7_hu_8bd605303fe2a574.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/e63e9f0c584011800a215af5d2c128a7_hu_3ad4a28fcc217ed5.jpg" width="557" height="243" alt="e63e9f0c584011800a215af5d2c128a7.png" title="e63e9f0c584011800a215af5d2c128a7.png" loading="lazy" />
+  </picture>
+</div>
+
+Select <code>P</code> and enter the absolute path to the <code>/iso/5</code> folder.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/9da9338bf17ca917eee54135eac4bd13_hu_91310d02a05cfc5c.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/9da9338bf17ca917eee54135eac4bd13_hu_b4b565bb166e2740.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/9da9338bf17ca917eee54135eac4bd13_hu_382dfab34f46276c.jpg" width="624" height="161" alt="9da9338bf17ca917eee54135eac4bd13.png" title="9da9338bf17ca917eee54135eac4bd13.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the installation path. Here, choose to install it in the path <code>${HOME}/opt/SIMULIA/EstProducts/2024</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/150907cf29102dc5b4bcda22e3f2af44_hu_1fb064129969aabd.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/150907cf29102dc5b4bcda22e3f2af44_hu_eb863cc3192d7d6e.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/150907cf29102dc5b4bcda22e3f2af44_hu_5566b9448b96ce62.jpg" width="559" height="495" alt="150907cf29102dc5b4bcda22e3f2af44.png" title="150907cf29102dc5b4bcda22e3f2af44.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the content to be installed, select all and enter <code>-1</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/618fa052254d576c29637eb792b63f5b_hu_3617998e946f76f2.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/618fa052254d576c29637eb792b63f5b_hu_551f02d1a05106f2.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/618fa052254d576c29637eb792b63f5b_hu_d440264613d253d0.jpg" width="622" height="372" alt="618fa052254d576c29637eb792b63f5b.png" title="618fa052254d576c29637eb792b63f5b.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the license type, the default is <code>1</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2525f16acab485199fb0107493718334_hu_3853bd08d69af93f.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/2525f16acab485199fb0107493718334_hu_52ace6bf16ce9b6a.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2525f16acab485199fb0107493718334_hu_9879914efa9f62e7.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/2525f16acab485199fb0107493718334_hu_775db4399386dbf9.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/2525f16acab485199fb0107493718334_hu_775db4399386dbf9.jpg" width="643" height="310" alt="2525f16acab485199fb0107493718334.png" title="2525f16acab485199fb0107493718334.png" loading="lazy" />
+  </picture>
+</div>
+
+Enter the access address and port of the license server, enter <code>29100@localhost</code> to define <code>License Server 1</code>, and skip the rest by pressing <code>Enter</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/5e3f75d3e4eb45d0651f815415cec836_hu_88009c86e75a2a22.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/5e3f75d3e4eb45d0651f815415cec836_hu_4938ed0cb42e7195.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/5e3f75d3e4eb45d0651f815415cec836_hu_357fdec645c34640.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/5e3f75d3e4eb45d0651f815415cec836_hu_7ca694face0e4a91.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/5e3f75d3e4eb45d0651f815415cec836_hu_7ca694face0e4a91.jpg" width="647" height="358" alt="5e3f75d3e4eb45d0651f815415cec836.png" title="5e3f75d3e4eb45d0651f815415cec836.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the path of the command line program. Here, choose to install it to <code>${HOME}/opt/SIMULIA/var/DassaultSystemes/SIMULIA/Commands</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2dbc679c28801c1edcf17410e0541414_hu_e9588c1d596a35eb.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/2dbc679c28801c1edcf17410e0541414_hu_a5a20f3cbd3fbc1.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2dbc679c28801c1edcf17410e0541414_hu_81e62603145f06b4.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/2dbc679c28801c1edcf17410e0541414_hu_a7fec507d526f7f8.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/2dbc679c28801c1edcf17410e0541414_hu_a7fec507d526f7f8.jpg" width="653" height="249" alt="2dbc679c28801c1edcf17410e0541414.png" title="2dbc679c28801c1edcf17410e0541414.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the path of the external plug-in. Here, choose to install it to <code>${HOME}/opt/SIMULIA/var/DassaultSystemes/SIMULIA/CAE/plugins/2024</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/0ab546bf5c53e748044cb596a40aac68_hu_fcb8c6a0a8e261f2.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/0ab546bf5c53e748044cb596a40aac68_hu_e8da1cfdbbc3c81d.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/0ab546bf5c53e748044cb596a40aac68_hu_a50d906fd04154b3.jpg" width="607" height="353" alt="0ab546bf5c53e748044cb596a40aac68.png" title="0ab546bf5c53e748044cb596a40aac68.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the <code>Tosca</code> interface according to actual needs.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/575d8708a07ed1bc9781af02aa739e58_hu_ff83bd7608f7ffa1.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/575d8708a07ed1bc9781af02aa739e58_hu_a3e1c4715adb849.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/575d8708a07ed1bc9781af02aa739e58_hu_89dbb3482ee2c8fd.jpg" width="623" height="193" alt="575d8708a07ed1bc9781af02aa739e58.png" title="575d8708a07ed1bc9781af02aa739e58.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the <code>Tosca Fluid</code> working directory, which is assigned to <code>${HOME}/temp</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/f9de5443a5f54c198a15d433cbcc459d_hu_d1e914730cee3b93.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/f9de5443a5f54c198a15d433cbcc459d_hu_7f5f10e9f40c3d7b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/f9de5443a5f54c198a15d433cbcc459d_hu_fd7fa388504a8b39.jpg" width="626" height="256" alt="f9de5443a5f54c198a15d433cbcc459d.png" title="f9de5443a5f54c198a15d433cbcc459d.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the STAR-CCM+ installation path, set it according to actual needs, and leave it blank by default.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/bfade401e6f700848f6166f118eb2204_hu_4e77f6e79dd740f.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/bfade401e6f700848f6166f118eb2204_hu_a903514ade83e829.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/bfade401e6f700848f6166f118eb2204_hu_bb93c337e549a22e.jpg" width="618" height="188" alt="bfade401e6f700848f6166f118eb2204.png" title="bfade401e6f700848f6166f118eb2204.png" loading="lazy" />
+  </picture>
+</div>
+
+Select STAR-CCM+ license, set according to actual situation, leave blank by default.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/817069e8e89653272d962e4a6553940e_hu_9704e2a68451b085.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/817069e8e89653272d962e4a6553940e_hu_286d94d542024259.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/817069e8e89653272d962e4a6553940e_hu_7bc586259ab4d2c0.jpg" width="617" height="198" alt="817069e8e89653272d962e4a6553940e.png" title="817069e8e89653272d962e4a6553940e.png" loading="lazy" />
+  </picture>
+</div>
+
+Select Fluent installation path, set according to actual situation, leave blank by default.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/4b87a12aa92cdc9ef67cb2596b331bc1_hu_c678b750a65c00a4.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/4b87a12aa92cdc9ef67cb2596b331bc1_hu_56c8003707e313ea.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/4b87a12aa92cdc9ef67cb2596b331bc1_hu_7053d68181ea0ea5.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/4b87a12aa92cdc9ef67cb2596b331bc1_hu_b1eddc9660cb6ee2.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/4b87a12aa92cdc9ef67cb2596b331bc1_hu_b1eddc9660cb6ee2.jpg" width="737" height="510" alt="4b87a12aa92cdc9ef67cb2596b331bc1.png" title="4b87a12aa92cdc9ef67cb2596b331bc1.png" loading="lazy" />
+  </picture>
+</div>
+
+Confirm the installation information and press <code>Enter</code> to start copying files.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/a48dc4111041562afdd9c43a3f853613_hu_a87120d6b94394de.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/a48dc4111041562afdd9c43a3f853613_hu_b4cb4ce3d5869d97.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/a48dc4111041562afdd9c43a3f853613_hu_309f0cda499cee8c.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/a48dc4111041562afdd9c43a3f853613_hu_1aaf716c94579170.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/a48dc4111041562afdd9c43a3f853613_hu_1aaf716c94579170.jpg" width="768" height="423" alt="a48dc4111041562afdd9c43a3f853613.png" title="a48dc4111041562afdd9c43a3f853613.png" loading="lazy" />
+  </picture>
+</div>
+
+The verification program will be started during the installation process, and the verification results can be viewed. <code>Enter</code> to continue.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/192460b7772483522ff8ff97c5f47f61_hu_6468327b7feee68c.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/192460b7772483522ff8ff97c5f47f61_hu_1bc7cccb26ab7aa1.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/192460b7772483522ff8ff97c5f47f61_hu_f5fe5f3c6a8a616a.jpg" width="451" height="479" alt="192460b7772483522ff8ff97c5f47f61.png" title="192460b7772483522ff8ff97c5f47f61.png" loading="lazy" />
+  </picture>
+</div>
+
+The solver installation is complete, <code>Enter</code> to exit and enter the next installation program.</p>
+<h3 id="24-install-caa-api">2.4 Install CAA API</h3>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/a1105475937fa8f0c85abdf177501160_hu_32294a3d63a5c312.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/a1105475937fa8f0c85abdf177501160_hu_18979b472f2825c7.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/a1105475937fa8f0c85abdf177501160_hu_d0e4a1387bc2b324.jpg" width="379" height="240" alt="a1105475937fa8f0c85abdf177501160.png" title="a1105475937fa8f0c85abdf177501160.png" loading="lazy" />
+  </picture>
+</div>
+
+Select <code>P</code> and enter the absolute path of the <code>/iso/6</code> folder.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/fbe21029d223f693d9cdfd727ec588c4_hu_f46b6c8982988d57.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/fbe21029d223f693d9cdfd727ec588c4_hu_236306f93bfe646d.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/fbe21029d223f693d9cdfd727ec588c4_hu_31f86ac1ba05d80c.jpg" width="577" height="157" alt="fbe21029d223f693d9cdfd727ec588c4.png" title="fbe21029d223f693d9cdfd727ec588c4.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the installation path. Here, choose to install to <code>${HOME}/opt/SIMULIA/EstProducts/2024</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/098367e7a54310e3ceefee9c52659171_hu_beaa838cb36d88b4.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/098367e7a54310e3ceefee9c52659171_hu_30651de2cf58d6c2.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/098367e7a54310e3ceefee9c52659171_hu_23c12fae256443ff.jpg" width="571" height="493" alt="098367e7a54310e3ceefee9c52659171.png" title="098367e7a54310e3ceefee9c52659171.png" loading="lazy" />
+  </picture>
+</div>
+
+Confirm the content to be installed, and press <code>Enter</code> to continue.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2e23fd22aea12099636c0c53efb9b011_hu_9c1c5e3d6b116ed1.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2e23fd22aea12099636c0c53efb9b011_hu_41997a696ce0aaf0.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/2e23fd22aea12099636c0c53efb9b011_hu_406fb440b7aeb886.jpg" width="486" height="489" alt="2e23fd22aea12099636c0c53efb9b011.png" title="2e23fd22aea12099636c0c53efb9b011.png" loading="lazy" />
+  </picture>
+</div>
+
+The installation is complete, and press <code>Enter</code> to exit.</p>
+<h3 id="25-install-isight">2.5 Install Isight</h3>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/58015ba8b4b0068cfcb447f20857939f_hu_49cc53b829ca30c9.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/58015ba8b4b0068cfcb447f20857939f_hu_a8a6a9b65b61f145.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/58015ba8b4b0068cfcb447f20857939f_hu_6ebc8ed4d93724f2.jpg" width="583" height="157" alt="58015ba8b4b0068cfcb447f20857939f.png" title="58015ba8b4b0068cfcb447f20857939f.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the installation path. Here, choose to install to <code>${HOME}/opt/SIMULIA/Isight/2024</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/48a30d42cac1ed6b1b91f2ce39040cce_hu_822da84cc622c8e9.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/48a30d42cac1ed6b1b91f2ce39040cce_hu_15688b5f7d3a3c01.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/48a30d42cac1ed6b1b91f2ce39040cce_hu_43edb34294fbecdf.jpg" width="599" height="277" alt="48a30d42cac1ed6b1b91f2ce39040cce.png" title="48a30d42cac1ed6b1b91f2ce39040cce.png" loading="lazy" />
+  </picture>
+</div>
+
+Select the content to be installed. <code>-1</code> selects all.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/741fd85d5d3f278d9bb7f9bf6530c60a_hu_8cbf75e58b30ad58.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/741fd85d5d3f278d9bb7f9bf6530c60a_hu_dd70ffbc141763dc.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/741fd85d5d3f278d9bb7f9bf6530c60a_hu_e4653c433d28e91e.jpg" width="615" height="261" alt="741fd85d5d3f278d9bb7f9bf6530c60a.png" title="741fd85d5d3f278d9bb7f9bf6530c60a.png" loading="lazy" />
+  </picture>
+</div>
+
+Whether to start the <code>TomEE</code> configuration tool, skip by default.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/bcda28276dc83f5ae970fcfa37300078_hu_3f1db0bab5b10f88.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/bcda28276dc83f5ae970fcfa37300078_hu_7b414468c07862d4.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/bcda28276dc83f5ae970fcfa37300078_hu_a43029547da473d.jpg" width="635" height="247" alt="bcda28276dc83f5ae970fcfa37300078.png" title="bcda28276dc83f5ae970fcfa37300078.png" loading="lazy" />
+  </picture>
+</div>
+
+This step is also skipped by default.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/b6652ff01997c5fa5e1375d92be835f3_hu_7676af058ef0c35c.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/b6652ff01997c5fa5e1375d92be835f3_hu_3717213d010d9e2.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/b6652ff01997c5fa5e1375d92be835f3_hu_63273ee804e6fb92.jpg" width="612" height="312" alt="b6652ff01997c5fa5e1375d92be835f3.png" title="b6652ff01997c5fa5e1375d92be835f3.png" loading="lazy" />
+  </picture>
+</div>
+
+There is no installation document, choose to skip it.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/952737d22e78e4dd5cbb2fddf27e9bc4_hu_946df4b2434b04d0.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/952737d22e78e4dd5cbb2fddf27e9bc4_hu_f5e8b6f10a6f2252.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/952737d22e78e4dd5cbb2fddf27e9bc4_hu_b6368a389d20e355.jpg" width="618" height="431" alt="952737d22e78e4dd5cbb2fddf27e9bc4.png" title="952737d22e78e4dd5cbb2fddf27e9bc4.png" loading="lazy" />
+  </picture>
+</div>
+
+Confirm the installation content and press <code>Enter</code> to start copying files.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/f27fe27fbc46bb915c1fe167d235753f_hu_86c883aadd2754d0.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/f27fe27fbc46bb915c1fe167d235753f_hu_da5ec809a4a6a614.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/f27fe27fbc46bb915c1fe167d235753f_hu_11bbe839e5bbe77c.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/f27fe27fbc46bb915c1fe167d235753f_hu_ee5fe3cadb8e627d.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/f27fe27fbc46bb915c1fe167d235753f_hu_ee5fe3cadb8e627d.jpg" width="683" height="281" alt="f27fe27fbc46bb915c1fe167d235753f.png" title="f27fe27fbc46bb915c1fe167d235753f.png" loading="lazy" />
+  </picture>
+</div>
+
+The installation is complete. Press <code>Enter</code> to exit.</p>
+<h3 id="26-installation-completed">2.6 Installation completed</h3>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2f4f47eb05fb870bb885b5ccfb13a9aa_hu_7b66f55ee33f0d3e.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2f4f47eb05fb870bb885b5ccfb13a9aa_hu_48701eec70e247c4.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/2f4f47eb05fb870bb885b5ccfb13a9aa_hu_2012f9bb2be338a3.jpg" width="611" height="282" alt="2f4f47eb05fb870bb885b5ccfb13a9aa.png" title="2f4f47eb05fb870bb885b5ccfb13a9aa.png" loading="lazy" />
+  </picture>
+</div>
+
+Confirm the installation result and press <code>Enter</code> to exit the SIMULIA installation program.</p>
+<h2 id="3-post-installation-configuration">3. Post-installation configuration</h2>
+<h3 id="31-startup-configuration">3.1 Startup configuration</h3>
+<p>Before starting, modify the configuration file:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vim <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/SIMULIA/EstProducts/2024/linux_a64/SMA/site/custom_v6.env
+</span></span></code></pre></div><p>Add two lines at the end, save and exit:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nv">license_server_type</span><span class="o">=</span>FLEXNET
+</span></span><span class="line"><span class="cl"><span class="nv">abaquslm_license_file</span><span class="o">=</span><span class="s2">&#34;29100@localhost&#34;</span>
+</span></span></code></pre></div><p>Create a new environment variable configuration file:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">touch <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/SIMULIA/simulia24.env
+</span></span><span class="line"><span class="cl">chmod +x <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/SIMULIA/simulia24.env
+</span></span><span class="line"><span class="cl">vim <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/SIMULIA/simulia24.env
+</span></span></code></pre></div><p>Edit the content as follows. It is best to use absolute paths, save and exit:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">LICENSE_PREFIX_DIR</span><span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/SIMULIA/License/2024/linux_a64/code/bin
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SIMULIA_COMMAND_DIR</span><span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/SIMULIA/var/DassaultSystemes/SIMULIA/Commands
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$SIMULIA_COMMAND_DIR</span>:<span class="nv">$LICENSE_PREFIX_DIR</span>:<span class="nv">$PATH</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">LM_LICENSE_FILE</span><span class="o">=</span>29100@localhost
+</span></span></code></pre></div><p>Run the following command to load the environment variables:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">source</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/SIMULIA/simulia24.env
+</span></span></code></pre></div><p>Start the Abaqus graphical interface by using the following command<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">abaqus cae -mesa
+</span></span><span class="line"><span class="cl">abaqus view -mesa
+</span></span></code></pre></div><h3 id="32-license-installation-problem">3.2 License installation problem</h3>
+<p>If Abaqus can be started normally in [3.1](#31-Startup configuration), then this step can be skipped.</p>
+<p>Verify whether the license server is running:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">ps -eaf <span class="p">|</span> grep ABAQUSLM
+</span></span></code></pre></div><p>If the license server is not running, start the license server with the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/SIMULIA/License/2024/linux_a64/code/bin/licenseStartup.sh
+</span></span></code></pre></div><p>The startup failed, and the error message is as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">/home/***/opt/SIMULIA/License/2024/linux_a64/code/bin/licenseStartup.sh: 2: /home/***/opt/SIMULIA/License/2024/linux_a64/code/bin/lmgrd: not found
+</span></span></code></pre></div><p>There is no solution. Either there is a problem with the installation package or this distribution lacks some runtime libraries. Let&rsquo;s wait for the experts to help.</p>
+<p>Fortunately, the Windows version license can be installed normally. You only need to assign the license path to the Windows machine. First, open port 29100 in Windows Firewall and create a new firewall inbound rule:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/33aec1f9e7b7132dc0d6143a9d9d25fe_hu_cf141d1eb59bf7d5.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/33aec1f9e7b7132dc0d6143a9d9d25fe_hu_457efa506ad98bf1.webp 640w, /post/2025-03-21-ubuntu-install-simulia2024/images/33aec1f9e7b7132dc0d6143a9d9d25fe_hu_3775627095536164.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/33aec1f9e7b7132dc0d6143a9d9d25fe_hu_6eecf9356ab99fb5.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/33aec1f9e7b7132dc0d6143a9d9d25fe_hu_b7f8ca3c00eb43f3.jpg 640w, /post/2025-03-21-ubuntu-install-simulia2024/images/33aec1f9e7b7132dc0d6143a9d9d25fe_hu_c66667e11cc2f7cc.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/33aec1f9e7b7132dc0d6143a9d9d25fe_hu_b7f8ca3c00eb43f3.jpg" width="1125" height="808" alt="33aec1f9e7b7132dc0d6143a9d9d25fe.png" title="33aec1f9e7b7132dc0d6143a9d9d25fe.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Then modify the license address of the <code>custom_v6.env</code> file in [3.1](#31-Startup Configuration) as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nv">license_server_type</span><span class="o">=</span>FLEXNET
+</span></span><span class="line"><span class="cl"><span class="c1"># abaquslm_license_file=&#34;29100@localhost&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">abaquslm_license_file</span><span class="o">=</span><span class="s2">&#34;29100@172.25.64.1&#34;</span> <span class="c1"># 172.25.64.1 is the IP address of the Windows host</span>
+</span></span></code></pre></div><p>Modify the environment variable file <code>${HOME}/opt/SIMULIA/simulia24.env</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># export LM_LICENSE_FILE=29100@localhost</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">LM_LICENSE_FILE</span><span class="o">=</span>29100@172.25.64.1
+</span></span></code></pre></div><p>After loading the environment variables, the <code>abaqus cae</code> command can be started normally, and the license issue will no longer be prompted.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_8a6fa762eb3e6a42.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_acab6f0db7ae4d31.webp 640w, /post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_71089a8bfcbcf5cf.webp 960w, /post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_af1d4d640bf32d72.webp 1280w, /post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_b4488aba242f76ec.webp 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_d55c329c2fa80505.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_2bea91a58c8f0ff.jpg 640w, /post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_469122aeade8bcb9.jpg 960w, /post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_98b41cbaf27f39f3.jpg 1280w, /post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_2cb0b23093a346de.jpg 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/2025-03-21-15-16-50_hu_2bea91a58c8f0ff.jpg" width="1919" height="1332" alt="Screenshot 2025-03-21 15-16-50.png" title="Screenshot 2025-03-21 15-16-50.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>I have to admit that the Linux graphical interface is really not easy to use, but who cares? Anyway, I don&rsquo;t need to process models or grids under Linux, and I just submit calculations.</p>
+<h3 id="33-submit-cluster-calculation">3.3 Submit cluster calculation</h3>
+<p>The Slurm script of Abaqus<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> is as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash 
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --job-name=abaqus_test</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --partition=debug </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --output=%j.out </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --error=%j.err </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 1 </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --ntasks-per-node=32 </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$SLURM_SUBMIT_DIR</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> /home/***/opt/SIMULIA/simulia24.env <span class="c1"># Fill in the absolute path</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">INPFILE</span><span class="o">=</span><span class="sb">`</span>find . -name <span class="s2">&#34;*.inp&#34;</span><span class="sb">`</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ENVFILE</span><span class="o">=</span>/home/***/opt/SIMULIA/EstProducts/2024/linux_a64/SMA/site/abaqus_v6.env <span class="c1"># Fill in the absolute path</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Generate abaqus_6.env file and specify hosts</span>
+</span></span><span class="line"><span class="cl">rm -rf <span class="nv">$PWD</span>/abaqus_v6.env
+</span></span><span class="line"><span class="cl">cp <span class="nv">$ENVFILE</span> <span class="nv">$PWD</span>/abaqus_v6.env
+</span></span><span class="line"><span class="cl"><span class="nv">node_list</span><span class="o">=</span><span class="k">$(</span>scontrol show hostname <span class="si">${</span><span class="nv">SLURM_NODELIST</span><span class="si">}</span> <span class="p">|</span> sort -u<span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">mp_host_list</span><span class="o">=</span><span class="s2">&#34;[&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> host in <span class="si">${</span><span class="nv">node_list</span><span class="si">}</span><span class="p">;</span> <span class="k">do</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">mp_host_list</span><span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">mp_host_list</span><span class="si">}</span><span class="s2">[&#39;</span><span class="nv">$host</span><span class="s2">&#39;, </span><span class="si">${</span><span class="nv">SLURM_NTASKS_PER_NODE</span><span class="si">}</span><span class="s2">],&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">done</span>
+</span></span><span class="line"><span class="cl"><span class="nv">mp_host_list</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="si">${</span><span class="nv">mp_host_list</span><span class="si">}</span> <span class="p">|</span> sed -e <span class="s2">&#34;s/,</span>$<span class="s2">/]/&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;mp_host_list=</span><span class="si">${</span><span class="nv">mp_host_list</span><span class="si">}</span><span class="s2">&#34;</span>  &gt;&gt; <span class="nv">$PWD</span>/abaqus_v6.env
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create a Scratch Directory</span>
+</span></span><span class="line"><span class="cl">mkdir scratch.<span class="nv">$SLURM_JOB_ID</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">abaqus <span class="nv">job</span><span class="o">=</span><span class="nv">$SLURM_JOB_NAME</span> <span class="nv">input</span><span class="o">=</span><span class="nv">$INPFILE</span> <span class="nv">cpus</span><span class="o">=</span><span class="nv">$SLURM_NPROCS</span> <span class="nv">scratch</span><span class="o">=</span>scratch.<span class="nv">$SLURM_JOB_ID</span> <span class="nv">mp_mode</span><span class="o">=</span>mpi <span class="nv">double</span><span class="o">=</span>both <span class="nv">output_precision</span><span class="o">=</span>full <span class="nv">resultsformat</span><span class="o">=</span>odb int <span class="nv">ask</span><span class="o">=</span>off &gt; <span class="nv">$SLURM_JOB_NAME</span>.log
+</span></span><span class="line"><span class="cl">rm -rf <span class="nv">$PWD</span>/abaqus_v6.env scratch.<span class="nv">$SLURM_JOB_ID</span>
+</span></span></code></pre></div><p>Put the <code>inp</code> file and the script in the same folder and submit the script using the <code>sbatch</code> command. After the calculation is completed, download the results to your local computer and view the results using <code>Abaqus Viewer</code> or <code>Meta</code>.</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://github.com/franaudo/abaqus-ubuntu" target="_blank" rel="noopener">franaudo/abaqus-ubuntu </a>
+&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://github.com/abhpc/ABHPC-Guide/tree/master" target="_blank" rel="noopener">abhpc/ABHPC-Guide </a>
+&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Solver Verification Comparison - Laminar Flow Between Rotating and Static Concentric Cylinders :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="This paper uses different CFD solvers to verify the laminar flow problem. Verify the accuracy of each solver by listing the operating procedures and differences in the output results of different solvers.
+1. Problem description As shown in the figure below, a fixed-constant laminar flow model between two concentric cylinders is established. The flow is caused by the rotation of the inner cylinder at a constant angular velocity, while the outer cylinder remains stationary. Using periodic boundaries, only a portion of the basin needs to be modeled. The physical model and input data are shown in the following table.
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/post/2021-08-14-solver-verification-comparison/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Solver Verification Comparison - Laminar Flow Between Rotating and Static Concentric Cylinders">
+  <meta property="og:description" content="This paper uses different CFD solvers to verify the laminar flow problem. Verify the accuracy of each solver by listing the operating procedures and differences in the output results of different solvers.
+1. Problem description As shown in the figure below, a fixed-constant laminar flow model between two concentric cylinders is established. The flow is caused by the rotation of the inner cylinder at a constant angular velocity, while the outer cylinder remains stationary. Using periodic boundaries, only a portion of the basin needs to be modeled. The physical model and input data are shown in the following table.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2021-08-14T00:00:00+00:00">
+    <meta property="article:modified_time" content="2021-08-14T00:00:00+00:00">
+    <meta property="article:tag" content="Cfd">
+    <meta property="article:tag" content="Cfx">
+    <meta property="article:tag" content="Fluent">
+    <meta property="article:tag" content="Openfoam">
+    <meta property="article:tag" content="Star-Ccm&#43;">
+    <meta property="article:tag" content="Su2">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Solver Verification Comparison - Laminar Flow Between Rotating and Static Concentric Cylinders">
+  <meta name="twitter:description" content="This paper uses different CFD solvers to verify the laminar flow problem. Verify the accuracy of each solver by listing the operating procedures and differences in the output results of different solvers.
+1. Problem description As shown in the figure below, a fixed-constant laminar flow model between two concentric cylinders is established. The flow is caused by the rotation of the inner cylinder at a constant angular velocity, while the outer cylinder remains stationary. Using periodic boundaries, only a portion of the basin needs to be modeled. The physical model and input data are shown in the following table.">
+
+
+<link rel="canonical" href="https://andrewmoa.site/post/2021-08-14-solver-verification-comparison/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2021-08-14T00:00:00Z","datePublished":"2021-08-14T00:00:00Z","description":"This paper uses different CFD solvers to verify the laminar flow problem. Verify the accuracy of each solver by listing the operating procedures and differences in the output results of different solvers.\n1. Problem description As shown in the figure below, a fixed-constant laminar flow model between two concentric cylinders is established. The flow is caused by the rotation of the inner cylinder at a constant angular velocity, while the outer cylinder remains stationary. Using periodic boundaries, only a portion of the basin needs to be modeled. The physical model and input data are shown in the following table.\n","image":"/images/post-bg-tech.jpg","name":"Solver Verification Comparison - Laminar Flow Between Rotating and Static Concentric Cylinders","url":"https://andrewmoa.site/post/2021-08-14-solver-verification-comparison/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">Open main menu</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/post/" title="Post">Post</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/about/" title="About">About</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">Open language switcher</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">English</span>
+            </li>
+        
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/zh-cn/post/2021-08-14-solver-verification-comparison/" title="中文">中文</a></li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">Search</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="Toggle dark mode">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="Toggle dark mode">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/post/2021-08-14-solver-verification-comparison/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/post-bg-tech.jpg"
+      alt="Solver Verification Comparison - Laminar Flow Between Rotating and Static Concentric Cylinders" title="Solver Verification Comparison - Laminar Flow Between Rotating and Static Concentric Cylinders"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/post/2021-08-14-solver-verification-comparison/">Solver Verification Comparison - Laminar Flow Between Rotating and Static Concentric Cylinders</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/categories/zhihu/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Zhihu
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/tags/cfd/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cfd</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/cfx/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cfx</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/fluent/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Fluent</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/openfoam/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Openfoam</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/su2/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Su2</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2021-08-14T00:00:00&#43;00:00">
+      2021-08-14
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      16 minutes to read
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>Table of Contents</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-problem-description">1. Problem description</a></li>
+    <li><a href="#2-fluent-verification">2. Fluent verification</a>
+      <ul>
+        <li><a href="#21-solver-settings">2.1 Solver Settings</a></li>
+        <li><a href="#22-post-processing">2.2 Post-processing</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-cfx-verification">3. CFX verification</a>
+      <ul>
+        <li><a href="#31-solver-settings">3.1 Solver Settings</a></li>
+        <li><a href="#32-post-processing">3.2 Post-processing</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-star-ccm-verification">4. STAR-CCM+ Verification</a>
+      <ul>
+        <li><a href="#41-solver-settings">4.1 Solver Settings</a></li>
+        <li><a href="#42-post-processing">4.2 Post-processing</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-openfoam-verification">5. OpenFOAM Verification</a>
+      <ul>
+        <li><a href="#51-solver-settings">5.1 Solver Settings</a></li>
+        <li><a href="#52-post-processing">5.2 Post-processing</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-su2-verification">6. SU2 Verification</a>
+      <ul>
+        <li><a href="#61-solver-settings">6.1 Solver Settings</a></li>
+        <li><a href="#62-post-processing">6.2 Post-processing</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-summary">7. Summary</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>This paper uses different CFD solvers to verify the laminar flow problem. Verify the accuracy of each solver by listing the operating procedures and differences in the output results of different solvers.</p>
+<hr>
+<h2 id="1-problem-description">1. Problem description</h2>
+<p>As shown in the figure below, a fixed-constant laminar flow model between two concentric cylinders is established. The flow is caused by the rotation of the inner cylinder at a constant angular velocity, while the outer cylinder remains stationary. Using periodic boundaries, only a portion of the basin needs to be modeled. The physical model and input data are shown in the following table.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-1-1_hu_731890e9b1c01a3f.jpg" width="276" height="219" alt="20210814-1-1.png" title="20210814-1-1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<table>
+  <thead>
+      <tr>
+          <th>Source</th>
+          <th>Ansys Verification Study</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>References</td>
+          <td>F. M. White. Viscous Fluid Flow. Section 3-2.3. McGraw-Hill Book Co., Inc.. New York, NY. 1991.</td>
+      </tr>
+      <tr>
+          <td>Physical Model</td>
+          <td>Laminar Flow, Rotating Wall</td>
+      </tr>
+  </tbody>
+</table>
+<p>The fluid physical parameters, geometric dimensions and boundary conditions are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Features</th>
+          <th>Units</th>
+          <th>Parameters</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Fluid Density</td>
+          <td>kg/m^3</td>
+          <td>1.0</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Fluid Viscosity</td>
+          <td>kg/m-s</td>
+          <td>0.0002</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Inner Cylindrical Radius</td>
+          <td>mm</td>
+          <td>17.8</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">External Cylindrical Radius</td>
+          <td>mm</td>
+          <td>46.28</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Inner Cylindrical Speed ​​</td>
+          <td>rad/s</td>
+          <td>1.0</td>
+      </tr>
+  </tbody>
+</table>
+<p>The solver and input model used in this article are as follows.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Solver</th>
+          <th>Input Model</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Ansys Fluent 2020R2</td>
+          <td>VMFL001_rot_conc_cyl_2D.msh</td>
+      </tr>
+      <tr>
+          <td>Ansys CFX 2020R2</td>
+          <td>VMFL001_rot_conc_cyl_3D.msh</td>
+      </tr>
+      <tr>
+          <td>Siemens STAR-CCM+ 2020.2.1(15.04.010-R8)</td>
+          <td>VMFL001_rot_conc_cyl_2D.msh</td>
+      </tr>
+      <tr>
+          <td>OpenFOAM v2006</td>
+          <td>VMFL001_rot_conc_cyl_2D.msh</td>
+      </tr>
+      <tr>
+          <td>SU2 v7.1.1</td>
+          <td>VMFL001_rot_conc_cyl_2D.cgns</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="2-fluent-verification">2. Fluent verification</h2>
+<h3 id="21-solver-settings">2.1 Solver Settings</h3>
+<p>Open Fluent and select the 2D solver. The number of grids is small and only one processor core is running.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-1_hu_50f4970d2c6330cc.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-1_hu_90e252488235e24e.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-1_hu_3272b5f597fac16b.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-1_hu_d6bf97a9f47c466a.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-1_hu_d6bf97a9f47c466a.jpg" width="739" height="487" alt="20210814-2-1.png" title="20210814-2-1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Import the mesh model VMFL001_rot_conc_cyl_2D.msh as shown below.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-2_hu_e49a8f49dd002c80.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-2_hu_b397d4b62ba50455.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-2_hu_c75172866fdc9ea5.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-2_hu_d1ac150370414f87.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-2_hu_e1238b29df4f67a1.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-2_hu_8a2778e335ce75ac.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-2_hu_e1238b29df4f67a1.jpg" width="1263" height="626" alt="20210814-2-2.png" title="20210814-2-2.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Change the physical model and select Laminar flow.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-3_hu_b69006c91f396e24.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-3_hu_11f62816e806546d.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-3_hu_b757e939ede2e9bc.jpg" width="376" height="334" alt="20210814-2-3.png" title="20210814-2-3.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Change fluid parameters. Rename &ldquo;air&rdquo; to &ldquo;vmfl001&rdquo;, with a density of 1kg/m3, and a viscosity of 0.0002kg/m-s.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-4_hu_1521c1db2df3c3d6.jpg" width="256" height="199" alt="20210814-2-4.png" title="20210814-2-4.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-5_hu_d300efc7ae31afeb.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-5_hu_ede950f9c91f29f6.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-5_hu_680ec79dbb593215.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-5_hu_6df24001426cd91.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-5_hu_ee1bb48a67bac8bc.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-5_hu_b5b4763e6302b81a.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-5_hu_ee1bb48a67bac8bc.jpg" width="978" height="503" alt="20210814-2-5.png" title="20210814-2-5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>You can see that the imported periodic (id=10) and shadow_periodic (id=13) boundaries are not periodic boundaries, and you need to enter them in the command line window.<code>/mesh/modify-zones/make-periodic</code>Command, establish periodic boundaries.</p>
+<pre tabindex="0"><code>&gt; /mesh/modify-zones/make-periodic
+Periodic zone [()] 10
+Shadow zone [()] 13
+Rotationally periodic? (if no, translationally) [yes] yes
+Create periodic zones? [yes] yes
+</code></pre><p>Change the innerwall (id=11) boundary to the rotating wall, and set it as follows.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-6_hu_660063bb2561fefb.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-6_hu_96ae90304ded0d0.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-6_hu_998dc618b79f1f54.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-6_hu_4934e35e9ce6f184.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-6_hu_4934e35e9ce6f184.jpg" width="860" height="540" alt="20210814-2-6.png" title="20210814-2-6.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The solver selects SIMPLE as shown below.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-7_hu_ebc1398474b75045.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-7_hu_f55e22b7e00345c.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-7_hu_ed94095f2fd55aff.jpg" width="340" height="377" alt="20210814-2-7.png" title="20210814-2-7.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The convergence residual is changed to 1e-6 and initialized.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-8_hu_7e20129a1f4c600d.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-8_hu_b38ad9b0237a791c.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-8_hu_5ddf779cc97fc666.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-8_hu_c0e3b7dd83cbca75.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-8_hu_c0e3b7dd83cbca75.jpg" width="784" height="371" alt="20210814-2-8.png" title="20210814-2-8.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-9_hu_ee4f97b5f0667f15.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-9_hu_30bac6358ee78393.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-9_hu_592f5cc2cad4ee29.jpg" width="352" height="551" alt="20210814-2-9.png" title="20210814-2-9.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The number of iteration steps is 800, solve and save.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-10_hu_2daedb296119fbce.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-10_hu_4eff43027beda7df.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-10_hu_330f0fff74442d75.jpg" width="411" height="410" alt="20210814-2-10.png" title="20210814-2-10.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-11_hu_fe10f98679118726.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-11_hu_16fcd02709a1b4a3.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-11_hu_6705eaaf66a7580d.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-11_hu_8e372d24d5781b39.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-11_hu_205046213bc9a7c.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-11_hu_9b77acdb9005b198.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-11_hu_205046213bc9a7c.jpg" width="1124" height="626" alt="20210814-2-11.png" title="20210814-2-11.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="22-post-processing">2.2 Post-processing</h3>
+<p>Establish 4 points at a radius of 20~35mm, and the coordinates are shown in the table below.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>x (m)</th>
+          <th>y (m)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>point-1</td>
+          <td>0.02</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>point-2</td>
+          <td>0.025</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>point-3</td>
+          <td>0.03</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>point-4</td>
+          <td>0.035</td>
+          <td>0</td>
+      </tr>
+  </tbody>
+</table>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-12_hu_e22ec6dd83d507d4.jpg" width="202" height="380" alt="20210814-2-12.png" title="20210814-2-12.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-13_hu_b603dae466d6d79d.jpg" width="310" height="280" alt="20210814-2-13.png" title="20210814-2-13.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Outputs the tangential velocity of four points.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-14_hu_e63b5ebd20bd2cea.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-14_hu_793b7a9874a115a.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-14_hu_4b167eef105bd68c.jpg" width="638" height="544" alt="20210814-2-14.png" title="20210814-2-14.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Create a new horizontal straight line and output the tangential velocity distribution curve under different radii.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-15_hu_223825c39c018288.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-15_hu_c8a55d17c51d551c.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-15_hu_4f3915542d3e5e94.jpg" width="406" height="336" alt="20210814-2-15.png" title="20210814-2-15.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-16_hu_d33b2fddd497cdb5.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-16_hu_2831c084b3bdc66c.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-16_hu_a6c100c04586b7c3.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-16_hu_771d93c69b59a659.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-16_hu_771d93c69b59a659.jpg" width="740" height="397" alt="20210814-2-16.png" title="20210814-2-16.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-17_hu_1176deac58beccae.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-17_hu_e12b5ae2eb7c14cb.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-17_hu_3c462182ae44b0ea.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-17_hu_43517ec0e2da3d1b.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-17_hu_90eaa757f9339162.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-17_hu_c8f69caa4b602a17.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-17_hu_90eaa757f9339162.jpg" width="1124" height="626" alt="20210814-2-17.png" title="20210814-2-17.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Output curve point data to the file for later use.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-18_hu_4f9172571d623838.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-18_hu_813cbbb496ef6a9a.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-2-18_hu_a8dca30e09e52e6c.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-2-18_hu_741afbafb0fc8d4e.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-2-18_hu_741afbafb0fc8d4e.jpg" width="740" height="397" alt="20210814-2-18.png" title="20210814-2-18.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Comparison of the laminar flow equation and the error of Fluent calculation results.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Radius [mm]</th>
+          <th>Tangential velocity (theoretical value) [m/s]</th>
+          <th>Tangential velocity (Fluent simulation result) [m/s]</th>
+          <th>Error [%]</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>20</td>
+          <td>0.0151</td>
+          <td>0.015027723</td>
+          <td>0.48</td>
+      </tr>
+      <tr>
+          <td>25</td>
+          <td>0.0105</td>
+          <td>0.010464473</td>
+          <td>0.34</td>
+      </tr>
+      <tr>
+          <td>30</td>
+          <td>0.0072</td>
+          <td>0.0071237963</td>
+          <td>1.06</td>
+      </tr>
+      <tr>
+          <td>35</td>
+          <td>0.0046</td>
+          <td>0.0044973576</td>
+          <td>2.23</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="3-cfx-verification">3. CFX verification</h2>
+<h3 id="31-solver-settings">3.1 Solver Settings</h3>
+<p>Start CFX-Pre, create a new study, and import the fluent grid file VMFL001_rot_conc_cyl_3D.msh.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-1_hu_a8a31f0a7d22618c.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-1_hu_78e31734fc65fbe3.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-1_hu_a5e63afe14eb9631.webp 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-1_hu_46ff4e28e4c11559.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-1_hu_5e69176eb78967cf.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-1_hu_39a569e9ed6f2742.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-1_hu_8b9edc4b3fe47164.jpg 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-1_hu_943a7418bab3a978.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-1_hu_39a569e9ed6f2742.jpg" width="1471" height="735" alt="20210814-3-1.png" title="20210814-3-1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>New material, named &ldquo;vmfl001&rdquo;. Density 1 [kg m^-3], dynamic viscosity 0.0002 [Pa s].</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-2_hu_a3d78ced24b90c0d.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-2_hu_930db3915589b659.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-2_hu_b5bcb68f11b31786.jpg" width="422" height="417" alt="20210814-3-2.png" title="20210814-3-2.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Create a new fluid domain (Domain), name it FLUID, and select FLUID in the mesh area (Location). Material Select the newly created vmfl001. Turn off the heat transfer equation, and select None(Laminar) for the turbulence equation.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-3_hu_2229e3e90912460c.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-3_hu_eade21a6d705a599.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-3_hu_8cc40d62fe49c0b8.jpg" width="411" height="377" alt="20210814-3-3.png" title="20210814-3-3.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-4_hu_b09be0ebaab3d541.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-4_hu_8fe47934c08976b4.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-4_hu_8344e877050f218a.jpg" width="425" height="270" alt="20210814-3-4.png" title="20210814-3-4.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>A new boundary is created in this fluid domain, and the corresponding grid boundary is shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Fluid Boundaries</th>
+          <th>Grid Boundaries</th>
+          <th>Boundary Types</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>INNERWALL</td>
+          <td>INNERWALL</td>
+          <td>Wall</td>
+      </tr>
+      <tr>
+          <td>OUTERWALL</td>
+          <td>OUTERWALL</td>
+          <td>Wall</td>
+      </tr>
+      <tr>
+          <td>SYMM 1</td>
+          <td>SYMM 1</td>
+          <td>Symmetry</td>
+      </tr>
+      <tr>
+          <td>SYMM 2</td>
+          <td>SYMM 2</td>
+          <td>Symmetry</td>
+      </tr>
+  </tbody>
+</table>
+<p>Where INNERWALL is specified as the rotating wall, as shown in the figure below, the angular velocity is 1 [radian s^-1].</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-5_hu_f7878477fcf8c497.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-5_hu_f7395179dd64353a.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-5_hu_2ead257e62b803f4.jpg" width="428" height="249" alt="20210814-3-5.png" title="20210814-3-5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>New interfaces (Interfaces) are named PERIODIC, as shown in the figure below.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-6_hu_42d151d535bf5bbf.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-6_hu_48aa3f2fceb89fbe.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-6_hu_686c1997bb2ac840.jpg" width="421" height="350" alt="20210814-3-6.png" title="20210814-3-6.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Create a new global initialization (Global Initialization), confirm directly, and use the default value.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-7_hu_3d4be3679292f9fa.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-7_hu_eb0d8e9ee406bc8d.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-7_hu_305240b54d45e01e.jpg" width="425" height="242" alt="20210814-3-7.png" title="20210814-3-7.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Change Solver Control, change the maximum iteration steps to 1000, change the residual type to MAX, and change the convergence residual target to 1e-6.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-8_hu_1b8bce916597f63c.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-8_hu_64089942468edac5.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-8_hu_69ae13948a62128f.jpg" width="424" height="419" alt="20210814-3-8.png" title="20210814-3-8.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Save the study and output the .def file. Open CFS-Solver Manager to load the .def file, select double precision for solver type, and start solving.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-9_hu_b53e4b7b1a8d652.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-9_hu_c6c1d48f8a33620.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-9_hu_b91a5d18c011347a.jpg" width="409" height="290" alt="20210814-3-9.png" title="20210814-3-9.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>It was about 23 steps to converge.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-10_hu_971d99096b0e81dc.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-10_hu_92219e313f89b26a.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-10_hu_2b8fa886d07af956.jpg" width="578" height="627" alt="20210814-3-10.png" title="20210814-3-10.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="32-post-processing">3.2 Post-processing</h3>
+<p>Open CFD-Post and load the result file that was output after solving the solution. Create 4 points at a radius of 20~35mm, as shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>x (m)</th>
+          <th>y (m)</th>
+          <th>z (m)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Point 1</td>
+          <td>0.02</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>Point 2</td>
+          <td>0.025</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>Point 3</td>
+          <td>0.03</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>Point 4</td>
+          <td>0.035</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+  </tbody>
+</table>
+<p>Create the following 4 expressions (Expressions) and output the tangential velocity of 4 points.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Expression name</th>
+          <th>Expression definition</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>VelYOnPoint1</td>
+          <td>maxVal(Velocity v)@Point 1</td>
+      </tr>
+      <tr>
+          <td>VelYOnPoint2</td>
+          <td>maxVal(Velocity v)@Point 2</td>
+      </tr>
+      <tr>
+          <td>VelYOnPoint3</td>
+          <td>maxVal(Velocity v)@Point 3</td>
+      </tr>
+      <tr>
+          <td>VelYOnPoint4</td>
+          <td>maxVal(Velocity v)@Point 4</td>
+      </tr>
+  </tbody>
+</table>
+<p>Create a new Table and list the radius and speed of the 4 points.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-11_hu_345afc0f5bb2ddd2.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-11_hu_a0794e2d2af969ec.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-11_hu_a815e01fd747702f.jpg" width="337" height="243" alt="20210814-3-11.png" title="20210814-3-11.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Create a straight line &ldquo;Line 1&rdquo;, as shown in the figure below.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-12_hu_f8ae263479e212fd.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-12_hu_8630e5c1ee0db96a.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-12_hu_fb01a86deef2de3f.jpg" width="433" height="229" alt="20210814-3-12.png" title="20210814-3-12.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Create a chart (Chart), select the &ldquo;Location&rdquo; in &ldquo;Data Series&rdquo; and select the &ldquo;Line 1&rdquo; you just created, select &ldquo;X&rdquo; in &ldquo;X Axis&rdquo; and select &ldquo;Variable&rdquo; in &ldquo;Y Axis&rdquo; and select &ldquo;Velocity v&rdquo;. The output curve is shown in the figure below. Export curve data to a .csv file for later use.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-13_hu_e5c95ce4d9a3b5ca.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-13_hu_8f2cddfba9877931.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-13_hu_986abb1a39af7003.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-3-13_hu_ad0e3a282f871855.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-13_hu_8243ac948c655551.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-3-13_hu_3b5cba87533dc86b.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-3-13_hu_8243ac948c655551.jpg" width="1224" height="836" alt="20210814-3-13.png" title="20210814-3-13.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Comparison of laminar flow equation with the error of CFX calculation results.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Radius [mm]</th>
+          <th>Tangential velocity (theoretical value) [m/s]</th>
+          <th>Tangential velocity (CFX simulation result) [m/s]</th>
+          <th>Error [%]</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>20</td>
+          <td>0.0151</td>
+          <td>0.0150925</td>
+          <td>0.05</td>
+      </tr>
+      <tr>
+          <td>25</td>
+          <td>0.0105</td>
+          <td>0.0105287</td>
+          <td>0.27</td>
+      </tr>
+      <tr>
+          <td>30</td>
+          <td>0.0072</td>
+          <td>0.00718282</td>
+          <td>0.24</td>
+      </tr>
+      <tr>
+          <td>35</td>
+          <td>0.0046</td>
+          <td>0.00454726</td>
+          <td>1.15</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="4-star-ccm-verification">4. STAR-CCM+ Verification</h2>
+<h3 id="41-solver-settings">4.1 Solver Settings</h3>
+<p>Turn on STAR-CCM+. Since the number of meshes is small, the process option can be selected for serialization, and only one processor core is used for solving. Import the fluent grid file VMFL001_rot_conc_cyl_2D.msh.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-1_hu_3fd9e95f3b4bb652.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-1_hu_664489da74278b04.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-1_hu_9d862ccbe7b1c27c.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-1_hu_a139a91b6df5b8e8.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-1_hu_a139a91b6df5b8e8.jpg" width="866" height="624" alt="20210814-4-1.png" title="20210814-4-1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Select the solver physical model, as shown in the figure below.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-2_hu_6e501a149fd45537.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-2_hu_5d9e9021e94928e9.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-2_hu_38a6b1707c782304.jpg" width="327" height="619" alt="20210814-4-2.png" title="20210814-4-2.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The gas material &ldquo;Air&rdquo; was renamed to &ldquo;vmfl001&rdquo;, the density was modified to 1.0 kg/m^3, and the dynamic viscosity was modified to 2.0E-4 Pa-s.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-3_hu_945f7a052b31f921.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-3_hu_1b4db0370b391571.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-3_hu_b3015f74c4d45c4e.jpg" width="369" height="382" alt="20210814-4-3.png" title="20210814-4-3.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Expand &ldquo;FLUID-7&rdquo; in the fluid area, select the boundaries of &ldquo;PERIODIC&rdquo; and &ldquo;SHADOW_PERIODIC&rdquo; and right-click to create the interface. The newly created interface topology is changed to &ldquo;period&rdquo;, the period conversion is selected as &ldquo;rotate&rdquo; and the rotation axis is specified as &ldquo;specified axis&rdquo;, and the axis direction is &ldquo;[0.0, 0.0, 1.0]&rdquo;.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-4_hu_44fd20904ca86744.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-4_hu_e5b7f1cdd5fd9099.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-4_hu_769d506c4374e1db.jpg" width="368" height="328" alt="20210814-4-4.png" title="20210814-4-4.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Create a new rotational motion in &ldquo;Tools&rdquo; and &ldquo;Movement&rdquo;, with rotation axis direction [0.0, 0.0, 1.0], and rotation rate of 1.0 radian/s.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-5_hu_d948175034b60af7.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-5_hu_6d75599703914222.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-5_hu_9413116ebc1e9945.jpg" width="373" height="315" alt="20210814-4-5.png" title="20210814-4-5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Change the reference coordinate system specification option for INNERWALL boundary to &ldquo;Local reference coordinate system&rdquo;, and the boundary reference coordinate system specifies the coordinate system to select the newly created rotational motion.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-6_hu_4eca5e7351a2903f.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-6_hu_3e9874aee227ff1e.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-6_hu_b89ac607885bce98.jpg" width="375" height="336" alt="20210814-4-6.png" title="20210814-4-6.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The maximum number of iteration steps in the stop standard is 1000 by default, run the solution and save the study.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-7_hu_c020a89d9f5ddc1.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-7_hu_cbd97991bc04909d.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-7_hu_224a6500a4d874d9.webp 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-7_hu_5ad63ca6aeb40ba.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-7_hu_97ff3978f5caf663.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-7_hu_260318a0a38ec9c6.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-7_hu_6984a70b856aa311.jpg 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-7_hu_57a06c6f02289358.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-7_hu_260318a0a38ec9c6.jpg" width="1538" height="624" alt="20210814-4-7.png" title="20210814-4-7.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="42-post-processing">4.2 Post-processing</h3>
+<p>Create 4 new probe points in the derivative components, as shown in the table below.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-8_hu_f4c7d0f906c503a0.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-8_hu_8c61fafbed9bc44a.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-8_hu_8646f7b4f598a25c.jpg" width="501" height="392" alt="20210814-4-8.png" title="20210814-4-8.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>x (m)</th>
+          <th>y (m)</th>
+          <th>z (m)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>p1</td>
+          <td>0.02</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>p2</td>
+          <td>0.025</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>p3</td>
+          <td>0.03</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>p4</td>
+          <td>0.035</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+  </tbody>
+</table>
+<p>Similarly, a new isosurface &ldquo;y=0&rdquo; is created in the derivative components, as shown in the figure below.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-9_hu_9e117aff97c6b3d6.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-9_hu_1a3ee256df194a80.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-9_hu_403da3f69aa65f.jpg" width="361" height="312" alt="20210814-4-9.png" title="20210814-4-9.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Create a new &ldquo;XYZ internal table&rdquo; in &ldquo;Tools&rdquo; and &ldquo;Table&rdquo;, select &ldquo;[Velocity[j]]&rdquo; in the scalar, select the newly created four points of p1~p4 in the component, extract the email and then tabulate it, displaying the tangential velocity of the 4 points.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-10_hu_d6c97cc571a306b0.jpg" width="307" height="185" alt="20210814-4-10.png" title="20210814-4-10.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Create a new &ldquo;XY drawing&rdquo; in &ldquo;Drawing&rdquo;, select the newly created isosurface &ldquo;y=0&rdquo; for the component, and select the field function in &ldquo;Y type&rdquo; and &ldquo;Y Type 1&rdquo;. The curve diagram is as follows. Export curve data to a .csv file for later use.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-11_hu_a10d161e64b7e311.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-11_hu_e758154bd304c4e8.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-11_hu_538cee5f2b6b11d9.webp 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-11_hu_8097e52c995a0aca.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-4-11_hu_8b6cb84a3d7af3cf.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-11_hu_c205ba91ad61f816.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-11_hu_2aaee4d869dbb043.jpg 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-4-11_hu_21a8871b79e5c7e4.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-4-11_hu_c205ba91ad61f816.jpg" width="1538" height="624" alt="20210814-4-11.png" title="20210814-4-11.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Comparison of the laminar flow equation with the error of STAR-CCM+ calculation results.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Radius [mm]</th>
+          <th>Tangential velocity (theoretical value) [m/s]</th>
+          <th>Tangential velocity (STAR-CCM+simulation result) [m/s]</th>
+          <th>Error [%]</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>20</td>
+          <td>0.0151</td>
+          <td>0.0153266630659337</td>
+          <td>1.50</td>
+      </tr>
+      <tr>
+          <td>25</td>
+          <td>0.0105</td>
+          <td>0.0106689558311781</td>
+          <td>1.61</td>
+      </tr>
+      <tr>
+          <td>30</td>
+          <td>0.0072</td>
+          <td>0.00671828465572254</td>
+          <td>6.69</td>
+      </tr>
+      <tr>
+          <td>35</td>
+          <td>0.0046</td>
+          <td>0.004432094526565</td>
+          <td>3.65</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="5-openfoam-verification">5. OpenFOAM Verification</h2>
+<h3 id="51-solver-settings">5.1 Solver Settings</h3>
+<p>First, copy the simpleCar from the official case to the current directory and rename it to vmfl001. Here, MSYS2 is used as the command line interactive interface and execute the following commands.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> cp -r <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/simpleCar .
+</span></span><span class="line"><span class="cl"> mv simpleCar vmfl001
+</span></span><span class="line"><span class="cl"> <span class="nb">cd</span> vmfl001
+</span></span></code></pre></div><p>Copy the VMFL001_rot_conc_cyl_2D.msh file into the vmfl001 folder and execute the following command to convert the fluent grid to an OpenFOAM grid.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">fluentMeshToFoam VMFL001_rot_conc_cyl_2D.msh
+</span></span></code></pre></div><p>Open the constant/polyMesh/boundary file, modify it as follows, change the boundaries of &ldquo;PERIODIC&rdquo; and &ldquo;SHADOW_PERIODIC&rdquo; from the wall to the periodic boundary.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">FoamFile</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">version</span>     <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">format</span>      <span class="n">ascii</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">class</span>       <span class="nc">polyBoundaryMesh</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">location</span>    <span class="s">&#34;constant/polyMesh&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">object</span>      <span class="n">boundary</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="mi">5</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PERIODIC</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">cyclicAMI</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">inGroups</span>        <span class="mi">1</span><span class="p">(</span><span class="n">wall</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">nFaces</span>          <span class="mi">20</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">startFace</span>       <span class="mi">2320</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">matchTolerance</span>  <span class="mf">0.0001</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">transform</span>       <span class="n">rotational</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rotationAxis</span>    <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rotationCentre</span>  <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">neighbourPatch</span>  <span class="n">SHADOW_PERIODIC</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">INNERWALL</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">wall</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">inGroups</span>        <span class="mi">1</span><span class="p">(</span><span class="n">wall</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">nFaces</span>          <span class="mi">60</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">startFace</span>       <span class="mi">2340</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">OUTERWALL</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">wall</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">inGroups</span>        <span class="mi">1</span><span class="p">(</span><span class="n">wall</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">nFaces</span>          <span class="mi">60</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">startFace</span>       <span class="mi">2400</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SHADOW_PERIODIC</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">cyclicAMI</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">inGroups</span>        <span class="mi">1</span><span class="p">(</span><span class="n">wall</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">nFaces</span>          <span class="mi">20</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">startFace</span>       <span class="mi">2460</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">matchTolerance</span>  <span class="mf">0.0001</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">transform</span>       <span class="n">rotational</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rotationAxis</span>    <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rotationCentre</span>  <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">neighbourPatch</span>  <span class="n">PERIODIC</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">frontAndBackPlanes</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">empty</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">inGroups</span>        <span class="mi">1</span><span class="p">(</span><span class="n">empty</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">nFaces</span>          <span class="mi">2400</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">startFace</span>       <span class="mi">2480</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><p>Delete the &ldquo;Allrun&rdquo; file in the vmfl001 directory. Delete &ldquo;epsilon&rdquo;, &ldquo;k&rdquo; and &ldquo;nut&rdquo; in the vmfl001/0 directory, and only &ldquo;p&rdquo; and &ldquo;U&rdquo; are retained.</p>
+<p>Modify the &ldquo;p&rdquo; file as follows.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">FoamFile</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">version</span>     <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">format</span>      <span class="n">ascii</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">class</span>       <span class="nc">volScalarField</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">object</span>      <span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">dimensions</span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">2</span> <span class="o">-</span><span class="mi">2</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="n">internalField</span>   <span class="n">uniform</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">boundaryField</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;(INNERWALL|OUTERWALL)&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">zeroGradient</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">frontAndBackPlanes</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">empty</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;(PERIODIC|SHADOW_PERIODIC)&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">cyclicAMI</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">value</span>           <span class="err">$</span><span class="n">internalField</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Modify the &ldquo;U&rdquo; file as follows.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">FoamFile</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">version</span>     <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">format</span>      <span class="n">ascii</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">class</span>       <span class="nc">volVectorField</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">object</span>      <span class="n">U</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">dimensions</span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="o">-</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="n">internalField</span>   <span class="nf">uniform</span> <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">boundaryField</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">INNERWALL</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">rotatingWallVelocity</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">axis</span>            <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">origin</span>          <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">omega</span>           <span class="n">constant</span> <span class="mf">1.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">value</span>           <span class="nf">uniform</span> <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">OUTERWALL</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">noSlip</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">frontAndBackPlanes</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">empty</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;(PERIODIC|SHADOW_PERIODIC)&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">type</span>            <span class="n">cyclicAMI</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">value</span>           <span class="err">$</span><span class="n">internalField</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Execute the following command to check the grid boundary condition settings.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">checkMesh
+</span></span></code></pre></div><p>Modify the &ldquo;transportProperties&rdquo; file in the constant directory and change the nu value to 0.0002.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">FoamFile</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">version</span>     <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">format</span>      <span class="n">ascii</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">class</span>       <span class="nc">dictionary</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">location</span>    <span class="s">&#34;constant&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">object</span>      <span class="n">transportProperties</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">transportModel</span>  <span class="n">Newtonian</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">nu</span>              <span class="mf">0.0002</span><span class="p">;</span>
+</span></span></code></pre></div><p>Modify the &ldquo;turbulenceProperties&rdquo; file in the constant directory and adopt the laminar flow model.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">FoamFile</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">version</span>     <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">format</span>      <span class="n">ascii</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">class</span>       <span class="nc">dictionary</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">object</span>      <span class="n">turbulenceProperties</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">simulationType</span> <span class="n">laminar</span><span class="p">;</span>
+</span></span></code></pre></div><p>In the system directory, only the three files &ldquo;controlDict&rdquo;, &ldquo;fvSchemes&rdquo; and &ldquo;fvSolution&rdquo; are retained, and all the others are deleted.</p>
+<p>Modify the &ldquo;controlDict&rdquo; file as follows, solve the simpleFoam program, start the solution from the last step of saving, the iteration steps are 1,000, and the solution result is written every 100 steps.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">FoamFile</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">version</span>     <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">format</span>      <span class="n">ascii</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">class</span>       <span class="nc">dictionary</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">location</span>    <span class="s">&#34;system&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">object</span>      <span class="n">controlDict</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">application</span>     <span class="n">simpleFoam</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">startFrom</span>       <span class="n">latestTime</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">startTime</span>       <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">stopAt</span>          <span class="n">endTime</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">endTime</span>         <span class="mi">1000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">deltaT</span>          <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">writeControl</span>    <span class="n">timeStep</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">writeInterval</span>   <span class="mi">100</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">purgeWrite</span>      <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">writeFormat</span>     <span class="n">ascii</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">writePrecision</span>  <span class="mi">8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">writeCompression</span> <span class="n">off</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">timeFormat</span>      <span class="n">general</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">timePrecision</span>   <span class="mi">8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">runTimeModifiable</span> <span class="nb">true</span><span class="p">;</span>
+</span></span></code></pre></div><p>Modify the &ldquo;fvSolution&rdquo; file as follows.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">FoamFile</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">version</span>     <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">format</span>      <span class="n">ascii</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">class</span>       <span class="nc">dictionary</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">location</span>    <span class="s">&#34;system&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">object</span>      <span class="n">fvSolution</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">solvers</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">solver</span>          <span class="n">GAMG</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">smoother</span>        <span class="n">GaussSeidel</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tolerance</span>       <span class="mf">1e-08</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">relTol</span>          <span class="mf">0.01</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">U</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">solver</span>          <span class="n">smoothSolver</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">smoother</span>        <span class="n">symGaussSeidel</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tolerance</span>       <span class="mf">1e-08</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">relTol</span>          <span class="mf">0.01</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">SIMPLE</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">nNonOrthogonalCorrectors</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">residualControl</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">p</span>               <span class="mf">1e-8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">U</span>               <span class="mf">1e-8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pRefCell</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pRefValue</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">relaxationFactors</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fields</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">p</span>               <span class="mf">0.3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">equations</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">U</span>               <span class="mf">0.7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Return to the vmfl001 directory, execute the following command (if the tee command is used in Windows, it can be executed in Powershell), run the solution and record the output of the solution process.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">simpleFoam <span class="p">|</span> tee simpleFoam.log
+</span></span></code></pre></div><h3 id="52-post-processing">5.2 Post-processing</h3>
+<p>It can be used directly under Linux<code>paraFoam</code>Start ParaView for post-processing. Run the following command in Windows to generate a .foam file in the vmfl001 directory, and use ParaView to open the .foam file to load the solution result of OpenFOAM.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">echo</span> . &gt; vmfl001.foam
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-1_hu_b49de5c6f766c28a.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-1_hu_60a5d488cb2f2e53.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-1_hu_78b83a74bf0043ae.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-1_hu_ca15c170a42f7a7a.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-1_hu_cf20a0cf6ec9e739.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-1_hu_6be786e6aa13ae8b.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-5-1_hu_cf20a0cf6ec9e739.jpg" width="1154" height="794" alt="20210814-5-1.png" title="20210814-5-1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Based on vmfl001.foam, 4 new &ldquo;Probe Locations&rdquo; are created to extract the tangential speed at 20~35mm.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-2_hu_9cb909eb8c5b348a.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-2_hu_acbb33b25727655e.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-2_hu_37bb6f69e5ebb5c.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-2_hu_2a0e78e012896034.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-5-2_hu_2a0e78e012896034.jpg" width="730" height="630" alt="20210814-5-2.png" title="20210814-5-2.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Center</th>
+          <th>Radius</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>ProbeLocation1</td>
+          <td>(0.020,0,0)</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>ProbeLocation2</td>
+          <td>(0.025,0,0)</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>ProbeLocation3</td>
+          <td>(0.030,0,0)</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>ProbeLocation4</td>
+          <td>(0.035,0,0)</td>
+          <td>0</td>
+      </tr>
+  </tbody>
+</table>
+<p>Create a new GroupDatasets, including the above 4 ProbeLocations.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-3_hu_cb651d2915f2caab.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-3_hu_1a8f25d9b6557a80.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-3_hu_651327a144720429.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-3_hu_3859176bd9b5c8a5.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-5-3_hu_3859176bd9b5c8a5.jpg" width="650" height="427" alt="20210814-5-3.png" title="20210814-5-3.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Select the GroupDatasets to see the tangential velocity values ​​of the 4 point positions in the &ldquo;SpreadSheetView&rdquo; window on the right.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-4_hu_3905be10c2056648.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-4_hu_cd0a8c12bf71af9c.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-4_hu_6508a4d3b2782494.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-4_hu_22b7329efe8fd8d1.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-5-4_hu_22b7329efe8fd8d1.jpg" width="959" height="269" alt="20210814-5-4.png" title="20210814-5-4.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Based on vmfl001.foam, create a &ldquo;PlotOnIntersectionCurves&rdquo; drawing.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-5_hu_60bc1f9c7287a8ab.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-5_hu_26c9ab8f866eb9c5.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-5_hu_5a7bab25b7df4eba.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-5_hu_2cfadc2eaa9922d3.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-5-5_hu_2cfadc2eaa9922d3.jpg" width="778" height="658" alt="20210814-5-5.png" title="20210814-5-5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Select the Y-axis forward direction in the plane direction, as shown in the figure.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-6_hu_e0854d6c065332a4.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-6_hu_f87bef6aea011581.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-5-6_hu_1a83ad430f72f85a.jpg" width="373" height="366" alt="20210814-5-6.png" title="20210814-5-6.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Select &ldquo;Points_X&rdquo; for the X-axis display variable, and select &ldquo;U_Y&rdquo; for the Y-axis display variable, as shown in the figure.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-7_hu_bc3ec7c47075e2c9.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-7_hu_62bb7a653c266ade.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-5-7_hu_988be38b4b764cb8.jpg" width="370" height="453" alt="20210814-5-7.png" title="20210814-5-7.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The resulting curve can be viewed in the &ldquo;LineChartView&rdquo; window on the right.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-8_hu_3dbedf71d3475684.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-8_hu_b34c99a2dcb4f810.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-8_hu_6127847c2b7fc5a5.webp 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-8_hu_e7e6b6cb37293102.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-5-8_hu_ea9b007d1a34098b.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-8_hu_fb62f0df7d0ba521.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-8_hu_9fce2a2b81b60865.jpg 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-5-8_hu_9317ee827b0ec174.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-5-8_hu_fb62f0df7d0ba521.jpg" width="1519" height="792" alt="20210814-5-8.png" title="20210814-5-8.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Select &ldquo;File&rdquo; and &ldquo;Export Scene&rdquo; to export curve data to the csv file.</p>
+<p>Comparison of the laminar flow equation and the error of OpenFOAM calculation results.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Radius [mm]</th>
+          <th>Tangential velocity (theoretical value) [m/s]</th>
+          <th>Tangential velocity (OpenFOAM simulation result) [m/s]</th>
+          <th>Error [%]</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>20</td>
+          <td>0.0151</td>
+          <td>0.0150</td>
+          <td>0.66</td>
+      </tr>
+      <tr>
+          <td>25</td>
+          <td>0.0105</td>
+          <td>0.0104366</td>
+          <td>0.60</td>
+      </tr>
+      <tr>
+          <td>30</td>
+          <td>0.0072</td>
+          <td>0.00712633</td>
+          <td>1.02</td>
+      </tr>
+      <tr>
+          <td>35</td>
+          <td>0.0046</td>
+          <td>0.00452779</td>
+          <td>1.57</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="6-su2-verification">6. SU2 Verification</h2>
+<h3 id="61-solver-settings">6.1 Solver Settings</h3>
+<p>The content of the SU2 solver configuration file vmfl001.cfg is as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="cl"><span class="na">% ------------- DIRECT, ADJOINT, AND LINEARIZED PROBLEM DEFINITION ------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Physical governing equations (EULER, NAVIER_STOKES,</span>
+</span></span><span class="line"><span class="cl"><span class="na">%                               WAVE_EQUATION, HEAT_EQUATION, FEM_ELASTICITY,</span>
+</span></span><span class="line"><span class="cl"><span class="na">%                               POISSON_EQUATION)</span>
+</span></span><span class="line"><span class="cl"><span class="na">SOLVER</span><span class="o">=</span> <span class="s">INC_NAVIER_STOKES</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Specify turbulence model (NONE, SA)</span>
+</span></span><span class="line"><span class="cl"><span class="na">KIND_TURB_MODEL</span><span class="o">=</span> <span class="s">NONE</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Mathematical problem (DIRECT, CONTINUOUS_ADJOINT)</span>
+</span></span><span class="line"><span class="cl"><span class="na">MATH_PROBLEM</span><span class="o">=</span> <span class="s">DIRECT</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Restart solution (NO, YES)</span>
+</span></span><span class="line"><span class="cl"><span class="na">RESTART_SOL</span><span class="o">=</span> <span class="s">NO</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% ---------------- INCOMPRESSIBLE FLOW CONDITION DEFINITION -------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Density model within the incompressible flow solver.</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Options are CONSTANT (default), BOUSSINESQ, or VARIABLE. If VARIABLE,</span>
+</span></span><span class="line"><span class="cl"><span class="na">% an appropriate fluid model must be selected.</span>
+</span></span><span class="line"><span class="cl"><span class="na">INC_DENSITY_MODEL</span><span class="o">=</span> <span class="s">CONSTANT</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Solve the energy equation in the incompressible flow solver</span>
+</span></span><span class="line"><span class="cl"><span class="na">INC_ENERGY_EQUATION</span> <span class="o">=</span> <span class="s">YES</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Initial density for incompressible flows (1.2886 kg/m^3 by default)</span>
+</span></span><span class="line"><span class="cl"><span class="na">INC_DENSITY_INIT</span><span class="o">=</span> <span class="s">1.0</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Initial temperature for incompressible flows that include the</span>
+</span></span><span class="line"><span class="cl"><span class="na">% energy equation (288.15 K by default). Value is ignored if</span>
+</span></span><span class="line"><span class="cl"><span class="na">% INC_ENERGY_EQUATION is false.</span>
+</span></span><span class="line"><span class="cl"><span class="na">INC_TEMPERATURE_INIT</span><span class="o">=</span> <span class="s">293.15</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Initial velocity for incompressible flows (1.0,0,0 m/s by default)</span>
+</span></span><span class="line"><span class="cl"><span class="na">INC_VELOCITY_INIT</span><span class="o">=</span> <span class="s">( 1.0, 0.0, 0.0 )</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% ---- IDEAL GAS, POLYTROPIC, VAN DER WAALS AND PENG ROBINSON CONSTANTS -------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Fluid model (STANDARD_AIR, IDEAL_GAS, VW_GAS, PR_GAS, </span>
+</span></span><span class="line"><span class="cl"><span class="na">%              CONSTANT_DENSITY, INC_IDEAL_GAS)</span>
+</span></span><span class="line"><span class="cl"><span class="na">FLUID_MODEL</span><span class="o">=</span> <span class="s">CONSTANT_DENSITY</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Specific heat at constant pressure, Cp (1004.703 J/kg*K (air)).</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Incompressible fluids with energy eqn. only (CONSTANT_DENSITY, INC_IDEAL_GAS).</span>
+</span></span><span class="line"><span class="cl"><span class="na">SPECIFIC_HEAT_CP</span><span class="o">=</span> <span class="s">1004.703</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% --------------------------- VISCOSITY MODEL ---------------------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Viscosity model (SUTHERLAND, CONSTANT_VISCOSITY).</span>
+</span></span><span class="line"><span class="cl"><span class="na">VISCOSITY_MODEL</span><span class="o">=</span> <span class="s">CONSTANT_VISCOSITY</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Molecular Viscosity that would be constant (1.716E-5 by default)</span>
+</span></span><span class="line"><span class="cl"><span class="na">MU_CONSTANT</span><span class="o">=</span> <span class="s">0.0002</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% --------------------------- THERMAL CONDUCTIVITY MODEL ----------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Conductivity model (CONSTANT_CONDUCTIVITY, CONSTANT_PRANDTL).</span>
+</span></span><span class="line"><span class="cl"><span class="na">CONDUCTIVITY_MODEL</span><span class="o">=</span> <span class="s">CONSTANT_PRANDTL</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Laminar Prandtl number (0.72 (air), only for CONSTANT_PRANDTL)</span>
+</span></span><span class="line"><span class="cl"><span class="na">PRANDTL_LAM</span><span class="o">=</span> <span class="s">0.72</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Turbulent Prandtl number (0.9 (air), only for CONSTANT_PRANDTL)</span>
+</span></span><span class="line"><span class="cl"><span class="na">PRANDTL_TURB</span><span class="o">=</span> <span class="s">0.90</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% ---------------------- REFERENCE VALUE DEFINITION ---------------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Reference origin for moment computation</span>
+</span></span><span class="line"><span class="cl"><span class="na">REF_ORIGIN_MOMENT_X</span> <span class="o">=</span> <span class="s">0.25</span>
+</span></span><span class="line"><span class="cl"><span class="na">REF_ORIGIN_MOMENT_Y</span> <span class="o">=</span> <span class="s">0.00</span>
+</span></span><span class="line"><span class="cl"><span class="na">REF_ORIGIN_MOMENT_Z</span> <span class="o">=</span> <span class="s">0.00</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Reference length for pitching, rolling, and yawing non-dimensional moment</span>
+</span></span><span class="line"><span class="cl"><span class="na">REF_LENGTH</span><span class="o">=</span> <span class="s">1.0</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Reference area for force coefficients (0 implies automatic calculation)</span>
+</span></span><span class="line"><span class="cl"><span class="na">REF_AREA</span><span class="o">=</span> <span class="s">1.0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% ----------------------- DYNAMIC MESH DEFINITION -----------------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Type of dynamic surface movement (NONE, DEFORMING,</span>
+</span></span><span class="line"><span class="cl"><span class="na">%                       MOVING_WALL, FLUID_STRUCTURE, FLUID_STRUCTURE_STATIC,</span>
+</span></span><span class="line"><span class="cl"><span class="na">%                       AEROELASTIC, EXTERNAL, EXTERNAL_ROTATION,</span>
+</span></span><span class="line"><span class="cl"><span class="na">%                       AEROELASTIC_RIGID_MOTION)</span>
+</span></span><span class="line"><span class="cl"><span class="na">SURFACE_MOVEMENT</span><span class="o">=</span> <span class="s">MOVING_WALL</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Moving wall boundary marker(s) (NONE</span> <span class="o">=</span> <span class="s">no marker, ignored for RIGID_MOTION)</span>
+</span></span><span class="line"><span class="cl"><span class="na">MARKER_MOVING</span><span class="o">=</span> <span class="s">( INNERWALL )</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Coordinates of the motion origin</span>
+</span></span><span class="line"><span class="cl"><span class="na">SURFACE_MOTION_ORIGIN</span><span class="o">=</span> <span class="s">0.0 0.0 0.0</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Angular velocity vector (rad/s) about the motion origin</span>
+</span></span><span class="line"><span class="cl"><span class="na">SURFACE_ROTATION_RATE</span> <span class="o">=</span> <span class="s">0.0 0.0 1.0</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% -------------------- BOUNDARY CONDITION DEFINITION --------------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Navier-Stokes (no-slip), constant heat flux wall  marker(s) (NONE</span> <span class="o">=</span> <span class="s">no marker)</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Format: ( marker name, constant heat flux (J/m^2), ... )</span>
+</span></span><span class="line"><span class="cl"><span class="na">MARKER_HEATFLUX</span><span class="o">=</span> <span class="s">( OUTERWALL, 0.0 )</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Navier-Stokes (no-slip), isothermal wall marker(s) (NONE</span> <span class="o">=</span> <span class="s">no marker)</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Format: ( marker name, constant wall temperature (K), ... )</span>
+</span></span><span class="line"><span class="cl"><span class="na">MARKER_ISOTHERMAL</span><span class="o">=</span> <span class="s">( INNERWALL, 313.15 )</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Periodic boundary marker(s) (NONE</span> <span class="o">=</span> <span class="s">no marker)</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Format: ( periodic marker, donor marker, rotation_center_x, rotation_center_y,</span>
+</span></span><span class="line"><span class="cl"><span class="na">% rotation_center_z, rotation_angle_x-axis, rotation_angle_y-axis,</span>
+</span></span><span class="line"><span class="cl"><span class="na">% rotation_angle_z-axis, translation_x, translation_y, translation_z, ... )</span>
+</span></span><span class="line"><span class="cl"><span class="na">% MARKER_PERIODIC</span><span class="o">=</span> <span class="s">( PERIODIC, SHADOW_PERIODIC, 0, 0, 0, 0, 0, 180, 0, 0, 0 )</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Marker(s) of the surface to be plotted or designed</span>
+</span></span><span class="line"><span class="cl"><span class="na">MARKER_PLOTTING</span><span class="o">=</span> <span class="s">( INNERWALL, OUTERWALL )</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Marker(s) of the surface where the functional (Cd, Cl, etc.) will be evaluated</span>
+</span></span><span class="line"><span class="cl"><span class="na">MARKER_MONITORING</span><span class="o">=</span> <span class="s">( NONE )</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% ------------- COMMON PARAMETERS DEFINING THE NUMERICAL METHOD ---------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Numerical method for spatial gradients (GREEN_GAUSS, WEIGHTED_LEAST_SQUARES)</span>
+</span></span><span class="line"><span class="cl"><span class="na">NUM_METHOD_GRAD</span><span class="o">=</span> <span class="s">WEIGHTED_LEAST_SQUARES</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Courant-Friedrichs-Lewy condition of the finest grid</span>
+</span></span><span class="line"><span class="cl"><span class="na">CFL_NUMBER</span><span class="o">=</span> <span class="s">15.0</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Adaptive CFL number (NO, YES)</span>
+</span></span><span class="line"><span class="cl"><span class="na">CFL_ADAPT</span><span class="o">=</span> <span class="s">YES</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Parameters of the adaptive CFL number (factor down, factor up, CFL min value,</span>
+</span></span><span class="line"><span class="cl"><span class="na">%                                        CFL max value )</span>
+</span></span><span class="line"><span class="cl"><span class="na">CFL_ADAPT_PARAM</span><span class="o">=</span> <span class="s">( 0.1, 2.0, 1.0, 1e10 )</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Number of total iterations</span>
+</span></span><span class="line"><span class="cl"><span class="na">ITER</span><span class="o">=</span> <span class="s">10000</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% ------------------------ LINEAR SOLVER DEFINITION ---------------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Linear solver for the implicit (or discrete adjoint) formulation (BCGSTAB, FGMRES)</span>
+</span></span><span class="line"><span class="cl"><span class="na">LINEAR_SOLVER</span><span class="o">=</span> <span class="s">FGMRES</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Preconditioner of the Krylov linear solver (JACOBI, LINELET, LU_SGS)</span>
+</span></span><span class="line"><span class="cl"><span class="na">LINEAR_SOLVER_PREC</span><span class="o">=</span> <span class="s">ILU</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Linael solver ILU preconditioner fill-in level (0 by default)</span>
+</span></span><span class="line"><span class="cl"><span class="na">LINEAR_SOLVER_ILU_FILL_IN</span><span class="o">=</span> <span class="s">0</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Min error of the linear solver for the implicit formulation</span>
+</span></span><span class="line"><span class="cl"><span class="na">LINEAR_SOLVER_ERROR</span><span class="o">=</span> <span class="s">1E-14</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Max number of iterations of the linear solver for the implicit formulation</span>
+</span></span><span class="line"><span class="cl"><span class="na">LINEAR_SOLVER_ITER</span><span class="o">=</span> <span class="s">25</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% -------------------------- MULTIGRID PARAMETERS -----------------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Multi-Grid Levels (0</span> <span class="o">=</span> <span class="s">no multi-grid)</span>
+</span></span><span class="line"><span class="cl"><span class="na">MGLEVEL</span><span class="o">=</span> <span class="s">0</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Multi-grid cycle (V_CYCLE, W_CYCLE, FULLMG_CYCLE)</span>
+</span></span><span class="line"><span class="cl"><span class="na">MGCYCLE</span><span class="o">=</span> <span class="s">W_CYCLE</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Multi-grid pre-smoothing level</span>
+</span></span><span class="line"><span class="cl"><span class="na">MG_PRE_SMOOTH</span><span class="o">=</span> <span class="s">( 1, 2, 3, 3 )</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Multi-grid post-smoothing level</span>
+</span></span><span class="line"><span class="cl"><span class="na">MG_POST_SMOOTH</span><span class="o">=</span> <span class="s">( 0, 0, 0, 0 )</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Jacobi implicit smoothing of the correction</span>
+</span></span><span class="line"><span class="cl"><span class="na">MG_CORRECTION_SMOOTH</span><span class="o">=</span> <span class="s">( 0, 0, 0, 0 )</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Damping factor for the residual restriction</span>
+</span></span><span class="line"><span class="cl"><span class="na">MG_DAMP_RESTRICTION</span><span class="o">=</span> <span class="s">0.8</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Damping factor for the correction prolongation</span>
+</span></span><span class="line"><span class="cl"><span class="na">MG_DAMP_PROLONGATION</span><span class="o">=</span> <span class="s">0.8</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% -------------------- FLOW NUMERICAL METHOD DEFINITION -----------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Convective numerical method (JST, LAX-FRIEDRICH, CUSP, ROE, AUSM, HLLC,</span>
+</span></span><span class="line"><span class="cl"><span class="na">%                              TURKEL_PREC, MSW)</span>
+</span></span><span class="line"><span class="cl"><span class="na">CONV_NUM_METHOD_FLOW</span><span class="o">=</span> <span class="s">FDS</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Monotonic Upwind Scheme for Conservation Laws (TVD) in the flow equations.</span>
+</span></span><span class="line"><span class="cl"><span class="na">%           Required for 2nd order upwind schemes (NO, YES)</span>
+</span></span><span class="line"><span class="cl"><span class="na">MUSCL_FLOW</span><span class="o">=</span> <span class="s">YES</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Slope limiter (NONE, VENKATAKRISHNAN, VENKATAKRISHNAN_WANG,</span>
+</span></span><span class="line"><span class="cl"><span class="na">%                BARTH_JESPERSEN, VAN_ALBADA_EDGE)</span>
+</span></span><span class="line"><span class="cl"><span class="na">SLOPE_LIMITER_FLOW</span><span class="o">=</span> <span class="s">NONE</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Coefficient for the Venkat&#39;s limiter (upwind scheme). A larger values decrease</span>
+</span></span><span class="line"><span class="cl"><span class="na">%             the extent of limiting, values approaching zero cause</span>
+</span></span><span class="line"><span class="cl"><span class="na">%             lower-order approximation to the solution (0.05 by default)</span>
+</span></span><span class="line"><span class="cl"><span class="na">VENKAT_LIMITER_COEFF</span><span class="o">=</span> <span class="s">0.05</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Time discretization (RUNGE-KUTTA_EXPLICIT, EULER_IMPLICIT, EULER_EXPLICIT)</span>
+</span></span><span class="line"><span class="cl"><span class="na">TIME_DISCRE_FLOW</span><span class="o">=</span> <span class="s">EULER_IMPLICIT</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% --------------------------- CONVERGENCE PARAMETERS --------------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Convergence criteria (CAUCHY, RESIDUAL)</span>
+</span></span><span class="line"><span class="cl"><span class="na">CONV_CRITERIA</span><span class="o">=</span> <span class="s">RESIDUAL</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Min value of the residual (log10 of the residual)</span>
+</span></span><span class="line"><span class="cl"><span class="na">CONV_RESIDUAL_MINVAL</span><span class="o">=</span> <span class="s">-14</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Start convergence criteria at iteration number</span>
+</span></span><span class="line"><span class="cl"><span class="na">CONV_STARTITER</span><span class="o">=</span> <span class="s">10</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Number of elements to apply the criteria</span>
+</span></span><span class="line"><span class="cl"><span class="na">CONV_CAUCHY_ELEMS</span><span class="o">=</span> <span class="s">100</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Epsilon to control the series convergence</span>
+</span></span><span class="line"><span class="cl"><span class="na">CONV_CAUCHY_EPS</span><span class="o">=</span> <span class="s">1E-14</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">% ------------------------- INPUT/OUTPUT INFORMATION --------------------------%</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Mesh input file</span>
+</span></span><span class="line"><span class="cl"><span class="na">MESH_FILENAME</span><span class="o">=</span> <span class="s">VMFL001_rot_conc_cyl_2D.cgns</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Mesh input file format (SU2, CGNS, NETCDF_ASCII)</span>
+</span></span><span class="line"><span class="cl"><span class="na">MESH_FORMAT</span><span class="o">=</span> <span class="s">CGNS</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Mesh output file</span>
+</span></span><span class="line"><span class="cl"><span class="na">MESH_OUT_FILENAME</span><span class="o">=</span> <span class="s">mesh_out.cgns</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Restart flow input file</span>
+</span></span><span class="line"><span class="cl"><span class="na">SOLUTION_FILENAME</span><span class="o">=</span> <span class="s">solution_flow.dat</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Restart adjoint input file</span>
+</span></span><span class="line"><span class="cl"><span class="na">SOLUTION_ADJ_FILENAME</span><span class="o">=</span> <span class="s">solution_adj.dat</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Output file format (PARAVIEW, TECPLOT, STL)</span>
+</span></span><span class="line"><span class="cl"><span class="na">TABULAR_FORMAT</span><span class="o">=</span> <span class="s">CSV</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Output file convergence history (w/o extension) </span>
+</span></span><span class="line"><span class="cl"><span class="na">CONV_FILENAME</span><span class="o">=</span> <span class="s">history</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Output file restart flow</span>
+</span></span><span class="line"><span class="cl"><span class="na">RESTART_FILENAME</span><span class="o">=</span> <span class="s">restart_flow.dat</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Output file restart adjoint</span>
+</span></span><span class="line"><span class="cl"><span class="na">RESTART_ADJ_FILENAME</span><span class="o">=</span> <span class="s">restart_adj.dat</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Output file flow (w/o extension) variables</span>
+</span></span><span class="line"><span class="cl"><span class="na">VOLUME_FILENAME</span><span class="o">=</span> <span class="s">flow</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Output file adjoint (w/o extension) variables</span>
+</span></span><span class="line"><span class="cl"><span class="na">VOLUME_ADJ_FILENAME</span><span class="o">=</span> <span class="s">adjoint</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Output objective function gradient (using continuous adjoint)</span>
+</span></span><span class="line"><span class="cl"><span class="na">GRAD_OBJFUNC_FILENAME</span><span class="o">=</span> <span class="s">of_grad.dat</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Output file surface flow coefficient (w/o extension)</span>
+</span></span><span class="line"><span class="cl"><span class="na">SURFACE_FILENAME</span><span class="o">=</span> <span class="s">surface_flow</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Output file surface adjoint coefficient (w/o extension)</span>
+</span></span><span class="line"><span class="cl"><span class="na">SURFACE_ADJ_FILENAME</span><span class="o">=</span> <span class="s">surface_adjoint</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Writing solution file frequency</span>
+</span></span><span class="line"><span class="cl"><span class="na">OUTPUT_WRT_FREQ</span><span class="o">=</span> <span class="s">250</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Writing convergence history frequency</span>
+</span></span><span class="line"><span class="cl"><span class="na">SCREEN_WRT_FREQ_INNER</span><span class="o">=</span> <span class="s">1</span>
+</span></span><span class="line"><span class="cl"><span class="na">%</span>
+</span></span><span class="line"><span class="cl"><span class="na">% Screen output</span>
+</span></span><span class="line"><span class="cl"><span class="na">SCREEN_OUTPUT</span><span class="o">=</span> <span class="s">(INNER_ITER, WALL_TIME,  RMS_PRESSURE, RMS_VELOCITY-X, RMS_VELOCITY-Y)</span>
+</span></span></code></pre></div><p>Make sure vmfl001.cfg and grid file VMFL001_rot_conc_cyl_2D.cgns are in the same directory, execute the following command (if the tee command is used in Windows, it can be executed in Powershell), run the solution and record the output of the solution process.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">SU2_CFD vmfl001.cfg <span class="p">|</span> tee vmfl001.log
+</span></span></code></pre></div><h3 id="62-post-processing">6.2 Post-processing</h3>
+<p>Use ParaView to open the flow.vtu file that solves the output, and the processing process is the same as 5.2.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-6-1_hu_1e62c14c7f0ba5a7.webp 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-6-1_hu_1925084028b032c8.webp 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-6-1_hu_b14347ec9b1f25d2.webp 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-6-1_hu_f603cdf8b026bd5b.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-08-14-solver-verification-comparison/images/20210814-6-1_hu_a03226b5baaa1250.jpg 320w, /post/2021-08-14-solver-verification-comparison/images/20210814-6-1_hu_a3ea29eb3e088f91.jpg 640w, /post/2021-08-14-solver-verification-comparison/images/20210814-6-1_hu_6df9cf8000c860b2.jpg 960w, /post/2021-08-14-solver-verification-comparison/images/20210814-6-1_hu_2a7303c4715ae65a.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-08-14-solver-verification-comparison/images/20210814-6-1_hu_a3ea29eb3e088f91.jpg" width="1326" height="819" alt="20210814-6-1.png" title="20210814-6-1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Comparison of the laminar flow equation with the error of SU2 calculation results.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Radius [mm]</th>
+          <th>Tangential velocity (theoretical value) [m/s]</th>
+          <th>Tangential velocity (SU2 simulation result) [m/s]</th>
+          <th>Error [%]</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>20</td>
+          <td>0.0151</td>
+          <td>0.0150846</td>
+          <td>0.10</td>
+      </tr>
+      <tr>
+          <td>25</td>
+          <td>0.0105</td>
+          <td>0.0105093</td>
+          <td>0.09</td>
+      </tr>
+      <tr>
+          <td>30</td>
+          <td>0.0072</td>
+          <td>0.00716493</td>
+          <td>0.49</td>
+      </tr>
+      <tr>
+          <td>35</td>
+          <td>0.0046</td>
+          <td>0.00453409</td>
+          <td>1.43</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="7-summary">7. Summary</h2>
+<p>In terms of horizontal comparison, CFX has the highest resolution accuracy; followed by SU2; then Fluent; OpenFOAM accuracy is almost the same as Fluent, but the solution speed is faster; STAR-CCM+ accuracy is the worst.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Radius [mm]</th>
+          <th>Fluent solution error [%]</th>
+          <th>CFX solution error [%]</th>
+          <th>STAR-CCM+ solution error [%]</th>
+          <th>OpenFOAM solution error [%]</th>
+          <th>SU2 solution error [%]</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>20</td>
+          <td>0.48</td>
+          <td>0.05</td>
+          <td>1.50</td>
+          <td>0.66</td>
+          <td>0.10</td>
+      </tr>
+      <tr>
+          <td>25</td>
+          <td>0.34</td>
+          <td>0.27</td>
+          <td>1.61</td>
+          <td>0.60</td>
+          <td>0.09</td>
+      </tr>
+      <tr>
+          <td>30</td>
+          <td>1.06</td>
+          <td>0.24</td>
+          <td>6.69</td>
+          <td>1.02</td>
+          <td>0.49</td>
+      </tr>
+      <tr>
+          <td>35</td>
+          <td>2.23</td>
+          <td>1.15</td>
+          <td>3.65</td>
+          <td>1.57</td>
+          <td>1.43</td>
+      </tr>
+  </tbody>
+</table>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

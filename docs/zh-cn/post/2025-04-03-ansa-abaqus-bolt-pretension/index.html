@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>Ansa联合Abaqus分析螺栓预紧力设置 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Ansa联合Abaqus分析经常遇到螺栓施加预紧力问题，除了设置复杂外还容易踩坑，一不小心就会遇到各种各样的问题。下面记录一下Ansa螺栓预紧力设置过程和一些坑，为后面相关分析作参考。
+1. Solid&#43;Assistant 实体螺栓和法兰面之间要先建立连接，具体可以参考Abaqus接触设置 。 单个螺栓可以通过AUXILIARIES→PRTENS→Assistant向导进行设置。 在弹出向导中选择Surface - Solid Elements或者Surface - Solid Property，然后选择螺栓实体。 勾选下面的Detect and create all possible pretensions.，会尝试自动搜索类似实体并创建相同的预紧力。 "
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2025-04-03-ansa-abaqus-bolt-pretension/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Ansa联合Abaqus分析螺栓预紧力设置">
+  <meta property="og:description" content="Ansa联合Abaqus分析经常遇到螺栓施加预紧力问题，除了设置复杂外还容易踩坑，一不小心就会遇到各种各样的问题。下面记录一下Ansa螺栓预紧力设置过程和一些坑，为后面相关分析作参考。
+1. Solid&#43;Assistant 实体螺栓和法兰面之间要先建立连接，具体可以参考Abaqus接触设置 。 单个螺栓可以通过AUXILIARIES→PRTENS→Assistant向导进行设置。 在弹出向导中选择Surface - Solid Elements或者Surface - Solid Property，然后选择螺栓实体。 勾选下面的Detect and create all possible pretensions.，会尝试自动搜索类似实体并创建相同的预紧力。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-04-03T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-04-03T00:00:00+00:00">
+    <meta property="article:tag" content="Abaqus">
+    <meta property="article:tag" content="Ansa">
+    <meta property="article:tag" content="Cae">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Ansa联合Abaqus分析螺栓预紧力设置">
+  <meta name="twitter:description" content="Ansa联合Abaqus分析经常遇到螺栓施加预紧力问题，除了设置复杂外还容易踩坑，一不小心就会遇到各种各样的问题。下面记录一下Ansa螺栓预紧力设置过程和一些坑，为后面相关分析作参考。
+1. Solid&#43;Assistant 实体螺栓和法兰面之间要先建立连接，具体可以参考Abaqus接触设置 。 单个螺栓可以通过AUXILIARIES→PRTENS→Assistant向导进行设置。 在弹出向导中选择Surface - Solid Elements或者Surface - Solid Property，然后选择螺栓实体。 勾选下面的Detect and create all possible pretensions.，会尝试自动搜索类似实体并创建相同的预紧力。">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2025-04-03-ansa-abaqus-bolt-pretension/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-04-03T00:00:00Z","datePublished":"2025-04-03T00:00:00Z","description":"Ansa联合Abaqus分析经常遇到螺栓施加预紧力问题，除了设置复杂外还容易踩坑，一不小心就会遇到各种各样的问题。下面记录一下Ansa螺栓预紧力设置过程和一些坑，为后面相关分析作参考。\n1. Solid+Assistant 实体螺栓和法兰面之间要先建立连接，具体可以参考Abaqus接触设置 。 单个螺栓可以通过AUXILIARIES→PRTENS→Assistant向导进行设置。 在弹出向导中选择Surface - Solid Elements或者Surface - Solid Property，然后选择螺栓实体。 勾选下面的Detect and create all possible pretensions.，会尝试自动搜索类似实体并创建相同的预紧力。 ","image":"/images/abaqus-bg.jpg","name":"Ansa联合Abaqus分析螺栓预紧力设置","url":"https://andrewmoa.site/zh-cn/post/2025-04-03-ansa-abaqus-bolt-pretension/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2025-04-03-ansa-abaqus-bolt-pretension/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2025-04-03-ansa-abaqus-bolt-pretension/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/abaqus-bg.jpg"
+      alt="Ansa联合Abaqus分析螺栓预紧力设置" title="Ansa联合Abaqus分析螺栓预紧力设置"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2025-04-03-ansa-abaqus-bolt-pretension/">Ansa联合Abaqus分析螺栓预紧力设置</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/ansa/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Ansa
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/abaqus/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Abaqus</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ansa/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ansa</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-03T00:00:00&#43;00:00">
+      2025-04-03
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-solidassistant">1. Solid+Assistant</a></li>
+    <li><a href="#2-beamassistant">2. Beam+Assistant</a></li>
+    <li><a href="#3-beamconnection">3. Beam+Connection</a></li>
+    <li><a href="#4-总结">4. 总结</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>Ansa联合Abaqus分析经常遇到螺栓施加预紧力问题，除了设置复杂外还容易踩坑，一不小心就会遇到各种各样的问题。下面记录一下Ansa螺栓预紧力设置过程和一些坑，为后面相关分析作参考。</p>
+<h2 id="1-solidassistant">1. Solid+Assistant</h2>
+<p>实体螺栓和法兰面之间要先建立连接，具体可以参考<a href="../2025-03-10-abaqus-contact/">Abaqus接触设置</a>
+。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_4c4221a6226fe2bd.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_b68f84365b21e603.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_4c99b84fbb09dc44.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_c234c684305d2129.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_bcc3958dd9debb41.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_77aaae6d566222ae.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_bcc3958dd9debb41.jpg" width="971" height="809" alt="1a56cfc8f6f5583e360bf9bd9ae4de48.png" title="1a56cfc8f6f5583e360bf9bd9ae4de48.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<ol>
+<li>
+<p>单个螺栓可以通过<code>AUXILIARIES</code>→<code>PRTENS</code>→<code>Assistant</code>向导进行设置。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/0529d3a74d53af475e0c91c8f355cb58_hu_558805d229614c62.jpg" width="236" height="280" alt="0529d3a74d53af475e0c91c8f355cb58.png" title="0529d3a74d53af475e0c91c8f355cb58.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>在弹出向导中选择<code>Surface - Solid Elements</code>或者<code>Surface - Solid Property</code>，然后选择螺栓实体。 勾选下面的<code>Detect and create all possible pretensions.</code>，会尝试自动搜索类似实体并创建相同的预紧力。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_3402a7fd93eb15e.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_b43f7e54a7001028.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_343e79b8c7edc6ac.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_494ac2bd5025ad1f.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_733b4216a14b2e05.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_4122ae8449ee5218.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_733b4216a14b2e05.jpg" width="1094" height="666" alt="9d13058ea827e23ce047e9f1b52fde1d.png" title="9d13058ea827e23ce047e9f1b52fde1d.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>下一步，在螺栓实体上选择第一个参考点。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/5086d6cd6a8c37ddea9506db6731656b_hu_637de6b7f7c3379a.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/5086d6cd6a8c37ddea9506db6731656b_hu_6d24de4943ca89fb.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/5086d6cd6a8c37ddea9506db6731656b_hu_827f2996cb17c255.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/5086d6cd6a8c37ddea9506db6731656b_hu_8069c50694e65d9c.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/5086d6cd6a8c37ddea9506db6731656b_hu_18dc7f6edb65dfff.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/5086d6cd6a8c37ddea9506db6731656b_hu_e70044a47874c838.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/5086d6cd6a8c37ddea9506db6731656b_hu_18dc7f6edb65dfff.jpg" width="1081" height="673" alt="5086d6cd6a8c37ddea9506db6731656b.png" title="5086d6cd6a8c37ddea9506db6731656b.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>下一步，选择第二个参考点定义螺栓预紧力方向，此时会在第一个参考点生成参考平面。注意预紧力方向要与螺栓轴线平行。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/74336c606e1112ff70556e8a1b845a23_hu_a49afe0c393d96a7.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/74336c606e1112ff70556e8a1b845a23_hu_b4887d001f6142b2.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/74336c606e1112ff70556e8a1b845a23_hu_805e429fe680842.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/74336c606e1112ff70556e8a1b845a23_hu_ae9ca6d28aa1fd8f.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/74336c606e1112ff70556e8a1b845a23_hu_ba4c2c2f33afa2c6.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/74336c606e1112ff70556e8a1b845a23_hu_8d9f864fdc3d8ec0.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/74336c606e1112ff70556e8a1b845a23_hu_ba4c2c2f33afa2c6.jpg" width="1167" height="760" alt="74336c606e1112ff70556e8a1b845a23.png" title="74336c606e1112ff70556e8a1b845a23.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>下一步，输入预紧力大小50kN，注意勾选后面的<code>Fixed</code>。这里会自动生成两个<code>STEP</code>。第一个<code>STEP</code>用于加载预紧力，第二个<code>STEP</code>用于固定预紧力状态。其他的载荷可以施加到第二个<code>STEP</code>里面。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/62ad85d4eb3da3ebeaf9d6bd74784a32_hu_95de7bb837bffb37.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/62ad85d4eb3da3ebeaf9d6bd74784a32_hu_847305b6f3a98dfa.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/62ad85d4eb3da3ebeaf9d6bd74784a32_hu_63aa15168af2f218.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/62ad85d4eb3da3ebeaf9d6bd74784a32_hu_61ba96c4a2cdf8cc.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/62ad85d4eb3da3ebeaf9d6bd74784a32_hu_6faef34b5ea989de.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/62ad85d4eb3da3ebeaf9d6bd74784a32_hu_d603dddbeced2e17.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/62ad85d4eb3da3ebeaf9d6bd74784a32_hu_6faef34b5ea989de.jpg" width="1093" height="733" alt="62ad85d4eb3da3ebeaf9d6bd74784a32.png" title="62ad85d4eb3da3ebeaf9d6bd74784a32.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>最后，定义参考平面的法向，确认应用螺栓预紧力。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/64fd2a39cb6d08089a8f3dcb35de2854_hu_4864160ce654f730.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/64fd2a39cb6d08089a8f3dcb35de2854_hu_d7e7455e51c84f40.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/64fd2a39cb6d08089a8f3dcb35de2854_hu_84008be5cb5c3777.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/64fd2a39cb6d08089a8f3dcb35de2854_hu_8d979a1ebf3b56c3.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/64fd2a39cb6d08089a8f3dcb35de2854_hu_36835d4e33d43cc1.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/64fd2a39cb6d08089a8f3dcb35de2854_hu_7adf95bc14c8f398.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/64fd2a39cb6d08089a8f3dcb35de2854_hu_36835d4e33d43cc1.jpg" width="1035" height="747" alt="64fd2a39cb6d08089a8f3dcb35de2854.png" title="64fd2a39cb6d08089a8f3dcb35de2854.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+</ol>
+<p>以上步骤完成后就可以提交计算了。</p>
+<p><strong>容易踩坑的地方</strong>：</p>
+<ul>
+<li>
+<p>涉及到接触问题导致的不收敛，可以加上接触控制<code>Contact Control</code>→<code>Stabilize</code>，提高求解的稳定性。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/0044bbf908b9542e60878b21e06b0940_hu_aa592c802f6b9532.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/0044bbf908b9542e60878b21e06b0940_hu_83be87caabfcfef.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/0044bbf908b9542e60878b21e06b0940_hu_7cfed3a22e7c02d8.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/0044bbf908b9542e60878b21e06b0940_hu_4505a197a5f6108f.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/0044bbf908b9542e60878b21e06b0940_hu_4505a197a5f6108f.jpg" width="908" height="543" alt="0044bbf908b9542e60878b21e06b0940.png" title="0044bbf908b9542e60878b21e06b0940.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>如果加上接触控制还是不收敛，建议将实体螺栓和法兰面之间的接触改用Coupling约束替代之。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/fa55849b34b2665b973afb52d8cd2e27_hu_b0b466d3be9c8d5c.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/fa55849b34b2665b973afb52d8cd2e27_hu_2d369bab515f865e.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/fa55849b34b2665b973afb52d8cd2e27_hu_87d0c57a7d195ed2.jpg" width="455" height="431" alt="fa55849b34b2665b973afb52d8cd2e27.png" title="fa55849b34b2665b973afb52d8cd2e27.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>如果计算结果出现螺栓变长的情况，多半是第6步参考平面的法向定义反了，更改参考面法线方向即可。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/7f6ca35973bffa52ccc6c0f6515c03bf_hu_b8e91826c352c36a.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/7f6ca35973bffa52ccc6c0f6515c03bf_hu_861a243883373c75.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/7f6ca35973bffa52ccc6c0f6515c03bf_hu_4a7a3bde2664beba.jpg" width="408" height="396" alt="7f6ca35973bffa52ccc6c0f6515c03bf.png" title="7f6ca35973bffa52ccc6c0f6515c03bf.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+</ul>
+<p>计算完成后通过<code>Meta</code>打开，可以查看实体螺栓内部的应力分布状态。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/3701316cf8a485c6a40358827e2b6e72_hu_dc37dc0e6b8ebd3e.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/3701316cf8a485c6a40358827e2b6e72_hu_4c9fcac8b148e7b8.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/3701316cf8a485c6a40358827e2b6e72_hu_6ef473ee8fc7d8ac.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/3701316cf8a485c6a40358827e2b6e72_hu_1cbc99bfc1bf6daf.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/3701316cf8a485c6a40358827e2b6e72_hu_c7ac733b5b847160.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/3701316cf8a485c6a40358827e2b6e72_hu_c21297be7d310699.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/3701316cf8a485c6a40358827e2b6e72_hu_c7ac733b5b847160.jpg" width="1025" height="753" alt="3701316cf8a485c6a40358827e2b6e72.png" title="3701316cf8a485c6a40358827e2b6e72.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="2-beamassistant">2. Beam+Assistant</h2>
+<p>当要研究的问题不涉及螺栓本体强度时，可采用梁单元替代螺栓实体，减少计算量提高计算效率的同时还能避免出现计算不收敛的问题。</p>
+<ol>
+<li>
+<p>梁单元需要先新建梁的PID，先定义螺栓的截面和材料。截面形式选圆形，定义螺栓半径。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/aa224c8a201f2492d1a62954df43c008_hu_102cd457335e1b23.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/aa224c8a201f2492d1a62954df43c008_hu_930673959cdb6783.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/aa224c8a201f2492d1a62954df43c008_hu_ee028327d7c9df2b.jpg" width="632" height="332" alt="aa224c8a201f2492d1a62954df43c008.png" title="aa224c8a201f2492d1a62954df43c008.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>需要通过Beam新建梁单元（建议先通过螺栓孔新建两个Coupling约束，再通过Coupling约束的中心新建Beam单元），再指派到上面的PID里，此时Beam单元只有一段。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/fa2bd5582a7602facfab1a070c3fe110_hu_4e7666c7009b070d.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/fa2bd5582a7602facfab1a070c3fe110_hu_df4f11461269b146.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/fa2bd5582a7602facfab1a070c3fe110_hu_1472cc0099aad016.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/fa2bd5582a7602facfab1a070c3fe110_hu_430b4ddb7d215685.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/fa2bd5582a7602facfab1a070c3fe110_hu_430b4ddb7d215685.jpg" width="896" height="641" alt="fa2bd5582a7602facfab1a070c3fe110.png" title="fa2bd5582a7602facfab1a070c3fe110.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>然后转到<code>Mesh</code>，通过<code>Insert</code>插入点的方式，将Beam单元分割为多段。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b13884f8e33ae2d9fa054c9d7de1381e_hu_f8b455950a7ba283.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b13884f8e33ae2d9fa054c9d7de1381e_hu_540a1f4c0210a520.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b13884f8e33ae2d9fa054c9d7de1381e_hu_7f673ef732cce511.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b13884f8e33ae2d9fa054c9d7de1381e_hu_4781026daadea463.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b13884f8e33ae2d9fa054c9d7de1381e_hu_4781026daadea463.jpg" width="705" height="865" alt="b13884f8e33ae2d9fa054c9d7de1381e.png" title="b13884f8e33ae2d9fa054c9d7de1381e.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>接下来启动向导，选择<code>Beam Elements</code>，选择中间的一段Beam单元。如果上一步没有分割Beam单元，这里可以选择下面的<code>Split Beams</code>，会自动将Beam单元分割为3段并选中中间的一段。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b99d2690fa392cb288ae45836ec32635_hu_3bacdcfcf430ce85.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b99d2690fa392cb288ae45836ec32635_hu_f22c3ebe2e7fd16e.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b99d2690fa392cb288ae45836ec32635_hu_e77aa6b53464fc45.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b99d2690fa392cb288ae45836ec32635_hu_92aec0d0820585e0.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b99d2690fa392cb288ae45836ec32635_hu_59b0c57f6dbc5918.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b99d2690fa392cb288ae45836ec32635_hu_7f65a196b837f94e.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b99d2690fa392cb288ae45836ec32635_hu_59b0c57f6dbc5918.jpg" width="1057" height="587" alt="b99d2690fa392cb288ae45836ec32635.png" title="b99d2690fa392cb288ae45836ec32635.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>同样，输入预紧力50kN，选择固定预紧力状态。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/ddf9dd2eac9916853e5878d58293b01a_hu_a0f16868625d4b01.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/ddf9dd2eac9916853e5878d58293b01a_hu_d9f1af92d8986d73.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/ddf9dd2eac9916853e5878d58293b01a_hu_850577d96373f968.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/ddf9dd2eac9916853e5878d58293b01a_hu_898f7429692471f2.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/ddf9dd2eac9916853e5878d58293b01a_hu_1c384a9975811e3f.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/ddf9dd2eac9916853e5878d58293b01a_hu_38590ba2b08fa58e.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/ddf9dd2eac9916853e5878d58293b01a_hu_1c384a9975811e3f.jpg" width="1175" height="626" alt="ddf9dd2eac9916853e5878d58293b01a.png" title="ddf9dd2eac9916853e5878d58293b01a.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>确认创建预紧力。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b48b617fe706fbcd3ab8ab80b3928615_hu_fbd2997fe8a215e2.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b48b617fe706fbcd3ab8ab80b3928615_hu_214b9bd7a1b75c68.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b48b617fe706fbcd3ab8ab80b3928615_hu_4a2b4779e5eca78f.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b48b617fe706fbcd3ab8ab80b3928615_hu_42a483f171ec4914.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b48b617fe706fbcd3ab8ab80b3928615_hu_73621edbf47d4c82.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/b48b617fe706fbcd3ab8ab80b3928615_hu_cd898db8f986dd87.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b48b617fe706fbcd3ab8ab80b3928615_hu_73621edbf47d4c82.jpg" width="1219" height="716" alt="b48b617fe706fbcd3ab8ab80b3928615.png" title="b48b617fe706fbcd3ab8ab80b3928615.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+</ol>
+<p>以上步骤完成后可以提交计算。</p>
+<p><strong>常见问题</strong>：</p>
+<ul>
+<li>
+<p><code>Meta</code>不支持显示Beam单元应力分布。如果要查看Beam单元应力分布状态，需要通过<code>Abaqus Viewer</code>来渲染结果文件。</p>
+</li>
+<li>
+<p>需要在<code>View</code>→<code>ODB Display Options</code>里打开<code>Render beam profiles</code>才能显示梁单元的状态。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/04efaf98e00ea3de3cba47e7ae6ffe9a_hu_4dde6e103849c71b.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/04efaf98e00ea3de3cba47e7ae6ffe9a_hu_dcabb751f0cd1518.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/04efaf98e00ea3de3cba47e7ae6ffe9a_hu_9aab7e1d5bb6c475.jpg" width="453" height="599" alt="04efaf98e00ea3de3cba47e7ae6ffe9a.png" title="04efaf98e00ea3de3cba47e7ae6ffe9a.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>梁单元的应力显示要选择<code>BEAM_STRESS</code>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/119d81cf131d6238901f36b8090bd44f_hu_d584fde60e3fdb96.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/119d81cf131d6238901f36b8090bd44f_hu_969bf3b2c20801be.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/119d81cf131d6238901f36b8090bd44f_hu_f253a7960ffdc956.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/119d81cf131d6238901f36b8090bd44f_hu_c56d33c56d712720.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/119d81cf131d6238901f36b8090bd44f_hu_c56d33c56d712720.jpg" width="825" height="729" alt="119d81cf131d6238901f36b8090bd44f.png" title="119d81cf131d6238901f36b8090bd44f.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>想在结果中查看梁的应力分布状态，建议在<code>*OUTPUT</code>关键字选择输出所有变量，这样用<code>Abaqus Viewer</code>渲染的时候才能查看<code>BEAM_STRESS</code>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/7858de766a8079b575e43008a3ebb326_hu_4bcf2716b9b07eab.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/7858de766a8079b575e43008a3ebb326_hu_45b506dc59cc4f04.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/7858de766a8079b575e43008a3ebb326_hu_904ed66dd3600cf8.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/7858de766a8079b575e43008a3ebb326_hu_4552d8b4023de5a2.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/7858de766a8079b575e43008a3ebb326_hu_4552d8b4023de5a2.jpg" width="759" height="889" alt="7858de766a8079b575e43008a3ebb326.png" title="7858de766a8079b575e43008a3ebb326.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+</ul>
+<h2 id="3-beamconnection">3. Beam+Connection</h2>
+<p>Connection设置可以参考<a href="../2025-03-05-ansa-connector/">Ansa快速设置连接</a>
+。通过Connection也可以设置螺栓预紧力，尤其适合多个螺栓连接、需要经常替换模型或调整参数的场合。这里螺栓本体选择梁单元。</p>
+<p>建立PID的步骤同上一章节中的第2步。<code>Body Type</code>选择<code>CBEAM</code>，激活<code>Create Pretension</code>并输入预紧力大小。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b3ad8f55b683acf6abd709917322dede_hu_2bff4ae8eaf09009.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b3ad8f55b683acf6abd709917322dede_hu_bfa088650645933c.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/b3ad8f55b683acf6abd709917322dede_hu_de8ace37522cb170.jpg" width="439" height="828" alt="b3ad8f55b683acf6abd709917322dede.png" title="b3ad8f55b683acf6abd709917322dede.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>多个螺栓应力显示：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/04a3aa65c393ae2df076591add66570d_hu_62282fa72fdbf0b0.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/04a3aa65c393ae2df076591add66570d_hu_fa12f3e54f2fa3f4.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/04a3aa65c393ae2df076591add66570d_hu_262149beedbe78b.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/04a3aa65c393ae2df076591add66570d_hu_1f4cfabc01e45018.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/04a3aa65c393ae2df076591add66570d_hu_1f4cfabc01e45018.jpg" width="765" height="679" alt="04a3aa65c393ae2df076591add66570d.png" title="04a3aa65c393ae2df076591add66570d.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="4-总结">4. 总结</h2>
+<ul>
+<li><code>Solid+Assistant </code>： 螺栓本体应力结果相对更准确，但计算量较大，容易出现不收敛情况。</li>
+<li><code>Beam+Assistant </code>：计算量少，更容易收敛，但只能用在不考察螺栓本体强度的场合。</li>
+<li><code>Beam+Connection</code> ：计算量少、容易收敛，更改、替换操作更方便，同样不能直接考察螺栓本体强度。</li>
+</ul>
+<hr>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+
+
+
+</body>
+</html>

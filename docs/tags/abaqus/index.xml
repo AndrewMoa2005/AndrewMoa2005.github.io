@@ -1,47 +1,50 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Abaqus on Andrew Moa Blog</title>
+    <title>Abaqus on Andrew Moa Blog Site</title>
     <link>https://andrewmoa.site/tags/abaqus/</link>
-    <description>Recent content in Abaqus on Andrew Moa Blog</description>
+    <description>Recent content in Abaqus on Andrew Moa Blog Site</description>
     <generator>Hugo</generator>
-    <language>zh-CN</language>
+    <language>en-US</language>
+    <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
+    <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
+    <copyright>Andrew Moa</copyright>
     <lastBuildDate>Tue, 15 Apr 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/abaqus/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题</title>
-      <link>https://andrewmoa.site/2025/04/15/linux-mount-windows-share-dir-cannot-run-abaqus-and-cfx/</link>
-      <pubDate>Wed, 16 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/04/15/linux-mount-windows-share-dir-cannot-run-abaqus-and-cfx/</guid>
-      <description>&lt;p&gt;近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。&lt;/p&gt;</description>
+      <title>Abaqus and CFX solvers cannot be run in Linux mounts Windows shared folders</title>
+      <link>https://andrewmoa.site/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/</link>
+      <pubDate>Tue, 15 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/</guid>
+      <description>&lt;p&gt;Recently, a problem was discovered that Abaqus and CFX cannot perform calculations on Windows shared folders mounted on Linux. Linux is deployed on a virtual machine. Although there will be no error when starting the calculation program on the local path of the virtual machine, it will cause the virtual disk to occupy more space and have a certain impact on the read and write efficiency.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-smb-version-problem&#34;&gt;1. SMB version problem&lt;/h2&gt;&#xA;&lt;h3 id=&#34;11-smbv3&#34;&gt;1.1 SMBv3&lt;/h3&gt;&#xA;&lt;p&gt;When using cifs to mount a shared folder before, I did not pay close attention to the version of the SMB protocol&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;. The following command line does not specify the protocol version:&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Ansa联合Abaqus分析螺栓预紧力设置</title>
-      <link>https://andrewmoa.site/2025/04/03/ansa-abaqus-deck-bolt-pretension/</link>
-      <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/04/03/ansa-abaqus-deck-bolt-pretension/</guid>
-      <description>&lt;p&gt;Ansa联合Abaqus分析经常遇到螺栓施加预紧力问题，除了设置复杂外还容易踩坑，一不小心就会遇到各种各样的问题。下面记录一下Ansa螺栓预紧力设置过程和一些坑，为后面相关分析作参考。&lt;/p&gt;</description>
+      <title>Ansa combined with Abaqus to analyze bolt preload setting</title>
+      <link>https://andrewmoa.site/post/2025-04-03-ansa-abaqus-bolt-pretension/</link>
+      <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-04-03-ansa-abaqus-bolt-pretension/</guid>
+      <description>&lt;p&gt;Ansa combined with Abaqus analysis often encounters the problem of applying bolt preload. In addition to the complex settings, it is also easy to make mistakes, and various problems may occur if you are not careful. The following records the Ansa bolt preload setting process and some pitfalls for reference for related analysis later.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-solidassistant&#34;&gt;1. Solid+Assistant&lt;/h2&gt;&#xA;&lt;p&gt;The connection between the solid bolt and the flange surface must be established first. For details, please refer to &lt;a href=&#34;../2025-03-10-abaqus-contact/&#34;&gt;Abaqus contact settings&lt;/a&gt;&#xA;。&lt;div class=&#34;not-prose&#34;&gt;&#xA;&lt;picture&gt;&#xA;    &lt;source type=&#34;image/webp&#34; srcset=&#34;https://andrewmoa.site/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_4c4221a6226fe2bd.webp 320w, https://andrewmoa.site/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_b68f84365b21e603.webp 640w, https://andrewmoa.site/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_4c99b84fbb09dc44.webp 960w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;source type=&#34;image/jpeg&#34; srcset=&#34;https://andrewmoa.site/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_c234c684305d2129.jpg 320w, https://andrewmoa.site/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_bcc3958dd9debb41.jpg 640w, https://andrewmoa.site/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_77aaae6d566222ae.jpg 960w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;img class=&#34;h-auto max-w-full rounded-lg&#34; src=&#34;https://andrewmoa.site/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_bcc3958dd9debb41.jpg&#34; width=&#34;971&#34; height=&#34;809&#34; alt=&#34;1a56cfc8f6f5583e360bf9bd9ae4de48.png&#34; title=&#34;1a56cfc8f6f5583e360bf9bd9ae4de48.png&#34; loading=&#34;lazy&#34; /&gt;&#xA;  &lt;/picture&gt;&#xA;&lt;/div&gt;&#xA;&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Ubuntu安装SIMULIA2024</title>
-      <link>https://andrewmoa.site/2025/03/21/ubuntu-install-simulia/</link>
-      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/21/ubuntu-install-simulia/</guid>
-      <description>&lt;p&gt;为什么选择SIMULIA？首先是Abaqus功能强大，绝大多数结构问题都能求解。其次流固耦合方便，STAR-CCM+自带案例就手把手你怎么和Abaqus双向耦合。再次是过往经历的惯性，毕竟主机厂Abaqus用得可不少，不缺案例和资源。&lt;/p&gt;</description>
+      <title>Ubuntu Install SIMULIA2024</title>
+      <link>https://andrewmoa.site/post/2025-03-21-ubuntu-install-simulia2024/</link>
+      <pubDate>Fri, 21 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-21-ubuntu-install-simulia2024/</guid>
+      <description>&lt;p&gt;Why did you choose SIMULIA? First, Abaqus is powerful and can solve most structural problems. Second, fluid-structure coupling is convenient. STAR-CCM+ comes with a case that shows you how to couple with Abaqus bidirectionally. Third, it is the inertia of past experience. After all, automobile companies use Abaqus a lot, and there are a lot of cases and resources.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-preparation&#34;&gt;1. Preparation&lt;/h2&gt;&#xA;&lt;p&gt;First install the development environment and some necessary software:&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Abaqus接触设置</title>
-      <link>https://andrewmoa.site/2025/03/10/abaqus-connect-setup/</link>
-      <pubDate>Mon, 10 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/10/abaqus-connect-setup/</guid>
-      <description>&lt;h2 id=&#34;1-相关命令&#34;&gt;1. 相关命令&lt;/h2&gt;&#xA;&lt;p&gt;Ansa中，给Abaqus设置接触一般常用以下命令：&#xA;&#xA;  &lt;img src=&#34;https://andrewmoa.site/resources/cb35dcf11a636abacef3aabe97112e62.png&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34;&gt;&#xA;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-接触对&#34;&gt;2. 接触对&lt;/h2&gt;&#xA;&lt;p&gt;最常用的接触对，一般通过&lt;code&gt;AUXILIARIES&lt;/code&gt;→ &lt;code&gt;CONTACT&lt;/code&gt;→&lt;code&gt;CONTACT&lt;/code&gt;调出创建对话框。&#xA;&#xA;  &lt;img src=&#34;https://andrewmoa.site/resources/038dffae1f80e68c064572e228df00c6.png&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34;&gt;&#xA;&#xA;&#xA;常用设置一般为以下几个：&lt;/p&gt;</description>
+      <title>Abaqus Contact Settings</title>
+      <link>https://andrewmoa.site/post/2025-03-10-abaqus-contact/</link>
+      <pubDate>Mon, 10 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-10-abaqus-contact/</guid>
+      <description>&lt;h2 id=&#34;1-related-commands&#34;&gt;1. Related commands&lt;/h2&gt;&#xA;&lt;p&gt;In Ansa, the following commands are commonly used to set contact for Abaqus:&lt;div class=&#34;not-prose&#34;&gt;&#xA;&lt;picture&gt;&#xA;    &lt;source type=&#34;image/webp&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-10-abaqus-contact/images/cb35dcf11a636abacef3aabe97112e62_hu_8484f4a041f6c7c5.webp 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;source type=&#34;image/jpeg&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-10-abaqus-contact/images/cb35dcf11a636abacef3aabe97112e62_hu_85a5b64448632578.jpg 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;img class=&#34;h-auto max-w-full rounded-lg&#34; src=&#34;https://andrewmoa.site/post/2025-03-10-abaqus-contact/images/cb35dcf11a636abacef3aabe97112e62_hu_1e98f3ac244080b3.jpg&#34; width=&#34;346&#34; height=&#34;499&#34; alt=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34; title=&#34;cb35dcf11a636abacef3aabe97112e62.png&#34; loading=&#34;lazy&#34; /&gt;&#xA;  &lt;/picture&gt;&#xA;&lt;/div&gt;&#xA;&lt;/p&gt;&#xA;&lt;h2 id=&#34;2-contact-pair&#34;&gt;2. Contact pair&lt;/h2&gt;&#xA;&lt;p&gt;The most commonly used contact pairs are generally created by calling up the creation dialog box through &lt;code&gt;AUXILIARIES&lt;/code&gt; → &lt;code&gt;CONTACT&lt;/code&gt; → &lt;code&gt;CONTACT&lt;/code&gt; .&lt;div class=&#34;not-prose&#34;&gt;&#xA;&lt;picture&gt;&#xA;    &lt;source type=&#34;image/webp&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-10-abaqus-contact/images/038dffae1f80e68c064572e228df00c6_hu_ae71bc129f0838ed.webp 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;source type=&#34;image/jpeg&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-10-abaqus-contact/images/038dffae1f80e68c064572e228df00c6_hu_fc4b2e0e718cceab.jpg 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;img class=&#34;h-auto max-w-full rounded-lg&#34; src=&#34;https://andrewmoa.site/post/2025-03-10-abaqus-contact/images/038dffae1f80e68c064572e228df00c6_hu_e8dd151e7c0f3f68.jpg&#34; width=&#34;636&#34; height=&#34;528&#34; alt=&#34;038dffae1f80e68c064572e228df00c6.png&#34; title=&#34;038dffae1f80e68c064572e228df00c6.png&#34; loading=&#34;lazy&#34; /&gt;&#xA;  &lt;/picture&gt;&#xA;&lt;/div&gt;&#xA;&#xA;Common settings are generally as follows:&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Abaqus提交命令</title>
-      <link>https://andrewmoa.site/2025/03/06/abaqus-submit-command/</link>
-      <pubDate>Thu, 06 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://andrewmoa.site/2025/03/06/abaqus-submit-command/</guid>
-      <description>&lt;p&gt;用Ansa输出inp文件之后，可以通过Abaqus CAE窗口界面提交inp文件进行计算，也可以通过命令行方式提交计算。使用命令行提交需要添加Path，Windows下通常是&lt;code&gt;[Abaqus安装目录]\Commands&lt;/code&gt;路径。&lt;/p&gt;</description>
+      <title>Abaqus Submit Command</title>
+      <link>https://andrewmoa.site/post/2025-03-06-abaqus-command/</link>
+      <pubDate>Thu, 06 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-03-06-abaqus-command/</guid>
+      <description>&lt;p&gt;After using Ansa to output the inp file, you can submit the inp file for calculation through the Abaqus CAE window interface, or you can submit the calculation through the command line. You need to add the Path when submitting using the command line. In Windows, it is usually the path &lt;code&gt;[Abaqus installation directory]\Commands&lt;/code&gt;.&lt;/p&gt;&#xA;&lt;p&gt;In fact, after installing Abaqus in Windows, the &lt;code&gt;Abaqus Command&lt;/code&gt; shortcut will appear in the start menu. Clicking this shortcut can submit the abaqus calculation file through the command line without adding the Path.&lt;div class=&#34;not-prose&#34;&gt;&#xA;&lt;picture&gt;&#xA;    &lt;source type=&#34;image/webp&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-06-abaqus-command/images/a6ed3616d120e0eeb3087d0596b3cb2b_hu_62f3e42a6beefa4e.webp 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;source type=&#34;image/jpeg&#34; srcset=&#34;https://andrewmoa.site/post/2025-03-06-abaqus-command/images/a6ed3616d120e0eeb3087d0596b3cb2b_hu_499244e671e0877b.jpg 320w&#34; sizes=&#34;(min-width: 1024px) 100vw, 50vw&#34; /&gt;&#xA;    &lt;img class=&#34;h-auto max-w-full rounded-lg&#34; src=&#34;https://andrewmoa.site/post/2025-03-06-abaqus-command/images/a6ed3616d120e0eeb3087d0596b3cb2b_hu_9a362545124e24a.jpg&#34; width=&#34;533&#34; height=&#34;197&#34; alt=&#34;a6ed3616d120e0eeb3087d0596b3cb2b.png&#34; title=&#34;a6ed3616d120e0eeb3087d0596b3cb2b.png&#34; loading=&#34;lazy&#34; /&gt;&#xA;  &lt;/picture&gt;&#xA;&lt;/div&gt;&#xA;&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

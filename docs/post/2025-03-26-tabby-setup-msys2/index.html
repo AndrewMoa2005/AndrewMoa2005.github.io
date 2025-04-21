@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Tabby configuration MSYS2 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Tabby is a very good-looking terminal tool. I first used it to replace the local terminal, and then I found more and more advantages. First of all, it has built-in support for SSH connection and SFTP file transfer. The setting operation is simple, avoiding the tedious settings in the Windows terminal. Secondly, it can be used to replace the original Mintty interface of MSYS2 and Cygwin to achieve seamless switching between different terminals. Regarding how to call MSYS2 in the Tabby terminal, the following is a record of the configuration method:
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/post/2025-03-26-tabby-setup-msys2/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Tabby configuration MSYS2">
+  <meta property="og:description" content="Tabby is a very good-looking terminal tool. I first used it to replace the local terminal, and then I found more and more advantages. First of all, it has built-in support for SSH connection and SFTP file transfer. The setting operation is simple, avoiding the tedious settings in the Windows terminal. Secondly, it can be used to replace the original Mintty interface of MSYS2 and Cygwin to achieve seamless switching between different terminals. Regarding how to call MSYS2 in the Tabby terminal, the following is a record of the configuration method:">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-03-26T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-03-26T00:00:00+00:00">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Tabby configuration MSYS2">
+  <meta name="twitter:description" content="Tabby is a very good-looking terminal tool. I first used it to replace the local terminal, and then I found more and more advantages. First of all, it has built-in support for SSH connection and SFTP file transfer. The setting operation is simple, avoiding the tedious settings in the Windows terminal. Secondly, it can be used to replace the original Mintty interface of MSYS2 and Cygwin to achieve seamless switching between different terminals. Regarding how to call MSYS2 in the Tabby terminal, the following is a record of the configuration method:">
+
+
+<link rel="canonical" href="https://andrewmoa.site/post/2025-03-26-tabby-setup-msys2/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-03-26T00:00:00Z","datePublished":"2025-03-26T00:00:00Z","description":"Tabby is a very good-looking terminal tool. I first used it to replace the local terminal, and then I found more and more advantages. First of all, it has built-in support for SSH connection and SFTP file transfer. The setting operation is simple, avoiding the tedious settings in the Windows terminal. Secondly, it can be used to replace the original Mintty interface of MSYS2 and Cygwin to achieve seamless switching between different terminals. Regarding how to call MSYS2 in the Tabby terminal, the following is a record of the configuration method:\n","image":"/images/code-bg.jpg","name":"Tabby configuration MSYS2","url":"https://andrewmoa.site/post/2025-03-26-tabby-setup-msys2/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">Open main menu</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/post/" title="Post">Post</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/about/" title="About">About</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">Open language switcher</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">English</span>
+            </li>
+        
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/zh-cn/post/2025-03-26-tabby-setup-msys2/" title="中文">中文</a></li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">Search</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="Toggle dark mode">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="Toggle dark mode">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/post/2025-03-26-tabby-setup-msys2/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="Tabby configuration MSYS2" title="Tabby configuration MSYS2"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/post/2025-03-26-tabby-setup-msys2/">Tabby configuration MSYS2</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/categories/tech/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Tech
+        </a>
+      </li>
+      
+    
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-26T00:00:00&#43;00:00">
+      2025-03-26
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      2 minutes to read
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>Table of Contents</h2>
+          <aside><nav id="TableOfContents"></nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p><a href="https://tabby.sh/" target="_blank" rel="noopener">Tabby</a>
+ is a very good-looking terminal tool. I first used it to replace the local terminal, and then I found more and more advantages.
+First of all, it has built-in support for SSH connection and SFTP file transfer. The setting operation is simple, avoiding the tedious settings in the Windows terminal. Secondly, it can be used to replace the original Mintty interface of MSYS2 and Cygwin to achieve seamless switching between different terminals.
+Regarding how to call MSYS2 in the Tabby terminal, the following is a record of the configuration method:</p>
+<ol>
+<li>
+<p>First clone a CMD configuration in Tabby settings:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_a88f8abea316a4f5.webp 320w, /post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_9d02ec4074d710c.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_195ccebc5b4d58dd.jpg 320w, /post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_35350b4d67f9f040.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-26-tabby-setup-msys2/images/d3078fcb85ac34f312416cd671b2cb58_hu_35350b4d67f9f040.jpg" width="938" height="600" alt="d3078fcb85ac34f312416cd671b2cb58.png" title="d3078fcb85ac34f312416cd671b2cb58.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>Fill in the name of the MSYS2 toolchain you want to call:<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_301baee55ee3800e.webp 320w, /post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_3d2a78c7588e4e1.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_881c711f90d9b858.jpg 320w, /post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_fbd4f1fa418e815d.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-26-tabby-setup-msys2/images/462779a7512334158043be9cbd1a265c_hu_fbd4f1fa418e815d.jpg" width="938" height="600" alt="462779a7512334158043be9cbd1a265c.png" title="462779a7512334158043be9cbd1a265c.png" loading="lazy" />
+  </picture>
+</div>
+
+Note that you cannot directly assign an ico file to the icon here, as Tabby cannot recognize it. You must convert the ico icon to svg format.
+There are many online ico2svg conversion resources, and you can find a lot of them by searching online:</p>
+<ul>
+<li><a href="https://www.aconvert.com/cn/image/ico-to-svg/" target="_blank" rel="noopener">ACCONVERT - ICO to SVG</a>
+</li>
+<li><a href="https://cdkm.com/cn/ico-to-svg" target="_blank" rel="noopener">CDKM - ICO to SVG</a>
+</li>
+<li><a href="https://www.freeconvert.com/zh/ico-to-svg" target="_blank" rel="noopener">FreeConvert - ICO to SVG</a>
+</li>
+</ul>
+<p>After the conversion is complete, download the svg file, open it with a text tool, copy and paste the svg source code into the icon bar above, and Tabby will be able to display the icon normally.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-svg" data-lang="svg"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; standalone=&#34;no&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">&lt;!DOCTYPE svg PUBLIC &#34;-//W3C//DTD SVG 1.1//EN&#34; &#34;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#34;&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;svg</span> <span class="na">version=</span><span class="s">&#34;1.1&#34;</span> <span class="na">id=</span><span class="s">&#34;Layer_1&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;http://www.w3.org/2000/svg&#34;</span> <span class="na">xmlns:xlink=</span><span class="s">&#34;http://www.w3.org/1999/xlink&#34;</span> <span class="na">x=</span><span class="s">&#34;0px&#34;</span> <span class="na">y=</span><span class="s">&#34;0px&#34;</span> <span class="na">width=</span><span class="s">&#34;16px&#34;</span> <span class="na">height=</span><span class="s">&#34;16px&#34;</span> <span class="na">viewBox=</span><span class="s">&#34;0 0 16 16&#34;</span> <span class="na">enable-background=</span><span class="s">&#34;new 0 0 16 16&#34;</span> <span class="na">xml:space=</span><span class="s">&#34;preserve&#34;</span><span class="nt">&gt;</span>  <span class="nt">&lt;image</span> <span class="na">id=</span><span class="s">&#34;image0&#34;</span> <span class="na">width=</span><span class="s">&#34;16&#34;</span> <span class="na">height=</span><span class="s">&#34;16&#34;</span> <span class="na">x=</span><span class="s">&#34;0&#34;</span> <span class="na">y=</span><span class="s">&#34;0&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="na">xlink:href=</span><span class="s">&#34;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAIGNIUk0AAHomAACAhAAA+gAAAIDo
+</span></span></span><span class="line"><span class="cl"><span class="s">AAB1MAAA6mAAADqYAAAXcJy6UTwAAADPUExURb5kPsBpRdWbgtSZgL9lQMBoQ8+McMyEZsJuS/36
+</span></span></span><span class="line"><span class="cl"><span class="s">+P///9uplL5lP+3UyevOws2HafDc1NCPdOjHuejIur9mQO3TyeXCs8NxTv37+vv18sh7W8h8XP/+
+</span></span></span><span class="line"><span class="cl"><span class="s">/uS+rt2umtOXfuXBsvfs6Pjv6+bDtMFqRvny7vHf1/36+dyrlvXn4e/a0dadhMBpRP79/f7+/fz4
+</span></span></span><span class="line"><span class="cl"><span class="s">9sJuSvHe1vnw7PPi2+O9rNqmkN2tmeC2pP78+8Z3Vfft6L9mQfz59+fFt8JtSdKVe79nQsuDZcV0
+</span></span></span><span class="line"><span class="cl"><span class="s">UtGSd8NvTFLhcR8AAAABYktHRApo0PRWAAAAB3RJTUUH6QMaAysVnHCKGgAAAJpJREFUGNONj1cS
+</span></span></span><span class="line"><span class="cl"><span class="s">ggAUA2NBIdi7WAErYEFFBRXr/c8k7QC8n8zuRyYPSHWZbC4fhFAoJkKUKAOlMiuJqJI1oE42EtEk
+</span></span></span><span class="line"><span class="cl"><span class="s">pRbaZCfmbq9PKoMhOYrFmDI5maoa9Yhn84VC6svVmkYkZJrWhtvd3qYkBmwdNAFH8hR2O4FweAYu
+</span></span></span><span class="line"><span class="cl"><span class="s">vLowSc/CzbMtwL0/gqUGVR/+8xUWvT/h9u8vxaN/UKUNLao7WagAAAAldEVYdGRhdGU6Y3JlYXRl
+</span></span></span><span class="line"><span class="cl"><span class="s">ADIwMjUtMDMtMjZUMDM6NDM6MjArMDA6MDDH702KAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI1LTAz
+</span></span></span><span class="line"><span class="cl"><span class="s">LTI2VDAzOjQzOjIwKzAwOjAwtrL1NgAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNS0wMy0yNlQw
+</span></span></span><span class="line"><span class="cl"><span class="s">Mzo0MzoyMSswMDowMEfQ310AAAAASUVORK5CYII=&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/svg&gt;</span>
+</span></span></code></pre></div><p>isable dynamic tab title: Set according to your needs, it is recommended to select it.
+Group: You need to create a new profile group first, and then select it here.</p>
+</li>
+<li>
+<p>The execution commands, parameters, and environment variables are shown in the figure.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-26-tabby-setup-msys2/images/3d0df91731d21b5ff1106c8dcdb927ff_hu_bd237466a0f2647d.webp 320w, /post/2025-03-26-tabby-setup-msys2/images/3d0df91731d21b5ff1106c8dcdb927ff_hu_578336fce34c126a.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-26-tabby-setup-msys2/images/3d0df91731d21b5ff1106c8dcdb927ff_hu_6b76c49f07c5f23d.jpg 320w, /post/2025-03-26-tabby-setup-msys2/images/3d0df91731d21b5ff1106c8dcdb927ff_hu_70629b9a8a57f925.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-26-tabby-setup-msys2/images/3d0df91731d21b5ff1106c8dcdb927ff_hu_70629b9a8a57f925.jpg" width="938" height="600" alt="3d0df91731d21b5ff1106c8dcdb927ff.png" title="3d0df91731d21b5ff1106c8dcdb927ff.png" loading="lazy" />
+  </picture>
+</div>
+
+Fill in the HOME directory of MSYS2 in the working directory and HOME directory, and fill in the tool chain to be called in MSYSTEM.</p>
+</li>
+<li>
+<p>After saving in step 3 above, you can quickly call the Clang64 terminal of MSYS2 through the icon in the Tabby title bar. Other tool chains are configured in the same way.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-26-tabby-setup-msys2/images/1b2105682c9dbbeb3e58d7bc9fb5d6ca_hu_821eac46fd29adc6.webp 320w, /post/2025-03-26-tabby-setup-msys2/images/1b2105682c9dbbeb3e58d7bc9fb5d6ca_hu_5ba81506ad577d6a.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-26-tabby-setup-msys2/images/1b2105682c9dbbeb3e58d7bc9fb5d6ca_hu_a349ba019b1674ae.jpg 320w, /post/2025-03-26-tabby-setup-msys2/images/1b2105682c9dbbeb3e58d7bc9fb5d6ca_hu_6725516b45fcf535.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-26-tabby-setup-msys2/images/1b2105682c9dbbeb3e58d7bc9fb5d6ca_hu_6725516b45fcf535.jpg" width="938" height="600" alt="1b2105682c9dbbeb3e58d7bc9fb5d6ca.png" title="1b2105682c9dbbeb3e58d7bc9fb5d6ca.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+</ol>
+<hr>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

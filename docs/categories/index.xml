@@ -1,53 +1,63 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on Andrew Moa Blog</title>
+    <title>Categories on Andrew Moa Blog Site</title>
     <link>https://andrewmoa.site/categories/</link>
-    <description>Recent content in Categories on Andrew Moa Blog</description>
+    <description>Recent content in Categories on Andrew Moa Blog Site</description>
     <generator>Hugo</generator>
-    <language>zh-CN</language>
+    <language>en-US</language>
+    <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
+    <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
+    <copyright>Andrew Moa</copyright>
     <lastBuildDate>Fri, 18 Apr 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>CFD</title>
+      <title>Cfd</title>
       <link>https://andrewmoa.site/categories/cfd/</link>
-      <pubDate>Fri, 18 Apr 2025 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 18 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
       <guid>https://andrewmoa.site/categories/cfd/</guid>
       <description></description>
     </item>
     <item>
       <title>Linux</title>
       <link>https://andrewmoa.site/categories/linux/</link>
-      <pubDate>Wed, 16 Apr 2025 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 16 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
       <guid>https://andrewmoa.site/categories/linux/</guid>
       <description></description>
     </item>
     <item>
       <title>Ansa</title>
       <link>https://andrewmoa.site/categories/ansa/</link>
-      <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
       <guid>https://andrewmoa.site/categories/ansa/</guid>
       <description></description>
     </item>
     <item>
       <title>Code</title>
       <link>https://andrewmoa.site/categories/code/</link>
-      <pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
       <guid>https://andrewmoa.site/categories/code/</guid>
       <description></description>
     </item>
     <item>
       <title>Tech</title>
       <link>https://andrewmoa.site/categories/tech/</link>
-      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
       <guid>https://andrewmoa.site/categories/tech/</guid>
       <description></description>
     </item>
     <item>
       <title>Zhihu</title>
       <link>https://andrewmoa.site/categories/zhihu/</link>
-      <pubDate>Fri, 08 Apr 2022 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 08 Apr 2022 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
       <guid>https://andrewmoa.site/categories/zhihu/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>A Category with Slug</title>
+      <link>https://andrewmoa.site/categories/with-slug/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/categories/with-slug/</guid>
       <description></description>
     </item>
   </channel>

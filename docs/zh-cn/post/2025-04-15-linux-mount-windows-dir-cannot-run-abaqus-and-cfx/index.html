@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。
+1. SMB版本问题 1.1 SMBv3 之前用cifs挂载共享文件夹的时候，没有仔细关注SMB协议的版本1。以下命令行没有指定协议版本：
+mount -t cifs //172.25.64.1/Share /home/dell/Share -o uid=xxx,gid=xxx,username=xxx 用mount命令查看，默认连接协议是3.1版本： 在3.1版本协议的挂载目录下运行Abaqus程序，无法计算，报错如下：
+mpirun: Warning one or more remote shell commands exited with non-zero status, which may indicate a remote access problem. driverExceptions.AbaqusExecutionError: (&#39;SIMULIA Job Layout Engine&#39;, 255, &#39;abaqus_test&#39;) !!! !!! SIM wrap utility command error: !!! System Error open: 无效的参数 !!! driverExceptions.AbaqusExecutionError: (&#39;SIM Wrap-up&#39;, 1, &#39;abaqus_test&#39;) 在3.1版本协议的挂载目录下运行CFX求解器，无法计算，报错如下：
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题">
+  <meta property="og:description" content="近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。
+1. SMB版本问题 1.1 SMBv3 之前用cifs挂载共享文件夹的时候，没有仔细关注SMB协议的版本1。以下命令行没有指定协议版本：
+mount -t cifs //172.25.64.1/Share /home/dell/Share -o uid=xxx,gid=xxx,username=xxx 用mount命令查看，默认连接协议是3.1版本： 在3.1版本协议的挂载目录下运行Abaqus程序，无法计算，报错如下：
+mpirun: Warning one or more remote shell commands exited with non-zero status, which may indicate a remote access problem. driverExceptions.AbaqusExecutionError: (&#39;SIMULIA Job Layout Engine&#39;, 255, &#39;abaqus_test&#39;) !!! !!! SIM wrap utility command error: !!! System Error open: 无效的参数 !!! driverExceptions.AbaqusExecutionError: (&#39;SIM Wrap-up&#39;, 1, &#39;abaqus_test&#39;) 在3.1版本协议的挂载目录下运行CFX求解器，无法计算，报错如下：">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-04-15T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-04-15T00:00:00+00:00">
+    <meta property="article:tag" content="Abaqus">
+    <meta property="article:tag" content="Cfx">
+    <meta property="article:tag" content="Ubuntu">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题">
+  <meta name="twitter:description" content="近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。
+1. SMB版本问题 1.1 SMBv3 之前用cifs挂载共享文件夹的时候，没有仔细关注SMB协议的版本1。以下命令行没有指定协议版本：
+mount -t cifs //172.25.64.1/Share /home/dell/Share -o uid=xxx,gid=xxx,username=xxx 用mount命令查看，默认连接协议是3.1版本： 在3.1版本协议的挂载目录下运行Abaqus程序，无法计算，报错如下：
+mpirun: Warning one or more remote shell commands exited with non-zero status, which may indicate a remote access problem. driverExceptions.AbaqusExecutionError: (&#39;SIMULIA Job Layout Engine&#39;, 255, &#39;abaqus_test&#39;) !!! !!! SIM wrap utility command error: !!! System Error open: 无效的参数 !!! driverExceptions.AbaqusExecutionError: (&#39;SIM Wrap-up&#39;, 1, &#39;abaqus_test&#39;) 在3.1版本协议的挂载目录下运行CFX求解器，无法计算，报错如下：">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-04-15T00:00:00Z","datePublished":"2025-04-15T00:00:00Z","description":"近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。\n1. SMB版本问题 1.1 SMBv3 之前用cifs挂载共享文件夹的时候，没有仔细关注SMB协议的版本1。以下命令行没有指定协议版本：\nmount -t cifs //172.25.64.1/Share /home/dell/Share -o uid=xxx,gid=xxx,username=xxx 用mount命令查看，默认连接协议是3.1版本： 在3.1版本协议的挂载目录下运行Abaqus程序，无法计算，报错如下：\nmpirun: Warning one or more remote shell commands exited with non-zero status, which may indicate a remote access problem. driverExceptions.AbaqusExecutionError: (\u0026#39;SIMULIA Job Layout Engine\u0026#39;, 255, \u0026#39;abaqus_test\u0026#39;) !!! !!! SIM wrap utility command error: !!! System Error open: 无效的参数 !!! driverExceptions.AbaqusExecutionError: (\u0026#39;SIM Wrap-up\u0026#39;, 1, \u0026#39;abaqus_test\u0026#39;) 在3.1版本协议的挂载目录下运行CFX求解器，无法计算，报错如下：\n","image":"/images/ubuntu-bg.jpg","name":"Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题","url":"https://andrewmoa.site/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题" title="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/abaqus/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Abaqus</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cfx/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cfx</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-15T00:00:00&#43;00:00">
+      2025-04-15
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-smb版本问题">1. SMB版本问题</a>
+      <ul>
+        <li><a href="#11-smbv3">1.1 SMBv3</a></li>
+        <li><a href="#12-smbv2">1.2 SMBv2</a></li>
+        <li><a href="#13-smbv1">1.3 SMBv1</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-smb符号链接问题">2. SMB符号链接问题</a>
+      <ul>
+        <li><a href="#21-cfx环境变量">2.1 CFX环境变量</a></li>
+        <li><a href="#22-smbv3启用符号链接功能">2.2 SMBv3启用符号链接功能</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-总结">3. 总结</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。</p>
+<h2 id="1-smb版本问题">1. SMB版本问题</h2>
+<h3 id="11-smbv3">1.1 SMBv3</h3>
+<p>之前用cifs挂载共享文件夹的时候，没有仔细关注SMB协议的版本<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。以下命令行没有指定协议版本：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mount -t cifs //172.25.64.1/Share /home/dell/Share -o <span class="nv">uid</span><span class="o">=</span>xxx,gid<span class="o">=</span>xxx,username<span class="o">=</span>xxx
+</span></span></code></pre></div><p>用<code>mount</code>命令查看，默认连接协议是3.1版本：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7f59520785b536ff.webp 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_c3e0b21dd523267.webp 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_deefcdc197cbc7d5.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_5e1a7f35f8d360c4.jpg 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7d40a59cff0ba191.jpg 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_228a05879a1e818f.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7d40a59cff0ba191.jpg" width="1141" height="59" alt="8eb0d44e21043275d3b1241235da9048.png" title="8eb0d44e21043275d3b1241235da9048.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>在3.1版本协议的挂载目录下运行Abaqus程序，无法计算，报错如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">mpirun: Warning one or more remote shell commands exited with non-zero status, which may indicate a remote access problem.
+</span></span><span class="line"><span class="cl">driverExceptions.AbaqusExecutionError: (&#39;SIMULIA Job Layout Engine&#39;, 255, &#39;abaqus_test&#39;)
+</span></span><span class="line"><span class="cl">!!!
+</span></span><span class="line"><span class="cl">!!! SIM wrap utility command error:
+</span></span><span class="line"><span class="cl">!!!   System Error open: 无效的参数
+</span></span><span class="line"><span class="cl">!!!
+</span></span><span class="line"><span class="cl">driverExceptions.AbaqusExecutionError: (&#39;SIM Wrap-up&#39;, 1, &#39;abaqus_test&#39;)
+</span></span></code></pre></div><p>在3.1版本协议的挂载目录下运行CFX求解器，无法计算，报错如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">An error has occurred in cfx5solve:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Error copying MMS input file mms for reading: Input/output error
+</span></span></code></pre></div><h3 id="12-smbv2">1.2 SMBv2</h3>
+<p>在挂载命令行中增加<code>vers=2.0</code>关键字，显式指定协议版本为2.0：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mount -t cifs //172.25.64.1/Share /home/dell/Share -o <span class="nv">vers</span><span class="o">=</span>2.0,uid<span class="o">=</span>xxx,gid<span class="o">=</span>xxx,username<span class="o">=</span>xxx
+</span></span></code></pre></div><p>用<code>mount</code>命令查看确认协议版本是2.0：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/75a004023bdb35f19e9792c10a969f2c_hu_d31ee4f0c7fec185.webp 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/75a004023bdb35f19e9792c10a969f2c_hu_c57cf8f516714eb3.webp 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/75a004023bdb35f19e9792c10a969f2c_hu_7ade5efac04b88e5.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/75a004023bdb35f19e9792c10a969f2c_hu_d82c6868bb4c785d.jpg 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/75a004023bdb35f19e9792c10a969f2c_hu_6d3357653c98e423.jpg 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/75a004023bdb35f19e9792c10a969f2c_hu_6ff9464ca0e5b4ac.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/75a004023bdb35f19e9792c10a969f2c_hu_6d3357653c98e423.jpg" width="1139" height="63" alt="75a004023bdb35f19e9792c10a969f2c.png" title="75a004023bdb35f19e9792c10a969f2c.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>在2.0版本协议的挂载目录下运行Abaqus程序，可以完成计算，但存在报错：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">mpirun: Warning one or more remote shell commands exited with non-zero status, which may indicate a remote access problem.
+</span></span><span class="line"><span class="cl">driverExceptions.AbaqusExecutionError: (&#39;SIMULIA Job Layout Engine&#39;, 255, &#39;abaqus_test&#39;)
+</span></span></code></pre></div><p>在2.0版本协议的挂载目录下运行CFX求解器，还是无法计算，报错信息和SMBv3版本一样。</p>
+<h3 id="13-smbv1">1.3 SMBv1</h3>
+<p>指定协议版本为1.0：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mount -t cifs //172.25.64.1/Share /home/dell/Share -o <span class="nv">vers</span><span class="o">=</span>1.0,uid<span class="o">=</span>xxx,gid<span class="o">=</span>xxx,username<span class="o">=</span>xxx
+</span></span></code></pre></div><p><code>mount</code>确认：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/643d3cebc25c171e4f29a627a059c8f2_hu_24e80f3daa4a9f4a.webp 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/643d3cebc25c171e4f29a627a059c8f2_hu_cbcba6b4c8507303.webp 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/643d3cebc25c171e4f29a627a059c8f2_hu_f27caf85aabeb4ec.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/643d3cebc25c171e4f29a627a059c8f2_hu_b803b7ed7f060b0d.jpg 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/643d3cebc25c171e4f29a627a059c8f2_hu_bb6a7172cc403387.jpg 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/643d3cebc25c171e4f29a627a059c8f2_hu_a6ceb5a7c9b02393.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/643d3cebc25c171e4f29a627a059c8f2_hu_bb6a7172cc403387.jpg" width="1140" height="61" alt="643d3cebc25c171e4f29a627a059c8f2.png" title="643d3cebc25c171e4f29a627a059c8f2.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>在1.0版本协议的挂载目录下运行Abaqus程序，和SMBv2版本一样，可以完成计算但存在报错信息。</p>
+<p>在1.0版本协议的挂载目录下运行CFX求解器，无法计算，报错信息如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">An error has occurred in cfx5solve:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Error copying MMS input file mms for reading: Operation not supported
+</span></span></code></pre></div><h2 id="2-smb符号链接问题">2. SMB符号链接问题</h2>
+<h3 id="21-cfx环境变量">2.1 CFX环境变量</h3>
+<p>查看Ansys官方说明<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，CFX报错多半是符号链接的问题，在slurm计算脚本中增加以下环境变量：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">CFX5_DISABLE_SYMLINKS</span><span class="o">=</span><span class="m">1</span>
+</span></span></code></pre></div><p>在SMBv1~SMBv3版本协议中测试，增加该环境变量后，CFX均可以完成计算，问题算是解决了。</p>
+<h3 id="22-smbv3启用符号链接功能">2.2 SMBv3启用符号链接功能</h3>
+<p>在挂载命令中增加符号链接选项<code>mfsymlinks</code><sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mount -t cifs //172.25.64.1/Share /home/dell/Share -o mfsymlinks,uid<span class="o">=</span>xxx,gid<span class="o">=</span>xxx,username<span class="o">=</span>xxx
+</span></span></code></pre></div><p>实测效果跟<a href="#21-cfx%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f">2.1</a>
+增加CFX环境变量一样，可以解决CFX无法计算的问题。但Abaqus依旧报错且无法完成计算，看来Abaqus的问题和符号链接无关。</p>
+<h2 id="3-总结">3. 总结</h2>
+<p>如果需要在Linux挂载的Windows共享文件夹上运行Abaqus和CFX求解器，建议使用以下命令显式指定SMBv2版本并启用符号链接功能：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mount -t cifs //172.25.64.1/Share /home/dell/Share -o <span class="nv">vers</span><span class="o">=</span>2.0,mfsymlinks,uid<span class="o">=</span>xxx,gid<span class="o">=</span>xxx,username<span class="o">=</span>xxx
+</span></span></code></pre></div><p>以上可以保证CFX、Abaqus正常计算。</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://learn.microsoft.com/zh-cn/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=server" target="_blank" rel="noopener">在 Windows 中检测、启用和禁用 SMBv1、SMBv2 和 SMBv3</a>
+&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://innovationspace.ansys.com/knowledge/forums/topic/a-local-linux-machine-is-connected-to-a-windows-machine-through-samba-while-trying-to-run-cfx-solver-remotely-on-windows-through-samba-the-following-error-appears-error-copying-mms-input-file-mms/#:~:text=The%20workaround%20is%20to%20create%20the%20file%20.cfx5rc,the%20user%E2%80%99s%20home%20directory%20with%20the%20line%20CFX5_DISABLE_SYMLINKS%3D1." target="_blank" rel="noopener">A local Linux machine is connected to a Windows machine through Samba. &hellip;</a>
+&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p><a href="https://help.aliyun.com/zh/nas/user-guide/mount-an-smb-file-system-on-a-linux-ecs-instance?spm=a2c4g.11186623.0.0.74564b9fxIojTZ#table-dgv-w7q-ff8" target="_blank" rel="noopener">挂载SMB协议文件系统</a>
+&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Unveiling TenFong Tech&#39;s Domestic CFD Software—QFlux and QMesh :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Conclusion first: TenFong Tech’s products QFlux and QMesh do not align with their marketing claims. QMesh is not an &ldquo;independently developed advanced computational fluid dynamics (CFD) core software,&rdquo; and QFlux is far from feature-complete. There is strong evidence to suggest that QFlux’s solver may have been &ldquo;borrowed&rdquo; from OpenFOAM.
+1. Software Overview and Download Let’s skip the preamble. TenFong Tech’s marketing claims can be seen on their official websites（http://www.tenfong.cn/、http://www.qfx-tech.com/）.
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/post/2021-09-08-tenfong/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Unveiling TenFong Tech&#39;s Domestic CFD Software—QFlux and QMesh">
+  <meta property="og:description" content="Conclusion first: TenFong Tech’s products QFlux and QMesh do not align with their marketing claims. QMesh is not an “independently developed advanced computational fluid dynamics (CFD) core software,” and QFlux is far from feature-complete. There is strong evidence to suggest that QFlux’s solver may have been “borrowed” from OpenFOAM.
+1. Software Overview and Download Let’s skip the preamble. TenFong Tech’s marketing claims can be seen on their official websites（http://www.tenfong.cn/、http://www.qfx-tech.com/）.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2021-09-08T00:00:00+00:00">
+    <meta property="article:modified_time" content="2021-09-08T00:00:00+00:00">
+    <meta property="article:tag" content="Cfd">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Unveiling TenFong Tech&#39;s Domestic CFD Software—QFlux and QMesh">
+  <meta name="twitter:description" content="Conclusion first: TenFong Tech’s products QFlux and QMesh do not align with their marketing claims. QMesh is not an “independently developed advanced computational fluid dynamics (CFD) core software,” and QFlux is far from feature-complete. There is strong evidence to suggest that QFlux’s solver may have been “borrowed” from OpenFOAM.
+1. Software Overview and Download Let’s skip the preamble. TenFong Tech’s marketing claims can be seen on their official websites（http://www.tenfong.cn/、http://www.qfx-tech.com/）.">
+
+
+<link rel="canonical" href="https://andrewmoa.site/post/2021-09-08-tenfong/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2021-09-08T00:00:00Z","datePublished":"2021-09-08T00:00:00Z","description":"Conclusion first: TenFong Tech’s products QFlux and QMesh do not align with their marketing claims. QMesh is not an \u0026ldquo;independently developed advanced computational fluid dynamics (CFD) core software,\u0026rdquo; and QFlux is far from feature-complete. There is strong evidence to suggest that QFlux’s solver may have been \u0026ldquo;borrowed\u0026rdquo; from OpenFOAM.\n1. Software Overview and Download Let’s skip the preamble. TenFong Tech’s marketing claims can be seen on their official websites（http://www.tenfong.cn/、http://www.qfx-tech.com/）.\n","image":"/images/post-bg-tea.jpg","name":"Unveiling TenFong Tech's Domestic CFD Software—QFlux and QMesh","url":"https://andrewmoa.site/post/2021-09-08-tenfong/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">Open main menu</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/post/" title="Post">Post</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/about/" title="About">About</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">Open language switcher</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">English</span>
+            </li>
+        
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/zh-cn/post/2021-09-08-tenfong/" title="中文">中文</a></li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">Search</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="Toggle dark mode">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="Toggle dark mode">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/post/2021-09-08-tenfong/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/post-bg-tea.jpg"
+      alt="Unveiling TenFong Tech&#39;s Domestic CFD Software—QFlux and QMesh" title="Unveiling TenFong Tech&#39;s Domestic CFD Software—QFlux and QMesh"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/post/2021-09-08-tenfong/">Unveiling TenFong Tech&rsquo;s Domestic CFD Software—QFlux and QMesh</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/categories/zhihu/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Zhihu
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/tags/cfd/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cfd</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2021-09-08T00:00:00&#43;00:00">
+      2021-09-08
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      7 minutes to read
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>Table of Contents</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-software-overview-and-download">1. Software Overview and Download</a></li>
+    <li><a href="#2-pre-processing-qmesh">2. Pre-processing QMesh</a></li>
+    <li><a href="#3-cfd-solver-qflux">3. CFD Solver QFlux</a></li>
+    <li><a href="#4-qflux-vs-openfoam">4. QFlux vs. OpenFOAM</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>Conclusion first: TenFong Tech’s products QFlux and QMesh do not align with their marketing claims. QMesh is not an &ldquo;independently developed advanced computational fluid dynamics (CFD) core software,&rdquo; and QFlux is far from feature-complete. There is strong evidence to suggest that QFlux’s solver may have been &ldquo;borrowed&rdquo; from OpenFOAM.</p>
+<h2 id="1-software-overview-and-download">1. Software Overview and Download</h2>
+<p>Let’s skip the preamble. TenFong Tech’s marketing claims can be seen on their official websites（http://www.tenfong.cn/、http://www.qfx-tech.com/）.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-01-%E4%BC%81%E4%B8%9A%E6%A6%82%E5%86%B5_hu_e863181bb681173.webp 320w, /post/2021-09-08-tenfong/images/20210808-01-%E4%BC%81%E4%B8%9A%E6%A6%82%E5%86%B5_hu_b77edfac386d497f.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-01-%E4%BC%81%E4%B8%9A%E6%A6%82%E5%86%B5_hu_5bc43817acccc4d4.jpg 320w, /post/2021-09-08-tenfong/images/20210808-01-%E4%BC%81%E4%B8%9A%E6%A6%82%E5%86%B5_hu_2ead1fdf4267fef2.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-01-%E4%BC%81%E4%B8%9A%E6%A6%82%E5%86%B5_hu_2ead1fdf4267fef2.jpg" width="908" height="515" alt="20210808-01-企业概况.png" title="20210808-01-企业概况.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The company lists two products: QFlux (a CFD solver) and QMesh (a pre-processing mesh tool). Interested users can register and download them from the website.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-02-QFlux_hu_f5182d64d5ffe1c2.webp 320w, /post/2021-09-08-tenfong/images/20210808-02-QFlux_hu_51d7e086897cc8a4.webp 640w, /post/2021-09-08-tenfong/images/20210808-02-QFlux_hu_f8f24b3176968dff.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-02-QFlux_hu_abb4327bbd7fd517.jpg 320w, /post/2021-09-08-tenfong/images/20210808-02-QFlux_hu_b145feae5823660c.jpg 640w, /post/2021-09-08-tenfong/images/20210808-02-QFlux_hu_7b055cf23a035798.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-02-QFlux_hu_b145feae5823660c.jpg" width="1065" height="483" alt="20210808-02-QFlux.png" title="20210808-02-QFlux.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-03-QMesh_hu_fbf0ffbc3785cd.webp 320w, /post/2021-09-08-tenfong/images/20210808-03-QMesh_hu_ad7d5ae3fe83d3e2.webp 640w, /post/2021-09-08-tenfong/images/20210808-03-QMesh_hu_1fa85190ff53d15c.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-03-QMesh_hu_f1115d8f9f193560.jpg 320w, /post/2021-09-08-tenfong/images/20210808-03-QMesh_hu_626e0612d5dbedf8.jpg 640w, /post/2021-09-08-tenfong/images/20210808-03-QMesh_hu_c752de402483b6f4.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-03-QMesh_hu_626e0612d5dbedf8.jpg" width="1259" height="440" alt="20210808-03-QMesh.png" title="20210808-03-QMesh.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Due to browser settings (or perhaps intentional design), clicking the download button does not prompt a confirmation dialog. Instead, the installer is silently downloaded to the system’s temporary folder (Windows: C:\Users[Username]\AppData\Local\Temp). Finding the downloaded files requires some effort.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-04-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6_hu_daaf834ea870bdd7.webp 320w, /post/2021-09-08-tenfong/images/20210808-04-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6_hu_f3441f56bade7aa.webp 640w, /post/2021-09-08-tenfong/images/20210808-04-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6_hu_cfb0866386fd9839.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-04-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6_hu_5b14c25f8ab02c66.jpg 320w, /post/2021-09-08-tenfong/images/20210808-04-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6_hu_f982adb86579aee2.jpg 640w, /post/2021-09-08-tenfong/images/20210808-04-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6_hu_5c25bfdebaa94c4c.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-04-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6_hu_f982adb86579aee2.jpg" width="986" height="165" alt="20210808-04-下载文件.png" title="20210808-04-下载文件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>After extraction, you’ll get two installers: <code>QFlux_x64.exe</code> and <code>QMesh_x64.exe</code>. The installation process is straightforward and won’t be detailed here.</p>
+<h2 id="2-pre-processing-qmesh">2. Pre-processing QMesh</h2>
+<p>Let’s start with QMesh.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-05-QMesh%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_4c2ce4cc82344c18.webp 320w, /post/2021-09-08-tenfong/images/20210808-05-QMesh%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_24cb5df99cb727df.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-05-QMesh%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_da67cd1ac8427c67.jpg 320w, /post/2021-09-08-tenfong/images/20210808-05-QMesh%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_2ce5d44a3e05761f.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-05-QMesh%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_2ce5d44a3e05761f.jpg" width="875" height="576" alt="20210808-05-QMesh程序文件.png" title="20210808-05-QMesh程序文件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>QMesh uses the VTK library for mesh visualization and Qt for its GUI. However, there is no mention of Qt’s licensing (GPL, LGPL, or commercial). Did TenFong Tech properly license Qt?</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-06-QMesh%E7%BD%91%E6%A0%BC%E7%94%9F%E6%88%90%E7%A8%8B%E5%BA%8F_hu_ad446da1bf11b817.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-06-QMesh%E7%BD%91%E6%A0%BC%E7%94%9F%E6%88%90%E7%A8%8B%E5%BA%8F_hu_182c81adada88940.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-06-QMesh%E7%BD%91%E6%A0%BC%E7%94%9F%E6%88%90%E7%A8%8B%E5%BA%8F_hu_5582714ef48794f3.jpg" width="343" height="607" alt="20210808-06-QMesh网格生成程序.png" title="20210808-06-QMesh网格生成程序.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>QMesh’s core mesh generator is <code>snappyHexMesh</code>, a tool bundled with OpenFOAM.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-07-QMesh%E5%B8%AE%E5%8A%A9%E6%96%87%E4%BB%B6%E6%A6%82%E8%BF%B0_hu_5a18f4d09381477c.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-07-QMesh%E5%B8%AE%E5%8A%A9%E6%96%87%E4%BB%B6%E6%A6%82%E8%BF%B0_hu_aa80c32a56acfe85.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-07-QMesh%E5%B8%AE%E5%8A%A9%E6%96%87%E4%BB%B6%E6%A6%82%E8%BF%B0_hu_9791ff4a30a06249.jpg" width="531" height="195" alt="20210808-07-QMesh帮助文件概述.png" title="20210808-07-QMesh帮助文件概述.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The help file openly acknowledges this. But TenFong’s website claims QMesh is &ldquo;independently developed.&rdquo; If the core tool is borrowed, how is this &ldquo;independent&rdquo;? Did they only develop a GUI wrapper?</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-08-QMesh%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_eeea6c3ca3cbc212.webp 320w, /post/2021-09-08-tenfong/images/20210808-08-QMesh%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_2e8672b4753c9301.webp 640w, /post/2021-09-08-tenfong/images/20210808-08-QMesh%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_54dd52095db60dab.webp 960w, /post/2021-09-08-tenfong/images/20210808-08-QMesh%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_bd7aae926543e89e.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-08-QMesh%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_14e19b93054050c5.jpg 320w, /post/2021-09-08-tenfong/images/20210808-08-QMesh%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_b4be4b331b04b87c.jpg 640w, /post/2021-09-08-tenfong/images/20210808-08-QMesh%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_f6126679c3d37ff2.jpg 960w, /post/2021-09-08-tenfong/images/20210808-08-QMesh%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_fd632476fa4e5145.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-08-QMesh%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_b4be4b331b04b87c.jpg" width="1536" height="832" alt="20210808-08-QMesh软件界面.png" title="20210808-08-QMesh软件界面.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Upon launching, QMesh displays a 180-day trial period. The version is 2.1.3, copyrighted by &ldquo;Shenzhen Qingfengxi Co., Ltd.&rdquo;</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-09-elbow%E9%9D%A2%E7%BD%91%E6%A0%BC%E6%96%87%E4%BB%B6-stl%E6%A0%BC%E5%BC%8F_hu_7742faf017e30140.webp 320w, /post/2021-09-08-tenfong/images/20210808-09-elbow%E9%9D%A2%E7%BD%91%E6%A0%BC%E6%96%87%E4%BB%B6-stl%E6%A0%BC%E5%BC%8F_hu_29c65ffbc6295703.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-09-elbow%E9%9D%A2%E7%BD%91%E6%A0%BC%E6%96%87%E4%BB%B6-stl%E6%A0%BC%E5%BC%8F_hu_e1bc61c4d8fbd4b6.jpg 320w, /post/2021-09-08-tenfong/images/20210808-09-elbow%E9%9D%A2%E7%BD%91%E6%A0%BC%E6%96%87%E4%BB%B6-stl%E6%A0%BC%E5%BC%8F_hu_4b7785ca33934ff5.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-09-elbow%E9%9D%A2%E7%BD%91%E6%A0%BC%E6%96%87%E4%BB%B6-stl%E6%A0%BC%E5%BC%8F_hu_4b7785ca33934ff5.jpg" width="685" height="531" alt="20210808-09-elbow面网格文件-stl格式.png" title="20210808-09-elbow面网格文件-stl格式.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Using Fluent’s classic elbow case, we exported an STL file from ANSA.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-10-QMesh%E5%AF%BC%E5%85%A5STL%E6%96%87%E4%BB%B6_hu_2fe9c7854241aabc.webp 320w, /post/2021-09-08-tenfong/images/20210808-10-QMesh%E5%AF%BC%E5%85%A5STL%E6%96%87%E4%BB%B6_hu_dffe003e3f1fbcc0.webp 640w, /post/2021-09-08-tenfong/images/20210808-10-QMesh%E5%AF%BC%E5%85%A5STL%E6%96%87%E4%BB%B6_hu_29cb6841214be9c7.webp 960w, /post/2021-09-08-tenfong/images/20210808-10-QMesh%E5%AF%BC%E5%85%A5STL%E6%96%87%E4%BB%B6_hu_f614c70507493001.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-10-QMesh%E5%AF%BC%E5%85%A5STL%E6%96%87%E4%BB%B6_hu_c1389d663423a878.jpg 320w, /post/2021-09-08-tenfong/images/20210808-10-QMesh%E5%AF%BC%E5%85%A5STL%E6%96%87%E4%BB%B6_hu_283618ae9f946be6.jpg 640w, /post/2021-09-08-tenfong/images/20210808-10-QMesh%E5%AF%BC%E5%85%A5STL%E6%96%87%E4%BB%B6_hu_ea4f8495c104c7fb.jpg 960w, /post/2021-09-08-tenfong/images/20210808-10-QMesh%E5%AF%BC%E5%85%A5STL%E6%96%87%E4%BB%B6_hu_2a0696e69ecdc496.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-10-QMesh%E5%AF%BC%E5%85%A5STL%E6%96%87%E4%BB%B6_hu_283618ae9f946be6.jpg" width="1536" height="833" alt="20210808-10-QMesh导入STL文件.png" title="20210808-10-QMesh导入STL文件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>QMesh imports STL files but fails to recognize pre-partitioned surfaces or allow re-partitioning.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-11-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E5%8C%BA%E5%9F%9F_hu_38f1d25743d55669.webp 320w, /post/2021-09-08-tenfong/images/20210808-11-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E5%8C%BA%E5%9F%9F_hu_4ef1dab48a9cf3d8.webp 640w, /post/2021-09-08-tenfong/images/20210808-11-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E5%8C%BA%E5%9F%9F_hu_ba0d137803f1a531.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-11-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E5%8C%BA%E5%9F%9F_hu_7f7c44f5cdbb07ee.jpg 320w, /post/2021-09-08-tenfong/images/20210808-11-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E5%8C%BA%E5%9F%9F_hu_6a1a2aa77c85a344.jpg 640w, /post/2021-09-08-tenfong/images/20210808-11-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E5%8C%BA%E5%9F%9F_hu_9bf88d60a8af029e.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-11-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E5%8C%BA%E5%9F%9F_hu_6a1a2aa77c85a344.jpg" width="1261" height="611" alt="20210808-11-QMesh设置网格区域.png" title="20210808-11-QMesh设置网格区域.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Background mesh settings resemble OpenFOAM’s <code>blockMesh</code>, but users cannot adjust grid sizes. The &ldquo;locationInMesh&rdquo; parameter (familiar to OpenFOAM users) is set via the &ldquo;Region&rdquo; tab.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-12-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E6%8E%A7%E5%88%B6%E5%8F%82%E6%95%B0_hu_7330d7ffdef5c36f.webp 320w, /post/2021-09-08-tenfong/images/20210808-12-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E6%8E%A7%E5%88%B6%E5%8F%82%E6%95%B0_hu_9457e302e6658615.webp 640w, /post/2021-09-08-tenfong/images/20210808-12-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E6%8E%A7%E5%88%B6%E5%8F%82%E6%95%B0_hu_28fbb4272fa8f8f.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-12-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E6%8E%A7%E5%88%B6%E5%8F%82%E6%95%B0_hu_3478a36615a05abb.jpg 320w, /post/2021-09-08-tenfong/images/20210808-12-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E6%8E%A7%E5%88%B6%E5%8F%82%E6%95%B0_hu_fce41c0f209e30b2.jpg 640w, /post/2021-09-08-tenfong/images/20210808-12-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E6%8E%A7%E5%88%B6%E5%8F%82%E6%95%B0_hu_13155921907602e5.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-12-QMesh%E8%AE%BE%E7%BD%AE%E7%BD%91%E6%A0%BC%E6%8E%A7%E5%88%B6%E5%8F%82%E6%95%B0_hu_fce41c0f209e30b2.jpg" width="1261" height="611" alt="20210808-12-QMesh设置网格控制参数.png" title="20210808-12-QMesh设置网格控制参数.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Mesh refinement and boundary layer controls mirror OpenFOAM’s <code>snappyHexMeshDict</code> parameters.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-13-QMesh%E5%89%96%E5%88%86%E7%BD%91%E6%A0%BC_hu_bec9b8bc2c1dbbb.webp 320w, /post/2021-09-08-tenfong/images/20210808-13-QMesh%E5%89%96%E5%88%86%E7%BD%91%E6%A0%BC_hu_57177b6e761cbab0.webp 640w, /post/2021-09-08-tenfong/images/20210808-13-QMesh%E5%89%96%E5%88%86%E7%BD%91%E6%A0%BC_hu_c23a54f040e88f28.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-13-QMesh%E5%89%96%E5%88%86%E7%BD%91%E6%A0%BC_hu_706c0165c7686506.jpg 320w, /post/2021-09-08-tenfong/images/20210808-13-QMesh%E5%89%96%E5%88%86%E7%BD%91%E6%A0%BC_hu_ae16cd0f2b97e8f1.jpg 640w, /post/2021-09-08-tenfong/images/20210808-13-QMesh%E5%89%96%E5%88%86%E7%BD%91%E6%A0%BC_hu_31a6290cc4472441.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-13-QMesh%E5%89%96%E5%88%86%E7%BD%91%E6%A0%BC_hu_ae16cd0f2b97e8f1.jpg" width="1261" height="611" alt="20210808-13-QMesh剖分网格.png" title="20210808-13-QMesh剖分网格.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Click &ldquo;Grid&rdquo;. In the pop-up dialog box, you can choose to set related parameters in parallel and select the grid and boundary layer.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-14-QMesh%E8%B0%83%E7%94%A8snappyHexMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_54efb758c92db15d.webp 320w, /post/2021-09-08-tenfong/images/20210808-14-QMesh%E8%B0%83%E7%94%A8snappyHexMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_5ebfedc88bf39594.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-14-QMesh%E8%B0%83%E7%94%A8snappyHexMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_7d8ce562d051be7f.jpg 320w, /post/2021-09-08-tenfong/images/20210808-14-QMesh%E8%B0%83%E7%94%A8snappyHexMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_33967b7081396e25.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-14-QMesh%E8%B0%83%E7%94%A8snappyHexMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_33967b7081396e25.jpg" width="784" height="299" alt="20210808-14-QMesh调用snappyHexMesh生成网格.png" title="20210808-14-QMesh调用snappyHexMesh生成网格.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Through the task manager, you can see that QMesh actually performs mesh generation operations by calling snappyHexMesh.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-15-QMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_329acddb16a931a6.webp 320w, /post/2021-09-08-tenfong/images/20210808-15-QMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_6c10c4fe99a4661f.webp 640w, /post/2021-09-08-tenfong/images/20210808-15-QMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_6b1df8a20e4b777.webp 960w, /post/2021-09-08-tenfong/images/20210808-15-QMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_d1bff93f31eaa6a9.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-15-QMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_71f64c1f080fbd35.jpg 320w, /post/2021-09-08-tenfong/images/20210808-15-QMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_da9a12e8d24ec77.jpg 640w, /post/2021-09-08-tenfong/images/20210808-15-QMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_a76e3ed5edc32c7d.jpg 960w, /post/2021-09-08-tenfong/images/20210808-15-QMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_3c7e6c5dc5007ef3.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-15-QMesh%E7%94%9F%E6%88%90%E7%BD%91%E6%A0%BC_hu_da9a12e8d24ec77.jpg" width="1535" height="832" alt="20210808-15-QMesh生成网格.png" title="20210808-15-QMesh生成网格.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Since snappyHexMesh is used for mesh generation, some inherent defects of snappyHexMesh are inevitably introduced. It can be seen that the local mesh is deformed, which is actually caused by the defects of snappyHexMesh. There is still no good solution. Since the background mesh size cannot be adjusted, when the local mesh and the background mesh overlap, a new boundary area may be generated, just like the <code>y-minus</code> area in the figure above.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-16-QMesh%E5%AF%BC%E5%87%BA%E7%BD%91%E6%A0%BC_hu_8e8a00194fd539dc.webp 320w, /post/2021-09-08-tenfong/images/20210808-16-QMesh%E5%AF%BC%E5%87%BA%E7%BD%91%E6%A0%BC_hu_d38c85a9518a548f.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-16-QMesh%E5%AF%BC%E5%87%BA%E7%BD%91%E6%A0%BC_hu_af19d2f2db09df17.jpg 320w, /post/2021-09-08-tenfong/images/20210808-16-QMesh%E5%AF%BC%E5%87%BA%E7%BD%91%E6%A0%BC_hu_cbcb7c619103fea9.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-16-QMesh%E5%AF%BC%E5%87%BA%E7%BD%91%E6%A0%BC_hu_cbcb7c619103fea9.jpg" width="717" height="160" alt="20210808-16-QMesh导出网格.png" title="20210808-16-QMesh导出网格.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Export the mesh generated by QMesh to elbow.msh (Fluent Mesh format) and elbow.cgns (CGNS general format). The QMesh project file is saved in .qmh format. You can see that the size of elbow.cgns is only 4kB, and it is obvious that the CGNS format is not saved successfully.</p>
+<h2 id="3-cfd-solver-qflux">3. CFD Solver QFlux</h2>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-17-QFlux%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_62603db11ca8c260.webp 320w, /post/2021-09-08-tenfong/images/20210808-17-QFlux%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_9219a02880d39af6.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-17-QFlux%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_ba6205512ee2c7c6.jpg 320w, /post/2021-09-08-tenfong/images/20210808-17-QFlux%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_1f8c36fce731888c.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-17-QFlux%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6_hu_1f8c36fce731888c.jpg" width="884" height="596" alt="20210808-17-QFlux程序文件.png" title="20210808-17-QFlux程序文件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>QFlux also relies on Qt and VTK, again without proper licensing notices.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-18-QFlux%E6%A0%B8%E5%BF%83%E6%B1%82%E8%A7%A3%E5%99%A8%E6%96%87%E4%BB%B6_hu_fbef8bf463dab212.webp 320w, /post/2021-09-08-tenfong/images/20210808-18-QFlux%E6%A0%B8%E5%BF%83%E6%B1%82%E8%A7%A3%E5%99%A8%E6%96%87%E4%BB%B6_hu_d3782944faf29b49.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-18-QFlux%E6%A0%B8%E5%BF%83%E6%B1%82%E8%A7%A3%E5%99%A8%E6%96%87%E4%BB%B6_hu_5d9633cfe47d14a5.jpg 320w, /post/2021-09-08-tenfong/images/20210808-18-QFlux%E6%A0%B8%E5%BF%83%E6%B1%82%E8%A7%A3%E5%99%A8%E6%96%87%E4%BB%B6_hu_19c9de21b6e6b8e7.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-18-QFlux%E6%A0%B8%E5%BF%83%E6%B1%82%E8%A7%A3%E5%99%A8%E6%96%87%E4%BB%B6_hu_19c9de21b6e6b8e7.jpg" width="877" height="607" alt="20210808-18-QFlux核心求解器文件.png" title="20210808-18-QFlux核心求解器文件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The core solver is <code>qcore</code>. Let’s talk about later.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210808-19-QFlux%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_551e1975041e778.webp 320w, /post/2021-09-08-tenfong/images/20210808-19-QFlux%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_5a964f9a7945e8.webp 640w, /post/2021-09-08-tenfong/images/20210808-19-QFlux%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_a43016cb8f73369b.webp 960w, /post/2021-09-08-tenfong/images/20210808-19-QFlux%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_1c921226f7f6a56f.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210808-19-QFlux%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_a1f24f4ff6ba4114.jpg 320w, /post/2021-09-08-tenfong/images/20210808-19-QFlux%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_d3a56cb3978f70bf.jpg 640w, /post/2021-09-08-tenfong/images/20210808-19-QFlux%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_fa7c44d6d42dcd7d.jpg 960w, /post/2021-09-08-tenfong/images/20210808-19-QFlux%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_c0f108daf8d329c8.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210808-19-QFlux%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2_hu_d3a56cb3978f70bf.jpg" width="1536" height="832" alt="20210808-19-QFlux软件界面.png" title="20210808-19-QFlux软件界面.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>QFlux’s interface (version 2.7.152.0) is copyrighted by &ldquo;Shenzhen TenFong Technology Co., Ltd.&rdquo;</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-20-QFlux%E5%AF%BC%E5%85%A5msh%E6%96%87%E4%BB%B6_hu_803ee1d70d7f5b71.webp 320w, /post/2021-09-08-tenfong/images/20210809-20-QFlux%E5%AF%BC%E5%85%A5msh%E6%96%87%E4%BB%B6_hu_e236bbd1aa017600.webp 640w, /post/2021-09-08-tenfong/images/20210809-20-QFlux%E5%AF%BC%E5%85%A5msh%E6%96%87%E4%BB%B6_hu_bab5b43a2de051e9.webp 960w, /post/2021-09-08-tenfong/images/20210809-20-QFlux%E5%AF%BC%E5%85%A5msh%E6%96%87%E4%BB%B6_hu_cba70bf2cac0034f.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-20-QFlux%E5%AF%BC%E5%85%A5msh%E6%96%87%E4%BB%B6_hu_643014ca1702db3b.jpg 320w, /post/2021-09-08-tenfong/images/20210809-20-QFlux%E5%AF%BC%E5%85%A5msh%E6%96%87%E4%BB%B6_hu_4f967c70fbb4e6bf.jpg 640w, /post/2021-09-08-tenfong/images/20210809-20-QFlux%E5%AF%BC%E5%85%A5msh%E6%96%87%E4%BB%B6_hu_aca600fcdd439df4.jpg 960w, /post/2021-09-08-tenfong/images/20210809-20-QFlux%E5%AF%BC%E5%85%A5msh%E6%96%87%E4%BB%B6_hu_18c39692127a9ff5.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-20-QFlux%E5%AF%BC%E5%85%A5msh%E6%96%87%E4%BB%B6_hu_4f967c70fbb4e6bf.jpg" width="1536" height="832" alt="20210809-20-QFlux导入msh文件.png" title="20210809-20-QFlux导入msh文件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Attempting to import the QMesh-generated .msh file fails—ironic, given both tools are from TenFong.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-21-QFlux%E5%AF%BC%E5%85%A5ANSA%E7%94%9F%E6%88%90%E7%9A%84cgns%E6%96%87%E4%BB%B6_hu_bc47c87083afb29f.webp 320w, /post/2021-09-08-tenfong/images/20210809-21-QFlux%E5%AF%BC%E5%85%A5ANSA%E7%94%9F%E6%88%90%E7%9A%84cgns%E6%96%87%E4%BB%B6_hu_8559c53b27751d84.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-21-QFlux%E5%AF%BC%E5%85%A5ANSA%E7%94%9F%E6%88%90%E7%9A%84cgns%E6%96%87%E4%BB%B6_hu_f2bb333b6500f0cb.jpg 320w, /post/2021-09-08-tenfong/images/20210809-21-QFlux%E5%AF%BC%E5%85%A5ANSA%E7%94%9F%E6%88%90%E7%9A%84cgns%E6%96%87%E4%BB%B6_hu_53f2c05689531842.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-21-QFlux%E5%AF%BC%E5%85%A5ANSA%E7%94%9F%E6%88%90%E7%9A%84cgns%E6%96%87%E4%BB%B6_hu_53f2c05689531842.jpg" width="797" height="785" alt="20210809-21-QFlux导入ANSA生成的cgns文件.png" title="20210809-21-QFlux导入ANSA生成的cgns文件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Importing an ANSA-generated CGNS file also fails to recognize boundaries.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-22-QFlux%E5%AF%BC%E5%85%A5cgns%E7%BD%91%E6%A0%BC_hu_3fca2b8379b24231.webp 320w, /post/2021-09-08-tenfong/images/20210809-22-QFlux%E5%AF%BC%E5%85%A5cgns%E7%BD%91%E6%A0%BC_hu_805b24184c9109d8.webp 640w, /post/2021-09-08-tenfong/images/20210809-22-QFlux%E5%AF%BC%E5%85%A5cgns%E7%BD%91%E6%A0%BC_hu_a6753f44647ec249.webp 960w, /post/2021-09-08-tenfong/images/20210809-22-QFlux%E5%AF%BC%E5%85%A5cgns%E7%BD%91%E6%A0%BC_hu_2a5515eb4497ec34.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-22-QFlux%E5%AF%BC%E5%85%A5cgns%E7%BD%91%E6%A0%BC_hu_fe2f9c584460034b.jpg 320w, /post/2021-09-08-tenfong/images/20210809-22-QFlux%E5%AF%BC%E5%85%A5cgns%E7%BD%91%E6%A0%BC_hu_d647ef0dc16a36ee.jpg 640w, /post/2021-09-08-tenfong/images/20210809-22-QFlux%E5%AF%BC%E5%85%A5cgns%E7%BD%91%E6%A0%BC_hu_b0fa55b7ffdfcd1a.jpg 960w, /post/2021-09-08-tenfong/images/20210809-22-QFlux%E5%AF%BC%E5%85%A5cgns%E7%BD%91%E6%A0%BC_hu_d153e897830ba823.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-22-QFlux%E5%AF%BC%E5%85%A5cgns%E7%BD%91%E6%A0%BC_hu_d647ef0dc16a36ee.jpg" width="1537" height="833" alt="20210809-22-QFlux导入cgns网格.png" title="20210809-22-QFlux导入cgns网格.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Using <code>OFoamToQFlux</code> (a bundled tool), we converted an OpenFOAM mesh to QFlux format.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">cd</span> /d D:\opt\tenfong\QFlux #[QFlux Installion]
+</span></span><span class="line"><span class="cl"><span class="k">set</span> <span class="nv">path</span><span class="p">=</span><span class="nv">%cd%</span>;<span class="nv">%path%</span>
+</span></span><span class="line"><span class="cl"><span class="k">cd</span> /d F:\tenfong\solve #[OpenFOAM Case Dir]
+</span></span><span class="line"><span class="cl">OFoamToQFlux <span class="nv">%cd%</span>\[OpenFOAM Case Dir]\constant\polyMesh out.qfx
+</span></span></code></pre></div><p>This will generate a QFlux grid file and save it in QFlux format (.qfx). You can directly open the out.qfx file.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-23-QFlux%E6%89%93%E5%BC%80qfx%E6%96%87%E4%BB%B6_hu_850c99832979013a.webp 320w, /post/2021-09-08-tenfong/images/20210809-23-QFlux%E6%89%93%E5%BC%80qfx%E6%96%87%E4%BB%B6_hu_6258ee8abb8e4f3a.webp 640w, /post/2021-09-08-tenfong/images/20210809-23-QFlux%E6%89%93%E5%BC%80qfx%E6%96%87%E4%BB%B6_hu_754c3372374eeb46.webp 960w, /post/2021-09-08-tenfong/images/20210809-23-QFlux%E6%89%93%E5%BC%80qfx%E6%96%87%E4%BB%B6_hu_59fc7d984e920a3.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-23-QFlux%E6%89%93%E5%BC%80qfx%E6%96%87%E4%BB%B6_hu_af5aff0005974764.jpg 320w, /post/2021-09-08-tenfong/images/20210809-23-QFlux%E6%89%93%E5%BC%80qfx%E6%96%87%E4%BB%B6_hu_46fcc73eb578ba54.jpg 640w, /post/2021-09-08-tenfong/images/20210809-23-QFlux%E6%89%93%E5%BC%80qfx%E6%96%87%E4%BB%B6_hu_29845a018bf3f318.jpg 960w, /post/2021-09-08-tenfong/images/20210809-23-QFlux%E6%89%93%E5%BC%80qfx%E6%96%87%E4%BB%B6_hu_3bc9c2728b38e67c.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-23-QFlux%E6%89%93%E5%BC%80qfx%E6%96%87%E4%BB%B6_hu_46fcc73eb578ba54.jpg" width="1536" height="832" alt="20210809-23-QFlux打开qfx文件.png" title="20210809-23-QFlux打开qfx文件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-24-QFlux%E6%98%BE%E7%A4%BA%E8%BE%B9%E7%95%8C%E4%BF%A1%E6%81%AF_hu_6b3de3d27a688362.webp 320w, /post/2021-09-08-tenfong/images/20210809-24-QFlux%E6%98%BE%E7%A4%BA%E8%BE%B9%E7%95%8C%E4%BF%A1%E6%81%AF_hu_174998e3177bddcc.webp 640w, /post/2021-09-08-tenfong/images/20210809-24-QFlux%E6%98%BE%E7%A4%BA%E8%BE%B9%E7%95%8C%E4%BF%A1%E6%81%AF_hu_9e16147a3162c6d1.webp 960w, /post/2021-09-08-tenfong/images/20210809-24-QFlux%E6%98%BE%E7%A4%BA%E8%BE%B9%E7%95%8C%E4%BF%A1%E6%81%AF_hu_a0c6481046bae202.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-24-QFlux%E6%98%BE%E7%A4%BA%E8%BE%B9%E7%95%8C%E4%BF%A1%E6%81%AF_hu_57c00ffa57a7f36d.jpg 320w, /post/2021-09-08-tenfong/images/20210809-24-QFlux%E6%98%BE%E7%A4%BA%E8%BE%B9%E7%95%8C%E4%BF%A1%E6%81%AF_hu_e15e7fab315a3633.jpg 640w, /post/2021-09-08-tenfong/images/20210809-24-QFlux%E6%98%BE%E7%A4%BA%E8%BE%B9%E7%95%8C%E4%BF%A1%E6%81%AF_hu_1e1278e82da6741.jpg 960w, /post/2021-09-08-tenfong/images/20210809-24-QFlux%E6%98%BE%E7%A4%BA%E8%BE%B9%E7%95%8C%E4%BF%A1%E6%81%AF_hu_78a6d227b4b6d6aa.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-24-QFlux%E6%98%BE%E7%A4%BA%E8%BE%B9%E7%95%8C%E4%BF%A1%E6%81%AF_hu_e15e7fab315a3633.jpg" width="1536" height="832" alt="20210809-24-QFlux显示边界信息.png" title="20210809-24-QFlux显示边界信息.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>This successfully displays the boundary information, and the boundary conditions can be modified later.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-25-%E6%A1%88%E4%BE%8B%E8%AF%B4%E6%98%8E_hu_ee51b6792c540ad0.webp 320w, /post/2021-09-08-tenfong/images/20210809-25-%E6%A1%88%E4%BE%8B%E8%AF%B4%E6%98%8E_hu_1847e3a9ac10f057.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-25-%E6%A1%88%E4%BE%8B%E8%AF%B4%E6%98%8E_hu_179502cf9b7a59d.jpg 320w, /post/2021-09-08-tenfong/images/20210809-25-%E6%A1%88%E4%BE%8B%E8%AF%B4%E6%98%8E_hu_7fd6c662ae0ba3fb.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-25-%E6%A1%88%E4%BE%8B%E8%AF%B4%E6%98%8E_hu_7fd6c662ae0ba3fb.jpg" width="684" height="707" alt="20210809-25-案例说明.png" title="20210809-25-案例说明.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The calculation case is taken from the classic case elbow of Ansys Fluent, and the fluid and boundary parameter settings are shown in the figure above.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-26-QFlux%E5%9F%BA%E6%9C%AC%E6%96%B9%E7%A8%8B%E4%BF%A1%E6%81%AF_hu_c7085dfcb5b5029f.webp 320w, /post/2021-09-08-tenfong/images/20210809-26-QFlux%E5%9F%BA%E6%9C%AC%E6%96%B9%E7%A8%8B%E4%BF%A1%E6%81%AF_hu_c2beb9bbc96d4b27.webp 640w, /post/2021-09-08-tenfong/images/20210809-26-QFlux%E5%9F%BA%E6%9C%AC%E6%96%B9%E7%A8%8B%E4%BF%A1%E6%81%AF_hu_7cc10f59a0b8b5aa.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-26-QFlux%E5%9F%BA%E6%9C%AC%E6%96%B9%E7%A8%8B%E4%BF%A1%E6%81%AF_hu_27b86f5d79d7ed44.jpg 320w, /post/2021-09-08-tenfong/images/20210809-26-QFlux%E5%9F%BA%E6%9C%AC%E6%96%B9%E7%A8%8B%E4%BF%A1%E6%81%AF_hu_6fcacac3257fd5c0.jpg 640w, /post/2021-09-08-tenfong/images/20210809-26-QFlux%E5%9F%BA%E6%9C%AC%E6%96%B9%E7%A8%8B%E4%BF%A1%E6%81%AF_hu_8a3cf3ae8c5a666e.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-26-QFlux%E5%9F%BA%E6%9C%AC%E6%96%B9%E7%A8%8B%E4%BF%A1%E6%81%AF_hu_6fcacac3257fd5c0.jpg" width="1278" height="609" alt="20210809-26-QFlux基本方程信息.png" title="20210809-26-QFlux基本方程信息.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>For the basic equations of QFlux, it seems that you can only choose the incompressible flow solver Incompressible (hey, where is the compressible flow solver in the propaganda?) and activate the energy equation.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-27-QFlux%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9_hu_328671744b1df3d3.webp 320w, /post/2021-09-08-tenfong/images/20210809-27-QFlux%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9_hu_cbd685b74a7cb04.webp 640w, /post/2021-09-08-tenfong/images/20210809-27-QFlux%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9_hu_f9ae17286771ed8f.webp 960w, /post/2021-09-08-tenfong/images/20210809-27-QFlux%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9_hu_cdd564ba3ed7e4b6.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-27-QFlux%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9_hu_2ba52c0d8ed7a1e8.jpg 320w, /post/2021-09-08-tenfong/images/20210809-27-QFlux%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9_hu_c0691280bb141c8f.jpg 640w, /post/2021-09-08-tenfong/images/20210809-27-QFlux%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9_hu_180853ae8a509ff7.jpg 960w, /post/2021-09-08-tenfong/images/20210809-27-QFlux%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9_hu_d2a777d1b90ee4c.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-27-QFlux%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9_hu_c0691280bb141c8f.jpg" width="1536" height="832" alt="20210809-27-QFlux物理模型选择.png" title="20210809-27-QFlux物理模型选择.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Turbulence model, nothing special to say. The turbulence parameters on the right can also be modified in the turbulenceProperties file of OpenFOAM. The only bright spot may be the near-wall processing of the turbulence model, which is better than debugging the wall functions in the k-file and nut-file one by one in OpenFOAM. (PS: It&rsquo;s just a GUI. I can also achieve the same function by wrapping it with Qt.)</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-28-QFlux%E7%A6%BB%E6%95%A3%E6%A0%BC%E5%BC%8F%E9%80%89%E6%8B%A9_hu_ae2e1db3757b0ef.webp 320w, /post/2021-09-08-tenfong/images/20210809-28-QFlux%E7%A6%BB%E6%95%A3%E6%A0%BC%E5%BC%8F%E9%80%89%E6%8B%A9_hu_10649e9c6d3cb797.webp 640w, /post/2021-09-08-tenfong/images/20210809-28-QFlux%E7%A6%BB%E6%95%A3%E6%A0%BC%E5%BC%8F%E9%80%89%E6%8B%A9_hu_5271896ce7e40c7d.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-28-QFlux%E7%A6%BB%E6%95%A3%E6%A0%BC%E5%BC%8F%E9%80%89%E6%8B%A9_hu_d2f490bad3230085.jpg 320w, /post/2021-09-08-tenfong/images/20210809-28-QFlux%E7%A6%BB%E6%95%A3%E6%A0%BC%E5%BC%8F%E9%80%89%E6%8B%A9_hu_a44fd14bcacd37d6.jpg 640w, /post/2021-09-08-tenfong/images/20210809-28-QFlux%E7%A6%BB%E6%95%A3%E6%A0%BC%E5%BC%8F%E9%80%89%E6%8B%A9_hu_378ced9e82000a95.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-28-QFlux%E7%A6%BB%E6%95%A3%E6%A0%BC%E5%BC%8F%E9%80%89%E6%8B%A9_hu_a44fd14bcacd37d6.jpg" width="1278" height="609" alt="20210809-28-QFlux离散格式选择.png" title="20210809-28-QFlux离散格式选择.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The numerical method is the choice of solver, discretization format and relaxation factor, which is basically equivalent to the controlDict, fvSchemes and fvSolution files of OpenFOAM, except that you don&rsquo;t have to debug them one by one. It seems that the only solver you can choose is the SIMPLE algorithm.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-29-QFlux%E6%9D%90%E6%96%99%E8%AE%BE%E7%BD%AE_hu_fad43e3c1b34bcfd.webp 320w, /post/2021-09-08-tenfong/images/20210809-29-QFlux%E6%9D%90%E6%96%99%E8%AE%BE%E7%BD%AE_hu_f10fc66a187c7409.webp 640w, /post/2021-09-08-tenfong/images/20210809-29-QFlux%E6%9D%90%E6%96%99%E8%AE%BE%E7%BD%AE_hu_c198973e4ede21c1.webp 960w, /post/2021-09-08-tenfong/images/20210809-29-QFlux%E6%9D%90%E6%96%99%E8%AE%BE%E7%BD%AE_hu_1262515533425c93.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-29-QFlux%E6%9D%90%E6%96%99%E8%AE%BE%E7%BD%AE_hu_127fea6998c7137f.jpg 320w, /post/2021-09-08-tenfong/images/20210809-29-QFlux%E6%9D%90%E6%96%99%E8%AE%BE%E7%BD%AE_hu_11498f59b588eb53.jpg 640w, /post/2021-09-08-tenfong/images/20210809-29-QFlux%E6%9D%90%E6%96%99%E8%AE%BE%E7%BD%AE_hu_ec156750bf5895b7.jpg 960w, /post/2021-09-08-tenfong/images/20210809-29-QFlux%E6%9D%90%E6%96%99%E8%AE%BE%E7%BD%AE_hu_54b32915503213b8.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-29-QFlux%E6%9D%90%E6%96%99%E8%AE%BE%E7%BD%AE_hu_11498f59b588eb53.jpg" width="1536" height="832" alt="20210809-29-QFlux材料设置.png" title="20210809-29-QFlux材料设置.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>There are only three materials in the material library: air, water and structural steel.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-30-QFlux%E8%AE%BE%E7%BD%AE%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6_hu_a1a971c05fad8f6.webp 320w, /post/2021-09-08-tenfong/images/20210809-30-QFlux%E8%AE%BE%E7%BD%AE%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6_hu_129e50e9aa3279fc.webp 640w, /post/2021-09-08-tenfong/images/20210809-30-QFlux%E8%AE%BE%E7%BD%AE%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6_hu_66f79fa0191e298a.webp 960w, /post/2021-09-08-tenfong/images/20210809-30-QFlux%E8%AE%BE%E7%BD%AE%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6_hu_5ff57aaca4b6ac2a.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-30-QFlux%E8%AE%BE%E7%BD%AE%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6_hu_87008697eaacc0f6.jpg 320w, /post/2021-09-08-tenfong/images/20210809-30-QFlux%E8%AE%BE%E7%BD%AE%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6_hu_9f579edf25f831c4.jpg 640w, /post/2021-09-08-tenfong/images/20210809-30-QFlux%E8%AE%BE%E7%BD%AE%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6_hu_d85b32614cac2315.jpg 960w, /post/2021-09-08-tenfong/images/20210809-30-QFlux%E8%AE%BE%E7%BD%AE%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6_hu_689cf3819b0e5fc5.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-30-QFlux%E8%AE%BE%E7%BD%AE%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6_hu_9f579edf25f831c4.jpg" width="1536" height="832" alt="20210809-30-QFlux设置边界条件.png" title="20210809-30-QFlux设置边界条件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>For the inlet and outlet boundary conditions, the flow direction cannot be specified as the surface normal, and the flow direction coordinates can only be entered manually. However, its turbulence parameter definition method is similar to other commercial CFD software, which is much more convenient than calculating one by one in OpenFOAM and then manually defining the k file, epsilon file, and nut file. It seems that the units of velocity and temperature cannot be changed, so if the user uses the ℃ unit, then the temperature scale must be converted by himself.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-31-QFlux%E8%AE%BE%E7%BD%AE%E6%94%B6%E6%95%9B%E6%9D%A1%E4%BB%B6_hu_d8fb032f4db98585.webp 320w, /post/2021-09-08-tenfong/images/20210809-31-QFlux%E8%AE%BE%E7%BD%AE%E6%94%B6%E6%95%9B%E6%9D%A1%E4%BB%B6_hu_20cbb24f26493359.webp 640w, /post/2021-09-08-tenfong/images/20210809-31-QFlux%E8%AE%BE%E7%BD%AE%E6%94%B6%E6%95%9B%E6%9D%A1%E4%BB%B6_hu_23b7ea34f9c6b9bb.webp 960w, /post/2021-09-08-tenfong/images/20210809-31-QFlux%E8%AE%BE%E7%BD%AE%E6%94%B6%E6%95%9B%E6%9D%A1%E4%BB%B6_hu_94b3f528d84302fe.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-31-QFlux%E8%AE%BE%E7%BD%AE%E6%94%B6%E6%95%9B%E6%9D%A1%E4%BB%B6_hu_85c1502aeff8d380.jpg 320w, /post/2021-09-08-tenfong/images/20210809-31-QFlux%E8%AE%BE%E7%BD%AE%E6%94%B6%E6%95%9B%E6%9D%A1%E4%BB%B6_hu_c6968db0475c92e9.jpg 640w, /post/2021-09-08-tenfong/images/20210809-31-QFlux%E8%AE%BE%E7%BD%AE%E6%94%B6%E6%95%9B%E6%9D%A1%E4%BB%B6_hu_98eb8400f24cabdd.jpg 960w, /post/2021-09-08-tenfong/images/20210809-31-QFlux%E8%AE%BE%E7%BD%AE%E6%94%B6%E6%95%9B%E6%9D%A1%E4%BB%B6_hu_e5ba7471e06c0146.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-31-QFlux%E8%AE%BE%E7%BD%AE%E6%94%B6%E6%95%9B%E6%9D%A1%E4%BB%B6_hu_c6968db0475c92e9.jpg" width="1536" height="832" alt="20210809-31-QFlux设置收敛条件.png" title="20210809-31-QFlux设置收敛条件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Set the convergence conditions, and set the convergence judgment tolerances of the momentum equation, energy equation, continuity equation, and turbulent viscosity equation to <code>1.0e-6</code>.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-32-QFlux%E8%AE%BE%E7%BD%AE%E8%AE%A1%E7%AE%97%E6%9D%A1%E4%BB%B6_hu_4dedd058335ea036.webp 320w, /post/2021-09-08-tenfong/images/20210809-32-QFlux%E8%AE%BE%E7%BD%AE%E8%AE%A1%E7%AE%97%E6%9D%A1%E4%BB%B6_hu_d9072b00f74f3f.webp 640w, /post/2021-09-08-tenfong/images/20210809-32-QFlux%E8%AE%BE%E7%BD%AE%E8%AE%A1%E7%AE%97%E6%9D%A1%E4%BB%B6_hu_c92817f76f9c9c7f.webp 960w, /post/2021-09-08-tenfong/images/20210809-32-QFlux%E8%AE%BE%E7%BD%AE%E8%AE%A1%E7%AE%97%E6%9D%A1%E4%BB%B6_hu_4748095ae709cb5f.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-32-QFlux%E8%AE%BE%E7%BD%AE%E8%AE%A1%E7%AE%97%E6%9D%A1%E4%BB%B6_hu_35dfe61daa784819.jpg 320w, /post/2021-09-08-tenfong/images/20210809-32-QFlux%E8%AE%BE%E7%BD%AE%E8%AE%A1%E7%AE%97%E6%9D%A1%E4%BB%B6_hu_f0edf443ce5ffa2d.jpg 640w, /post/2021-09-08-tenfong/images/20210809-32-QFlux%E8%AE%BE%E7%BD%AE%E8%AE%A1%E7%AE%97%E6%9D%A1%E4%BB%B6_hu_9adb10f511d865ba.jpg 960w, /post/2021-09-08-tenfong/images/20210809-32-QFlux%E8%AE%BE%E7%BD%AE%E8%AE%A1%E7%AE%97%E6%9D%A1%E4%BB%B6_hu_85af512c4d69283f.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-32-QFlux%E8%AE%BE%E7%BD%AE%E8%AE%A1%E7%AE%97%E6%9D%A1%E4%BB%B6_hu_f0edf443ce5ffa2d.jpg" width="1536" height="832" alt="20210809-32-QFlux设置计算条件.png" title="20210809-32-QFlux设置计算条件.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Set the calculation conditions, the maximum number of calculation steps is 1000, and the number of parallel cores can be set. It can be seen that the MPI library used in the Windows version of QFlux is the Microsoft MPI library, which is surprisingly consistent with the Windows version of OpenFOAM. The calculation calls the qcore.exe program.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-33-QFlux%E8%AE%A1%E7%AE%97%E6%94%B6%E6%95%9B%E6%9B%B2%E7%BA%BF_hu_420af04b5b51d319.webp 320w, /post/2021-09-08-tenfong/images/20210809-33-QFlux%E8%AE%A1%E7%AE%97%E6%94%B6%E6%95%9B%E6%9B%B2%E7%BA%BF_hu_79073fc9320e70c1.webp 640w, /post/2021-09-08-tenfong/images/20210809-33-QFlux%E8%AE%A1%E7%AE%97%E6%94%B6%E6%95%9B%E6%9B%B2%E7%BA%BF_hu_8effe5050b0be687.webp 960w, /post/2021-09-08-tenfong/images/20210809-33-QFlux%E8%AE%A1%E7%AE%97%E6%94%B6%E6%95%9B%E6%9B%B2%E7%BA%BF_hu_6b005e75e87ae3bf.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-33-QFlux%E8%AE%A1%E7%AE%97%E6%94%B6%E6%95%9B%E6%9B%B2%E7%BA%BF_hu_7fed0188936a3c70.jpg 320w, /post/2021-09-08-tenfong/images/20210809-33-QFlux%E8%AE%A1%E7%AE%97%E6%94%B6%E6%95%9B%E6%9B%B2%E7%BA%BF_hu_61cd535c67ed5a27.jpg 640w, /post/2021-09-08-tenfong/images/20210809-33-QFlux%E8%AE%A1%E7%AE%97%E6%94%B6%E6%95%9B%E6%9B%B2%E7%BA%BF_hu_63a949d8f6e47ccf.jpg 960w, /post/2021-09-08-tenfong/images/20210809-33-QFlux%E8%AE%A1%E7%AE%97%E6%94%B6%E6%95%9B%E6%9B%B2%E7%BA%BF_hu_1ef1ae30f20dc7dc.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-33-QFlux%E8%AE%A1%E7%AE%97%E6%94%B6%E6%95%9B%E6%9B%B2%E7%BA%BF_hu_61cd535c67ed5a27.jpg" width="1536" height="832" alt="20210809-33-QFlux计算收敛曲线.png" title="20210809-33-QFlux计算收敛曲线.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>It can be seen that the calculation converges at about 385 steps, but when the mouse stays on the convergence curve, the label number can only be displayed to four digits after the decimal point, and the label number cannot be displayed in scientific notation.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-34-QFlux%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE%E6%98%BE%E7%A4%BA_hu_b1a4525ff2767efc.webp 320w, /post/2021-09-08-tenfong/images/20210809-34-QFlux%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE%E6%98%BE%E7%A4%BA_hu_9fcf568fc1edbeb1.webp 640w, /post/2021-09-08-tenfong/images/20210809-34-QFlux%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE%E6%98%BE%E7%A4%BA_hu_f184ec4ec8d94ba9.webp 960w, /post/2021-09-08-tenfong/images/20210809-34-QFlux%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE%E6%98%BE%E7%A4%BA_hu_53a7ef300c4f29d2.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-34-QFlux%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE%E6%98%BE%E7%A4%BA_hu_cfbbaba69cce3cfa.jpg 320w, /post/2021-09-08-tenfong/images/20210809-34-QFlux%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE%E6%98%BE%E7%A4%BA_hu_3f7edf0c6137e10a.jpg 640w, /post/2021-09-08-tenfong/images/20210809-34-QFlux%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE%E6%98%BE%E7%A4%BA_hu_79d37c23159904ab.jpg 960w, /post/2021-09-08-tenfong/images/20210809-34-QFlux%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE%E6%98%BE%E7%A4%BA_hu_c9122ce268ae3954.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-34-QFlux%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE%E6%98%BE%E7%A4%BA_hu_3f7edf0c6137e10a.jpg" width="1536" height="832" alt="20210809-34-QFlux温度云图显示.png" title="20210809-34-QFlux温度云图显示.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The above figure is the temperature cloud map output by QFlux calculation results.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-35-OpenFOAM%E8%AE%A1%E7%AE%97%E7%9A%84%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE_hu_676d3dfae4a979ad.webp 320w, /post/2021-09-08-tenfong/images/20210809-35-OpenFOAM%E8%AE%A1%E7%AE%97%E7%9A%84%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE_hu_d53a666fffcd1e51.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-35-OpenFOAM%E8%AE%A1%E7%AE%97%E7%9A%84%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE_hu_db1ab602c95d7e70.jpg 320w, /post/2021-09-08-tenfong/images/20210809-35-OpenFOAM%E8%AE%A1%E7%AE%97%E7%9A%84%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE_hu_9f4ca403c24d7cc7.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-35-OpenFOAM%E8%AE%A1%E7%AE%97%E7%9A%84%E6%B8%A9%E5%BA%A6%E4%BA%91%E5%9B%BE_hu_9f4ca403c24d7cc7.jpg" width="812" height="698" alt="20210809-35-OpenFOAM计算的温度云图.png" title="20210809-35-OpenFOAM计算的温度云图.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The above figure is the temperature cloud map of the same case calculated by OpenFOAM. The same case can be achieved by <code>simpleFoam</code>+<code>scalarTransportFoam</code> or <code>buoyantSimpleFoam</code>. It can be seen that the calculation results of the two are similar.</p>
+<h2 id="4-qflux-vs-openfoam">4. QFlux vs. OpenFOAM</h2>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-36-QFlux%E4%B8%8EOpenFOAM%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94_hu_93989df43289313e.webp 320w, /post/2021-09-08-tenfong/images/20210809-36-QFlux%E4%B8%8EOpenFOAM%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94_hu_5e6af4baf8113de1.webp 640w, /post/2021-09-08-tenfong/images/20210809-36-QFlux%E4%B8%8EOpenFOAM%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94_hu_26e8dcb385dbbbfb.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-36-QFlux%E4%B8%8EOpenFOAM%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94_hu_b90ae4aee42d0e87.jpg 320w, /post/2021-09-08-tenfong/images/20210809-36-QFlux%E4%B8%8EOpenFOAM%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94_hu_ab15866bf9a85b01.jpg 640w, /post/2021-09-08-tenfong/images/20210809-36-QFlux%E4%B8%8EOpenFOAM%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94_hu_1add2e5f8d1a1f30.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-36-QFlux%E4%B8%8EOpenFOAM%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94_hu_ab15866bf9a85b01.jpg" width="1152" height="913" alt="20210809-36-QFlux与OpenFOAM文件对比.png" title="20210809-36-QFlux与OpenFOAM文件对比.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Comparing QFlux and OpenFOAM (v2012) DLLs reveals striking similarities in structure and function names.</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_35b0cde8b89a11f6.webp 320w, /post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_994d57cf07779c22.webp 640w, /post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_165318e467da1cdb.webp 960w, /post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_f9ddd4f84ee3238d.webp 1280w, /post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_11ac553bf413dcf7.webp 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_8d4197c41876fb72.jpg 320w, /post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_d14fe8ca1b72a6bd.jpg 640w, /post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_101546df1fc760ec.jpg 960w, /post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_6336a32415b2640c.jpg 1280w, /post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_fd84a45e06b31221.jpg 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2021-09-08-tenfong/images/20210809-37-QFlux%E4%B8%8EOpenFOAM%E7%9A%84dll%E5%AF%B9%E6%AF%94_hu_d14fe8ca1b72a6bd.jpg" width="1918" height="555" alt="20210809-37-QFlux与OpenFOAM的dll对比.png" title="20210809-37-QFlux与OpenFOAM的dll对比.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>Using &ldquo;Dependency Walker&rdquo; to view the function names of the dynamic link library files referenced by the two, it can be found that in some key link libraries, the internal function naming methods cannot be said to be exactly the same, but can only be said to be highly similar.</p>
+<p>Since OpenFOAM is open source software and its source code can be downloaded online, it is hard to say that QFlux did not &ldquo;borrow&rdquo; from OpenFOAM source code. As for how much content was &ldquo;borrowed&rdquo;, it is hard to say.</p>
+<p>In view of the extremely weak status of domestic CFD and other industrial software, it seems that compared with independent development, it is easier to be welcomed by software developers and investors to quickly package easy-to-use software platforms on open source platforms. Comparing the differences in function implementation, development level and code volume between OpenFOAM and QFlux, the size, code volume and maturity of OpenFOAM programs are far higher than those of QFlux. In fact, developing relevant interfaces and introducing process control on the OpenFOAM platform have always been the focus of industry research. Many companies at home and abroad are conducting related applications and secondary development around OpenFOAM. However, it is possible that only domestic Internet companies can &ldquo;borrow&rdquo; from open source programs while claiming to be completely &ldquo;independently developed&rdquo;. Of course, &ldquo;Tenfong Technology&rdquo; is one of them.</p>
+<p>In fact, for open source platforms such as OpenFOAM, communication and innovation are the most important. The realization of new methods is far more important than industrial packaging and ease of use. This is one of the reasons why OpenFOAM has insisted on text and command line parameter control for so many years. What is more terrible than &ldquo;borrowing&rdquo; itself is numbness and inertia. When we are used to open source platforms, we only know how to take without giving back, and we only know how to reconstruct other people&rsquo;s codes without building and improving them from the bottom up. We know what it is but not why it is&hellip; When we lose the open source platform one day, will we still be able to insist on the so-called &ldquo;independent development&rdquo;?</p>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

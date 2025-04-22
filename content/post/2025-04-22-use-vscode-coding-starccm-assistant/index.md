@@ -12,7 +12,7 @@ categories = [
 ]
 series = [""]
 aliases = [""]
-image = "/images/starccm-bg.png"
+image = "/images/starccm-bg.jpg"
 +++
 
 The STAR-CCM+ Simulation Assistant is equivalent to a plug-in that encapsulates Java macro commands. By calling macro commands, some procedural operations are performed. Compared with directly executing Java macro files, it can interact with users better and is obviously more friendly to users who are not familiar with Java. Because the simulation assistant is mostly used in pre- and post-processing, many consulting companies tend to adopt the same approach when developing customized plug-ins for this purpose.

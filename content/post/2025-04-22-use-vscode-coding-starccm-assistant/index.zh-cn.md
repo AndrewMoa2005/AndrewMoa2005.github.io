@@ -12,7 +12,7 @@ categories = [
 ]
 series = [""]
 aliases = [""]
-image = "/images/starccm-bg.png"
+image = "/images/starccm-bg.jpg"
 +++
 
 STAR-CCM+模拟助手(Simulation Assistant)相当于一个插件，在插件内部封装了java宏命令。使用的时候，通过调用宏命令，执行一些流程性的操作。相比于直接执行java宏文件，可以更好地与用户进行交互，对不熟悉java的用户来说明显更加友好。因为模拟助手大多应用于前后处理当中，许多咨询公司针对这方面开发的定制化插件也更倾向于采用相同的方式。

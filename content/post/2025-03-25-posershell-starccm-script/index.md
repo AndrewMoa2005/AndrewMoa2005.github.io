@@ -12,7 +12,7 @@ categories = [
 ]
 series = [""]
 aliases = [""]
-image = "/images/starccm-bg.png"
+image = "/images/starccm-bg.jpg"
 +++
 
 When I used STAR-CCM+ to do calculations on a Windows workstation, sometimes I had to submit more than ten or twenty computing tasks in one night. Of course, it was impossible to run more than ten tasks at the same time, and it was impossible to watch it run and submit them manually one by one. A few years ago, I wrote this simple queue calculation template using PowerShell, and I share it with you here.

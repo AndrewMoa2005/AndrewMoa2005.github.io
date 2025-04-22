@@ -12,7 +12,7 @@ categories = [
 ]
 series = [""]
 aliases = [""]
-image = "/images/starccm-bg.png"
+image = "/images/starccm-bg.jpg"
 +++
 
 前面讲过STAR-CCM+宏文件的录制和编写，宏文件的本质就是java文件，因此可以用java编程的方法来对它进行开发和调试。如果涉及到复杂的业务场景，需要增加额外的功能，程序本身比较复杂，很难等到整个程序编写完成后再对它进行测试，免不了要在开发过程中进行调试。官方文档采用的开发工具是古早版本的**NetBeans**，很多功能已经发生变化，加之官方文档描述过于简略，大多数人阅读完后对于STAR-CCM+的调试过程还是一头雾水。[**VSCode**](https://code.visualstudio.com/)作为新兴IDE的佼佼者，不仅可以通过拓展支持java编程，还可以通过[**copilot**](https://copilot.microsoft.com/chats/Uz4t8yZbNmpyo1CVtqKWP)拓展集成强大的AI编程能力，本文便采用**VSCode**演示一下STAR-CCM+宏文件的调试过程。

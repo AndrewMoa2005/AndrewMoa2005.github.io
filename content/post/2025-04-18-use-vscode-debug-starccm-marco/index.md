@@ -12,7 +12,7 @@ categories = [
 ]
 series = [""]
 aliases = [""]
-image = "/images/starccm-bg.png"
+image = "/images/starccm-bg.jpg"
 +++
 
 As mentioned earlier, the recording and writing of STAR-CCM+ macro files are essentially Java files, so it can be developed and debugged using Java programming methods. If complex business scenarios are involved, additional functions need to be added. The program itself is relatively complex, and it is difficult to wait until the entire program is written before testing it. It is inevitable to debug during the development process. The development tool used by the official document is the old version of **NetBeans**. Many functions have changed. In addition, the official document description is too simple. Most people are still confused about the debugging process of STAR-CCM+ after reading it.[**VSCode**](https://code.visualstudio.com/) As a leader in emerging IDE, you can not only support Java programming through expansion, but also [**copilot**](https://copilot.microsoft.com/chats/Uz4t8yZbNmpyo1CVtqKWP) To expand the integrated powerful AI programming capabilities, this article uses **VSCode** to demonstrate the debugging process of STAR-CCM+ macro files.

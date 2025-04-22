@@ -11,6 +11,13 @@
     <copyright>Andrew Moa</copyright>
     <atom:link href="https://andrewmoa.site/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Coding STAR-CCM&#43; simulation assistant using VSCode</title>
+      <link>https://andrewmoa.site/post/2025-04-22-use-vscode-coding-starccm-assistant/</link>
+      <pubDate>Tue, 22 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-04-22-use-vscode-coding-starccm-assistant/</guid>
+      <description>&lt;p&gt;The STAR-CCM+ Simulation Assistant is equivalent to a plug-in that encapsulates Java macro commands. By calling macro commands, some procedural operations are performed. Compared with directly executing Java macro files, it can interact with users better and is obviously more friendly to users who are not familiar with Java. Because the simulation assistant is mostly used in pre- and post-processing, many consulting companies tend to adopt the same approach when developing customized plug-ins for this purpose.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>About</title>
       <link>https://andrewmoa.site/about/</link>
       <pubDate>Mon, 21 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>

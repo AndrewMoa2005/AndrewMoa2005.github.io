@@ -202,6 +202,217 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-03-21-ubuntu-install-simulia2024/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Ubuntu安装SIMULIA2024" title="Ubuntu安装SIMULIA2024"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-21-ubuntu-install-simulia2024/">Ubuntu安装SIMULIA2024</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>为什么选择SIMULIA？首先是Abaqus功能强大，绝大多数结构问题都能求解。其次流固耦合方便，STAR-CCM+自带案例就手把手你怎么和Abaqus双向耦合。再次是过往经历的惯性，毕竟主机厂Abaqus用得可不少，不缺案例和资源。</p>
+<h2 id="1-准备工作">1. 准备工作</h2>
+<p>首先安装开发环境和一些必要的软件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt update <span class="c1"># 更新软件源</span>
+</span></span><span class="line"><span class="cl">sudo apt upgrade <span class="c1"># 更新本地安装的软件</span>
+</span></span><span class="line"><span class="cl">sudo apt install build-essential <span class="c1"># 安装开发环境</span>
+</span></span><span class="line"><span class="cl">sudo apt install csh tcsh ksh gcc g++ gfortran libstdc++5 build-essential make libjpeg62 libmotif-dev
+</span></span></code></pre></div><p>解压安装包：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir iso <span class="c1"># 新建一个iso文件夹，用于存放解压出来的文件</span>
+</span></span><span class="line"><span class="cl">tar xvzf DS.SIMULIA.SUITE.2024.LINX64.tar.gz -C ./iso <span class="c1"># 解压到iso文件夹中</span>
+</span></span></code></pre></div><h2 id="2-安装过程">2. 安装过程</h2>
+<h3 id="21-启动安装程序">2.1 启动安装程序</h3>
+<p>首先定义环境变量，不然无法启动安装程序：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># 可以把下面的内容加到${HOME}/.bashrc里，然后重新启动终端</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> DSYAuthOS_<span class="sb">`</span>lsb_release -si<span class="sb">`</span><span class="o">=</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">DSY_Force_OS</span><span class="o">=</span>linux_a64
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">NOLICENSECHECK</span><span class="o">=</span><span class="nb">true</span>
+</span></span></code></pre></div><p>进入<code>/iso/1</code>文件夹，运行安装程序。启动图形化界面在终端运行<code>./StartGUI.sh</code>，类似Windows下的安装方式，跟着向导一步步安装即可。</p>
+<p>这里选择文本界面：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">./StartTUI.sh <span class="c1"># 启动文本界面安装向导</span>
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_9c925859e18a2c80.webp 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_d174a16dd769eec3.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_d827ba69e5f438ef.jpg 320w, /post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_9bae9785b4295cee.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-ubuntu-install-simulia2024/images/7222cbf4b6f8545b9766ce654edf28ba_hu_9bae9785b4295cee.jpg" width="769" height="485" alt="7222cbf4b6f8545b9766ce654edf28ba.png" title="7222cbf4b6f8545b9766ce654edf28ba.png" loading="lazy" />
+  </picture>
+</div>
+<p><code>Enter</code>下一步。</p></p>
+
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/abaqus/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Abaqus</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/slurm/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Slurm</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-21T00:00:00&#43;00:00">
+      2025-03-21
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长2分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-03-20-ubuntu-install-slurm/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
@@ -549,189 +760,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-19-hyperv-install-ubuntu24/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/hyperv-bg.png"
-      alt="Hyper-V安装Ubuntu24.04" title="Hyper-V安装Ubuntu24.04"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-19-hyperv-install-ubuntu24/">Hyper-V安装Ubuntu24.04</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <h2 id="1-需求">1. 需求</h2>
-<p>考虑在新电脑上安装Linux，不是双系统，因为还要满足日常办公。不喜欢折腾的可以用WSL，这里用Hyper-V实现，同时通过端口映射实现外网访问虚拟机。</p>
-<h2 id="2-准备工作">2. 准备工作</h2>
-<h3 id="21-下载ubuntu">2.1 下载Ubuntu</h3>
-<p>笔者是做CFD的，自然离不开Fluent，这玩意儿挑发行版的。从官网资料确认支持哪个发行版，支持哪个就装哪个，免得后面倒腾回来重装系统。</p>
-<p><a href="https://www.ansys.com/content/dam/it-solutions/platform-support/2024-r1/ansys-platform-support-strategy-plans-january-2024.pdf" target="_blank" rel="noopener">Ansys Computing Platform Support 2024R1</a>
-</p>
-<p>这里选择Ubuntu，前往官网下载最新的发行版。</p>
-<p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_9e76efa233b8f578.webp 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_95d8b2287d054749.webp 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_9f2c89122d2967fb.webp 960w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_a97ab8b9de571179.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_b7a04ca03356fb6f.jpg 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_10366ec9244ebdf6.jpg 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_19787a07f12c5c16.jpg 960w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_8fcee50eb8dfc6fd.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_10366ec9244ebdf6.jpg" width="1348" height="422" alt="2fd636d62e1453b3b54ad4074cde6c48.png" title="2fd636d62e1453b3b54ad4074cde6c48.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<h3 id="22-开启hyper-v支持">2.2 开启Hyper-V支持</h3>
-<p>在开始菜单搜索“启用或关闭Windows功能”，开启虚拟化支持。</p>
-<p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_82d66e112c2e31bf.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_15261c51b798312b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_45517c4355f2a6a5.jpg" width="359" height="223" alt="973c3b93cf91c5138b89bbeaeb2bf103.png" title="973c3b93cf91c5138b89bbeaeb2bf103.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>把Hyper-V勾上，安装并重启就行了。</p>
-<p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_65e8bfb420337851.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_ac27ca9d65ae1408.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_744e82011576ebce.jpg" width="410" height="398" alt="4e7e7f54c61f0f16af1595cb8c0b220e.png" title="4e7e7f54c61f0f16af1595cb8c0b220e.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/linux/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Linux
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/linux/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Linux</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/ubuntu/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ubuntu</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/virtual-machine/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Virtual-Machine</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-19T00:00:00&#43;00:00">
-      2025-03-19
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长2分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -877,6 +905,13 @@
     </li>
     
     <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/star-ccm&#43;/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Star-Ccm&#43;
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
       <a href="/zh-cn/tags/abaqus/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Abaqus
@@ -887,13 +922,6 @@
       <a href="/zh-cn/tags/slurm/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Slurm
-      </a>
-    </li>
-    
-    <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/star-ccm&#43;/"
-        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Star-Ccm&#43;
       </a>
     </li>
     
@@ -912,9 +940,9 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/openfoam/"
+      <a href="/zh-cn/tags/java/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Openfoam
+        Java
       </a>
     </li>
     

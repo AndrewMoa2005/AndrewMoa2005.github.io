@@ -202,9 +202,190 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-04-22-use-vscode-coding-starccm-assistant/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.png"
+      alt="使用VSCode编写STAR-CCM&#43;模拟助手" title="使用VSCode编写STAR-CCM&#43;模拟助手"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-22-use-vscode-coding-starccm-assistant/">使用VSCode编写STAR-CCM+模拟助手</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>STAR-CCM+模拟助手(Simulation Assistant)相当于一个插件，在插件内部封装了java宏命令。使用的时候，通过调用宏命令，执行一些流程性的操作。相比于直接执行java宏文件，可以更好地与用户进行交互，对不熟悉java的用户来说明显更加友好。因为模拟助手大多应用于前后处理当中，许多咨询公司针对这方面开发的定制化插件也更倾向于采用相同的方式。</p>
+<p>官方文档采用NetBeans演示了创建模拟助手项目的流程，但是演示的NetBeans版本已经很老旧了。官方文档更新缓慢，描述又过于笼统。这里采用VSCode重新实现并演示一遍，相关配置可以参考<a href="../2025-04-18-use-vscode-debug-starccm-marco/">使用VSCode调试STAR-CCM+宏</a>
+，以下演示材料来自于STAR-CCM+官方的教程文件。</p>
+<h2 id="1-建立模拟助手项目">1. 建立模拟助手项目</h2>
+<p>参考<a href="../2025-04-18-use-vscode-debug-starccm-marco/">使用VSCode调试STAR-CCM+宏</a>
+中的内容建立java项目，项目类型一样选择<code>No build tools</code>，名称根据自己需要起一个。</p>
+<p>项目创建完成后，编辑<code>[项目文件夹]/.vscode</code>下的<code>settings.json</code>文件，将下面这些目录添加到项目依赖中<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>：</p>
+<ul>
+<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/core</code></li>
+<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/core/locale</code></li>
+<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/lib</code></li>
+<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/modules</code></li>
+<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/modules/ext</code></li>
+<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/modules/locale</code>
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_e60aa013d2842592.webp 320w, /post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_8da92df4d0b27b1a.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_18057fce958f698e.jpg 320w, /post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_8c5eda4cdba13e1e.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_8c5eda4cdba13e1e.jpg" width="835" height="224" alt="7f5cd0780c9474a6fedde666d32345f9.png" title="7f5cd0780c9474a6fedde666d32345f9.png" loading="lazy" />
+  </picture>
+</div>
+</li>
+</ul>
+<p>因为模拟助手需要加载到STAR-CCM+中，需要保证两者jdk版本一致。编辑<code>[项目文件夹]/.vscode</code>下的<code>settings.json</code>文件，增加一行设置，指定jdk为STAR-CCM+自带的版本。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="s2">&#34;java.jdt.ls.java.home&#34;</span><span class="err">:</span> <span class="s2">&#34;[STAR-CCM+_Installation]/jdk/[platform]/jdk[version]&#34;</span>
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_ff69245f23e7f4c6.webp 320w, /post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_ad77e0ad0ef18060.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_f3360a2de05f5a17.jpg 320w, /post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_8421feffad7cc73e.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_8421feffad7cc73e.jpg" width="816" height="271" alt="2d65d65d95dd1c70148bd6d3e1799ac0.png" title="2d65d65d95dd1c70148bd6d3e1799ac0.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>在<code>JAVA PROJECTS</code>里确认jdk版本，确保和STAR-CCM+自带的版本一致。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/faa980ab915d9e4f8cc472f9fe54167a_hu_3f88a0cc3799b363.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/faa980ab915d9e4f8cc472f9fe54167a_hu_7c819f05fed8eb5f.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/faa980ab915d9e4f8cc472f9fe54167a_hu_5b87ce1482d48e26.jpg" width="381" height="144" alt="faa980ab915d9e4f8cc472f9fe54167a.png" title="faa980ab915d9e4f8cc472f9fe54167a.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="2-项目编写">2. 项目编写</h2>
+<p>将自动生成的<code>[项目文件夹]/src</code>下面的源文件删除，创建文件夹<code>Assistant</code>，将官方教程中的java源文件复制粘贴到其中<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/70cc6904b31e239e7da1853d42eb9941_hu_adc787662008e90.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/70cc6904b31e239e7da1853d42eb9941_hu_e07fe28ded3b518f.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/70cc6904b31e239e7da1853d42eb9941_hu_314082ffd113761b.jpg" width="372" height="272" alt="70cc6904b31e239e7da1853d42eb9941.png" title="70cc6904b31e239e7da1853d42eb9941.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/java/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Java</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-22T00:00:00&#43;00:00">
+      2025-04-22
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-04-18-use-vscode-debug-starccm-marco/">
                 <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/vortex-bg.jpg"
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.png"
       alt="使用VSCode调试STAR-CCM&#43;宏" title="使用VSCode调试STAR-CCM&#43;宏"
       loading="lazy"
     >
@@ -375,7 +556,7 @@
             <div>
               <a href="/zh-cn/post/2025-04-17-starccm-record-and-write-marco/">
                 <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/vortex-bg.jpg"
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.png"
       alt="STAR-CCM&#43;宏文件录制和编写" title="STAR-CCM&#43;宏文件录制和编写"
       loading="lazy"
     >
@@ -573,170 +754,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-27-openfoam-compile-install-cfmesh-and-ccmtool/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/vortex-bg.jpg"
-      alt="OpenFOAM编译安装cfmesh和ccm工具" title="OpenFOAM编译安装cfmesh和ccm工具"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-27-openfoam-compile-install-cfmesh-and-ccmtool/">OpenFOAM编译安装cfmesh和ccm工具</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <h2 id="1-编译cfmesh">1. 编译cfmesh</h2>
-<p>前期编译安装的是com版的OpenFOAM，版本号是v2412，没有附带cfmesh的源码。根据官方文档的提示，需要手动下载cfmesh的源码文件：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>
-</span></span><span class="line"><span class="cl">git submodule update --init --recursive plugins/cfmesh
-</span></span></code></pre></div><p>出现以下错误：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">fatal: 不是 git 仓库（或者任何父目录）：.git
-</span></span></code></pre></div><p>无语了，直接通过git下载源码到指定文件夹，文件夹和URL路径可以查看<code>.gitmodules</code>文件：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>
-</span></span><span class="line"><span class="cl">git clone https://develop.openfoam.com/Community/integration-cfmesh.git plugins/cfmesh
-</span></span></code></pre></div><p>进入cfmesh文件夹，开始编译：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> plugins/cfmesh
-</span></span><span class="line"><span class="cl">./Allwmake -jN <span class="c1"># N替换成CPU核心数</span>
-</span></span></code></pre></div><p>运行pMesh，验证是否安装成功：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">pMesh -help
-</span></span></code></pre></div><h2 id="2-编译ccm工具">2. 编译ccm工具</h2>
-<p>OpenFOAM的ccm工具包含ccmToFoam和foamToCcm，前者用于将STAR-CCM+输出的ccm格式网格转换成OpenFOAM的网格，后者相反。需要先编译安装第三方库libccmio：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_THIRD_PARTY_DIR</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 下载libccmio</span>
-</span></span><span class="line"><span class="cl">wget http://portal.nersc.gov/project/visit/third_party/libccmio-2.6.1.tar.gz
-</span></span><span class="line"><span class="cl"><span class="c1"># 备选链接</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># wget https://sourceforge.net/projects/foam-extend/files/ThirdParty/libccmio-2.6.1.tar.gz</span>
-</span></span><span class="line"><span class="cl">tar xvzf libccmio-2.6.1.tar.gz	<span class="c1"># 解压下载的压缩包</span>
-</span></span><span class="line"><span class="cl">./makeCCMIO	<span class="c1"># 运行libccmio的编译程序</span>
-</span></span></code></pre></div><p>接下来编译ccmToFoam：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># 先编译libccm</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>/src/conversion/ccm
-</span></span><span class="line"><span class="cl">./Allwmake
-</span></span><span class="line"><span class="cl"><span class="c1"># 然后编译ccmToFoam和foamToCcm</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>/applications/utilities/mesh/conversion/ccm
-</span></span><span class="line"><span class="cl">./Allwmake
-</span></span></code></pre></div><p>运行ccmToFoam，验证是否安装成功：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">ccmToFoam -help
-</span></span></code></pre></div><hr>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/cfd/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Cfd
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/linux/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Linux</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/openfoam/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Openfoam</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-27T00:00:00&#43;00:00">
-      2025-03-27
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -882,6 +899,13 @@
     </li>
     
     <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/star-ccm&#43;/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Star-Ccm&#43;
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
       <a href="/zh-cn/tags/abaqus/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Abaqus
@@ -892,13 +916,6 @@
       <a href="/zh-cn/tags/slurm/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Slurm
-      </a>
-    </li>
-    
-    <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/star-ccm&#43;/"
-        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Star-Ccm&#43;
       </a>
     </li>
     
@@ -917,9 +934,9 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/openfoam/"
+      <a href="/zh-cn/tags/java/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Openfoam
+        Java
       </a>
     </li>
     

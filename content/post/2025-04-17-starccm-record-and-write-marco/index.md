@@ -12,7 +12,7 @@ categories = [
 ]
 series = [""]
 aliases = [""]
-image = "/images/vortex-bg.jpg"
+image = "/images/starccm-bg.png"
 +++
 
 STAR-CCM+ macro is essentially a java file, and the syntax is no different from ordinary java. Using macros can help us simplify the processing process, especially some repetitive process operations. Completing some process operations by writing macro files can greatly liberate human resources, and even complete certain operations during the solution process.

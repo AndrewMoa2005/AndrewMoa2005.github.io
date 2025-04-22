@@ -12,7 +12,7 @@ categories = [
 ]
 series = [""]
 aliases = [""]
-image = "/images/vortex-bg.jpg"
+image = "/images/starccm-bg.png"
 +++
 
 以前用STAR-CCM+在Windows工作站做计算的时候（没钱，公司舍不得上超算……），有时候一晚上要提交十几二十个计算任务（瞎卷ㄟ( ▔, ▔ )ㄏ），当然不可能十几个任务全都一起跑（机器遭不住），也不可能全程盯着它跑一个个手动提交（人遭不住）。几年前用PowerShell编写了这个简易的排队计算的模板，在这里分享给大家。

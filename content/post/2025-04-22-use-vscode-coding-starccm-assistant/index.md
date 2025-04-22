@@ -53,10 +53,10 @@ Next, follow the guidance of the official tutorial [^3] to complete the other pa
 
 The entire simulation assistant project is very simple, and the basic operation is divided into 6 steps:
 1. Import geometry files
-2. Establish analysis domain
-3. Establish analysis physics
+2. Create analysis domain
+3. Create analysis physics
 4. Generate volume mesh
-5. Establish display scene
+5. Create display scene
 6. Set the number of solution steps and run the solution.
 
 Each step of the operation corresponds to a java file, and each java file corresponds to an XHTML. The java file is similar to the macro mentioned above, and can be quickly edited by recording macros + copying and pasting. The XHTML file provides user interaction instructions and operation entrances, allowing users to call corresponding operation commands according to prompts.

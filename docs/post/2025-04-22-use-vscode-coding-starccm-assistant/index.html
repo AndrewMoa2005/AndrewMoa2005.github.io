@@ -22,7 +22,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
     <meta property="article:published_time" content="2025-04-22T00:00:00+00:00">
-    <meta property="article:modified_time" content="2025-04-22T14:14:15+08:00">
+    <meta property="article:modified_time" content="2025-04-22T14:23:26+08:00">
     <meta property="article:tag" content="Java">
     <meta property="article:tag" content="Star-Ccm&#43;">
 
@@ -61,7 +61,7 @@
 
   
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-04-22T14:14:15+08:00","datePublished":"2025-04-22T00:00:00Z","description":"The STAR-CCM+ Simulation Assistant is equivalent to a plug-in that encapsulates Java macro commands. By calling macro commands, some procedural operations are performed. Compared with directly executing Java macro files, it can interact with users better and is obviously more friendly to users who are not familiar with Java. Because the simulation assistant is mostly used in pre- and post-processing, many consulting companies tend to adopt the same approach when developing customized plug-ins for this purpose.\n","image":"/images/starccm-bg.jpg","name":"Develop STAR-CCM+ simulation assistant using VSCode","url":"https://andrewmoa.site/post/2025-04-22-use-vscode-coding-starccm-assistant/"}
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-04-22T14:23:26+08:00","datePublished":"2025-04-22T00:00:00Z","description":"The STAR-CCM+ Simulation Assistant is equivalent to a plug-in that encapsulates Java macro commands. By calling macro commands, some procedural operations are performed. Compared with directly executing Java macro files, it can interact with users better and is obviously more friendly to users who are not familiar with Java. Because the simulation assistant is mostly used in pre- and post-processing, many consulting companies tend to adopt the same approach when developing customized plug-ins for this purpose.\n","image":"/images/starccm-bg.jpg","name":"Develop STAR-CCM+ simulation assistant using VSCode","url":"https://andrewmoa.site/post/2025-04-22-use-vscode-coding-starccm-assistant/"}
 </script>
 
 </head>
@@ -403,10 +403,10 @@
 <p>The entire simulation assistant project is very simple, and the basic operation is divided into 6 steps:</p>
 <ol>
 <li>Import geometry files</li>
-<li>Establish analysis domain</li>
-<li>Establish analysis physics</li>
+<li>Create analysis domain</li>
+<li>Create analysis physics</li>
 <li>Generate volume mesh</li>
-<li>Establish display scene</li>
+<li>Create display scene</li>
 <li>Set the number of solution steps and run the solution.</li>
 </ol>
 <p>Each step of the operation corresponds to a java file, and each java file corresponds to an XHTML. The java file is similar to the macro mentioned above, and can be quickly edited by recording macros + copying and pasting. The XHTML file provides user interaction instructions and operation entrances, allowing users to call corresponding operation commands according to prompts.<div class="not-prose">

@@ -36,7 +36,7 @@ sudo systemctl enable smbd sudo systemctl start smbd 查询Samba服务状态："
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
     <meta property="article:published_time" content="2025-03-24T00:00:00+00:00">
-    <meta property="article:modified_time" content="2025-03-24T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-04-21T17:30:33+08:00">
     <meta property="article:tag" content="Linux">
     <meta property="article:tag" content="Ubuntu">
 
@@ -82,7 +82,7 @@ sudo systemctl enable smbd sudo systemctl start smbd 查询Samba服务状态："
 
   
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-03-24T00:00:00Z","datePublished":"2025-03-24T00:00:00Z","description":"由于Ubuntu运行在虚拟机中，通过Ubuntu挂载Windows共享文件夹，在挂载点中运行某些CAE软件会出现计算报错。考虑将Ubuntu文件夹共享给Windows，因此需要在Ubuntu系统上搭建Samba服务器。\n首先在Ubuntu上安装samba软件包：\nsudo apt install samba -y 创建共享文件夹：\nmkdir ${HOME}/LinuxShare 编辑Samba配置文件/etc/samba/smb.conf：\nsudo vim /etc/samba/smb.conf 在文件末尾增加以下内容，保存退出：\n[Ubuntu_Share] # 在客户端上显示的共享文件夹的名称 comment = Samba\t# 注释，展示给用户看的 path = /home/***/LinuxShare\t# 共享文件夹的本地路径，填写绝对路径 public = yes\t# 是否允许匿名用户访问 writable = yes\t# 是否允许用户编辑 available = yes\t# 是否可用 browseable = yes\t# 是否可以在网络上浏览 valid users = user\t# 填写Ubuntu登录用户名\t给Samba用户设置密码：\nsudo smbpasswd -a user 启动Samba服务的守护进程：\nsudo systemctl enable smbd sudo systemctl start smbd 查询Samba服务状态：\n","image":"/images/ubuntu-bg.jpg","name":"Ubuntu24.04搭建Samba服务器","url":"https://andrewmoa.site/zh-cn/post/2025-03-24-ubuntu24.04-samba-serve/"}
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-04-21T17:30:33+08:00","datePublished":"2025-03-24T00:00:00Z","description":"由于Ubuntu运行在虚拟机中，通过Ubuntu挂载Windows共享文件夹，在挂载点中运行某些CAE软件会出现计算报错。考虑将Ubuntu文件夹共享给Windows，因此需要在Ubuntu系统上搭建Samba服务器。\n首先在Ubuntu上安装samba软件包：\nsudo apt install samba -y 创建共享文件夹：\nmkdir ${HOME}/LinuxShare 编辑Samba配置文件/etc/samba/smb.conf：\nsudo vim /etc/samba/smb.conf 在文件末尾增加以下内容，保存退出：\n[Ubuntu_Share] # 在客户端上显示的共享文件夹的名称 comment = Samba\t# 注释，展示给用户看的 path = /home/***/LinuxShare\t# 共享文件夹的本地路径，填写绝对路径 public = yes\t# 是否允许匿名用户访问 writable = yes\t# 是否允许用户编辑 available = yes\t# 是否可用 browseable = yes\t# 是否可以在网络上浏览 valid users = user\t# 填写Ubuntu登录用户名\t给Samba用户设置密码：\nsudo smbpasswd -a user 启动Samba服务的守护进程：\nsudo systemctl enable smbd sudo systemctl start smbd 查询Samba服务状态：\n","image":"/images/ubuntu-bg.jpg","name":"Ubuntu24.04搭建Samba服务器","url":"https://andrewmoa.site/zh-cn/post/2025-03-24-ubuntu24.04-samba-serve/"}
 </script>
 
 </head>

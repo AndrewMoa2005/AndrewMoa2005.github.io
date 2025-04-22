@@ -1,6 +1,6 @@
 +++
 author = "Andrew Moa"
-title = "Ansa combined with Abaqus to analyze bolt preload setting"
+title = "Ansa as Abaqus pre-processing analysis bolt pretension setting"
 date = "2025-04-03"
 description = ""
 tags = [
@@ -16,7 +16,7 @@ aliases = [""]
 image = "/images/abaqus-bg.jpg"
 +++
 
-Ansa combined with Abaqus analysis often encounters the problem of applying bolt preload. In addition to the complex settings, it is also easy to make mistakes, and various problems may occur if you are not careful. The following records the Ansa bolt preload setting process and some pitfalls for reference for related analysis later.
+When Ansa is used as Abaqus preprocessor for analysis, the problem of applying bolt pretension is often encountered. In addition to the complex settings, it is also easy to make mistakes, and various problems may occur if you are not careful. The following records the Ansa bolt pretension setting process and some easy mistakes, which will be used as a reference for related analysis later.
 
 ## 1. Solid+Assistant 
 
@@ -32,13 +32,13 @@ The connection between the solid bolt and the flange surface must be established
  3. Next, select the first reference point on the bolt body.
  ![5086d6cd6a8c37ddea9506db6731656b.png](./images/5086d6cd6a8c37ddea9506db6731656b.png)
 
-4. Next, select the second reference point to define the bolt preload direction. A reference plane will be generated at the first reference point. Note that the preload direction must be parallel to the bolt axis.
+4. Next, select the second reference point to define the bolt pretension direction. A reference plane will be generated at the first reference point. Note that the pretension direction must be parallel to the bolt axis.
  ![74336c606e1112ff70556e8a1b845a23.png](./images/74336c606e1112ff70556e8a1b845a23.png)
 
-5. Next, enter the preload force of 50kN and check the box labeled "Fixed". Two "STEP"s will be automatically generated. The first "STEP" is used to load the preload, and the second "STEP" is used to fix the preload. Other loads can be applied to the second "STEP".
+5. Next, enter the pretension force of 50kN and check the box labeled "Fixed". Two "STEP"s will be automatically generated. The first "STEP" is used to load the pretension, and the second "STEP" is used to fix the pretension. Other loads can be applied to the second "STEP".
  ![62ad85d4eb3da3ebeaf9d6bd74784a32.png](./images/62ad85d4eb3da3ebeaf9d6bd74784a32.png)
 
-6. Finally, define the normal direction of the reference plane to confirm the application of the bolt preload.
+6. Finally, define the normal direction of the reference plane to confirm the application of the bolt pretension.
  ![64fd2a39cb6d08089a8f3dcb35de2854.png](./images/64fd2a39cb6d08089a8f3dcb35de2854.png)
 
 After completing the above steps, you can submit the calculation.
@@ -73,10 +73,10 @@ When the problem to be studied does not involve the strength of the bolt body, b
  4. Next, start the wizard, select `Beam Elements`, and select the middle section of the beam unit. If the beam unit was not split in the previous step, you can select the following `Split Beams`, which will automatically split the beam unit into 3 sections and select the middle section.
 ![b99d2690fa392cb288ae45836ec32635.png](./images/b99d2690fa392cb288ae45836ec32635.png)
 
- 5. Similarly, enter the preload force of 50kN and select the fixed preload state.
+ 5. Similarly, enter the pretension force of 50kN and select the fixed pretension state.
 ![ddf9dd2eac9916853e5878d58293b01a.png](./images/ddf9dd2eac9916853e5878d58293b01a.png)
 
- 6. Confirm creation of preload.
+ 6. Confirm creation of pretension.
 ![b48b617fe706fbcd3ab8ab80b3928615.png](./images/b48b617fe706fbcd3ab8ab80b3928615.png)
 
 After completing the above steps, you can submit the calculation.
@@ -96,7 +96,7 @@ After completing the above steps, you can submit the calculation.
 
 ## 3. Beam+Connection
 
-For connection settings, please refer to [Ansa Quick Connection](../2025-03-05-ansa-connector/). Bolt preload can also be set through Connection, which is especially suitable for multiple bolt connections, where models need to be replaced frequently or parameters need to be adjusted. Here, the beam element is selected for the bolt body.
+For connection settings, please refer to [Ansa Quick Connection](../2025-03-05-ansa-connector/). Bolt pretension can also be set through Connection, which is especially suitable for multiple bolt connections, where models need to be replaced frequently or parameters need to be adjusted. Here, the beam element is selected for the bolt body.
 
 The steps to create PID are the same as step 2 in the previous chapter. Select `CBEAM` for `Body Type`, activate `Create Pretension` and enter the pretension value.
 ![b3ad8f55b683acf6abd709917322dede.png](./images/b3ad8f55b683acf6abd709917322dede.png)

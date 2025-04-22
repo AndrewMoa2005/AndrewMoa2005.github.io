@@ -43,7 +43,7 @@ It shares the same command and dialog box as creating contact pairs. You only ne
 3. Contact master surface, select the unit set set in `SET` (usually not required, can be left blank)
 4. Contact behavior
 
-## 4. Bonding Contact
+## 4. Tie Contact
 Call up the dialog via `AUXILIARIES` → `CONTACT` → `TIE`.
 ![e354721ca85e003b8683798b2a78cde3.png](./images/e354721ca85e003b8683798b2a78cde3.png)
 

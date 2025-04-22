@@ -1,6 +1,6 @@
 +++
 author = "Andrew Moa"
-title = "Coding STAR-CCM+ simulation assistant using VSCode"
+title = "Develop STAR-CCM+ simulation assistant using VSCode"
 date = "2025-04-22"
 description = ""
 tags = [
@@ -41,7 +41,7 @@ Because the simulation assistant needs to be loaded into STAR-CCM+, you need to 
 Confirm the jdk version in `JAVA PROJECTS` and make sure it is consistent with the version provided by STAR-CCM+.
 ![faa980ab915d9e4f8cc472f9fe54167a.png](./images/faa980ab915d9e4f8cc472f9fe54167a.png)
 
-## 2. Project Coding
+## 2. Project Develop
 
 Delete the automatically generated source files under `[project folder]/src`, create a folder `Assistant`, and copy and paste the Java source files in the official tutorial into it [^2].
 ![70cc6904b31e239e7da1853d42eb9941.png](./images/70cc6904b31e239e7da1853d42eb9941.png)

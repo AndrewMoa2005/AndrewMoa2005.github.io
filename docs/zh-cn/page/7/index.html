@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" dir="ltr">
 <head>
-	<meta name="generator" content="Hugo 0.146.5">
+	<meta name="generator" content="Hugo 0.147.0">
   <title>Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -203,6 +203,169 @@
   <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
     <div class="flex flex-row">
       <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-20-ubuntu-mount-windows-share-dir/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Ubuntu挂载Windows共享文件夹(cifs&#43;nfs)" title="Ubuntu挂载Windows共享文件夹(cifs&#43;nfs)"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-20-ubuntu-mount-windows-share-dir/">Ubuntu挂载Windows共享文件夹(cifs+nfs)</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>在虚拟机中运行计算文件，会导致虚拟磁盘膨胀，占用太多磁盘空间。这个时候可以通过挂载宿主机文件夹的形式，把计算文件转移到宿主机磁盘上，避免了虚拟磁盘膨胀的问题。在Windows中建立共享文件夹，这里省略了，只需要确保虚拟机能通过IP地址访问宿主机即可。</p>
+<h2 id="1-查看资源路径">1. 查看资源路径</h2>
+<p>以下命令查看服务器共享出来的资源路径，确认挂载点：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">smbclient -L 172.25.64.1 -U <span class="si">${</span><span class="nv">username</span><span class="si">}</span>
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_c192e2bce1f485c8.webp 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_506eabc87bacb862.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_d803d65d8047713a.jpg 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_5db2d441c865d431.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_5db2d441c865d431.jpg" width="679" height="204" alt="915cf6282a8325b667b52d37dea315f0.png" title="915cf6282a8325b667b52d37dea315f0.png" loading="lazy" />
+  </picture>
+</div>
+<p>挂载点访问路径：<code>//172.25.64.1/Share</code></p></p>
+<h2 id="2-挂载方法">2. 挂载方法</h2>
+<p>想要在Ubuntu中访问Windows共享文件夹，首先得安装cifs工具：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install cifs-utils
+</span></span></code></pre></div><p>然后通过<code>mount</code>命令挂载共享文件夹：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mount -t cifs //172.25.64.1/Share /mnt -o <span class="nv">username</span><span class="o">=</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span>,password<span class="o">=</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span>
+</span></span></code></pre></div><p>这里的IP地址<code>172.25.64.1</code>是虚拟机中访问的宿主机的网关地址，<code>Share</code>是宿主机共享的文件夹，<code>/mnt</code>是要挂载到的虚拟机本地访问路径，把命令后面的<code>${username}</code>和<code>${password}</code>替换成访问用户名和密码即可。需要注意的是，Windows本地用户的用户名需要写成<code>${计算机名}\${用户名}</code>的形式，用反斜杠连接，例如：<code>xxx-desktop\administrator</code>。如果是在线账户的话就需要填写完整的邮件账户名称。如果密码中包含逗号等特殊转义字符的话，命令行就不要包含<code>,password=</code>及后面的内容，后续根据提示输入密码登录。</p>
+<p>如果出现无读写权限的问题，挂载命令中增加<code>dir_mode=0777,file_mode=0777</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mount -t cifs //172.25.64.1/Share /mnt -o <span class="nv">dir_mode</span><span class="o">=</span>0777,file_mode<span class="o">=</span>0777,username<span class="o">=</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span>,password<span class="o">=</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span>
+</span></span></code></pre></div><p>如果想只添加某些特定用户的读写权限，通过<code>uid</code>和<code>gid</code>指定用户和组：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mount -t cifs //172.25.64.1/Share /mnt -o <span class="nv">uid</span><span class="o">=</span>user,gid<span class="o">=</span>group,username<span class="o">=</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span>,password<span class="o">=</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span>
+</span></span></code></pre></div><p>通过<code>mount</code>命令可以查看挂载情况：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mount <span class="p">|</span> grep cifs
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_23f5dce8296e2676.webp 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_700d4def140a2f83.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_46ea7d4f801f831e.jpg 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_34277bed754a257c.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_34277bed754a257c.jpg" width="762" height="84" alt="b9e4cda2700bd92ba7d89159f79cc007.png" title="b9e4cda2700bd92ba7d89159f79cc007.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-20T00:00:00&#43;00:00">
+      2025-03-20
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
@@ -524,207 +687,6 @@
     </i>
     <time datetime="2025-03-18T00:00:00&#43;00:00">
       2025-03-18
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-10-abaqus-contact/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/abaqus-bg.jpg"
-      alt="Abaqus接触设置" title="Abaqus接触设置"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-10-abaqus-contact/">Abaqus接触设置</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <h2 id="1-相关命令">1. 相关命令</h2>
-<p>Ansa中，给Abaqus设置接触一般常用以下命令：<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-10-abaqus-contact/images/cb35dcf11a636abacef3aabe97112e62_hu_8484f4a041f6c7c5.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-10-abaqus-contact/images/cb35dcf11a636abacef3aabe97112e62_hu_85a5b64448632578.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-10-abaqus-contact/images/cb35dcf11a636abacef3aabe97112e62_hu_1e98f3ac244080b3.jpg" width="346" height="499" alt="cb35dcf11a636abacef3aabe97112e62.png" title="cb35dcf11a636abacef3aabe97112e62.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<h2 id="2-接触对">2. 接触对</h2>
-<p>最常用的接触对，一般通过<code>AUXILIARIES</code>→ <code>CONTACT</code>→<code>CONTACT</code>调出创建对话框。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-10-abaqus-contact/images/038dffae1f80e68c064572e228df00c6_hu_ae71bc129f0838ed.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-10-abaqus-contact/images/038dffae1f80e68c064572e228df00c6_hu_fc4b2e0e718cceab.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-10-abaqus-contact/images/038dffae1f80e68c064572e228df00c6_hu_e8dd151e7c0f3f68.jpg" width="636" height="528" alt="038dffae1f80e68c064572e228df00c6.png" title="038dffae1f80e68c064572e228df00c6.png" loading="lazy" />
-  </picture>
-</div>
-<p>常用设置一般为以下几个：</p></p>
-<ol>
-<li>定义接触名称，方便检索</li>
-<li>定义接触类型为<code>接触对</code>(<code>CONTACT PAIR</code>)或者<code>通用接触</code>(<code>CONTACT INCLUSIONS</code>或<code>CONTACT EXCLUSIONS</code>)</li>
-<li>接触从面，需要预先在<code>SET</code>里设置好单元集合</li>
-<li>接触主面，需要预先在<code>SET</code>里设置好单元集合</li>
-<li>接触行为，定义摩擦系数等</li>
-<li>接触面调整行为，选择<code>YES</code>可以在后面的<code>POS_TOLER</code>定义容差数值</li>
-<li>接触面是否产生小滑移，默认<code>NO</code></li>
-<li>接触类型，默认<code>surface-to-surface</code>，或者<code>node-to-surface</code></li>
-<li>接触间隙，定义接触的过盈或间隙值</li>
-</ol>
-<h2 id="3-通用接触">3. 通用接触</h2>
-<p>跟创建接触对共用同一个命令和对话框，只需要把接触类型改为<code>接触包含面</code>(<code>CONTACT INCLUSIONS</code>)或<code>接触排除面</code>(<code>CONTACT EXCLUSIONS</code>)即可。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-10-abaqus-contact/images/5ce0bee8d0eaf02a8ec041bb8aa5d791_hu_9547db3da06d0fad.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-10-abaqus-contact/images/5ce0bee8d0eaf02a8ec041bb8aa5d791_hu_7ffe076262942ef1.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-10-abaqus-contact/images/5ce0bee8d0eaf02a8ec041bb8aa5d791_hu_7c77ecfca16db54f.jpg" width="636" height="528" alt="5ce0bee8d0eaf02a8ec041bb8aa5d791.png" title="5ce0bee8d0eaf02a8ec041bb8aa5d791.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<ol>
-<li>定义接触类型</li>
-<li>接触从面，选择<code>SET</code>里设置好的单元集合</li>
-<li>接触主面，选择<code>SET</code>里设置好的单元集合（一般不需要，可以留空）</li>
-<li>接触行为</li>
-</ol>
-<h2 id="4-绑定接触">4. 绑定接触</h2>
-<p>通过<code>AUXILIARIES</code>→ <code>CONTACT</code>→<code>TIE</code>调出对话框。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-10-abaqus-contact/images/e354721ca85e003b8683798b2a78cde3_hu_43a3ff5b1ba9adf0.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-10-abaqus-contact/images/e354721ca85e003b8683798b2a78cde3_hu_ddbf053f47f7baa.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-10-abaqus-contact/images/e354721ca85e003b8683798b2a78cde3_hu_91318610fe767e57.jpg" width="636" height="436" alt="e354721ca85e003b8683798b2a78cde3.png" title="e354721ca85e003b8683798b2a78cde3.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/ansa/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Ansa
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/abaqus/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Abaqus</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/ansa/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ansa</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/cae/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cae</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-10T00:00:00&#43;00:00">
-      2025-03-10
     </time>
   </div>
 

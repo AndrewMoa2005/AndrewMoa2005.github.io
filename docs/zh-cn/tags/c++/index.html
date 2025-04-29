@@ -202,6 +202,170 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
+      alt="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数" title="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">使用VSCode开发STAR-CCM+用户程序：通过CoolProp计算物性参数</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>STAR-CCM+用户程序(用户库)<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>是通过外部编译器(通常是C/C++，也支持Fortran)按一定的规则编译构建的动态链接库，将构建好的动态链接库注册到sim文件中，可以实现某些自定义功能。一个用户程序通常包含一个或多个用户自定义的函数，这些自定义函数一般用于实现特殊的配置或场函数。</p>
+<p>用户程序需要先注册动态链接库才能调用，而动态链接库的格式往往与操作系统、硬件平台等密切相关，因此用户程序通常都是针对特定平台进行编译，无法实现跨平台运行。</p>
+<p>本文尝试用VSCode编写STAR-CCM+动态链接库，利用开源的热力学库CoolProp为STAR-CCM+拓展物性参数计算功能；通过CMake构建用户程序，确保在不同平台下能正确生成动态链接库文件。</p>
+<h2 id="1-coolprop介绍">1. CoolProp介绍</h2>
+<p><a href="http://www.coolprop.org/" target="_blank" rel="noopener">CoolProp</a>
+是一个开源跨平台的热力学库，定位上类似于NIST的REFPROP，包含各种流体物性参数，同时支持多种编程语言，也支持通过MATLAB、Excel甚至javascript调用进行物性参数计算<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>。</p>
+<p>Windows平台通过以下命令下载编译、安装CoolProp<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 推荐使用PowerShell，需要先安装cmake、git及clang-cl编译器</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 下载CoolProp源码及其依赖</span>
+</span></span><span class="line"><span class="cl"><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">CoolProp</span><span class="p">/</span><span class="n">CoolProp</span> <span class="p">-</span><span class="n">-recursive</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd </span><span class="n">CoolProp</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 建立工作目录</span>
+</span></span><span class="line"><span class="cl"><span class="n">mkdir</span> <span class="n">build</span> <span class="p">&amp;&amp;</span> <span class="nb">cd </span><span class="n">build</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 配置静态库编译文件</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">..</span> <span class="n">-DCOOLPROP_STATIC_LIBRARY</span><span class="p">=</span><span class="n">ON</span> <span class="n">-G</span> <span class="s2">&#34;Visual Studio 17 2022&#34;</span> <span class="n">-T</span> <span class="n">ClangCL</span><span class="p">,</span><span class="n">host</span><span class="p">=</span><span class="n">x64</span> <span class="n">-A</span> <span class="n">x64</span> 
+</span></span><span class="line"><span class="cl"><span class="c"># 编译静态库</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">-</span><span class="n">-build</span> <span class="p">.</span> <span class="p">-</span><span class="n">-config</span> <span class="n">Release</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 安装静态库</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">-</span><span class="n">-install</span> <span class="p">.</span> <span class="p">-</span><span class="n">-prefix</span> <span class="nv">$PWD</span><span class="p">/../../</span><span class="n">CoolPropLib</span>
+</span></span></code></pre></div><p>Linux平台通过以下命令编译、安装CoolProp：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 需要先安装cmake、git及gcc编译器</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 下载CoolProp源码及其依赖</span>
+</span></span><span class="line"><span class="cl">git clone https://github.com/CoolProp/CoolProp --recursive
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> CoolProp
+</span></span><span class="line"><span class="cl"><span class="c1"># 建立工作目录</span>
+</span></span><span class="line"><span class="cl">mkdir -p build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置静态库编译文件，默认架构为64位</span>
+</span></span><span class="line"><span class="cl">cmake .. -DCOOLPROP_STATIC_LIBRARY<span class="o">=</span>ON -DCOOLPROP_FPIC<span class="o">=</span>ON -G <span class="s2">&#34;Ninja&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 编译静态库，使用32个核心加速编译</span>
+</span></span><span class="line"><span class="cl">cmake --build . --config Release -- -j32
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装静态库</span>
+</span></span><span class="line"><span class="cl">cmake --install . --prefix <span class="nv">$PWD</span>/../../CoolPropLib
+</span></span></code></pre></div><p>得益于软件良好的封装，CoolProp相关函数的调用十分简单，以下是官方示例代码<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>：</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/c&#43;&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">C&#43;&#43;</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-29T00:00:00&#43;00:00">
+      2025-04-29
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长5分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-04-02-image2base64/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"

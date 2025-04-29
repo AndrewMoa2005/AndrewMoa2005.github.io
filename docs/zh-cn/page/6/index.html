@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" dir="ltr">
 <head>
-	<meta name="generator" content="Hugo 0.146.5">
+	<meta name="generator" content="Hugo 0.147.0">
   <title>Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -203,6 +203,176 @@
   <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
     <div class="flex flex-row">
       <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-21-hyperv-switch-static-ip-address/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/hyperv-bg.png"
+      alt="Hyper-V虚拟交换机NAT设置静态IP" title="Hyper-V虚拟交换机NAT设置静态IP"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-21-hyperv-switch-static-ip-address/">Hyper-V虚拟交换机NAT设置静态IP</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>前面讲过用NAT+端口映射的方式访问虚拟机，但使用过程中发现一个问题：每次宿主机重启之后，默认的<code>Default Switch</code>IP地址都会变更，造成虚拟机无法访问网关进而无法联网。</p>
+<p>为了保证虚拟机联网，每次重启开机都要手动设置<code>Default Switch</code>对应适配器的IP地址，非常不便。下面是参考<a href="https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/user-guide/setup-nat-network" target="_blank" rel="noopener">微软官方文档</a>
+给出的解决方案。</p>
+<p>这里前面的步骤可以通过图形用户界面去实现，首先新建一个内部的虚拟交换机：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-hyperv-switch-static-ip-address/images/38530a4ee6eaabf98448a647c0446d0c_hu_a990ae36a1237ed8.webp 320w, /post/2025-03-21-hyperv-switch-static-ip-address/images/38530a4ee6eaabf98448a647c0446d0c_hu_3990468b9b310ec3.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-hyperv-switch-static-ip-address/images/38530a4ee6eaabf98448a647c0446d0c_hu_83bf84e32ff388e5.jpg 320w, /post/2025-03-21-hyperv-switch-static-ip-address/images/38530a4ee6eaabf98448a647c0446d0c_hu_f6c9b7376c809534.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-hyperv-switch-static-ip-address/images/38530a4ee6eaabf98448a647c0446d0c_hu_f6c9b7376c809534.jpg" width="946" height="721" alt="38530a4ee6eaabf98448a647c0446d0c.png" title="38530a4ee6eaabf98448a647c0446d0c.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>命名虚拟交换机，记住它，后面会用到。确定新建：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-hyperv-switch-static-ip-address/images/2d9b503b6087be2acffc63498abc5977_hu_ce25903a2b1ed85.webp 320w, /post/2025-03-21-hyperv-switch-static-ip-address/images/2d9b503b6087be2acffc63498abc5977_hu_b94f54a1ba95a1d6.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-hyperv-switch-static-ip-address/images/2d9b503b6087be2acffc63498abc5977_hu_eb44051ae1946ec3.jpg 320w, /post/2025-03-21-hyperv-switch-static-ip-address/images/2d9b503b6087be2acffc63498abc5977_hu_f6287c24fc54330.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-hyperv-switch-static-ip-address/images/2d9b503b6087be2acffc63498abc5977_hu_f6287c24fc54330.jpg" width="722" height="687" alt="2d9b503b6087be2acffc63498abc5977.png" title="2d9b503b6087be2acffc63498abc5977.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>在Windows网络适配器中找到新建的虚拟机适配器，将IP地址改成虚拟机设置的网关地址，子网掩码也改成和虚拟机设置的一致：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-hyperv-switch-static-ip-address/images/e4140c00e7140a6ad234b58fa208caa9_hu_92cb61f53696ec1d.webp 320w, /post/2025-03-21-hyperv-switch-static-ip-address/images/e4140c00e7140a6ad234b58fa208caa9_hu_f941c0081d221df.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-hyperv-switch-static-ip-address/images/e4140c00e7140a6ad234b58fa208caa9_hu_20b220f18957d856.jpg 320w, /post/2025-03-21-hyperv-switch-static-ip-address/images/e4140c00e7140a6ad234b58fa208caa9_hu_3081f4b7d504187f.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-hyperv-switch-static-ip-address/images/e4140c00e7140a6ad234b58fa208caa9_hu_3081f4b7d504187f.jpg" width="845" height="446" alt="e4140c00e7140a6ad234b58fa208caa9.png" title="e4140c00e7140a6ad234b58fa208caa9.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>下面用管理员权限打开PowerShell，通过以下命令行查看是否已有NAT网络：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="nb">Get-NetNat</span>
+</span></span></code></pre></div><p>因为一个机器上只能有一个NAT网络，因此要先移除现有的NAT网络：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="nb">Get-NetNat</span> <span class="p">|</span> <span class="nb">Remove-NetNat</span>
+</span></span></code></pre></div><p>设置NAT网络：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="c"># InLan为NAT网络名称，172.25.64.0为子网网关IP地址，/24为子网前缀长度</span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-NetNat</span> <span class="n">-Name</span> <span class="n">InLan</span> <span class="n">-InternalIPInterfaceAddressPrefix</span> <span class="mf">172.25</span><span class="p">.</span><span class="py">64</span><span class="p">.</span><span class="mf">0</span><span class="p">/</span><span class="mf">24</span>
+</span></span></code></pre></div><p>关于子网网关，和上面设置的虚拟机适配器的IP地址即虚拟机的网关地址处在同一个网段即可，末尾设置为0；本例上面虚拟机的网关地址为172.25.64.1，那子网网关地址一般设置为172.25.64.0。子网前缀即子网掩码，关于子网前缀长度，通俗来讲，像2xx.2xx.2xx.0这种都是24位，2xx.2xx.2xx.2xx这种为32位。</p>
+<p>设置完成后通过Get-NetNat查看是否有NAT网络信息：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="n">Name</span>                             <span class="err">:</span> <span class="n">InLan</span>
+</span></span><span class="line"><span class="cl"><span class="n">ExternalIPInterfaceAddressPrefix</span> <span class="err">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">InternalIPInterfaceAddressPrefix</span> <span class="err">:</span> <span class="mf">172.25</span><span class="p">.</span><span class="py">64</span><span class="p">.</span><span class="mf">0</span><span class="p">/</span><span class="mf">24</span>
+</span></span><span class="line"><span class="cl"><span class="n">IcmpQueryTimeout</span>                 <span class="err">:</span> <span class="mf">30</span>
+</span></span><span class="line"><span class="cl"><span class="n">TcpEstablishedConnectionTimeout</span>  <span class="err">:</span> <span class="mf">1800</span>
+</span></span><span class="line"><span class="cl"><span class="n">TcpTransientConnectionTimeout</span>    <span class="err">:</span> <span class="mf">120</span>
+</span></span><span class="line"><span class="cl"><span class="n">TcpFilteringBehavior</span>             <span class="err">:</span> <span class="n">AddressDependentFiltering</span>
+</span></span><span class="line"><span class="cl"><span class="n">UdpFilteringBehavior</span>             <span class="err">:</span> <span class="n">AddressDependentFiltering</span>
+</span></span><span class="line"><span class="cl"><span class="n">UdpIdleSessionTimeout</span>            <span class="err">:</span> <span class="mf">120</span>
+</span></span><span class="line"><span class="cl"><span class="n">UdpInboundRefresh</span>                <span class="err">:</span> <span class="n">False</span>
+</span></span><span class="line"><span class="cl"><span class="n">Store</span>                            <span class="err">:</span> <span class="n">Local</span>
+</span></span><span class="line"><span class="cl"><span class="n">Active</span>                           <span class="err">:</span> <span class="n">True</span>
+</span></span></code></pre></div><p>这样新的NAT网络就配置好了，在虚拟机设置中更换成新设置的虚拟交换机。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-21-hyperv-switch-static-ip-address/images/0dede2ea198412fb98f352185b8c299c_hu_8a426b6668ef3da3.webp 320w, /post/2025-03-21-hyperv-switch-static-ip-address/images/0dede2ea198412fb98f352185b8c299c_hu_28c507268652a5e.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-21-hyperv-switch-static-ip-address/images/0dede2ea198412fb98f352185b8c299c_hu_fea5f0620dd92ce1.jpg 320w, /post/2025-03-21-hyperv-switch-static-ip-address/images/0dede2ea198412fb98f352185b8c299c_hu_95d61d79d2ed701b.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-21-hyperv-switch-static-ip-address/images/0dede2ea198412fb98f352185b8c299c_hu_95d61d79d2ed701b.jpg" width="792" height="413" alt="0dede2ea198412fb98f352185b8c299c.png" title="0dede2ea198412fb98f352185b8c299c.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/virtual-machine/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Virtual-Machine</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-21T00:00:00&#43;00:00">
+      2025-03-21
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
@@ -521,169 +691,6 @@
 
           </i>
           <span class="ml-0">Slurm</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/ubuntu/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ubuntu</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-20T00:00:00&#43;00:00">
-      2025-03-20
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-20-ubuntu-mount-windows-share-dir/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
-      alt="Ubuntu挂载Windows共享文件夹(cifs&#43;nfs)" title="Ubuntu挂载Windows共享文件夹(cifs&#43;nfs)"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-20-ubuntu-mount-windows-share-dir/">Ubuntu挂载Windows共享文件夹(cifs+nfs)</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>在虚拟机中运行计算文件，会导致虚拟磁盘膨胀，占用太多磁盘空间。这个时候可以通过挂载宿主机文件夹的形式，把计算文件转移到宿主机磁盘上，避免了虚拟磁盘膨胀的问题。在Windows中建立共享文件夹，这里省略了，只需要确保虚拟机能通过IP地址访问宿主机即可。</p>
-<h2 id="1-查看资源路径">1. 查看资源路径</h2>
-<p>以下命令查看服务器共享出来的资源路径，确认挂载点：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">smbclient -L 172.25.64.1 -U <span class="si">${</span><span class="nv">username</span><span class="si">}</span>
-</span></span></code></pre></div><p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_c192e2bce1f485c8.webp 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_506eabc87bacb862.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_d803d65d8047713a.jpg 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_5db2d441c865d431.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/915cf6282a8325b667b52d37dea315f0_hu_5db2d441c865d431.jpg" width="679" height="204" alt="915cf6282a8325b667b52d37dea315f0.png" title="915cf6282a8325b667b52d37dea315f0.png" loading="lazy" />
-  </picture>
-</div>
-<p>挂载点访问路径：<code>//172.25.64.1/Share</code></p></p>
-<h2 id="2-挂载方法">2. 挂载方法</h2>
-<p>想要在Ubuntu中访问Windows共享文件夹，首先得安装cifs工具：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install cifs-utils
-</span></span></code></pre></div><p>然后通过<code>mount</code>命令挂载共享文件夹：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mount -t cifs //172.25.64.1/Share /mnt -o <span class="nv">username</span><span class="o">=</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span>,password<span class="o">=</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span>
-</span></span></code></pre></div><p>这里的IP地址<code>172.25.64.1</code>是虚拟机中访问的宿主机的网关地址，<code>Share</code>是宿主机共享的文件夹，<code>/mnt</code>是要挂载到的虚拟机本地访问路径，把命令后面的<code>${username}</code>和<code>${password}</code>替换成访问用户名和密码即可。需要注意的是，Windows本地用户的用户名需要写成<code>${计算机名}\${用户名}</code>的形式，用反斜杠连接，例如：<code>xxx-desktop\administrator</code>。如果是在线账户的话就需要填写完整的邮件账户名称。如果密码中包含逗号等特殊转义字符的话，命令行就不要包含<code>,password=</code>及后面的内容，后续根据提示输入密码登录。</p>
-<p>如果出现无读写权限的问题，挂载命令中增加<code>dir_mode=0777,file_mode=0777</code>：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mount -t cifs //172.25.64.1/Share /mnt -o <span class="nv">dir_mode</span><span class="o">=</span>0777,file_mode<span class="o">=</span>0777,username<span class="o">=</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span>,password<span class="o">=</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span>
-</span></span></code></pre></div><p>如果想只添加某些特定用户的读写权限，通过<code>uid</code>和<code>gid</code>指定用户和组：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mount -t cifs //172.25.64.1/Share /mnt -o <span class="nv">uid</span><span class="o">=</span>user,gid<span class="o">=</span>group,username<span class="o">=</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span>,password<span class="o">=</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span>
-</span></span></code></pre></div><p>通过<code>mount</code>命令可以查看挂载情况：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mount <span class="p">|</span> grep cifs
-</span></span></code></pre></div><p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_23f5dce8296e2676.webp 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_700d4def140a2f83.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_46ea7d4f801f831e.jpg 320w, /post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_34277bed754a257c.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-20-ubuntu-mount-windows-share-dir/images/b9e4cda2700bd92ba7d89159f79cc007_hu_34277bed754a257c.jpg" width="762" height="84" alt="b9e4cda2700bd92ba7d89159f79cc007.png" title="b9e4cda2700bd92ba7d89159f79cc007.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/linux/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Linux
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/linux/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Linux</span>
         </a>
       </li>
       

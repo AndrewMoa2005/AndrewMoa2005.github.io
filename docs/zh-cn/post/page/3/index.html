@@ -202,6 +202,185 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-04-03-ansa-abaqus-bolt-pretension/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/abaqus-bg.jpg"
+      alt="Ansa联合Abaqus分析螺栓预紧力设置" title="Ansa联合Abaqus分析螺栓预紧力设置"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-03-ansa-abaqus-bolt-pretension/">Ansa联合Abaqus分析螺栓预紧力设置</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>Ansa联合Abaqus分析经常遇到螺栓施加预紧力问题，除了设置复杂外还容易踩坑，一不小心就会遇到各种各样的问题。下面记录一下Ansa螺栓预紧力设置过程和一些坑，为后面相关分析作参考。</p>
+<h2 id="1-solidassistant">1. Solid+Assistant</h2>
+<p>实体螺栓和法兰面之间要先建立连接，具体可以参考<a href="../2025-03-10-abaqus-contact/">Abaqus接触设置</a>
+。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_4c4221a6226fe2bd.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_b68f84365b21e603.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_4c99b84fbb09dc44.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_c234c684305d2129.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_bcc3958dd9debb41.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_77aaae6d566222ae.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/1a56cfc8f6f5583e360bf9bd9ae4de48_hu_bcc3958dd9debb41.jpg" width="971" height="809" alt="1a56cfc8f6f5583e360bf9bd9ae4de48.png" title="1a56cfc8f6f5583e360bf9bd9ae4de48.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<ol>
+<li>
+<p>单个螺栓可以通过<code>AUXILIARIES</code>→<code>PRTENS</code>→<code>Assistant</code>向导进行设置。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/0529d3a74d53af475e0c91c8f355cb58_hu_558805d229614c62.jpg" width="236" height="280" alt="0529d3a74d53af475e0c91c8f355cb58.png" title="0529d3a74d53af475e0c91c8f355cb58.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>在弹出向导中选择<code>Surface - Solid Elements</code>或者<code>Surface - Solid Property</code>，然后选择螺栓实体。 勾选下面的<code>Detect and create all possible pretensions.</code>，会尝试自动搜索类似实体并创建相同的预紧力。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_3402a7fd93eb15e.webp 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_b43f7e54a7001028.webp 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_343e79b8c7edc6ac.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_494ac2bd5025ad1f.jpg 320w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_733b4216a14b2e05.jpg 640w, /post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_4122ae8449ee5218.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-03-ansa-abaqus-bolt-pretension/images/9d13058ea827e23ce047e9f1b52fde1d_hu_733b4216a14b2e05.jpg" width="1094" height="666" alt="9d13058ea827e23ce047e9f1b52fde1d.png" title="9d13058ea827e23ce047e9f1b52fde1d.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/ansa/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Ansa
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/abaqus/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Abaqus</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ansa/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ansa</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-03T00:00:00&#43;00:00">
+      2025-04-03
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-04-02-image2base64/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
@@ -534,194 +713,6 @@
 
           </i>
           <span class="ml-0">Openfoam</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-27T00:00:00&#43;00:00">
-      2025-03-27
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-27-ubuntu-compile-su2/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
-      alt="Ubuntu编译安装SU2" title="Ubuntu编译安装SU2"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-27-ubuntu-compile-su2/">Ubuntu编译安装SU2</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p><a href="https://su2code.github.io/" target="_blank" rel="noopener">SU2</a>
-是一款由斯坦福大学航空航天学院开发的开源CFD求解器，基于C++和Python开发，定位类似于OpenFOAM，但不支持多面体网格。相比OpenFOAM，SU2在高速可压缩流方面的求解更有优势。</p>
-<p>下载SU2源代码：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir <span class="nv">$HOME</span>/su2code <span class="o">&amp;&amp;</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/su2code
-</span></span><span class="line"><span class="cl"><span class="c1"># 只clone最近commit版本，加快下载速度</span>
-</span></span><span class="line"><span class="cl">git clone https://github.com/su2code/SU2.git --depth<span class="o">=</span><span class="m">1</span>
-</span></span></code></pre></div><p>定义环境变量，新建配置文件<code>su2.env</code>：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">touch <span class="nv">$HOME</span>/su2code/su2.env
-</span></span><span class="line"><span class="cl">chmod +x <span class="nv">$HOME</span>/su2code/su2.env
-</span></span><span class="line"><span class="cl">vim <span class="nv">$HOME</span>/su2code/su2.env
-</span></span></code></pre></div><p>在<code>su2.env</code>文件中加入以下内容，保存退出：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="cp">#!/bin/sh
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 定义SU2环境变量</span>
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SU2_RUN</span><span class="o">=</span><span class="nv">$HOME</span>/su2code/bin	<span class="c1"># 编译完成后su2的安装路径</span>
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SU2_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/su2code/SU2	<span class="c1"># 下载su2的源码的文件夹路径</span>
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SU2_RUN</span>
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$SU2_RUN</span>:<span class="nv">$PYTHONPATH</span>
-</span></span></code></pre></div><p>编译程序的配置文件<code>meson_options.txt</code>位于SU2源代码文件夹下，根据自己的需求调整其中的编译选项：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vim <span class="nv">$HOME</span>/su2code/SU2/meson_options.txt
-</span></span></code></pre></div><p>这里打开mpi和blas支持，修改以下两行的value：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="line"><span class="cl"><span class="n">option</span><span class="p">(</span><span class="s1">&#39;with-mpi&#39;</span><span class="p">,</span>   <span class="nb">type</span> <span class="p">:</span> <span class="s1">&#39;feature&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="s1">&#39;enabled&#39;</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="s1">&#39;enable MPI support&#39;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">option</span><span class="p">(</span><span class="s1">&#39;enable-openblas&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="p">:</span> <span class="s1">&#39;boolean&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="n">true</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="s1">&#39;enable BLAS and LAPACK support via OpenBLAS&#39;</span><span class="p">)</span>
-</span></span></code></pre></div><p>如果是Intel的机器，建议打开mkl支持。</p>
-<p>默认支持的blas库是openblas，要先下载openblas库：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install libopenblas-dev -y
-</span></span></code></pre></div><p>进入下载的源码目录，运行编译程序</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># 载入环境变量</span>
-</span></span><span class="line"><span class="cl"><span class="nb">source</span> <span class="nv">$HOME</span>/su2code/su2.env
-</span></span><span class="line"><span class="cl"><span class="c1"># 进入源码文件夹</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$SU2_HOME</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 配置编译器，生成ninja构建文件</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 配置过程中会自动从git上下载外部依赖</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 非常花时间……</span>
-</span></span><span class="line"><span class="cl">./meson.py build --prefix<span class="o">=</span><span class="nv">$SU2_RUN</span>/..
-</span></span><span class="line"><span class="cl"><span class="c1"># 开始编译并安装</span>
-</span></span><span class="line"><span class="cl">./ninja -C build install
-</span></span></code></pre></div><p>验证是否安装成功：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">SU2_CFD --help
-</span></span></code></pre></div><p>安装成功会输出软件版本号和帮助信息。</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/linux/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Linux
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/slurm/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Slurm</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/su2/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Su2</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/ubuntu/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ubuntu</span>
         </a>
       </li>
       

@@ -9,8 +9,15 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Tue, 22 Apr 2025 14:23:26 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 29 Apr 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Use VSCode to develop STAR-CCM&#43; user library: Calculate physical properties through CoolProp</title>
+      <link>https://andrewmoa.site/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/</link>
+      <pubDate>Tue, 29 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/</guid>
+      <description>&lt;p&gt;STAR-CCM+ user program (user library)&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; is a dynamic link library compiled and constructed according to certain rules by an external compiler (usually C/C++, but also supports Fortran in Linux). By registering the constructed dynamic link library in the sim file, certain custom functions can be implemented. A user library usually contains one or more user-defined functions, which are generally used to implement special configuration or field functions.&lt;/p&gt;&#xA;&lt;p&gt;Uer library need to register dynamic link libraries before they can be called, and the format of dynamic link libraries is often closely related to the operating system, hardware platform, etc. Therefore, user library are usually compiled for specific platforms and cannot run across platforms.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Develop STAR-CCM&#43; simulation assistant using VSCode</title>
       <link>https://andrewmoa.site/post/2025-04-22-use-vscode-coding-starccm-assistant/</link>

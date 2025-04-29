@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="STAR-CCM&#43;用户程序(用户库)1是通过外部编译器(通常是C/C&#43;&#43;，也支持Fortran)按一定的规则编译构建的动态链接库，将构建好的动态链接库注册到sim文件中，可以实现某些自定义功能。一个用户程序通常包含一个或多个用户自定义的函数，这些自定义函数一般用于实现特殊的配置或场函数。
+用户程序需要先注册动态链接库才能调用，而动态链接库的格式往往与操作系统、硬件平台等密切相关，因此用户程序通常都是针对特定平台进行编译，无法实现跨平台运行。
+本文尝试用VSCode编写STAR-CCM&#43;动态链接库，利用开源的热力学库CoolProp为STAR-CCM&#43;拓展物性参数计算功能；通过CMake构建用户程序，确保在不同平台下能正确生成动态链接库文件。
+1. CoolProp介绍 CoolProp 是一个开源跨平台的热力学库，定位上类似于NIST的REFPROP，包含各种流体物性参数，同时支持多种编程语言，也支持通过MATLAB、Excel甚至javascript调用进行物性参数计算2。
+Windows平台通过以下命令下载编译、安装CoolProp3：
+# 推荐使用PowerShell，需要先安装cmake、git及clang-cl编译器 # 下载CoolProp源码及其依赖 git clone https://github.com/CoolProp/CoolProp --recursive cd CoolProp # 建立工作目录 mkdir build &amp;&amp; cd build # 配置静态库编译文件 cmake .. -DCOOLPROP_STATIC_LIBRARY=ON -G &#34;Visual Studio 17 2022&#34; -T ClangCL,host=x64 -A x64 # 编译静态库 cmake --build . --config Release # 安装静态库 cmake --install . --prefix $PWD/../../CoolPropLib Linux平台通过以下命令编译、安装CoolProp：
+# 需要先安装cmake、git及gcc编译器 # 下载CoolProp源码及其依赖 git clone https://github.com/CoolProp/CoolProp --recursive cd CoolProp # 建立工作目录 mkdir -p build &amp;&amp; cd build # 配置静态库编译文件，默认架构为64位 cmake .. -DCOOLPROP_STATIC_LIBRARY=ON -DCOOLPROP_FPIC=ON -G &#34;Ninja&#34; # 编译静态库，使用32个核心加速编译 cmake --build . --config Release -- -j32 # 安装静态库 cmake --install . --prefix $PWD/../../CoolPropLib 得益于软件良好的封装，CoolProp相关函数的调用十分简单，以下是官方示例代码4：
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数">
+  <meta property="og:description" content="STAR-CCM&#43;用户程序(用户库)1是通过外部编译器(通常是C/C&#43;&#43;，也支持Fortran)按一定的规则编译构建的动态链接库，将构建好的动态链接库注册到sim文件中，可以实现某些自定义功能。一个用户程序通常包含一个或多个用户自定义的函数，这些自定义函数一般用于实现特殊的配置或场函数。
+用户程序需要先注册动态链接库才能调用，而动态链接库的格式往往与操作系统、硬件平台等密切相关，因此用户程序通常都是针对特定平台进行编译，无法实现跨平台运行。
+本文尝试用VSCode编写STAR-CCM&#43;动态链接库，利用开源的热力学库CoolProp为STAR-CCM&#43;拓展物性参数计算功能；通过CMake构建用户程序，确保在不同平台下能正确生成动态链接库文件。
+1. CoolProp介绍 CoolProp 是一个开源跨平台的热力学库，定位上类似于NIST的REFPROP，包含各种流体物性参数，同时支持多种编程语言，也支持通过MATLAB、Excel甚至javascript调用进行物性参数计算2。
+Windows平台通过以下命令下载编译、安装CoolProp3：
+# 推荐使用PowerShell，需要先安装cmake、git及clang-cl编译器 # 下载CoolProp源码及其依赖 git clone https://github.com/CoolProp/CoolProp --recursive cd CoolProp # 建立工作目录 mkdir build &amp;&amp; cd build # 配置静态库编译文件 cmake .. -DCOOLPROP_STATIC_LIBRARY=ON -G &#34;Visual Studio 17 2022&#34; -T ClangCL,host=x64 -A x64 # 编译静态库 cmake --build . --config Release # 安装静态库 cmake --install . --prefix $PWD/../../CoolPropLib Linux平台通过以下命令编译、安装CoolProp：
+# 需要先安装cmake、git及gcc编译器 # 下载CoolProp源码及其依赖 git clone https://github.com/CoolProp/CoolProp --recursive cd CoolProp # 建立工作目录 mkdir -p build &amp;&amp; cd build # 配置静态库编译文件，默认架构为64位 cmake .. -DCOOLPROP_STATIC_LIBRARY=ON -DCOOLPROP_FPIC=ON -G &#34;Ninja&#34; # 编译静态库，使用32个核心加速编译 cmake --build . --config Release -- -j32 # 安装静态库 cmake --install . --prefix $PWD/../../CoolPropLib 得益于软件良好的封装，CoolProp相关函数的调用十分简单，以下是官方示例代码4：">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-04-29T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-04-29T00:00:00+00:00">
+    <meta property="article:tag" content="C&#43;&#43;">
+    <meta property="article:tag" content="Star-Ccm&#43;">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数">
+  <meta name="twitter:description" content="STAR-CCM&#43;用户程序(用户库)1是通过外部编译器(通常是C/C&#43;&#43;，也支持Fortran)按一定的规则编译构建的动态链接库，将构建好的动态链接库注册到sim文件中，可以实现某些自定义功能。一个用户程序通常包含一个或多个用户自定义的函数，这些自定义函数一般用于实现特殊的配置或场函数。
+用户程序需要先注册动态链接库才能调用，而动态链接库的格式往往与操作系统、硬件平台等密切相关，因此用户程序通常都是针对特定平台进行编译，无法实现跨平台运行。
+本文尝试用VSCode编写STAR-CCM&#43;动态链接库，利用开源的热力学库CoolProp为STAR-CCM&#43;拓展物性参数计算功能；通过CMake构建用户程序，确保在不同平台下能正确生成动态链接库文件。
+1. CoolProp介绍 CoolProp 是一个开源跨平台的热力学库，定位上类似于NIST的REFPROP，包含各种流体物性参数，同时支持多种编程语言，也支持通过MATLAB、Excel甚至javascript调用进行物性参数计算2。
+Windows平台通过以下命令下载编译、安装CoolProp3：
+# 推荐使用PowerShell，需要先安装cmake、git及clang-cl编译器 # 下载CoolProp源码及其依赖 git clone https://github.com/CoolProp/CoolProp --recursive cd CoolProp # 建立工作目录 mkdir build &amp;&amp; cd build # 配置静态库编译文件 cmake .. -DCOOLPROP_STATIC_LIBRARY=ON -G &#34;Visual Studio 17 2022&#34; -T ClangCL,host=x64 -A x64 # 编译静态库 cmake --build . --config Release # 安装静态库 cmake --install . --prefix $PWD/../../CoolPropLib Linux平台通过以下命令编译、安装CoolProp：
+# 需要先安装cmake、git及gcc编译器 # 下载CoolProp源码及其依赖 git clone https://github.com/CoolProp/CoolProp --recursive cd CoolProp # 建立工作目录 mkdir -p build &amp;&amp; cd build # 配置静态库编译文件，默认架构为64位 cmake .. -DCOOLPROP_STATIC_LIBRARY=ON -DCOOLPROP_FPIC=ON -G &#34;Ninja&#34; # 编译静态库，使用32个核心加速编译 cmake --build . --config Release -- -j32 # 安装静态库 cmake --install . --prefix $PWD/../../CoolPropLib 得益于软件良好的封装，CoolProp相关函数的调用十分简单，以下是官方示例代码4：">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-04-29T00:00:00Z","datePublished":"2025-04-29T00:00:00Z","description":"STAR-CCM+用户程序(用户库)1是通过外部编译器(通常是C/C++，也支持Fortran)按一定的规则编译构建的动态链接库，将构建好的动态链接库注册到sim文件中，可以实现某些自定义功能。一个用户程序通常包含一个或多个用户自定义的函数，这些自定义函数一般用于实现特殊的配置或场函数。\n用户程序需要先注册动态链接库才能调用，而动态链接库的格式往往与操作系统、硬件平台等密切相关，因此用户程序通常都是针对特定平台进行编译，无法实现跨平台运行。\n本文尝试用VSCode编写STAR-CCM+动态链接库，利用开源的热力学库CoolProp为STAR-CCM+拓展物性参数计算功能；通过CMake构建用户程序，确保在不同平台下能正确生成动态链接库文件。\n1. CoolProp介绍 CoolProp 是一个开源跨平台的热力学库，定位上类似于NIST的REFPROP，包含各种流体物性参数，同时支持多种编程语言，也支持通过MATLAB、Excel甚至javascript调用进行物性参数计算2。\nWindows平台通过以下命令下载编译、安装CoolProp3：\n# 推荐使用PowerShell，需要先安装cmake、git及clang-cl编译器 # 下载CoolProp源码及其依赖 git clone https://github.com/CoolProp/CoolProp --recursive cd CoolProp # 建立工作目录 mkdir build \u0026amp;\u0026amp; cd build # 配置静态库编译文件 cmake .. -DCOOLPROP_STATIC_LIBRARY=ON -G \u0026#34;Visual Studio 17 2022\u0026#34; -T ClangCL,host=x64 -A x64 # 编译静态库 cmake --build . --config Release # 安装静态库 cmake --install . --prefix $PWD/../../CoolPropLib Linux平台通过以下命令编译、安装CoolProp：\n# 需要先安装cmake、git及gcc编译器 # 下载CoolProp源码及其依赖 git clone https://github.com/CoolProp/CoolProp --recursive cd CoolProp # 建立工作目录 mkdir -p build \u0026amp;\u0026amp; cd build # 配置静态库编译文件，默认架构为64位 cmake .. -DCOOLPROP_STATIC_LIBRARY=ON -DCOOLPROP_FPIC=ON -G \u0026#34;Ninja\u0026#34; # 编译静态库，使用32个核心加速编译 cmake --build . --config Release -- -j32 # 安装静态库 cmake --install . --prefix $PWD/../../CoolPropLib 得益于软件良好的封装，CoolProp相关函数的调用十分简单，以下是官方示例代码4：\n","image":"/images/starccm-bg.jpg","name":"使用VSCode开发STAR-CCM+用户程序：通过CoolProp计算物性参数","url":"https://andrewmoa.site/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
+      alt="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数" title="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">使用VSCode开发STAR-CCM+用户程序：通过CoolProp计算物性参数</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/c&#43;&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">C&#43;&#43;</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-29T00:00:00&#43;00:00">
+      2025-04-29
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长5分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-coolprop介绍">1. CoolProp介绍</a></li>
+    <li><a href="#2-编写star-ccm用户程序">2. 编写STAR-CCM+用户程序</a></li>
+    <li><a href="#3-编译动态链接库">3. 编译动态链接库</a>
+      <ul>
+        <li><a href="#31-通过vscodecmake编译项目">3.1 通过VSCode+CMake编译项目</a></li>
+        <li><a href="#32-通过cmake命令行编译项目">3.2 通过CMake+命令行编译项目</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-常见问题">4. 常见问题</a>
+      <ul>
+        <li><a href="#41-动态链接库的依赖问题">4.1 动态链接库的依赖问题</a></li>
+        <li><a href="#42-glibcxx版本问题">4.2 GLIBCXX版本问题</a></li>
+        <li><a href="#43-计算效率问题">4.3 计算效率问题</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>STAR-CCM+用户程序(用户库)<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>是通过外部编译器(通常是C/C++，也支持Fortran)按一定的规则编译构建的动态链接库，将构建好的动态链接库注册到sim文件中，可以实现某些自定义功能。一个用户程序通常包含一个或多个用户自定义的函数，这些自定义函数一般用于实现特殊的配置或场函数。</p>
+<p>用户程序需要先注册动态链接库才能调用，而动态链接库的格式往往与操作系统、硬件平台等密切相关，因此用户程序通常都是针对特定平台进行编译，无法实现跨平台运行。</p>
+<p>本文尝试用VSCode编写STAR-CCM+动态链接库，利用开源的热力学库CoolProp为STAR-CCM+拓展物性参数计算功能；通过CMake构建用户程序，确保在不同平台下能正确生成动态链接库文件。</p>
+<h2 id="1-coolprop介绍">1. CoolProp介绍</h2>
+<p><a href="http://www.coolprop.org/" target="_blank" rel="noopener">CoolProp</a>
+是一个开源跨平台的热力学库，定位上类似于NIST的REFPROP，包含各种流体物性参数，同时支持多种编程语言，也支持通过MATLAB、Excel甚至javascript调用进行物性参数计算<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>。</p>
+<p>Windows平台通过以下命令下载编译、安装CoolProp<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 推荐使用PowerShell，需要先安装cmake、git及clang-cl编译器</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 下载CoolProp源码及其依赖</span>
+</span></span><span class="line"><span class="cl"><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">CoolProp</span><span class="p">/</span><span class="n">CoolProp</span> <span class="p">-</span><span class="n">-recursive</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd </span><span class="n">CoolProp</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 建立工作目录</span>
+</span></span><span class="line"><span class="cl"><span class="n">mkdir</span> <span class="n">build</span> <span class="p">&amp;&amp;</span> <span class="nb">cd </span><span class="n">build</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 配置静态库编译文件</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">..</span> <span class="n">-DCOOLPROP_STATIC_LIBRARY</span><span class="p">=</span><span class="n">ON</span> <span class="n">-G</span> <span class="s2">&#34;Visual Studio 17 2022&#34;</span> <span class="n">-T</span> <span class="n">ClangCL</span><span class="p">,</span><span class="n">host</span><span class="p">=</span><span class="n">x64</span> <span class="n">-A</span> <span class="n">x64</span> 
+</span></span><span class="line"><span class="cl"><span class="c"># 编译静态库</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">-</span><span class="n">-build</span> <span class="p">.</span> <span class="p">-</span><span class="n">-config</span> <span class="n">Release</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 安装静态库</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">-</span><span class="n">-install</span> <span class="p">.</span> <span class="p">-</span><span class="n">-prefix</span> <span class="nv">$PWD</span><span class="p">/../../</span><span class="n">CoolPropLib</span>
+</span></span></code></pre></div><p>Linux平台通过以下命令编译、安装CoolProp：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 需要先安装cmake、git及gcc编译器</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 下载CoolProp源码及其依赖</span>
+</span></span><span class="line"><span class="cl">git clone https://github.com/CoolProp/CoolProp --recursive
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> CoolProp
+</span></span><span class="line"><span class="cl"><span class="c1"># 建立工作目录</span>
+</span></span><span class="line"><span class="cl">mkdir -p build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置静态库编译文件，默认架构为64位</span>
+</span></span><span class="line"><span class="cl">cmake .. -DCOOLPROP_STATIC_LIBRARY<span class="o">=</span>ON -DCOOLPROP_FPIC<span class="o">=</span>ON -G <span class="s2">&#34;Ninja&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 编译静态库，使用32个核心加速编译</span>
+</span></span><span class="line"><span class="cl">cmake --build . --config Release -- -j32
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装静态库</span>
+</span></span><span class="line"><span class="cl">cmake --install . --prefix <span class="nv">$PWD</span>/../../CoolPropLib
+</span></span></code></pre></div><p>得益于软件良好的封装，CoolProp相关函数的调用十分简单，以下是官方示例代码<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;CoolProp.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">CoolProp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// First type (slowest, due to most string processing, exposed in DLL)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s">&#34;Dmolar&#34;</span><span class="p">,</span> <span class="s">&#34;T&#34;</span><span class="p">,</span> <span class="mi">298</span><span class="p">,</span> <span class="s">&#34;P&#34;</span><span class="p">,</span> <span class="mf">1e5</span><span class="p">,</span> <span class="s">&#34;Propane[0.5]&amp;Ethane[0.5]&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>  <span class="c1">// Default backend is HEOS
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s">&#34;Dmolar&#34;</span><span class="p">,</span> <span class="s">&#34;T&#34;</span><span class="p">,</span> <span class="mi">298</span><span class="p">,</span> <span class="s">&#34;P&#34;</span><span class="p">,</span> <span class="mf">1e5</span><span class="p">,</span> <span class="s">&#34;HEOS::Propane[0.5]&amp;Ethane[0.5]&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">PropsSI</span><span class="p">(</span><span class="s">&#34;Dmolar&#34;</span><span class="p">,</span> <span class="s">&#34;T&#34;</span><span class="p">,</span> <span class="mi">298</span><span class="p">,</span> <span class="s">&#34;P&#34;</span><span class="p">,</span> <span class="mf">1e5</span><span class="p">,</span> <span class="s">&#34;REFPROP::Propane[0.5]&amp;Ethane[0.5]&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Vector example
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">z</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Second type (C++ only, a bit faster, allows for vector inputs and outputs)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">fluids</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fluids</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">&#34;Propane&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fluids</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">&#34;Ethane&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">outputs</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">outputs</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">&#34;Dmolar&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">T</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">298</span><span class="p">),</span> <span class="n">p</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e5</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">PropsSImulti</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="s">&#34;T&#34;</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="s">&#34;P&#34;</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="n">fluids</span><span class="p">,</span> <span class="n">z</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>  <span class="c1">// Default backend is HEOS
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">PropsSImulti</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="s">&#34;T&#34;</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="s">&#34;P&#34;</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="s">&#34;HEOS&#34;</span><span class="p">,</span> <span class="n">fluids</span><span class="p">,</span> <span class="n">z</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Comment me out if REFPROP is not installed
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">PropsSImulti</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="s">&#34;T&#34;</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="s">&#34;P&#34;</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="s">&#34;REFPROP&#34;</span><span class="p">,</span> <span class="n">fluids</span><span class="p">,</span> <span class="n">z</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// All done return
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>正确情况下，以上示例代码的输出结果：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">40.8269
+</span></span><span class="line"><span class="cl">40.8269
+</span></span><span class="line"><span class="cl">40.8269
+</span></span><span class="line"><span class="cl">40.8269
+</span></span><span class="line"><span class="cl">40.8269
+</span></span><span class="line"><span class="cl">40.8269
+</span></span></code></pre></div><p>CoolProp还支持Python调用，可以作为计算器使用，方便地进行各种工质物性参数计算：</p>
+<pre tabindex="0"><code class="language-jupyter" data-lang="jupyter">In [1]: from CoolProp.CoolProp import PropsSI
+
+In [2]: PropsSI(&#39;T&#39;,&#39;P&#39;,101325,&#39;Q&#39;,0,&#39;Water&#39;)
+Out[2]: 373.1242958476844
+
+In [3]: H_V = PropsSI(&#39;H&#39;,&#39;P&#39;,101325,&#39;Q&#39;,1,&#39;Water&#39;)
+
+In [4]: H_L = PropsSI(&#39;H&#39;,&#39;P&#39;,101325,&#39;Q&#39;,0,&#39;Water&#39;)
+
+In [5]: H_V - H_L
+Out[5]: 2256471.5924066794
+</code></pre><h2 id="2-编写star-ccm用户程序">2. 编写STAR-CCM+用户程序</h2>
+<p>首先新建一个VSCode工作目录，文件结构如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">starccm_coolprop</span>	<span class="c"># 工作目录名称</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="n">CMakeLists</span><span class="p">.</span><span class="py">txt</span>	<span class="c"># CMake配置文件</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="n">README</span><span class="p">.</span><span class="nb">md	</span><span class="c"># 说明文件，帮助其他用户更好地了解项目，非必须</span>
+</span></span><span class="line"><span class="cl"><span class="err">├───</span><span class="p">.</span><span class="py">vscode</span>	<span class="c"># VSCode的配置文件目录</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>      <span class="n">launch</span><span class="p">.</span><span class="py">json</span>	<span class="c"># 启动调试模式时自动生成的文件，非必须</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>      <span class="n">settings</span><span class="p">.</span><span class="py">json</span>	<span class="c"># 定义CMake相关变量</span>
+</span></span><span class="line"><span class="cl"><span class="err">├───</span><span class="n">include</span>	<span class="c"># 头文件包含目录</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>      <span class="n">heos</span><span class="p">.</span><span class="nb">h	</span><span class="c"># CoolProp实现相关头文件</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>      <span class="n">uclib</span><span class="p">.</span><span class="nb">h	</span><span class="c"># STAR-CCM+用户程序定义头文件</span>
+</span></span><span class="line"><span class="cl"><span class="err">└───</span><span class="n">src</span>	<span class="c"># 源代码目录</span>
+</span></span><span class="line"><span class="cl">        <span class="n">heos</span><span class="p">.</span><span class="nb">cpp	</span><span class="c"># CoolProp实现相关源代码</span>
+</span></span><span class="line"><span class="cl">        <span class="n">uclib</span><span class="p">.</span><span class="nb">cpp	</span><span class="c"># STAR-CCM+用户程序链接源代码</span>
+</span></span></code></pre></div><p>为了方便跨平台，构建工具采用CMake，编辑CMake配置文件<code>CMakeLists.txt</code>内容如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmake" data-lang="cmake"><span class="line"><span class="cl"><span class="c"># 定义构建项目所需最小CMake版本
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.10</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 项目名称及开发语言
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">project</span><span class="p">(</span><span class="s">upcp</span> <span class="s">LANGUAGES</span> <span class="s">CXX</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 编译器需满足C++17规范
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_STANDARD</span> <span class="s">17</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 检查COOLPROP_SRC_DIR定义，用于搜索CoolProp源码文件
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">NOT</span> <span class="s">DEFINED</span> <span class="s">COOLPROP_SRC_DIR</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">FATAL_ERROR</span> <span class="s2">&#34;COOLPROP_SRC_DIR is not defined. Please specify the path to the CoolProp source directory.&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;COOLPROP_SRC_DIR location : &#34;</span> <span class="o">${</span><span class="nv">COOLPROP_SRC_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 检查COOLPROP_LIB_DIR定义，用于搜索预编译的CoolProp库文件
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">NOT</span> <span class="s">DEFINED</span> <span class="s">COOLPROP_LIB_DIR</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">FATAL_ERROR</span> <span class="s2">&#34;COOLPROP_LIB_DIR is not defined. Please specify the path to the CoolProp library directory.&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="c"># For example: [CoolPropLib_Dir]/static_library/[platform]/[architecture]_[compiler]_[version]
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;COOLPROP_LIB_DIR location : &#34;</span> <span class="o">${</span><span class="nv">COOLPROP_LIB_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 检查STARCCM_LIB_DIR，用于链接到STAR-CCM+的UserFunctions库文件
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">NOT</span> <span class="s">DEFINED</span> <span class="s">STARCCM_LIB_DIR</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">FATAL_ERROR</span> <span class="s2">&#34;STARCCM_LIB_DIR is not defined. Please specify the path to the STAR-CCM+ UserFunctions library directory.&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="c"># For example, in Windows : C:/Program Files/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/win64/clang17.0vc14.2-r8/lib
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>    <span class="c"># In Linux : /opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;STARCCM_LIB_DIR location : &#34;</span> <span class="o">${</span><span class="nv">STARCCM_LIB_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 定义STAR-CCM+软件精度
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">USE_DOUBLE_PRECISION</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">add_definitions</span><span class="p">(</span><span class="s">-DDOUBLE_PRECISION</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;Using double precision for STAR-CCM+&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;Using float precision for STAR-CCM+&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 使用CoolProp静态库还是动态库
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">USE_SHARED_COOLPROP</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">add_definitions</span><span class="p">(</span><span class="s">-DCOOLPROP_LIB</span><span class="p">)</span>  <span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;Using shared CoolProp library&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;Using static CoolProp library&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 头文件包含目录
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="o">}</span><span class="s">/include</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">COOLPROP_SRC_DIR</span><span class="o">}</span><span class="s">/include</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">COOLPROP_SRC_DIR</span><span class="o">}</span><span class="s">/externals/fmtlib/include</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 添加STAR-CCM+和CoolProp的库文件目录
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">STARCCM_LIB_DIR</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">COOLPROP_LIB_DIR</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 生成动态链接库
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">add_library</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_PROJECT_NAME</span><span class="o">}</span> <span class="s">SHARED</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/uclib.cpp</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/heos.cpp</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 链接到STAR-CCM+和CoolProp的库文件
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_PROJECT_NAME</span><span class="o">}</span> <span class="s">UserFunctions</span> <span class="s">CoolProp</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 安装目标
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">install</span><span class="p">(</span><span class="s">TARGETS</span> <span class="o">${</span><span class="nv">CMAKE_PROJECT_NAME</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="s">RUNTIME</span> <span class="s">DESTINATION</span> <span class="s">bin</span>
+</span></span><span class="line"><span class="cl">    <span class="s">LIBRARY</span> <span class="s">DESTINATION</span> <span class="s">lib</span>
+</span></span><span class="line"><span class="cl">    <span class="s">ARCHIVE</span> <span class="s">DESTINATION</span> <span class="s">lib/static</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span><span class="err">
+</span></span></span></code></pre></div><p><code>heos.h</code>定义了3个用户函数，分别是空气的密度、粘度和导热率函数，代码如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-hpp" data-lang="hpp"><span class="line"><span class="cl"><span class="cp">#ifndef __HEOS_H__
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define __HEOS_H__
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">void</span> <span class="n">USERFUNCTION_EXPORT</span>
+</span></span><span class="line"><span class="cl"><span class="nf">airDensity</span><span class="p">(</span><span class="n">CoordReal</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">USERFUNCTION_EXPORT</span>
+</span></span><span class="line"><span class="cl"><span class="nf">airViscosity</span><span class="p">(</span><span class="n">CoordReal</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">USERFUNCTION_EXPORT</span>
+</span></span><span class="line"><span class="cl"><span class="nf">airConductivity</span><span class="p">(</span><span class="n">CoordReal</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#endif </span><span class="cm">/* __HEOS_H__ */</span><span class="cp">
+</span></span></span></code></pre></div><p><code>heos.cpp</code>是这3个用户函数的实现，通过输入压力和温度，调用CoolProp库计算输出空气的密度、粘度和导热率。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;CoolProp.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;AbstractState.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;crossplatform_shared_ptr.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">//以上3个头文件包含在CoolProp源代码的include目录里
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&#34;uclib.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;heos.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="cm">/* 通过输入压力和温度，调用CoolProp计算输出空气密度 */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">USERFUNCTION_EXPORT</span>
+</span></span><span class="line"><span class="cl"><span class="nf">airDensity</span><span class="p">(</span><span class="n">CoordReal</span> <span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="n">P</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="n">T</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="cm">/* 为了加快迭代速度，这里用到了CoolProp的低级接口，避免反复调用字符串处理函数 */</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* 使用智能指针初始化流体参数 */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">CoolProp</span><span class="o">::</span><span class="n">AbstractState</span><span class="o">&gt;</span> <span class="n">heos</span><span class="p">(</span><span class="n">CoolProp</span><span class="o">::</span><span class="n">AbstractState</span><span class="o">::</span><span class="n">factory</span><span class="p">(</span><span class="s">&#34;HEOS&#34;</span><span class="p">,</span> <span class="s">&#34;Air&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="cm">/* 遍历所有单元 */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="cm">/* 从STAR-CCM+获取的压力是表压，需要手动转换成绝对压力 */</span>
+</span></span><span class="line"><span class="cl">        <span class="n">heos</span><span class="o">-&gt;</span><span class="n">update</span><span class="p">(</span><span class="n">CoolProp</span><span class="o">::</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">101325.0</span><span class="p">,</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>  <span class="c1">// 默认为SI单位制
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">heos</span><span class="o">-&gt;</span><span class="n">rhomass</span><span class="p">();</span> <span class="c1">// 单位：kg/m^3
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* 通过输入压力和温度，调用CoolProp计算输出空气粘度 */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">USERFUNCTION_EXPORT</span>
+</span></span><span class="line"><span class="cl"><span class="nf">airViscosity</span><span class="p">(</span><span class="n">CoordReal</span> <span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="n">P</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="n">T</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">CoolProp</span><span class="o">::</span><span class="n">AbstractState</span><span class="o">&gt;</span> <span class="n">heos</span><span class="p">(</span><span class="n">CoolProp</span><span class="o">::</span><span class="n">AbstractState</span><span class="o">::</span><span class="n">factory</span><span class="p">(</span><span class="s">&#34;HEOS&#34;</span><span class="p">,</span> <span class="s">&#34;Air&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">heos</span><span class="o">-&gt;</span><span class="n">update</span><span class="p">(</span><span class="n">CoolProp</span><span class="o">::</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">101325.0</span><span class="p">,</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">heos</span><span class="o">-&gt;</span><span class="n">viscosity</span><span class="p">();</span> <span class="c1">// 单位：Pa-s
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* 通过输入压力和温度，调用CoolProp计算输出空气导热率 */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">USERFUNCTION_EXPORT</span>
+</span></span><span class="line"><span class="cl"><span class="nf">airConductivity</span><span class="p">(</span><span class="n">CoordReal</span> <span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="n">P</span><span class="p">,</span> <span class="n">CoordReal</span> <span class="o">*</span><span class="n">T</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">CoolProp</span><span class="o">::</span><span class="n">AbstractState</span><span class="o">&gt;</span> <span class="n">heos</span><span class="p">(</span><span class="n">CoolProp</span><span class="o">::</span><span class="n">AbstractState</span><span class="o">::</span><span class="n">factory</span><span class="p">(</span><span class="s">&#34;HEOS&#34;</span><span class="p">,</span> <span class="s">&#34;Air&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">heos</span><span class="o">-&gt;</span><span class="n">update</span><span class="p">(</span><span class="n">CoolProp</span><span class="o">::</span><span class="n">PT_INPUTS</span><span class="p">,</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">101325.0</span><span class="p">,</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">heos</span><span class="o">-&gt;</span><span class="n">conductivity</span><span class="p">();</span> <span class="c1">// 单位：W/m-K
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>uclib.h</code>头文件是STAR-CCM+链接库的头文件<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>，定义了UserFunctions库所使用的变量和函数类型。该文件属于通用型头文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-hpp" data-lang="hpp"><span class="line"><span class="cl"><span class="cp">#ifndef UCLIB_H
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define UCLIB_H
+</span></span></span><span class="line"><span class="cl"><span class="cp">#ifdef DOUBLE_PRECISION
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">typedef</span> <span class="kt">double</span> <span class="n">Real</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#else
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">typedef</span> <span class="kt">float</span> <span class="n">Real</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">typedef</span> <span class="kt">double</span> <span class="n">CoordReal</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#ifdef __cplusplus
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">extern</span> <span class="s">&#34;C&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp">#if defined(WIN32) || defined(_WINDOWS) || defined(_WINNT)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define USERFUNCTION_EXPORT __declspec(dllexport)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define USERFUNCTION_IMPORT __declspec(dllimport)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#else
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define USERFUNCTION_EXPORT
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define USERFUNCTION_IMPORT
+</span></span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>    <span class="k">extern</span> <span class="kt">void</span> <span class="n">USERFUNCTION_IMPORT</span> <span class="nf">ucarg</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">extern</span> <span class="kt">void</span> <span class="n">USERFUNCTION_IMPORT</span> <span class="nf">ucfunc</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">extern</span> <span class="kt">void</span> <span class="n">USERFUNCTION_IMPORT</span> <span class="nf">ucfunction</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="p">...);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="n">USERFUNCTION_EXPORT</span> <span class="nf">uclib</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#ifdef __cplusplus
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span></code></pre></div><p><code>uclib.cpp</code>用于注册用户函数，使得STAR-CCM+能够正确识别动态链接库，并将其加载为用户程序。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;uclib.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;heos.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">void</span> <span class="n">USERFUNCTION_EXPORT</span>
+</span></span><span class="line"><span class="cl"><span class="nf">uclib</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* 将airDensity注册为场函数 */</span>
+</span></span><span class="line"><span class="cl">	<span class="cm">/* 这里使用了reinterpret_cast&lt;&gt;关键字，用于提示C++强制类型转换，避免编译器报错 */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ucfunc</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">airDensity</span><span class="p">),</span> <span class="s">&#34;ScalarFieldFunction&#34;</span><span class="p">,</span> <span class="s">&#34;HEOS::Air Density (kg/m^3)&#34;</span><span class="p">);</span> <span class="c1">// 自定义场函数默认无量纲，最好在名称后面加上单位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">ucarg</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">airDensity</span><span class="p">),</span> <span class="s">&#34;Cell&#34;</span><span class="p">,</span> <span class="s">&#34;Pressure&#34;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ucarg</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">airDensity</span><span class="p">),</span> <span class="s">&#34;Cell&#34;</span><span class="p">,</span> <span class="s">&#34;Temperature&#34;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="cm">/* 将airViscosity注册为场函数 */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ucfunc</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">airViscosity</span><span class="p">),</span> <span class="s">&#34;ScalarFieldFunction&#34;</span><span class="p">,</span> <span class="s">&#34;HEOS::Air Viscosity (Pa-s)&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ucarg</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">airViscosity</span><span class="p">),</span> <span class="s">&#34;Cell&#34;</span><span class="p">,</span> <span class="s">&#34;Pressure&#34;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ucarg</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">airViscosity</span><span class="p">),</span> <span class="s">&#34;Cell&#34;</span><span class="p">,</span> <span class="s">&#34;Temperature&#34;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="cm">/* 将airConductivity注册为场函数 */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ucfunc</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">airConductivity</span><span class="p">),</span> <span class="s">&#34;ScalarFieldFunction&#34;</span><span class="p">,</span> <span class="s">&#34;HEOS::Air Thermal conductivity (W/m-K)&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ucarg</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">airConductivity</span><span class="p">),</span> <span class="s">&#34;Cell&#34;</span><span class="p">,</span> <span class="s">&#34;Pressure&#34;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ucarg</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">airConductivity</span><span class="p">),</span> <span class="s">&#34;Cell&#34;</span><span class="p">,</span> <span class="s">&#34;Temperature&#34;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这个项目新建了3个场函数，通过<code>ucfunc</code>函数将用户函数注册为STAR-CCM+的用户自定义场函数，再通过<code>ucarg</code>将STAR-CCM+的场函数(或变量)注册为用户函数的输入参数，这样调用用户自定义场函数时，就能自动调用压力和温度更新输出变量。</p>
+<p>除了用户自定义场函数之外，用户程序还支持用户自定义的边界条件及区域配置，具体可以参考官方文档<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>。</p>
+<h2 id="3-编译动态链接库">3. 编译动态链接库</h2>
+<h3 id="31-通过vscodecmake编译项目">3.1 通过VSCode+CMake编译项目</h3>
+<p>如果VSCode中安装了<a href="https://marketplace.visualstudio.com/items/?itemName=ms-vscode.cmake-tools" target="_blank" rel="noopener">CMake拓展</a>
+，可以直接调用CMake编译生成动态链接库文件。</p>
+<p>首先要在settings.json文件中定义CMake调用STAR-CCM+和CoolProp相关库和头文件的搜索路径。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;cmake.configureArgs&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;-DSTARCCM_LIB_DIR=[starccm_install_dir]/STAR-CCM+19.06.009-R8/star/lib/win64/clang17.0vc14.2-r8/lib&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;-DCOOLPROP_SRC_DIR=E:/Development/starccm/CoolProp&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;-DCOOLPROP_LIB_DIR=E:/Development/starccm/CoolPropLib/static_library/Windows/64bit_Clang_19.1.1&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;-DUSE_DOUBLE_PRECISION=ON&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>通过VSCode左侧的CMake按钮，调出CMake配置面板，选择构建工具链(这里选择clang-cl)和编译模式(Debug或Release)。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/4646dd20ca514ae8a8aacd6c16793826_hu_b81f2c38303fed46.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/4646dd20ca514ae8a8aacd6c16793826_hu_4f37fd7d98c5c482.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/4646dd20ca514ae8a8aacd6c16793826_hu_aa79f68883c0d2ef.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/4646dd20ca514ae8a8aacd6c16793826_hu_eceb0e29f30819c9.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/4646dd20ca514ae8a8aacd6c16793826_hu_eceb0e29f30819c9.jpg" width="919" height="380" alt="4646dd20ca514ae8a8aacd6c16793826.png" title="4646dd20ca514ae8a8aacd6c16793826.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>输出窗口当中显示CMake配置信息。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/7772404bf549a3d295ef5894dc82f7f2_hu_2882689195aa9e52.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/7772404bf549a3d295ef5894dc82f7f2_hu_24dc0371eaec4956.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/7772404bf549a3d295ef5894dc82f7f2_hu_8a77e87516cc6461.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/7772404bf549a3d295ef5894dc82f7f2_hu_2a59a12756887ce3.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/7772404bf549a3d295ef5894dc82f7f2_hu_2a59a12756887ce3.jpg" width="909" height="247" alt="7772404bf549a3d295ef5894dc82f7f2.png" title="7772404bf549a3d295ef5894dc82f7f2.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>通过<code>Ctrl+Shift+P</code>快捷键调出命令面板，输入<code>CMake: Build</code>生成项目。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/7d0af41f203b3f918718e15f8f8be5af_hu_312985de31990c3f.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/7d0af41f203b3f918718e15f8f8be5af_hu_9516e0a1e1898335.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/7d0af41f203b3f918718e15f8f8be5af_hu_c0144aba53fc8842.jpg" width="617" height="332" alt="7d0af41f203b3f918718e15f8f8be5af.png" title="7d0af41f203b3f918718e15f8f8be5af.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>生成完毕，输出窗口显示生成的动态链接库路径。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/46d28859a1888111b014746e1c273bb6_hu_9856ea4815873e87.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/46d28859a1888111b014746e1c273bb6_hu_86d0429b01e25df4.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/46d28859a1888111b014746e1c273bb6_hu_9ab793711ea665e6.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/46d28859a1888111b014746e1c273bb6_hu_2be90cad7c23db5e.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/46d28859a1888111b014746e1c273bb6_hu_2be90cad7c23db5e.jpg" width="918" height="244" alt="46d28859a1888111b014746e1c273bb6.png" title="46d28859a1888111b014746e1c273bb6.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>将它拷贝到STAR-CCM+工程目录，通过图形界面加载，加载成功后可以看到动态链接库信息。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/b5ba583fa990a1de3dd5185d0701297e_hu_9ab1b4a1588d8875.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/b5ba583fa990a1de3dd5185d0701297e_hu_240bd642cc978f53.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/b5ba583fa990a1de3dd5185d0701297e_hu_5e088182d83973.jpg" width="416" height="456" alt="b5ba583fa990a1de3dd5185d0701297e.png" title="b5ba583fa990a1de3dd5185d0701297e.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>在场函数里也能看到生成的用户自定义场函数。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0cfe9f8c69f4f5812161e27ea8f8cbd4_hu_7b69c11b5c1ef3a4.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0cfe9f8c69f4f5812161e27ea8f8cbd4_hu_f2042d7d74c39487.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0cfe9f8c69f4f5812161e27ea8f8cbd4_hu_e4fc10d0e3ce2714.jpg" width="422" height="293" alt="0cfe9f8c69f4f5812161e27ea8f8cbd4.png" title="0cfe9f8c69f4f5812161e27ea8f8cbd4.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>调用用户自定义场函数更新标量场并显示。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0107e32ded7d2900b8f2cbbdc63d9e66_hu_ce162fa5e6519629.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0107e32ded7d2900b8f2cbbdc63d9e66_hu_d635bcf4176adeae.webp 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0107e32ded7d2900b8f2cbbdc63d9e66_hu_852df7c146e8d3e9.webp 960w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0107e32ded7d2900b8f2cbbdc63d9e66_hu_c66c3c76e015150d.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0107e32ded7d2900b8f2cbbdc63d9e66_hu_2517f445ea0d5830.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0107e32ded7d2900b8f2cbbdc63d9e66_hu_330553500edffb02.jpg 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0107e32ded7d2900b8f2cbbdc63d9e66_hu_17c8276944c74f23.jpg 960w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0107e32ded7d2900b8f2cbbdc63d9e66_hu_5588cc139f6d48aa.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/0107e32ded7d2900b8f2cbbdc63d9e66_hu_330553500edffb02.jpg" width="1399" height="268" alt="0107e32ded7d2900b8f2cbbdc63d9e66.png" title="0107e32ded7d2900b8f2cbbdc63d9e66.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="32-通过cmake命令行编译项目">3.2 通过CMake+命令行编译项目</h3>
+<p>由于STAR-CCM+用户程序依赖于操作系统平台，不同操作系统编译的动态链接库不能通用。当工程文件需要用到超算进行计算时，需要将用户程序源码文件上传到超算上重新编译。不同的超算平台Linux发行版不一样，系统依赖也有所区别，建议计算前先在所使用的超算平台上编译一份专门在该平台上运行的动态链接库，后续再在该平台上调用编译的动态链接库进行相关计算。</p>
+<p>Linux平台下，通过以下命令编译用户程序动态链接库。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 进入项目目录</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> starccm_coolprop
+</span></span><span class="line"><span class="cl"><span class="c1"># 建立工作目录</span>
+</span></span><span class="line"><span class="cl">mkdir -p build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置编译文件，链接到CoolProp动态库</span>
+</span></span><span class="line"><span class="cl">cmake .. -G <span class="s2">&#34;Ninja&#34;</span> -DUSE_DOUBLE_PRECISION<span class="o">=</span>ON -DCOOLPROP_LIB_DIR<span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/Share/code/CoolPropLib/static_library/Linux/64bit_GNU_13.3.0 -DCOOLPROP_SRC_DIR<span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/Share/code/CoolProp -DSTARCCM_LIB_DIR<span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib
+</span></span><span class="line"><span class="cl"><span class="c1"># 编译动态库</span>
+</span></span><span class="line"><span class="cl">cmake --build . --config Release
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装</span>
+</span></span><span class="line"><span class="cl">cmake --install . --prefix <span class="nv">$PWD</span>/../../UserLib
+</span></span></code></pre></div><p>编译完成后输出动态链接库，通过图形界面加载。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/de913c1f1b82b40e947e6e73124d8c7a_hu_c9cd67a81b40e349.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/de913c1f1b82b40e947e6e73124d8c7a_hu_104500993122150a.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/de913c1f1b82b40e947e6e73124d8c7a_hu_168e71bc6421beb3.jpg" width="589" height="665" alt="de913c1f1b82b40e947e6e73124d8c7a.png" title="de913c1f1b82b40e947e6e73124d8c7a.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>自动生成的用户自定义场函数。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/31610310a13e6ad63406a13970d21915_hu_c8c8a06c1c489484.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/31610310a13e6ad63406a13970d21915_hu_2720fdc1a548511b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/31610310a13e6ad63406a13970d21915_hu_266e215e85b782b7.jpg" width="428" height="358" alt="31610310a13e6ad63406a13970d21915.png" title="31610310a13e6ad63406a13970d21915.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>通过用户自定义场函数更新云图。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/647e9d784e0c78541f153ab6cb6257de_hu_66d4a504f9d0d527.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/647e9d784e0c78541f153ab6cb6257de_hu_d632e08c79127c61.webp 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/647e9d784e0c78541f153ab6cb6257de_hu_5d6427b18566f215.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/647e9d784e0c78541f153ab6cb6257de_hu_82fdcd6daa09aef0.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/647e9d784e0c78541f153ab6cb6257de_hu_c872bf9cb29f6f4b.jpg 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/647e9d784e0c78541f153ab6cb6257de_hu_63471e297b40a27b.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/647e9d784e0c78541f153ab6cb6257de_hu_c872bf9cb29f6f4b.jpg" width="1267" height="261" alt="647e9d784e0c78541f153ab6cb6257de.png" title="647e9d784e0c78541f153ab6cb6257de.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="4-常见问题">4. 常见问题</h2>
+<h3 id="41-动态链接库的依赖问题">4.1 动态链接库的依赖问题</h3>
+<p>如果编译配置使用的是CoolProp动态库，最终输出的动态链接库会依赖CoolProp动态库文件，需要将<code>CoolProp.dll</code>(Linux下为<code>libCoolProp.so.X</code>)所在文件夹添加到系统环境变量(<code>PATH</code>或<code>LD_LIBRARY_PATH</code>)中。为了省掉这个麻烦，本文演示所采用的都是CoolProp静态库，编译出来的动态链接库不依赖CoolProp动态库文件，但是不排除某些工程仍然有需要链接到CoolProp动态库的。</p>
+<p>另一个常见的依赖问题是，在Windows平台下使用GCC编译器(MinGW)进行编译时，不管CoolProp链接的是静态库还是动态库，最终输出的动态链接库都需要链接到MinGW自带的<code>libstdc++-6.dll</code>、<code>libgcc_s_seh-1.dll</code>和<code>libwinpthread-1.dll</code>这3个文件(不同的MinGW版本可能有所区别)。因此最好将MinGW的运行时路径添加到系统环境变量中，确保STAR-CCM+能搜索到所有依赖并正常调用动态链接库中的函数。</p>
+<p>如果在Linux上运行依赖其他动态链接库，启动STAR-CCM+时要在命令行中加入<code>-ldlibpath</code>选项，将依赖的动态库文件所在路径添加到该关键字后面。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">starccm+ -ldlibpath <span class="o">[</span>path-to--shared-file<span class="o">]</span>
+</span></span></code></pre></div><h3 id="42-glibcxx版本问题">4.2 GLIBCXX版本问题</h3>
+<p>STAR-CCM+自带了一套C++标准库，如果用户Linux系统自带的C++标准库比STAR-CCM+自带的版本新，那么编译输出的动态链接库在载入STAR-CCM+时会输出如下错误信息：</p>
+<pre tabindex="0"><code class="language-log" data-lang="log">Loading user library /home/xxxx/Share/code/UserLib/lib/libupcp.so
+Could not load user library /home/xxxx/Share/code/UserLib/lib/libupcp.so
+/home/xxxx/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64/libstdc++.so.6: version `GLIBCXX_3.4.32&#39; not found (required by /home/xxxx/Share/code/UserLib/lib/libupcp.so)
+</code></pre><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/5ccf0ac61c412c3f6722c3076ca1bff7_hu_5240daa76b859402.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/5ccf0ac61c412c3f6722c3076ca1bff7_hu_dfda5d24c84b1531.webp 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/5ccf0ac61c412c3f6722c3076ca1bff7_hu_ba83dc7066d2cd5d.webp 960w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/5ccf0ac61c412c3f6722c3076ca1bff7_hu_ea1ca49bd71876db.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/5ccf0ac61c412c3f6722c3076ca1bff7_hu_bbb1b2398dd23030.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/5ccf0ac61c412c3f6722c3076ca1bff7_hu_900c7f9123e77e67.jpg 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/5ccf0ac61c412c3f6722c3076ca1bff7_hu_c0a2cd78d8214511.jpg 960w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/5ccf0ac61c412c3f6722c3076ca1bff7_hu_7beff7c1a8b70a5.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/5ccf0ac61c412c3f6722c3076ca1bff7_hu_900c7f9123e77e67.jpg" width="1379" height="151" alt="5ccf0ac61c412c3f6722c3076ca1bff7.png" title="5ccf0ac61c412c3f6722c3076ca1bff7.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>因为STAR-CCM+自带的C++标准链接库，GLIBCXX版本比系统上的版本低。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/b4560642b8eae261cb74d69fb7c835a1_hu_736394fa2531d58.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/b4560642b8eae261cb74d69fb7c835a1_hu_192b8bfe383caedc.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/b4560642b8eae261cb74d69fb7c835a1_hu_b6b2d88677273497.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/b4560642b8eae261cb74d69fb7c835a1_hu_c836f0f3cd0c8a14.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/b4560642b8eae261cb74d69fb7c835a1_hu_c836f0f3cd0c8a14.jpg" width="919" height="254" alt="b4560642b8eae261cb74d69fb7c835a1.png" title="b4560642b8eae261cb74d69fb7c835a1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>编译时，如果不作特别指定，编译器默认链接的时系统上的链接库。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/df62c994c350c3983414c2c7cb54e3cb_hu_89ce5f469dc7f1f2.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/df62c994c350c3983414c2c7cb54e3cb_hu_1e31218d454006ca.webp 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/df62c994c350c3983414c2c7cb54e3cb_hu_e4dcab6d12d73056.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/df62c994c350c3983414c2c7cb54e3cb_hu_7e2fca5f258e68e0.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/df62c994c350c3983414c2c7cb54e3cb_hu_dfd22118346ba0c3.jpg 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/df62c994c350c3983414c2c7cb54e3cb_hu_44ab54d70fd3e164.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/df62c994c350c3983414c2c7cb54e3cb_hu_dfd22118346ba0c3.jpg" width="1059" height="143" alt="df62c994c350c3983414c2c7cb54e3cb.png" title="df62c994c350c3983414c2c7cb54e3cb.png" loading="lazy" />
+  </picture>
+</div>
+
+而在载入STAR-CCM+时，载入动态链接库会和STAR-CCM+自带的标准库产生链接，从而报错。</p>
+<p>一个解决办法是，编译时通过<code>LD_LIBRARY_PATH</code>显式指定链接库搜索路径为STAR-CCM+自带路径。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64:<span class="nv">$LD_LIBRARY_PATH</span>
+</span></span></code></pre></div><p>但这种做法会导致系统工具链出现问题，无法正常开展编译工作。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/ec6780d8ed8234e063b7d91c7185bcfa_hu_f0da98f937c9a8a8.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/ec6780d8ed8234e063b7d91c7185bcfa_hu_b0b0f6d1ec5e4b00.webp 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/ec6780d8ed8234e063b7d91c7185bcfa_hu_4909493eb9a7d5c5.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/ec6780d8ed8234e063b7d91c7185bcfa_hu_f002cddf3b5e5a85.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/ec6780d8ed8234e063b7d91c7185bcfa_hu_146b337dd2c28558.jpg 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/ec6780d8ed8234e063b7d91c7185bcfa_hu_eaa198ec7997a5fa.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/ec6780d8ed8234e063b7d91c7185bcfa_hu_146b337dd2c28558.jpg" width="1199" height="199" alt="ec6780d8ed8234e063b7d91c7185bcfa.png" title="ec6780d8ed8234e063b7d91c7185bcfa.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>另一个解决办法是，编辑<code>CMakeLists.txt</code>文件，增加以下内容，通过<code>link_directories</code>关键字设置链接库搜索路径。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmake" data-lang="cmake"><span class="line"><span class="cl"><span class="c"># Link with STARCCM CXX LIB
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">link_directories</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;${HOME}/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span></code></pre></div><p>然后按照<a href="#32-%e9%80%9a%e8%bf%87cmake%e5%91%bd%e4%bb%a4%e8%a1%8c%e7%bc%96%e8%af%91%e9%a1%b9%e7%9b%ae">3.2</a>
+的方法正常编译。查看编译的动态链接库依赖，链接到STAR-CM+自带的库，问题解决了。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/c72bc744d349e47cc46fcd9e59a5da1f_hu_c2ef71ef595a90fe.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/c72bc744d349e47cc46fcd9e59a5da1f_hu_190ab76f70663b0f.webp 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/c72bc744d349e47cc46fcd9e59a5da1f_hu_4bf01ae3838757e5.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/c72bc744d349e47cc46fcd9e59a5da1f_hu_200e9cd2fd1c5400.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/c72bc744d349e47cc46fcd9e59a5da1f_hu_598cbf29c1df88cd.jpg 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/c72bc744d349e47cc46fcd9e59a5da1f_hu_b5ba8fe58b93be26.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/c72bc744d349e47cc46fcd9e59a5da1f_hu_598cbf29c1df88cd.jpg" width="1200" height="377" alt="c72bc744d349e47cc46fcd9e59a5da1f.png" title="c72bc744d349e47cc46fcd9e59a5da1f.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="43-计算效率问题">4.3 计算效率问题</h3>
+<p>我们建立一个基础的STAR-CCM+模型，说明一下计算效率问题。</p>
+<p>新建一个sim文件，二维轴对称问题，模拟空气在管路中加热情况。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_570f2b848aa959d7.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_b578565ac8acf3d3.webp 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_e03cd28eff48e1c9.webp 960w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_e2e8aa0efbae1738.webp 1280w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_1cdafa0d9342bc8f.webp 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_c4fd1cbd781140f2.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_5310d91ce04396ea.jpg 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_38365d698ad3d4fd.jpg 960w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_13f4c3ea4e2af3c9.jpg 1280w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_fd5e554e3b979d44.jpg 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/d5a9adc7f1a4970a085f5bfae00aec6a_hu_5310d91ce04396ea.jpg" width="1693" height="430" alt="d5a9adc7f1a4970a085f5bfae00aec6a.png" title="d5a9adc7f1a4970a085f5bfae00aec6a.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>基础模型状态方程采用理想气体，比热容为常数，导热率和动力粘度基于<code>Sutherland’s Law</code>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/a7986123996011de6599aac37490612f_hu_17e067a6c32c5eb8.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/a7986123996011de6599aac37490612f_hu_cc47dbbc4406e83.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/a7986123996011de6599aac37490612f_hu_3c06a1611b30217c.jpg" width="444" height="261" alt="a7986123996011de6599aac37490612f.png" title="a7986123996011de6599aac37490612f.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>网格量3629。4个核心并行求解3000步，耗时85秒。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/4f58c413a72697d10fe69178eaef87a2_hu_6d61cb7803cbe0f2.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/4f58c413a72697d10fe69178eaef87a2_hu_1b7ebea63606a577.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/4f58c413a72697d10fe69178eaef87a2_hu_3903963de41bd728.jpg" width="584" height="293" alt="4f58c413a72697d10fe69178eaef87a2.png" title="4f58c413a72697d10fe69178eaef87a2.png" loading="lazy" />
+  </picture>
+</div>
+
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/888fa12e65bcae90f0ad300698364c84_hu_b29e1ff43a528431.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/888fa12e65bcae90f0ad300698364c84_hu_e4610775093de00f.webp 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/888fa12e65bcae90f0ad300698364c84_hu_b04847bcf634c971.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/888fa12e65bcae90f0ad300698364c84_hu_b55d6b8b95c8abf7.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/888fa12e65bcae90f0ad300698364c84_hu_d92b872326eae6ba.jpg 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/888fa12e65bcae90f0ad300698364c84_hu_b8aba376b212d4a5.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/888fa12e65bcae90f0ad300698364c84_hu_d92b872326eae6ba.jpg" width="1105" height="457" alt="888fa12e65bcae90f0ad300698364c84.png" title="888fa12e65bcae90f0ad300698364c84.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>然后我们把物理模型中的<code>理想气体</code>换成<code>用户定义的EOS</code>，加载编译好的动态链接库，通过动态链接库生成的用户定义场函数定义气体密度、动力粘度和导热率，比热容为常数保持不变。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/cc7e651c3f096c7255501343df446cbd_hu_ed8b6486ce66621.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/cc7e651c3f096c7255501343df446cbd_hu_108a3c57b251c8aa.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/cc7e651c3f096c7255501343df446cbd_hu_1f2be475544a5673.jpg" width="457" height="402" alt="cc7e651c3f096c7255501343df446cbd.png" title="cc7e651c3f096c7255501343df446cbd.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>网格量不变。同样4个核心并行求解3000步，耗时235秒，增加了近2倍时长。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/92dadf61aff39c3fa5ea3b06bf15b848_hu_4965931e996235a5.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/92dadf61aff39c3fa5ea3b06bf15b848_hu_c5543cb7819122b1.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/92dadf61aff39c3fa5ea3b06bf15b848_hu_575bbd4355a3fb55.jpg" width="580" height="253" alt="92dadf61aff39c3fa5ea3b06bf15b848.png" title="92dadf61aff39c3fa5ea3b06bf15b848.png" loading="lazy" />
+  </picture>
+</div>
+
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/1bdd2ef9ec27f54cc9e4cae031a60648_hu_7320d365cde155e8.webp 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/1bdd2ef9ec27f54cc9e4cae031a60648_hu_1d6ad620cfaa2f79.webp 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/1bdd2ef9ec27f54cc9e4cae031a60648_hu_9f0692fa4f5ad45d.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/1bdd2ef9ec27f54cc9e4cae031a60648_hu_228bca98fc1cdc64.jpg 320w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/1bdd2ef9ec27f54cc9e4cae031a60648_hu_135eae24453519db.jpg 640w, /post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/1bdd2ef9ec27f54cc9e4cae031a60648_hu_5823290b768c4100.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/images/1bdd2ef9ec27f54cc9e4cae031a60648_hu_135eae24453519db.jpg" width="1105" height="457" alt="1bdd2ef9ec27f54cc9e4cae031a60648.png" title="1bdd2ef9ec27f54cc9e4cae031a60648.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>问题出现在我们注册的用户函数上。因为每个函数每一步计算都要从CoolProp中调取函数、遍历网格单元获取温度和压力数值、再通过CoolProp函数计算输出结果。每个函数内部都通过循环执行以上操作，循环操作独立与求解器迭代计算本身，网格量越大，循环执行的时间就越长。况且我们还定义了3个相同功能的函数，相当于在求解器迭代计算之外又额外执行了3次循环操作。</p>
+<p>对于某些较大的模型以及对求解时间比较敏感的项目，一般不建议通过用户程序+CoolProp的方式定义物性参数。但是后处理方面，通过调用CoolProp程序更新云图、输出结果，还是十分有用的。</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://www.topcfd.cn/Ebook/STARCCMP/GUID-9665BF40-46BC-44F0-95F9-7E20766E8109.html" target="_blank" rel="noopener">使用用户程序</a>
+&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="http://www.coolprop.org/coolprop/wrappers/index.html#available-wrappers" target="_blank" rel="noopener">Available Wrappers</a>
+&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p><a href="http://www.coolprop.org/coolprop/wrappers/StaticLibrary/index.html#static-library" target="_blank" rel="noopener">Static Library</a>
+&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p><a href="http://www.coolprop.org/coolprop/HighLevelAPI.html#c-sample-code" target="_blank" rel="noopener">C++ Sample Code</a>
+&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5">
+<p><a href="https://www.topcfd.cn/Ebook/STARCCMP/GUID-2BC0F0B4-7A2D-4668-84B6-F3A0517B2427.html" target="_blank" rel="noopener">类型定义(C)</a>
+&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6">
+<p><a href="https://www.topcfd.cn/Ebook/STARCCMP/GUID-8CE19E75-A897-4559-B1A6-E1C603FC91F2.html" target="_blank" rel="noopener">用户程序示例</a>
+&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

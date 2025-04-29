@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" dir="ltr">
 <head>
-	<meta name="generator" content="Hugo 0.146.5">
+	<meta name="generator" content="Hugo 0.147.0">
   <title>Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -203,6 +203,183 @@
   <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
     <div class="flex flex-row">
       <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-05-ansa-connector/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
+      alt="Ansa快速设置连接" title="Ansa快速设置连接"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-05-ansa-connector/">Ansa快速设置连接</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>Ansa可以通过Connection功能快速设置连接。</p>
+<p>这里以螺接为例，首先将所有螺栓单独显示出来。使用<code>TOPO</code>→<code>Curves</code>→<code>Tubes2Curve</code>将螺栓几何转换成曲线。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/cf8ec5657b55d755b53386ae1b4272be_hu_c0b2ed066968899e.jpg" width="104" height="197" alt="cf8ec5657b55d755b53386ae1b4272be.png" title="cf8ec5657b55d755b53386ae1b4272be.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>保留曲线，将螺栓几何曲面全删掉。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/0b4b65d233db1e00fd74584da04b96d7_hu_b4eded76a1859adf.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/0b4b65d233db1e00fd74584da04b96d7_hu_cfc5aa76ddeb635d.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/0b4b65d233db1e00fd74584da04b96d7_hu_ae062229fc7cd2fc.jpg" width="348" height="387" alt="0b4b65d233db1e00fd74584da04b96d7.png" title="0b4b65d233db1e00fd74584da04b96d7.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>再使用<code>Topo</code>→<code>Points</code>→<code>Edges</code>将曲线转换成3D点，删除掉曲线。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/dc9424dd60a768365c03f1153fc031f5_hu_eaa4e75d07fe3318.jpg" width="173" height="164" alt="dc9424dd60a768365c03f1153fc031f5.png" title="dc9424dd60a768365c03f1153fc031f5.png" loading="lazy" />
+  </picture>
+</div>
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/1ebe0dfd2e017056e6564ad06ba1e3f5_hu_81b35f1c42a2c455.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/1ebe0dfd2e017056e6564ad06ba1e3f5_hu_86540ee5c9d12e7d.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/1ebe0dfd2e017056e6564ad06ba1e3f5_hu_806a05152a5d4c43.jpg" width="345" height="424" alt="1ebe0dfd2e017056e6564ad06ba1e3f5.png" title="1ebe0dfd2e017056e6564ad06ba1e3f5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>根据3D点生成螺栓连接点，框选上一步生成的3D点。除了根据曲线定义连接点意外，还可以根据点和面生成连接点。但不同的几何形式对应不同的连接类型，应注意根据需要的连接类型选择对应的几何。这里列出一些常用的连接类型和几何对应关系：</p>
+<ul>
+<li>3D点：螺接、铆接、焊点</li>
+<li>线段：粘胶、焊缝、包边、螺接(直线段)</li>
+<li>面：粘胶</li>
+</ul>
+<p>螺栓连接点可以根据3D点或直线段生成，这里选择用3D点生成。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_9911f1ba7f620bb1.webp 320w, /post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_3efd5fb3c2163465.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_6c64fa9793a5ff1.jpg 320w, /post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_ba417bf55bf635a1.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-05-ansa-connector/images/4331a76dc0794af78759754fbb601025_hu_ba417bf55bf635a1.jpg" width="661" height="514" alt="4331a76dc0794af78759754fbb601025.png" title="4331a76dc0794af78759754fbb601025.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/ansa/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Ansa
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/ansa/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ansa</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-05T00:00:00&#43;00:00">
+      2025-03-05
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
@@ -436,163 +613,6 @@
   </picture>
 </div>
 </p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/ansa/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Ansa
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/ansa/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ansa</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/cae/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cae</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-02-27T00:00:00&#43;00:00">
-      2025-02-27
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-02-27-ansa-mesh-quelity/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
-      alt="Ansa网格质量设置" title="Ansa网格质量设置"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-02-27-ansa-mesh-quelity/">Ansa网格质量设置</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>快捷键F11，或者下面这个按钮，定义Ansa网格质量<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-27-ansa-mesh-quelity/images/0cbaef5ad11449b3f2baffeb6cfbaa24_hu_298f8aa1d6bf4c7f.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-27-ansa-mesh-quelity/images/0cbaef5ad11449b3f2baffeb6cfbaa24_hu_b9f128bf2da8657d.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-27-ansa-mesh-quelity/images/0cbaef5ad11449b3f2baffeb6cfbaa24_hu_6d05f3673ff5d0eb.jpg" width="509" height="31" alt="0cbaef5ad11449b3f2baffeb6cfbaa24.png" title="0cbaef5ad11449b3f2baffeb6cfbaa24.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>面网格质量（Abaqus）<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-27-ansa-mesh-quelity/images/8dba04bca8c14b3a47e4ed87d938ac49_hu_319658d226a46762.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-27-ansa-mesh-quelity/images/8dba04bca8c14b3a47e4ed87d938ac49_hu_13c8670ab30bba6.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-27-ansa-mesh-quelity/images/8dba04bca8c14b3a47e4ed87d938ac49_hu_fa4acf6f05979e56.jpg" width="477" height="720" alt="8dba04bca8c14b3a47e4ed87d938ac49.png" title="8dba04bca8c14b3a47e4ed87d938ac49.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>体网格质量（Abaqus）<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-27-ansa-mesh-quelity/images/1b8e7d21f062ee6d961c4975a0dedffd_hu_392c968c17ca36b1.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-27-ansa-mesh-quelity/images/1b8e7d21f062ee6d961c4975a0dedffd_hu_1eaa4b24f4e9c007.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-27-ansa-mesh-quelity/images/1b8e7d21f062ee6d961c4975a0dedffd_hu_96eb751ce2850b6c.jpg" width="477" height="720" alt="1b8e7d21f062ee6d961c4975a0dedffd.png" title="1b8e7d21f062ee6d961c4975a0dedffd.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>最好把配置文件另存为到本地，下次重新打开配置文件覆盖即可。</p>
-<hr>
   </div>
   
 

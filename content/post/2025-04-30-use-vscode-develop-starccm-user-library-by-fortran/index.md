@@ -1,20 +1,19 @@
----
-author : Andrew Moa
-title : "Use VSCode to develop STAR-CCM+ user library: build dynamic link library through Fortran"
-date : 2025-04-30
-description : 
-math: true
-tags : [
++++
+author = "Andrew Moa"
+title = "Use VSCode to develop STAR-CCM+ user library: build dynamic link library through Fortran"
+date = "2025-04-30"
+description = ""
+tags = [
     "fortran",
     "star-ccm+",
 ]
-categories : [
+categories = [
     "cfd",
 ]
-series : 
-aliases : 
-image : "/images/starccm-bg.jpg"
----
+series = [""]
+aliases = [""]
+image = "/images/starccm-bg.jpg"
++++
 
 Although the official STAR-CCM+ documentation specifically states that FORTRAN is not supported under Windows[^1]. But in fact, as long as the compiler supports it, user library compiled using Fortran under Windows can be loaded and run normally in STAR-CCM+.
 

@@ -1,20 +1,19 @@
----
-author : Andrew Moa
-title : 使用VSCode开发STAR-CCM+用户程序：通过Fortran构建动态库
-date : 2025-04-30
-description : 
-math: true
-tags : [
++++
+author = "Andrew Moa"
+title = "使用VSCode开发STAR-CCM+用户程序：通过Fortran构建动态库"
+date = "2025-04-30"
+description = ""
+tags = [
     "fortran",
     "star-ccm+",
 ]
-categories : [
+categories = [
     "cfd",
 ]
-series : 
-aliases : 
-image : "/images/starccm-bg.jpg"
----
+series = [""]
+aliases = [""]
+image = "/images/starccm-bg.jpg"
++++
 
 虽然STAR-CCM+官方文档专门说明，Windows下不支持 FORTRAN[^1]。但实际上，只要编译器支持，在Windows下使用Fortran编译出来的用户程序一样能正常在STAR-CCM+中正常加载运行。
 

@@ -202,6 +202,177 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-04-18-use-vscode-debug-starccm-marco/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
+      alt="使用VSCode调试STAR-CCM&#43;宏" title="使用VSCode调试STAR-CCM&#43;宏"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-18-use-vscode-debug-starccm-marco/">使用VSCode调试STAR-CCM+宏</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>前面讲过STAR-CCM+宏文件的录制和编写，宏文件的本质就是java文件，因此可以用java编程的方法来对它进行开发和调试。如果涉及到复杂的业务场景，需要增加额外的功能，程序本身比较复杂，很难等到整个程序编写完成后再对它进行测试，免不了要在开发过程中进行调试。官方文档采用的开发工具是古早版本的<strong>NetBeans</strong>，很多功能已经发生变化，加之官方文档描述过于简略，大多数人阅读完后对于STAR-CCM+的调试过程还是一头雾水。<a href="https://code.visualstudio.com/" target="_blank" rel="noopener"><strong>VSCode</strong></a>
+作为新兴IDE的佼佼者，不仅可以通过拓展支持java编程，还可以通过<a href="https://copilot.microsoft.com/chats/Uz4t8yZbNmpyo1CVtqKWP" target="_blank" rel="noopener"><strong>copilot</strong></a>
+拓展集成强大的AI编程能力，本文便采用<strong>VSCode</strong>演示一下STAR-CCM+宏文件的调试过程。</p>
+<h2 id="1-vscode配置">1. VSCode配置</h2>
+<p>首先要在VSCode中安装支持java的拓展，至少要安装下面几个：</p>
+<ol>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=redhat.java" target="_blank" rel="noopener">Language Support for Java(TM) by Red Hat</a>
+</li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-debug" target="_blank" rel="noopener">Debugger for Java</a>
+</li>
+<li><a href="https://marketplace.visualstudio.com/items/?itemName=vscjava.vscode-java-dependency" target="_blank" rel="noopener">Project Manager for Java</a>
+</li>
+</ol>
+<p>也可以直接安装这个拓展包，一次性把所有需要用到的java拓展都装齐了：<a href="https://marketplace.visualstudio.com/items/?itemName=vscjava.vscode-java-pack" target="_blank" rel="noopener">Extension Pack for Java</a>
+</p>
+<p>下载一个JDK并安装，如果不想下载JDK的话，也可以在STAR-CCM+安装路径中找到安装包附带的JDK，把它添加到环境变量中。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/53d9d7c07aca055269657c5ccf18a81f_hu_66464b31202bedd7.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/53d9d7c07aca055269657c5ccf18a81f_hu_a4f183f8ac0477e5.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-18-use-vscode-debug-starccm-marco/images/53d9d7c07aca055269657c5ccf18a81f_hu_2fdea760d4c5b003.jpg" width="599" height="319" alt="53d9d7c07aca055269657c5ccf18a81f.png" title="53d9d7c07aca055269657c5ccf18a81f.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="2-建立java项目">2. 建立java项目</h2>
+<p>在VSCode命令面板(Ctrl+Shift+P)中输入<code>Java: Create Java Project</code>，创建一个新的java项目。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/56a3e9ec89aa1f165d0bbf43818f8843_hu_bc2e621cec9b37dc.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/56a3e9ec89aa1f165d0bbf43818f8843_hu_573cad721cfb9c83.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-18-use-vscode-debug-starccm-marco/images/56a3e9ec89aa1f165d0bbf43818f8843_hu_f5ff0202beaa910c.jpg" width="610" height="236" alt="56a3e9ec89aa1f165d0bbf43818f8843.png" title="56a3e9ec89aa1f165d0bbf43818f8843.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>项目类型选择<code>No build tools</code>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/e3fe06a5c9f45db8e2bb95dd2229afb3_hu_f184668ed4cc5821.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/e3fe06a5c9f45db8e2bb95dd2229afb3_hu_54ecd36aefa30f0.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-18-use-vscode-debug-starccm-marco/images/e3fe06a5c9f45db8e2bb95dd2229afb3_hu_c9ad229d45f22dd0.jpg" width="623" height="234" alt="e3fe06a5c9f45db8e2bb95dd2229afb3.png" title="e3fe06a5c9f45db8e2bb95dd2229afb3.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/java/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Java</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-18T00:00:00&#43;00:00">
+      2025-04-18
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-04-17-starccm-record-and-write-marco/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
@@ -575,196 +746,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2022-04-08-deploy-starccm-on-scp/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/post-bg-tech.jpg"
-      alt="超算平台部署STAR-CCM&#43;" title="超算平台部署STAR-CCM&#43;"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2022-04-08-deploy-starccm-on-scp/">超算平台部署STAR-CCM+</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。</p>
-<h2 id="1-超算平台信息">1. 超算平台信息</h2>
-<p>远程登陆超算可以通过SSH连接，某些平台还提供的webSSH、webVNC连接，支持通过浏览器连接命令行或图形界面。具体登陆方式请参考平台提供的相关文档。</p>
-<p>首次登陆安装部署软件之前应当先了解超算平台的配置，确定平台是否支持需要安装的软件。通过以下命令了解超算平台的发行版信息。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">lsb_release -a
-</span></span></code></pre></div><p>可以了解到该平台发行版为CentOS，版本7.9.2009。</p>
-<p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_69a9fa85e9dc37c7.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_68626ded0948fc0a.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_c6660f9e8382d4c4.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_b8d9ec5f5deda9e6.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_b8d9ec5f5deda9e6.jpg" width="821" height="159" alt="01-发行版信息.png" title="01-发行版信息.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>该超算平台所用并行作业调度系统为开源的Slurm，可以通过以下命令查看可供调用的计算资源。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sinfo -a
-</span></span></code></pre></div><p>输出比较长，这里只截了一部分。下图中<code>amd_256</code>表示计算节点所在分区，记住它，后面编写脚本会用到。</p>
-<p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_23ab3e0550b301be.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_6ec65493eeb0837f.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_b6af80631d2e6bf3.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_2ae6168b5cda1058.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_2ae6168b5cda1058.jpg" width="820" height="441" alt="02-计算节点信息.png" title="02-计算节点信息.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<h2 id="2-软件安装">2. 软件安装</h2>
-<p>软件上传及存储请参考平台提供的相关文档。</p>
-<p>本文安装的是16.06.010双精度Linux版本。通过以下命令解压<code>tar.gz</code>安装包。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tar xvzf <span class="o">[</span>file-name<span class="o">]</span>.tar.gz
-</span></span></code></pre></div><p>安装文件被解压到<code>starccm+_16.06.010</code>目录中，进入该目录运行<code>.sh</code>文件开始安装。注意，此处不需要root用户权限（多数情况下平台是不会提供root账号的，但不影响软件安装）。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./STAR-CCM+16.06.010_01_linux-x86_64-2.17_gnu9.2-r8.sh
-</span></span></code></pre></div><p>用VNC连接的可以通过图形界面安装，不想通过图形界面安装可以用以下命令强制通过控制台安装。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./STAR-CCM+16.06.010_01_linux-x86_64-2.17_gnu9.2-r8.sh -i console
-</span></span></code></pre></div><p>本文采用控制台方式进行安装。首先提示LICENSE，如下图所示，按<code>ENTER</code>继续。</p>
-<p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_f0cd6b5b705a6fdd.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_eca3229eb4dc00c2.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_ca52d1957af5bdbb.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_604e7647a8d33916.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_604e7647a8d33916.jpg" width="820" height="465" alt="03-LICENSE提示.png" title="03-LICENSE提示.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/zhihu/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Zhihu
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/cfd/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cfd</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/slurm/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Slurm</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/star-ccm&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Star-Ccm&#43;</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2022-04-08T00:00:00&#43;00:00">
-      2022-04-08
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -903,16 +884,16 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/ubuntu/"
+      <a href="/zh-cn/tags/star-ccm&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Ubuntu
+        Star-Ccm&#43;
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/star-ccm&#43;/"
+      <a href="/zh-cn/tags/ubuntu/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Star-Ccm&#43;
+        Ubuntu
       </a>
     </li>
     

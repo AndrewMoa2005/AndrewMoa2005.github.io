@@ -206,6 +206,176 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题" title="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。</p>
+<h2 id="1-smb版本问题">1. SMB版本问题</h2>
+<h3 id="11-smbv3">1.1 SMBv3</h3>
+<p>之前用cifs挂载共享文件夹的时候，没有仔细关注SMB协议的版本<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。以下命令行没有指定协议版本：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mount -t cifs //172.25.64.1/Share /home/dell/Share -o <span class="nv">uid</span><span class="o">=</span>xxx,gid<span class="o">=</span>xxx,username<span class="o">=</span>xxx
+</span></span></code></pre></div><p>用<code>mount</code>命令查看，默认连接协议是3.1版本：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7f59520785b536ff.webp 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_c3e0b21dd523267.webp 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_deefcdc197cbc7d5.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_5e1a7f35f8d360c4.jpg 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7d40a59cff0ba191.jpg 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_228a05879a1e818f.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7d40a59cff0ba191.jpg" width="1141" height="59" alt="8eb0d44e21043275d3b1241235da9048.png" title="8eb0d44e21043275d3b1241235da9048.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>在3.1版本协议的挂载目录下运行Abaqus程序，无法计算，报错如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">mpirun: Warning one or more remote shell commands exited with non-zero status, which may indicate a remote access problem.
+</span></span><span class="line"><span class="cl">driverExceptions.AbaqusExecutionError: (&#39;SIMULIA Job Layout Engine&#39;, 255, &#39;abaqus_test&#39;)
+</span></span><span class="line"><span class="cl">!!!
+</span></span><span class="line"><span class="cl">!!! SIM wrap utility command error:
+</span></span><span class="line"><span class="cl">!!!   System Error open: 无效的参数
+</span></span><span class="line"><span class="cl">!!!
+</span></span><span class="line"><span class="cl">driverExceptions.AbaqusExecutionError: (&#39;SIM Wrap-up&#39;, 1, &#39;abaqus_test&#39;)
+</span></span></code></pre></div><p>在3.1版本协议的挂载目录下运行CFX求解器，无法计算，报错如下：</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/abaqus/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Abaqus</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cfx/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cfx</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-15T00:00:00&#43;00:00">
+      2025-04-15
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-04-03-ansa-abaqus-bolt-pretension/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/abaqus-bg.jpg"
@@ -616,170 +786,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-27-openfoam-compile-install-cfmesh-and-ccmtool/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/vortex-bg.jpg"
-      alt="OpenFOAM编译安装cfmesh和ccm工具" title="OpenFOAM编译安装cfmesh和ccm工具"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-27-openfoam-compile-install-cfmesh-and-ccmtool/">OpenFOAM编译安装cfmesh和ccm工具</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <h2 id="1-编译cfmesh">1. 编译cfmesh</h2>
-<p>前期编译安装的是com版的OpenFOAM，版本号是v2412，没有附带cfmesh的源码。根据官方文档的提示，需要手动下载cfmesh的源码文件：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>
-</span></span><span class="line"><span class="cl">git submodule update --init --recursive plugins/cfmesh
-</span></span></code></pre></div><p>出现以下错误：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">fatal: 不是 git 仓库（或者任何父目录）：.git
-</span></span></code></pre></div><p>无语了，直接通过git下载源码到指定文件夹，文件夹和URL路径可以查看<code>.gitmodules</code>文件：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>
-</span></span><span class="line"><span class="cl">git clone https://develop.openfoam.com/Community/integration-cfmesh.git plugins/cfmesh
-</span></span></code></pre></div><p>进入cfmesh文件夹，开始编译：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> plugins/cfmesh
-</span></span><span class="line"><span class="cl">./Allwmake -jN <span class="c1"># N替换成CPU核心数</span>
-</span></span></code></pre></div><p>运行pMesh，验证是否安装成功：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">pMesh -help
-</span></span></code></pre></div><h2 id="2-编译ccm工具">2. 编译ccm工具</h2>
-<p>OpenFOAM的ccm工具包含ccmToFoam和foamToCcm，前者用于将STAR-CCM+输出的ccm格式网格转换成OpenFOAM的网格，后者相反。需要先编译安装第三方库libccmio：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_THIRD_PARTY_DIR</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 下载libccmio</span>
-</span></span><span class="line"><span class="cl">wget http://portal.nersc.gov/project/visit/third_party/libccmio-2.6.1.tar.gz
-</span></span><span class="line"><span class="cl"><span class="c1"># 备选链接</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># wget https://sourceforge.net/projects/foam-extend/files/ThirdParty/libccmio-2.6.1.tar.gz</span>
-</span></span><span class="line"><span class="cl">tar xvzf libccmio-2.6.1.tar.gz	<span class="c1"># 解压下载的压缩包</span>
-</span></span><span class="line"><span class="cl">./makeCCMIO	<span class="c1"># 运行libccmio的编译程序</span>
-</span></span></code></pre></div><p>接下来编译ccmToFoam：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># 先编译libccm</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>/src/conversion/ccm
-</span></span><span class="line"><span class="cl">./Allwmake
-</span></span><span class="line"><span class="cl"><span class="c1"># 然后编译ccmToFoam和foamToCcm</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>/applications/utilities/mesh/conversion/ccm
-</span></span><span class="line"><span class="cl">./Allwmake
-</span></span></code></pre></div><p>运行ccmToFoam，验证是否安装成功：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">ccmToFoam -help
-</span></span></code></pre></div><hr>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/cfd/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Cfd
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/linux/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Linux</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/openfoam/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Openfoam</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-27T00:00:00&#43;00:00">
-      2025-03-27
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -918,16 +924,16 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/ubuntu/"
+      <a href="/zh-cn/tags/star-ccm&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Ubuntu
+        Star-Ccm&#43;
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/star-ccm&#43;/"
+      <a href="/zh-cn/tags/ubuntu/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Star-Ccm&#43;
+        Ubuntu
       </a>
     </li>
     

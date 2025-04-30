@@ -377,7 +377,10 @@ cd starccm_coolprop
 # 建立工作目录
 mkdir -p build && cd build
 # 配置编译文件，链接到CoolProp动态库
-cmake .. -G "Ninja" -DUSE_DOUBLE_PRECISION=ON -DCOOLPROP_LIB_DIR=${HOME}/Share/code/CoolPropLib/static_library/Linux/64bit_GNU_13.3.0 -DCOOLPROP_SRC_DIR=${HOME}/Share/code/CoolProp -DSTARCCM_LIB_DIR=${HOME}/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib
+cmake .. -G "Ninja" -DUSE_DOUBLE_PRECISION=ON \
+    -DCOOLPROP_LIB_DIR=${HOME}/Share/code/CoolPropLib/static_library/Linux/64bit_GNU_13.3.0 \
+    -DCOOLPROP_SRC_DIR=${HOME}/Share/code/CoolProp \
+    -DSTARCCM_LIB_DIR=${HOME}/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib
 # 编译动态库
 cmake --build . --config Release
 # 安装

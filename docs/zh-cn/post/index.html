@@ -202,6 +202,222 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
+      alt="使用VSCode开发STAR-CCM&#43;用户程序：通过Fortran构建动态库" title="使用VSCode开发STAR-CCM&#43;用户程序：通过Fortran构建动态库"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/">使用VSCode开发STAR-CCM+用户程序：通过Fortran构建动态库</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>虽然STAR-CCM+官方文档专门说明，Windows下不支持 FORTRAN<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。但实际上，只要编译器支持，在Windows下使用Fortran编译出来的用户程序一样能正常在STAR-CCM+中正常加载运行。</p>
+<h2 id="1-构建cmake工程">1. 构建CMake工程</h2>
+<p>首先我们参考官方文档当中的教程案例<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，编写CMake项目，项目结构如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">STARCCM_FORTRAN_SAMPLE</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="n">CMakeLists</span><span class="p">.</span><span class="py">txt</span>	<span class="c"># CMake配置文件</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="n">README</span><span class="p">.</span><span class="nb">md	</span><span class="c"># 说明文件，非必须</span>
+</span></span><span class="line"><span class="cl"><span class="err">├───</span><span class="p">.</span><span class="py">vscode</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>      <span class="n">launch</span><span class="p">.</span><span class="py">json</span>	<span class="c"># 启动调试模式时自动生成的文件，非必须</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>      <span class="n">settings</span><span class="p">.</span><span class="py">json</span>	<span class="c"># 定义CMake相关变量</span>
+</span></span><span class="line"><span class="cl"><span class="err">└───</span><span class="n">src</span>
+</span></span><span class="line"><span class="cl">        <span class="n">initVelocity</span><span class="p">.</span><span class="py">f</span>
+</span></span><span class="line"><span class="cl">        <span class="n">StarReal</span><span class="p">.</span><span class="py">f</span><span class="p">.</span><span class="k">in</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sutherlandViscosity</span><span class="p">.</span><span class="py">f</span>
+</span></span><span class="line"><span class="cl">        <span class="n">uflib</span><span class="p">.</span><span class="py">f</span>
+</span></span><span class="line"><span class="cl">        <span class="n">zeroGradT</span><span class="p">.</span><span class="py">f</span>
+</span></span></code></pre></div><p>CMake配置文件<code>CMakeLists.txt</code>主要内容如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-CMake" data-lang="CMake"><span class="line"><span class="cl"><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.10</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Project name
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">project</span><span class="p">(</span><span class="s">UserFortran</span> <span class="s">LANGUAGES</span> <span class="s">Fortran</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_Fortran_STANDARD</span> <span class="s">2008</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Check for STARCCM_USER_LIB_DIR
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">NOT</span> <span class="s">DEFINED</span> <span class="s">STARCCM_USER_LIB_DIR</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">FATAL_ERROR</span> <span class="s2">&#34;STARCCM_USER_LIB_DIR is not defined. Please specify the path to the STAR-CCM+ UserFunctions library directory.&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="c"># For example, in Windows : C:/Program Files/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/win64/clang17.0vc14.2-r8/lib
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>    <span class="c"># In Linux : /opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;STARCCM_USER_LIB_DIR location : &#34;</span> <span class="o">${</span><span class="nv">STARCCM_USER_LIB_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Check for STARCCM_STD_LIB_DIR
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">NOT</span> <span class="s">DEFINED</span> <span class="s">STARCCM_STD_LIB_DIR</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;STARCCM_STD_LIB_DIR undefined. using system standard library. &#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="c"># For example, in Linux : /opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;STARCCM_STD_LIB_DIR location : &#34;</span> <span class="o">${</span><span class="nv">STARCCM_STD_LIB_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># STAR-CCM+ output precision
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">USE_DOUBLE_PRECISION</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;Using double precision for STAR-CCM+&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">set</span><span class="p">(</span><span class="s">STAR_REAL</span> <span class="s2">&#34;1D0&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;Using float precision for STAR-CCM+&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">set</span><span class="p">(</span><span class="s">STAR_REAL</span> <span class="s2">&#34;1.0&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># generate the StarReal.f file
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">configure_file</span><span class="p">(</span><span class="s">src/StarReal.f.in</span> <span class="o">${</span><span class="nv">CMAKE_BINARY_DIR</span><span class="o">}</span><span class="s">/StarReal.f</span> <span class="s">@ONLY</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Include directories
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="o">}</span><span class="s">/include</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Link with STARCCM LIB directory
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">STARCCM_USER_LIB_DIR</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">STARCCM_STD_LIB_DIR</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Specify the source files
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">set</span><span class="p">(</span><span class="s">SOURCES</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">CMAKE_BINARY_DIR</span><span class="o">}</span><span class="s">/StarReal.f</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/initVelocity.f</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/sutherlandViscosity.f</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/zeroGradT.f</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/uflib.f</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Add library
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">add_library</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_PROJECT_NAME</span><span class="o">}</span> <span class="s">SHARED</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">SOURCES</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Link library
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_PROJECT_NAME</span><span class="o">}</span> <span class="s">UserFunctions</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Install target
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">install</span><span class="p">(</span><span class="s">TARGETS</span> <span class="o">${</span><span class="nv">CMAKE_PROJECT_NAME</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="s">RUNTIME</span> <span class="s">DESTINATION</span> <span class="s">bin</span>
+</span></span><span class="line"><span class="cl">    <span class="s">LIBRARY</span> <span class="s">DESTINATION</span> <span class="s">lib</span>
+</span></span><span class="line"><span class="cl">    <span class="s">ARCHIVE</span> <span class="s">DESTINATION</span> <span class="s">lib/static</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span><span class="err">
+</span></span></span></code></pre></div><p>其中有两个关键设置：</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/fortran/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Fortran</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-30T00:00:00&#43;00:00">
+      2025-04-30
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长4分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
@@ -545,177 +761,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-04-18-use-vscode-debug-starccm-marco/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
-      alt="使用VSCode调试STAR-CCM&#43;宏" title="使用VSCode调试STAR-CCM&#43;宏"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-04-18-use-vscode-debug-starccm-marco/">使用VSCode调试STAR-CCM+宏</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>前面讲过STAR-CCM+宏文件的录制和编写，宏文件的本质就是java文件，因此可以用java编程的方法来对它进行开发和调试。如果涉及到复杂的业务场景，需要增加额外的功能，程序本身比较复杂，很难等到整个程序编写完成后再对它进行测试，免不了要在开发过程中进行调试。官方文档采用的开发工具是古早版本的<strong>NetBeans</strong>，很多功能已经发生变化，加之官方文档描述过于简略，大多数人阅读完后对于STAR-CCM+的调试过程还是一头雾水。<a href="https://code.visualstudio.com/" target="_blank" rel="noopener"><strong>VSCode</strong></a>
-作为新兴IDE的佼佼者，不仅可以通过拓展支持java编程，还可以通过<a href="https://copilot.microsoft.com/chats/Uz4t8yZbNmpyo1CVtqKWP" target="_blank" rel="noopener"><strong>copilot</strong></a>
-拓展集成强大的AI编程能力，本文便采用<strong>VSCode</strong>演示一下STAR-CCM+宏文件的调试过程。</p>
-<h2 id="1-vscode配置">1. VSCode配置</h2>
-<p>首先要在VSCode中安装支持java的拓展，至少要安装下面几个：</p>
-<ol>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=redhat.java" target="_blank" rel="noopener">Language Support for Java(TM) by Red Hat</a>
-</li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-debug" target="_blank" rel="noopener">Debugger for Java</a>
-</li>
-<li><a href="https://marketplace.visualstudio.com/items/?itemName=vscjava.vscode-java-dependency" target="_blank" rel="noopener">Project Manager for Java</a>
-</li>
-</ol>
-<p>也可以直接安装这个拓展包，一次性把所有需要用到的java拓展都装齐了：<a href="https://marketplace.visualstudio.com/items/?itemName=vscjava.vscode-java-pack" target="_blank" rel="noopener">Extension Pack for Java</a>
-</p>
-<p>下载一个JDK并安装，如果不想下载JDK的话，也可以在STAR-CCM+安装路径中找到安装包附带的JDK，把它添加到环境变量中。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/53d9d7c07aca055269657c5ccf18a81f_hu_66464b31202bedd7.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/53d9d7c07aca055269657c5ccf18a81f_hu_a4f183f8ac0477e5.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-18-use-vscode-debug-starccm-marco/images/53d9d7c07aca055269657c5ccf18a81f_hu_2fdea760d4c5b003.jpg" width="599" height="319" alt="53d9d7c07aca055269657c5ccf18a81f.png" title="53d9d7c07aca055269657c5ccf18a81f.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<h2 id="2-建立java项目">2. 建立java项目</h2>
-<p>在VSCode命令面板(Ctrl+Shift+P)中输入<code>Java: Create Java Project</code>，创建一个新的java项目。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/56a3e9ec89aa1f165d0bbf43818f8843_hu_bc2e621cec9b37dc.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/56a3e9ec89aa1f165d0bbf43818f8843_hu_573cad721cfb9c83.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-18-use-vscode-debug-starccm-marco/images/56a3e9ec89aa1f165d0bbf43818f8843_hu_f5ff0202beaa910c.jpg" width="610" height="236" alt="56a3e9ec89aa1f165d0bbf43818f8843.png" title="56a3e9ec89aa1f165d0bbf43818f8843.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>项目类型选择<code>No build tools</code>。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/e3fe06a5c9f45db8e2bb95dd2229afb3_hu_f184668ed4cc5821.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/e3fe06a5c9f45db8e2bb95dd2229afb3_hu_54ecd36aefa30f0.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-18-use-vscode-debug-starccm-marco/images/e3fe06a5c9f45db8e2bb95dd2229afb3_hu_c9ad229d45f22dd0.jpg" width="623" height="234" alt="e3fe06a5c9f45db8e2bb95dd2229afb3.png" title="e3fe06a5c9f45db8e2bb95dd2229afb3.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/cfd/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Cfd
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/java/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Java</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/star-ccm&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Star-Ccm&#43;</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-04-18T00:00:00&#43;00:00">
-      2025-04-18
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -854,16 +899,16 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/ubuntu/"
+      <a href="/zh-cn/tags/star-ccm&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Ubuntu
+        Star-Ccm&#43;
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/star-ccm&#43;/"
+      <a href="/zh-cn/tags/ubuntu/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Star-Ccm&#43;
+        Ubuntu
       </a>
     </li>
     

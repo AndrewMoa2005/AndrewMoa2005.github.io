@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>使用VSCode开发STAR-CCM&#43;用户程序：通过Fortran构建动态库 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="虽然STAR-CCM&#43;官方文档专门说明，Windows下不支持 FORTRAN1。但实际上，只要编译器支持，在Windows下使用Fortran编译出来的用户程序一样能正常在STAR-CCM&#43;中正常加载运行。
+1. 构建CMake工程 首先我们参考官方文档当中的教程案例2，编写CMake项目，项目结构如下：
+STARCCM_FORTRAN_SAMPLE │ CMakeLists.txt	# CMake配置文件 │ README.md	# 说明文件，非必须 ├───.vscode │ launch.json	# 启动调试模式时自动生成的文件，非必须 │ settings.json	# 定义CMake相关变量 └───src initVelocity.f StarReal.f.in sutherlandViscosity.f uflib.f zeroGradT.f CMake配置文件CMakeLists.txt主要内容如下：
+cmake_minimum_required(VERSION 3.10) # Project name project(UserFortran LANGUAGES Fortran) set(CMAKE_Fortran_STANDARD 2008) # Check for STARCCM_USER_LIB_DIR if(NOT DEFINED STARCCM_USER_LIB_DIR) message(FATAL_ERROR &#34;STARCCM_USER_LIB_DIR is not defined. Please specify the path to the STAR-CCM&#43; UserFunctions library directory.&#34;) # For example, in Windows : C:/Program Files/Siemens/19.06.009-R8/STAR-CCM&#43;19.06.009-R8/star/lib/win64/clang17.0vc14.2-r8/lib # In Linux : /opt/Siemens/19.06.009-R8/STAR-CCM&#43;19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib&#34; else() message(STATUS &#34;STARCCM_USER_LIB_DIR location : &#34; ${STARCCM_USER_LIB_DIR}) endif() # Check for STARCCM_STD_LIB_DIR if(NOT DEFINED STARCCM_STD_LIB_DIR) message(STATUS &#34;STARCCM_STD_LIB_DIR undefined. using system standard library. &#34;) # For example, in Linux : /opt/Siemens/19.06.009-R8/STAR-CCM&#43;19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64&#34; else() message(STATUS &#34;STARCCM_STD_LIB_DIR location : &#34; ${STARCCM_STD_LIB_DIR}) endif() # STAR-CCM&#43; output precision if(USE_DOUBLE_PRECISION) message(STATUS &#34;Using double precision for STAR-CCM&#43;&#34;) set(STAR_REAL &#34;1D0&#34;) else() message(STATUS &#34;Using float precision for STAR-CCM&#43;&#34;) set(STAR_REAL &#34;1.0&#34;) endif() # generate the StarReal.f file configure_file(src/StarReal.f.in ${CMAKE_BINARY_DIR}/StarReal.f @ONLY) # Include directories include_directories(${PROJECT_SOURCE_DIR}/include ) # Link with STARCCM LIB directory link_directories(${STARCCM_USER_LIB_DIR} ${STARCCM_STD_LIB_DIR} ) # Specify the source files set(SOURCES ${CMAKE_BINARY_DIR}/StarReal.f src/initVelocity.f src/sutherlandViscosity.f src/zeroGradT.f src/uflib.f ) # Add library add_library(${CMAKE_PROJECT_NAME} SHARED ${SOURCES} ) # Link library target_link_libraries(${CMAKE_PROJECT_NAME} UserFunctions) # Install target install(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static ) 其中有两个关键设置：
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="使用VSCode开发STAR-CCM&#43;用户程序：通过Fortran构建动态库">
+  <meta property="og:description" content="虽然STAR-CCM&#43;官方文档专门说明，Windows下不支持 FORTRAN1。但实际上，只要编译器支持，在Windows下使用Fortran编译出来的用户程序一样能正常在STAR-CCM&#43;中正常加载运行。
+1. 构建CMake工程 首先我们参考官方文档当中的教程案例2，编写CMake项目，项目结构如下：
+STARCCM_FORTRAN_SAMPLE │ CMakeLists.txt	# CMake配置文件 │ README.md	# 说明文件，非必须 ├───.vscode │ launch.json	# 启动调试模式时自动生成的文件，非必须 │ settings.json	# 定义CMake相关变量 └───src initVelocity.f StarReal.f.in sutherlandViscosity.f uflib.f zeroGradT.f CMake配置文件CMakeLists.txt主要内容如下：
+cmake_minimum_required(VERSION 3.10) # Project name project(UserFortran LANGUAGES Fortran) set(CMAKE_Fortran_STANDARD 2008) # Check for STARCCM_USER_LIB_DIR if(NOT DEFINED STARCCM_USER_LIB_DIR) message(FATAL_ERROR &#34;STARCCM_USER_LIB_DIR is not defined. Please specify the path to the STAR-CCM&#43; UserFunctions library directory.&#34;) # For example, in Windows : C:/Program Files/Siemens/19.06.009-R8/STAR-CCM&#43;19.06.009-R8/star/lib/win64/clang17.0vc14.2-r8/lib # In Linux : /opt/Siemens/19.06.009-R8/STAR-CCM&#43;19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib&#34; else() message(STATUS &#34;STARCCM_USER_LIB_DIR location : &#34; ${STARCCM_USER_LIB_DIR}) endif() # Check for STARCCM_STD_LIB_DIR if(NOT DEFINED STARCCM_STD_LIB_DIR) message(STATUS &#34;STARCCM_STD_LIB_DIR undefined. using system standard library. &#34;) # For example, in Linux : /opt/Siemens/19.06.009-R8/STAR-CCM&#43;19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64&#34; else() message(STATUS &#34;STARCCM_STD_LIB_DIR location : &#34; ${STARCCM_STD_LIB_DIR}) endif() # STAR-CCM&#43; output precision if(USE_DOUBLE_PRECISION) message(STATUS &#34;Using double precision for STAR-CCM&#43;&#34;) set(STAR_REAL &#34;1D0&#34;) else() message(STATUS &#34;Using float precision for STAR-CCM&#43;&#34;) set(STAR_REAL &#34;1.0&#34;) endif() # generate the StarReal.f file configure_file(src/StarReal.f.in ${CMAKE_BINARY_DIR}/StarReal.f @ONLY) # Include directories include_directories(${PROJECT_SOURCE_DIR}/include ) # Link with STARCCM LIB directory link_directories(${STARCCM_USER_LIB_DIR} ${STARCCM_STD_LIB_DIR} ) # Specify the source files set(SOURCES ${CMAKE_BINARY_DIR}/StarReal.f src/initVelocity.f src/sutherlandViscosity.f src/zeroGradT.f src/uflib.f ) # Add library add_library(${CMAKE_PROJECT_NAME} SHARED ${SOURCES} ) # Link library target_link_libraries(${CMAKE_PROJECT_NAME} UserFunctions) # Install target install(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static ) 其中有两个关键设置：">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-04-30T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-04-30T00:00:00+00:00">
+    <meta property="article:tag" content="Fortran">
+    <meta property="article:tag" content="Star-Ccm&#43;">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="使用VSCode开发STAR-CCM&#43;用户程序：通过Fortran构建动态库">
+  <meta name="twitter:description" content="虽然STAR-CCM&#43;官方文档专门说明，Windows下不支持 FORTRAN1。但实际上，只要编译器支持，在Windows下使用Fortran编译出来的用户程序一样能正常在STAR-CCM&#43;中正常加载运行。
+1. 构建CMake工程 首先我们参考官方文档当中的教程案例2，编写CMake项目，项目结构如下：
+STARCCM_FORTRAN_SAMPLE │ CMakeLists.txt	# CMake配置文件 │ README.md	# 说明文件，非必须 ├───.vscode │ launch.json	# 启动调试模式时自动生成的文件，非必须 │ settings.json	# 定义CMake相关变量 └───src initVelocity.f StarReal.f.in sutherlandViscosity.f uflib.f zeroGradT.f CMake配置文件CMakeLists.txt主要内容如下：
+cmake_minimum_required(VERSION 3.10) # Project name project(UserFortran LANGUAGES Fortran) set(CMAKE_Fortran_STANDARD 2008) # Check for STARCCM_USER_LIB_DIR if(NOT DEFINED STARCCM_USER_LIB_DIR) message(FATAL_ERROR &#34;STARCCM_USER_LIB_DIR is not defined. Please specify the path to the STAR-CCM&#43; UserFunctions library directory.&#34;) # For example, in Windows : C:/Program Files/Siemens/19.06.009-R8/STAR-CCM&#43;19.06.009-R8/star/lib/win64/clang17.0vc14.2-r8/lib # In Linux : /opt/Siemens/19.06.009-R8/STAR-CCM&#43;19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib&#34; else() message(STATUS &#34;STARCCM_USER_LIB_DIR location : &#34; ${STARCCM_USER_LIB_DIR}) endif() # Check for STARCCM_STD_LIB_DIR if(NOT DEFINED STARCCM_STD_LIB_DIR) message(STATUS &#34;STARCCM_STD_LIB_DIR undefined. using system standard library. &#34;) # For example, in Linux : /opt/Siemens/19.06.009-R8/STAR-CCM&#43;19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64&#34; else() message(STATUS &#34;STARCCM_STD_LIB_DIR location : &#34; ${STARCCM_STD_LIB_DIR}) endif() # STAR-CCM&#43; output precision if(USE_DOUBLE_PRECISION) message(STATUS &#34;Using double precision for STAR-CCM&#43;&#34;) set(STAR_REAL &#34;1D0&#34;) else() message(STATUS &#34;Using float precision for STAR-CCM&#43;&#34;) set(STAR_REAL &#34;1.0&#34;) endif() # generate the StarReal.f file configure_file(src/StarReal.f.in ${CMAKE_BINARY_DIR}/StarReal.f @ONLY) # Include directories include_directories(${PROJECT_SOURCE_DIR}/include ) # Link with STARCCM LIB directory link_directories(${STARCCM_USER_LIB_DIR} ${STARCCM_STD_LIB_DIR} ) # Specify the source files set(SOURCES ${CMAKE_BINARY_DIR}/StarReal.f src/initVelocity.f src/sutherlandViscosity.f src/zeroGradT.f src/uflib.f ) # Add library add_library(${CMAKE_PROJECT_NAME} SHARED ${SOURCES} ) # Link library target_link_libraries(${CMAKE_PROJECT_NAME} UserFunctions) # Install target install(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static ) 其中有两个关键设置：">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-04-30T00:00:00Z","datePublished":"2025-04-30T00:00:00Z","description":"虽然STAR-CCM+官方文档专门说明，Windows下不支持 FORTRAN1。但实际上，只要编译器支持，在Windows下使用Fortran编译出来的用户程序一样能正常在STAR-CCM+中正常加载运行。\n1. 构建CMake工程 首先我们参考官方文档当中的教程案例2，编写CMake项目，项目结构如下：\nSTARCCM_FORTRAN_SAMPLE │ CMakeLists.txt\t# CMake配置文件 │ README.md\t# 说明文件，非必须 ├───.vscode │ launch.json\t# 启动调试模式时自动生成的文件，非必须 │ settings.json\t# 定义CMake相关变量 └───src initVelocity.f StarReal.f.in sutherlandViscosity.f uflib.f zeroGradT.f CMake配置文件CMakeLists.txt主要内容如下：\ncmake_minimum_required(VERSION 3.10) # Project name project(UserFortran LANGUAGES Fortran) set(CMAKE_Fortran_STANDARD 2008) # Check for STARCCM_USER_LIB_DIR if(NOT DEFINED STARCCM_USER_LIB_DIR) message(FATAL_ERROR \u0026#34;STARCCM_USER_LIB_DIR is not defined. Please specify the path to the STAR-CCM+ UserFunctions library directory.\u0026#34;) # For example, in Windows : C:/Program Files/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/win64/clang17.0vc14.2-r8/lib # In Linux : /opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib\u0026#34; else() message(STATUS \u0026#34;STARCCM_USER_LIB_DIR location : \u0026#34; ${STARCCM_USER_LIB_DIR}) endif() # Check for STARCCM_STD_LIB_DIR if(NOT DEFINED STARCCM_STD_LIB_DIR) message(STATUS \u0026#34;STARCCM_STD_LIB_DIR undefined. using system standard library. \u0026#34;) # For example, in Linux : /opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64\u0026#34; else() message(STATUS \u0026#34;STARCCM_STD_LIB_DIR location : \u0026#34; ${STARCCM_STD_LIB_DIR}) endif() # STAR-CCM+ output precision if(USE_DOUBLE_PRECISION) message(STATUS \u0026#34;Using double precision for STAR-CCM+\u0026#34;) set(STAR_REAL \u0026#34;1D0\u0026#34;) else() message(STATUS \u0026#34;Using float precision for STAR-CCM+\u0026#34;) set(STAR_REAL \u0026#34;1.0\u0026#34;) endif() # generate the StarReal.f file configure_file(src/StarReal.f.in ${CMAKE_BINARY_DIR}/StarReal.f @ONLY) # Include directories include_directories(${PROJECT_SOURCE_DIR}/include ) # Link with STARCCM LIB directory link_directories(${STARCCM_USER_LIB_DIR} ${STARCCM_STD_LIB_DIR} ) # Specify the source files set(SOURCES ${CMAKE_BINARY_DIR}/StarReal.f src/initVelocity.f src/sutherlandViscosity.f src/zeroGradT.f src/uflib.f ) # Add library add_library(${CMAKE_PROJECT_NAME} SHARED ${SOURCES} ) # Link library target_link_libraries(${CMAKE_PROJECT_NAME} UserFunctions) # Install target install(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static ) 其中有两个关键设置：\n","image":"/images/starccm-bg.jpg","name":"使用VSCode开发STAR-CCM+用户程序：通过Fortran构建动态库","url":"https://andrewmoa.site/zh-cn/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
+      alt="使用VSCode开发STAR-CCM&#43;用户程序：通过Fortran构建动态库" title="使用VSCode开发STAR-CCM&#43;用户程序：通过Fortran构建动态库"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/">使用VSCode开发STAR-CCM+用户程序：通过Fortran构建动态库</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/fortran/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Fortran</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-30T00:00:00&#43;00:00">
+      2025-04-30
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长4分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-构建cmake工程">1. 构建CMake工程</a></li>
+    <li><a href="#2-windows下编译动态库">2. Windows下编译动态库</a></li>
+    <li><a href="#3-linux下编译动态库">3. Linux下编译动态库</a></li>
+    <li><a href="#4-计算案例演示">4. 计算案例演示</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>虽然STAR-CCM+官方文档专门说明，Windows下不支持 FORTRAN<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。但实际上，只要编译器支持，在Windows下使用Fortran编译出来的用户程序一样能正常在STAR-CCM+中正常加载运行。</p>
+<h2 id="1-构建cmake工程">1. 构建CMake工程</h2>
+<p>首先我们参考官方文档当中的教程案例<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，编写CMake项目，项目结构如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">STARCCM_FORTRAN_SAMPLE</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="n">CMakeLists</span><span class="p">.</span><span class="py">txt</span>	<span class="c"># CMake配置文件</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="n">README</span><span class="p">.</span><span class="nb">md	</span><span class="c"># 说明文件，非必须</span>
+</span></span><span class="line"><span class="cl"><span class="err">├───</span><span class="p">.</span><span class="py">vscode</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>      <span class="n">launch</span><span class="p">.</span><span class="py">json</span>	<span class="c"># 启动调试模式时自动生成的文件，非必须</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>      <span class="n">settings</span><span class="p">.</span><span class="py">json</span>	<span class="c"># 定义CMake相关变量</span>
+</span></span><span class="line"><span class="cl"><span class="err">└───</span><span class="n">src</span>
+</span></span><span class="line"><span class="cl">        <span class="n">initVelocity</span><span class="p">.</span><span class="py">f</span>
+</span></span><span class="line"><span class="cl">        <span class="n">StarReal</span><span class="p">.</span><span class="py">f</span><span class="p">.</span><span class="k">in</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sutherlandViscosity</span><span class="p">.</span><span class="py">f</span>
+</span></span><span class="line"><span class="cl">        <span class="n">uflib</span><span class="p">.</span><span class="py">f</span>
+</span></span><span class="line"><span class="cl">        <span class="n">zeroGradT</span><span class="p">.</span><span class="py">f</span>
+</span></span></code></pre></div><p>CMake配置文件<code>CMakeLists.txt</code>主要内容如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-CMake" data-lang="CMake"><span class="line"><span class="cl"><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.10</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Project name
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">project</span><span class="p">(</span><span class="s">UserFortran</span> <span class="s">LANGUAGES</span> <span class="s">Fortran</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_Fortran_STANDARD</span> <span class="s">2008</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Check for STARCCM_USER_LIB_DIR
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">NOT</span> <span class="s">DEFINED</span> <span class="s">STARCCM_USER_LIB_DIR</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">FATAL_ERROR</span> <span class="s2">&#34;STARCCM_USER_LIB_DIR is not defined. Please specify the path to the STAR-CCM+ UserFunctions library directory.&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="c"># For example, in Windows : C:/Program Files/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/win64/clang17.0vc14.2-r8/lib
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>    <span class="c"># In Linux : /opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;STARCCM_USER_LIB_DIR location : &#34;</span> <span class="o">${</span><span class="nv">STARCCM_USER_LIB_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Check for STARCCM_STD_LIB_DIR
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">NOT</span> <span class="s">DEFINED</span> <span class="s">STARCCM_STD_LIB_DIR</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;STARCCM_STD_LIB_DIR undefined. using system standard library. &#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="c"># For example, in Linux : /opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;STARCCM_STD_LIB_DIR location : &#34;</span> <span class="o">${</span><span class="nv">STARCCM_STD_LIB_DIR</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># STAR-CCM+ output precision
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">USE_DOUBLE_PRECISION</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;Using double precision for STAR-CCM+&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">set</span><span class="p">(</span><span class="s">STAR_REAL</span> <span class="s2">&#34;1D0&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;Using float precision for STAR-CCM+&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">set</span><span class="p">(</span><span class="s">STAR_REAL</span> <span class="s2">&#34;1.0&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># generate the StarReal.f file
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">configure_file</span><span class="p">(</span><span class="s">src/StarReal.f.in</span> <span class="o">${</span><span class="nv">CMAKE_BINARY_DIR</span><span class="o">}</span><span class="s">/StarReal.f</span> <span class="s">@ONLY</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Include directories
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="o">}</span><span class="s">/include</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Link with STARCCM LIB directory
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">STARCCM_USER_LIB_DIR</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">STARCCM_STD_LIB_DIR</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Specify the source files
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">set</span><span class="p">(</span><span class="s">SOURCES</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">CMAKE_BINARY_DIR</span><span class="o">}</span><span class="s">/StarReal.f</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/initVelocity.f</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/sutherlandViscosity.f</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/zeroGradT.f</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/uflib.f</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Add library
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">add_library</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_PROJECT_NAME</span><span class="o">}</span> <span class="s">SHARED</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">SOURCES</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Link library
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_PROJECT_NAME</span><span class="o">}</span> <span class="s">UserFunctions</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Install target
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">install</span><span class="p">(</span><span class="s">TARGETS</span> <span class="o">${</span><span class="nv">CMAKE_PROJECT_NAME</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="s">RUNTIME</span> <span class="s">DESTINATION</span> <span class="s">bin</span>
+</span></span><span class="line"><span class="cl">    <span class="s">LIBRARY</span> <span class="s">DESTINATION</span> <span class="s">lib</span>
+</span></span><span class="line"><span class="cl">    <span class="s">ARCHIVE</span> <span class="s">DESTINATION</span> <span class="s">lib/static</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span><span class="err">
+</span></span></span></code></pre></div><p>其中有两个关键设置：</p>
+<ul>
+<li>通过<code>STARCCM_USER_LIB_DIR</code>和<code>STARCCM_STD_LIB_DIR</code>指定STAR-CCM+自带的库文件搜索路径，其中<code>STARCCM_STD_LIB_DIR</code>是非必须的，用于在Linux下指定链接到STAR-CCM+自带的标准库文件</li>
+<li>通过<code>USE_DOUBLE_PRECISION</code>指定精度，在配置文件<code>StarReal.f.in</code>基础上生成<code>StarReal.f</code>，给编译器指定StarReal类型精度</li>
+</ul>
+<p><code>StarReal.f.in</code>同官方案例的<code>StarReal.f</code>，只是将原来的数值改为了<code>@STAR_REAL@</code>标记，用来告诉CMake如何替换字符：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fortran" data-lang="fortran"><span class="line"><span class="cl"><span class="w">      </span><span class="k">module</span><span class="w"> </span><span class="n">StarRealMod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">StarInt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">kind</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">StarReal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">kind</span><span class="p">(</span><span class="err">@</span><span class="n">STAR_REAL</span><span class="err">@</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">CoordReal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">kind</span><span class="p">(</span><span class="mi">1</span><span class="n">D0</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">StarIntSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StarInt</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">StarRealSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StarReal</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">CoordRealSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CoordReal</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w"> </span><span class="k">module</span><span class="w"> </span><span class="n">StarRealMod</span><span class="w">
+</span></span></span></code></pre></div><p><code>zeroGradT.f</code>定义了一个边界配置函数：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fortran" data-lang="fortran"><span class="line"><span class="cl"><span class="n">C</span><span class="w"> </span><span class="n">Set</span><span class="w"> </span><span class="n">boundary</span><span class="w"> </span><span class="n">temperature</span><span class="w"> </span><span class="n">equal</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">cell</span><span class="w"> </span><span class="n">temperature</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">subroutine</span><span class="w"> </span><span class="n">zeroGradT</span><span class="p">(</span><span class="k">result</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="n">StarRealMod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">implicit</span><span class="w"> </span><span class="k">none</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">StarReal</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">size</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fc</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">StarReal</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="w"> </span><span class="n">i</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">C</span><span class="w"> </span><span class="n">Loop</span><span class="w"> </span><span class="n">through</span><span class="w"> </span><span class="k">all</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="n">applying</span><span class="w"> </span><span class="n">T_boundary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T_cell</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">C</span><span class="w"> </span><span class="n">fc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">cell</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">i</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">result</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">fc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w">
+</span></span></span></code></pre></div><p><code>initVelocity.f</code>定义了一个区域配置函数：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fortran" data-lang="fortran"><span class="line"><span class="cl"><span class="n">C</span><span class="w"> </span><span class="n">Initial</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">uniform</span><span class="w"> </span><span class="n">swirl</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">subroutine</span><span class="w"> </span><span class="n">initVelocity</span><span class="p">(</span><span class="k">result</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">centroid</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="n">StarRealMod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">implicit</span><span class="w"> </span><span class="k">none</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">StarReal</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">size</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">centroid</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="w"> </span><span class="n">i</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">)</span><span class="w"> </span><span class="n">dr</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">C</span><span class="w"> </span><span class="n">Angular</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="nb">and</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">rotation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">omega</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mi">10</span><span class="mf">0.0</span><span class="o">/</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="o">/</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">C</span><span class="w"> </span><span class="n">Loop</span><span class="w"> </span><span class="n">through</span><span class="w"> </span><span class="k">all</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="n">applying</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">omega</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="p">(</span><span class="n">centroid</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">origin</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">dr</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">centroid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">dr</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">centroid</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">dr</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">centroid</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">result</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">omega</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">dr</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">omega</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">dr</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">result</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">omega</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">dr</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">omega</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">dr</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">result</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">omega</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">dr</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">omega</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">dr</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w">
+</span></span></span></code></pre></div><p><code>sutherlandViscosity.f</code>定义了一个场函数：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fortran" data-lang="fortran"><span class="line"><span class="cl"><span class="n">C</span><span class="w"> </span><span class="n">Dynamic</span><span class="w"> </span><span class="n">viscosity</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">Sutherland</span><span class="s1">&#39;s law
+</span></span></span><span class="line"><span class="cl"><span class="s1">      subroutine sutherlandViscosity(result,size,T)
+</span></span></span><span class="line"><span class="cl"><span class="s1">      use StarRealMod
+</span></span></span><span class="line"><span class="cl"><span class="s1">      implicit none
+</span></span></span><span class="line"><span class="cl"><span class="s1">      integer, intent(in) :: size
+</span></span></span><span class="line"><span class="cl"><span class="s1">      real(StarReal), intent(out) :: result(size)
+</span></span></span><span class="line"><span class="cl"><span class="s1">      real(StarReal), intent(in) :: T(*)
+</span></span></span><span class="line"><span class="cl"><span class="s1">      integer i
+</span></span></span><span class="line"><span class="cl"><span class="s1">C Reference viscosity, Sutherland constant and reference temperature
+</span></span></span><span class="line"><span class="cl"><span class="s1">      real(StarReal), parameter :: v0 = 1.716E-5
+</span></span></span><span class="line"><span class="cl"><span class="s1">      real(StarReal), parameter :: Cs = 110.0
+</span></span></span><span class="line"><span class="cl"><span class="s1">      real(StarReal), parameter :: T0 = 273.15
+</span></span></span><span class="line"><span class="cl"><span class="s1">
+</span></span></span><span class="line"><span class="cl"><span class="s1">C Loop through all entities applying Sutherland&#39;</span><span class="n">s</span><span class="w"> </span><span class="n">law</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">result</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">/</span><span class="n">T0</span><span class="p">)</span><span class="o">**</span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">T0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Cs</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Cs</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w">
+</span></span></span></code></pre></div><p><code>uflib.f</code>作为导入函数，用于注册上面用户定义的函数：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fortran" data-lang="fortran"><span class="line"><span class="cl"><span class="w">      </span><span class="k">subroutine</span><span class="w"> </span><span class="n">uflib</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="n">StarRealMod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">implicit</span><span class="w"> </span><span class="k">none</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">C</span><span class="w"> </span><span class="n">Register</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">functions</span><span class="w"> </span><span class="n">here</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">external</span><span class="w"> </span><span class="n">zeroGradT</span><span class="p">,</span><span class="n">initVelocity</span><span class="p">,</span><span class="n">sutherlandViscosity</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">call</span><span class="w"> </span><span class="n">uffunc</span><span class="p">(</span><span class="n">zeroGradT</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;BoundaryProfile&#34;</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">  </span><span class="s2">&#34;Zero Gradient Temperature&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">call</span><span class="w"> </span><span class="n">ufarg</span><span class="w"> </span><span class="p">(</span><span class="n">zeroGradT</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;Face&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">  </span><span class="s2">&#34;FaceCellIndex&#34;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">StarIntSize</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">call</span><span class="w"> </span><span class="n">ufarg</span><span class="w"> </span><span class="p">(</span><span class="n">zeroGradT</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;Cell&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">  </span><span class="s2">&#34;Temperature&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">StarRealSize</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">call</span><span class="w"> </span><span class="n">uffunc</span><span class="p">(</span><span class="n">initVelocity</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;RegionProfile&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">  </span><span class="s2">&#34;Initial Velocity&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">call</span><span class="w"> </span><span class="n">ufarg</span><span class="p">(</span><span class="n">initVelocity</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;Cell&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">  </span><span class="s2">&#34;Centroid&#34;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="n">CoordRealSize</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">call</span><span class="w"> </span><span class="n">uffunc</span><span class="p">(</span><span class="n">sutherlandViscosity</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;ScalarFieldFunction&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">  </span><span class="s2">&#34;Sutherland Viscosity&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">call</span><span class="w"> </span><span class="n">ufarg</span><span class="p">(</span><span class="n">sutherlandViscosity</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;Cell&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">  </span><span class="s2">&#34;Temperature&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">StarRealSize</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w">
+</span></span></span></code></pre></div><p>官方文档自带的Fortran代码都是固定格式，不知是不是排版的原因，代码前6个空格没有正确显示，复制粘贴的时候一定要注意。</p>
+<h2 id="2-windows下编译动态库">2. Windows下编译动态库</h2>
+<p>Windwos下使用msys2的clang64工具链编译，编译器是LLVM flang。如果VSCode上没有找到该选项，可以使用CMake拓展的扫描工具包功能扫描msys2的clang64目录找到该选项。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/cf2cbb5dd135f97f5873fbf49f9f83cf_hu_a0b88877543b8e2b.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/cf2cbb5dd135f97f5873fbf49f9f83cf_hu_78c26d8ee798c3a7.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/cf2cbb5dd135f97f5873fbf49f9f83cf_hu_649e94c73514704f.jpg" width="620" height="426" alt="cf2cbb5dd135f97f5873fbf49f9f83cf.png" title="cf2cbb5dd135f97f5873fbf49f9f83cf.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>编译输出动态库之后，在clang64工具链下用<code>ldd</code>命令扫描该动态库的依赖，除了系统自带的动态库之外，没有链接到其他第三方动态库。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/94a0deae5353395937a43616eee95a16_hu_83420d699b0c576f.webp 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/94a0deae5353395937a43616eee95a16_hu_de5e532c56a5564.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/94a0deae5353395937a43616eee95a16_hu_52e1c5fb7b493144.jpg 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/94a0deae5353395937a43616eee95a16_hu_4fad965b82e3d2e2.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/94a0deae5353395937a43616eee95a16_hu_4fad965b82e3d2e2.jpg" width="816" height="395" alt="94a0deae5353395937a43616eee95a16.png" title="94a0deae5353395937a43616eee95a16.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>如果用msys2的mingw64或者ucrt64工具链编译，编译器一般都是gfortran，编译出来的动态库文件最好用<code>ldd</code>扫描一遍，确保不会多出一堆第三方动态库依赖。</p>
+<p>使用STAR-CCM+加载，可以正常识别，编译语言显示是Fortran。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/0b88806c3af599036440e5a08e67ed9f_hu_f5d53fc6aa5e3429.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/0b88806c3af599036440e5a08e67ed9f_hu_e59ef6c3ba951a48.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/0b88806c3af599036440e5a08e67ed9f_hu_e95551f76a2e77f1.jpg" width="452" height="365" alt="0b88806c3af599036440e5a08e67ed9f.png" title="0b88806c3af599036440e5a08e67ed9f.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="3-linux下编译动态库">3. Linux下编译动态库</h2>
+<p>Linux下通过以下命令编译fortran动态链接库：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 进入项目目录</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> starccm_fortran_sample
+</span></span><span class="line"><span class="cl"><span class="c1"># 建立工作目录</span>
+</span></span><span class="line"><span class="cl">mkdir -p build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置编译文件，链接STAR-CCM+库</span>
+</span></span><span class="line"><span class="cl">cmake .. -G <span class="s2">&#34;Ninja&#34;</span> -DUSE_DOUBLE_PRECISION<span class="o">=</span>ON <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    -DSTARCCM_USER_LIB_DIR<span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    -DSTARCCM_STD_LIB_DIR<span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/system/gnu11.4-64
+</span></span><span class="line"><span class="cl"><span class="c1"># 编译动态库</span>
+</span></span><span class="line"><span class="cl">cmake --build . --config Release
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装</span>
+</span></span><span class="line"><span class="cl">cmake --install . --prefix <span class="nv">$PWD</span>/../../UserLib
+</span></span></code></pre></div><p>使用<code>ldd</code>扫描生成的动态库文件，没有其他第三方动态库依赖。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/cecf6280e648579161d7cc2b6317833e_hu_d5e04b71869fc106.webp 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/cecf6280e648579161d7cc2b6317833e_hu_3d75b70ea0bf8087.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/cecf6280e648579161d7cc2b6317833e_hu_a62595b9e0009692.jpg 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/cecf6280e648579161d7cc2b6317833e_hu_85cdcfddfa2609d9.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/cecf6280e648579161d7cc2b6317833e_hu_85cdcfddfa2609d9.jpg" width="811" height="308" alt="cecf6280e648579161d7cc2b6317833e.png" title="cecf6280e648579161d7cc2b6317833e.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>使用STAR-CCM+加载，可以正常识别。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/bba9eb9658b63cfbc3ff64c425b61d31_hu_688c169a134b0aa5.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/bba9eb9658b63cfbc3ff64c425b61d31_hu_4a5b52c58e9a0111.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/bba9eb9658b63cfbc3ff64c425b61d31_hu_906aa0dbb0486bb8.jpg" width="595" height="309" alt="bba9eb9658b63cfbc3ff64c425b61d31.png" title="bba9eb9658b63cfbc3ff64c425b61d31.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="4-计算案例演示">4. 计算案例演示</h2>
+<p>接下来用一个STAR-CCM+案例演示<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>下，看Fortran编写的用户程序能否载入STAR-CCM+正常计算。</p>
+<p>模拟充分发展的圆管层流，圆管长3米、直径0.2米，一端为进气口，另一端为出口。物性参数和入口条件如下所示：</p>
+<ul>
+<li>密度：1.0 kg/m^3</li>
+<li>粘度：2×10^-3 N-s/m^2</li>
+<li>管道层流入口充分发展满足下面的关系：<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mfrac><mi>u</mi><msub><mi>u</mi><mrow><mi>m</mi></mrow></msub></mfrac><mo>=</mo><mn>2</mn><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">[</mo><mn>1</mn><mo>−</mo><msup><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mfrac><mi>r</mi><msub><mi>r</mi><mrow><mn>0</mn></mrow></msub></mfrac><mo data-mjx-texclass="CLOSE">)</mo></mrow><mrow><mn>2</mn></mrow></msup><mo data-mjx-texclass="CLOSE">]</mo></mrow></math>
+其中：<code>um</code>表示入口的平均速度，<code>r0</code>表示管径</li>
+</ul>
+<p>建立一个二维轴对称模型。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/4c65248bf12f0d87d139602aa3a2f001_hu_7249062c0d215c4.webp 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/4c65248bf12f0d87d139602aa3a2f001_hu_1bd4cf71dab764be.webp 640w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/4c65248bf12f0d87d139602aa3a2f001_hu_fbbd3a520e38d98a.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/4c65248bf12f0d87d139602aa3a2f001_hu_f8bd88357d53f6a7.jpg 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/4c65248bf12f0d87d139602aa3a2f001_hu_1392fa773d5f3e7.jpg 640w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/4c65248bf12f0d87d139602aa3a2f001_hu_360c87d29422204b.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/4c65248bf12f0d87d139602aa3a2f001_hu_1392fa773d5f3e7.jpg" width="1275" height="426" alt="4c65248bf12f0d87d139602aa3a2f001.png" title="4c65248bf12f0d87d139602aa3a2f001.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>新建CMake项目，<code>CMakeLists.txt</code>文件基本和前面的内容一样，只改动下面部分：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmake" data-lang="cmake"><span class="line"><span class="cl"><span class="c"># Specify the source files
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">set</span><span class="p">(</span><span class="s">SOURCES</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">CMAKE_BINARY_DIR</span><span class="o">}</span><span class="s">/StarReal.f</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/parabolicVelocity.f90</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/uflib.f90</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span></code></pre></div><p>源码文件只有3个，其中<code>StarReal.f.in</code>内容和前面的一样。入口速度的实现在<code>parabolicVelocity.f</code>文件中，内容如下所示：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fortran" data-lang="fortran"><span class="line"><span class="cl"><span class="n">C</span><span class="w"> </span><span class="n">Initial</span><span class="w"> </span><span class="n">velocity</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">subroutine</span><span class="w"> </span><span class="n">parabolicVelocity</span><span class="p">(</span><span class="k">result</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">centroid</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="n">StarRealMod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">implicit</span><span class="w"> </span><span class="k">none</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">StarReal</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">size</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">centroid</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">integer</span><span class="w"> </span><span class="n">i</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">)</span><span class="w"> </span><span class="n">radius</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">real</span><span class="p">(</span><span class="n">CoordReal</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="o">/</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">C</span><span class="w"> </span><span class="n">Loop</span><span class="w"> </span><span class="n">through</span><span class="w"> </span><span class="k">all</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="n">applying</span><span class="w"> </span><span class="n">uniform</span><span class="w"> </span><span class="n">velocity</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">((</span><span class="n">centroid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="o">-</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">      </span><span class="p">(</span><span class="n">centroid</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">      </span><span class="p">(</span><span class="n">centroid</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">result</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">radius</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">radius</span><span class="o">/</span><span class="n">R</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w">
+</span></span></span></code></pre></div><p>注册函数所在的<code>uflib.f</code>文件内容如下所示：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fortran" data-lang="fortran"><span class="line"><span class="cl"><span class="w">      </span><span class="k">subroutine</span><span class="w"> </span><span class="n">uflib</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="n">StarRealMod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">implicit</span><span class="w"> </span><span class="k">none</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">external</span><span class="w"> </span><span class="n">parabolicVelocity</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">C</span><span class="w"> </span><span class="n">Register</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">functions</span><span class="w"> </span><span class="n">here</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">call</span><span class="w"> </span><span class="n">uffunc</span><span class="p">(</span><span class="n">parabolicVelocity</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;BoundaryProfile&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">  </span><span class="s2">&#34;Parabolic Velocity&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">call</span><span class="w"> </span><span class="n">ufarg</span><span class="p">(</span><span class="n">parabolicVelocity</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;Face&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="p">&amp;</span><span class="w">  </span><span class="s2">&#34;Centroid&#34;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="n">CoordRealSize</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">return</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">end</span><span class="w">
+</span></span></span></code></pre></div><p>Windows下使用msys2的clang64工具链编译，输出动态链接库文件。载入用户程序：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/ec5411259b3d66c42761db3c989c6fa5_hu_f0ec0ab8dec390da.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/ec5411259b3d66c42761db3c989c6fa5_hu_7a3534ae2471c0cd.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/ec5411259b3d66c42761db3c989c6fa5_hu_8989245d516632e.jpg" width="465" height="328" alt="ec5411259b3d66c42761db3c989c6fa5.png" title="ec5411259b3d66c42761db3c989c6fa5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>入口条件选择用户程序，函数选择上面定义的函数<code>parabolicVelocity</code>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/162175e3446101ba8aafd328238d0d8b_hu_eb7587dd51d015b3.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/162175e3446101ba8aafd328238d0d8b_hu_d2e27855ebfeb706.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/162175e3446101ba8aafd328238d0d8b_hu_910e515adee94750.jpg" width="464" height="436" alt="162175e3446101ba8aafd328238d0d8b.png" title="162175e3446101ba8aafd328238d0d8b.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>计算完成输出云图。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_69f70eaebe82b14f.webp 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_661dfce1c2dea989.webp 640w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_8d68e150bbd15640.webp 960w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_3419d512985c97c3.webp 1280w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_4302cb1c304a0f02.webp 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_5c274e88f6d33a59.jpg 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_98e8efff9ceff6db.jpg 640w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_d8346383fae935f9.jpg 960w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_bca16350723e77e8.jpg 1280w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_176c83adc708408e.jpg 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/8ff7c8cdc39780290aa5a6bb096f9660_hu_98e8efff9ceff6db.jpg" width="1789" height="370" alt="8ff7c8cdc39780290aa5a6bb096f9660.png" title="8ff7c8cdc39780290aa5a6bb096f9660.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>入口处速度分布。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/1148a61899713c5f9c7824fcdbb0dd01_hu_8f94012da4eda472.webp 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/1148a61899713c5f9c7824fcdbb0dd01_hu_87555b78dd78079e.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/1148a61899713c5f9c7824fcdbb0dd01_hu_4a5365ddf89ea7e1.jpg 320w, /post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/1148a61899713c5f9c7824fcdbb0dd01_hu_48ea9e49cfe85545.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/images/1148a61899713c5f9c7824fcdbb0dd01_hu_48ea9e49cfe85545.jpg" width="916" height="379" alt="1148a61899713c5f9c7824fcdbb0dd01.png" title="1148a61899713c5f9c7824fcdbb0dd01.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://www.topcfd.cn/Ebook/STARCCMP/GUID-9665BF40-46BC-44F0-95F9-7E20766E8109.html" target="_blank" rel="noopener">使用用户程序</a>
+&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://www.topcfd.cn/Ebook/STARCCMP/GUID-D7CE8E3A-522F-4966-BA1D-E96E7FB1E13C.html" target="_blank" rel="noopener">Fortran 用户接口参考</a>
+&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p><a href="https://www.cnblogs.com/liusuanyatong/p/12288458.html" target="_blank" rel="noopener">STAR-CCM+二次开发——User Code</a>
+&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

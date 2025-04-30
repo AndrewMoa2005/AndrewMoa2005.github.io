@@ -206,6 +206,177 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-04-18-use-vscode-debug-starccm-marco/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
+      alt="使用VSCode调试STAR-CCM&#43;宏" title="使用VSCode调试STAR-CCM&#43;宏"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-18-use-vscode-debug-starccm-marco/">使用VSCode调试STAR-CCM+宏</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>前面讲过STAR-CCM+宏文件的录制和编写，宏文件的本质就是java文件，因此可以用java编程的方法来对它进行开发和调试。如果涉及到复杂的业务场景，需要增加额外的功能，程序本身比较复杂，很难等到整个程序编写完成后再对它进行测试，免不了要在开发过程中进行调试。官方文档采用的开发工具是古早版本的<strong>NetBeans</strong>，很多功能已经发生变化，加之官方文档描述过于简略，大多数人阅读完后对于STAR-CCM+的调试过程还是一头雾水。<a href="https://code.visualstudio.com/" target="_blank" rel="noopener"><strong>VSCode</strong></a>
+作为新兴IDE的佼佼者，不仅可以通过拓展支持java编程，还可以通过<a href="https://copilot.microsoft.com/chats/Uz4t8yZbNmpyo1CVtqKWP" target="_blank" rel="noopener"><strong>copilot</strong></a>
+拓展集成强大的AI编程能力，本文便采用<strong>VSCode</strong>演示一下STAR-CCM+宏文件的调试过程。</p>
+<h2 id="1-vscode配置">1. VSCode配置</h2>
+<p>首先要在VSCode中安装支持java的拓展，至少要安装下面几个：</p>
+<ol>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=redhat.java" target="_blank" rel="noopener">Language Support for Java(TM) by Red Hat</a>
+</li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-debug" target="_blank" rel="noopener">Debugger for Java</a>
+</li>
+<li><a href="https://marketplace.visualstudio.com/items/?itemName=vscjava.vscode-java-dependency" target="_blank" rel="noopener">Project Manager for Java</a>
+</li>
+</ol>
+<p>也可以直接安装这个拓展包，一次性把所有需要用到的java拓展都装齐了：<a href="https://marketplace.visualstudio.com/items/?itemName=vscjava.vscode-java-pack" target="_blank" rel="noopener">Extension Pack for Java</a>
+</p>
+<p>下载一个JDK并安装，如果不想下载JDK的话，也可以在STAR-CCM+安装路径中找到安装包附带的JDK，把它添加到环境变量中。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/53d9d7c07aca055269657c5ccf18a81f_hu_66464b31202bedd7.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/53d9d7c07aca055269657c5ccf18a81f_hu_a4f183f8ac0477e5.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-18-use-vscode-debug-starccm-marco/images/53d9d7c07aca055269657c5ccf18a81f_hu_2fdea760d4c5b003.jpg" width="599" height="319" alt="53d9d7c07aca055269657c5ccf18a81f.png" title="53d9d7c07aca055269657c5ccf18a81f.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="2-建立java项目">2. 建立java项目</h2>
+<p>在VSCode命令面板(Ctrl+Shift+P)中输入<code>Java: Create Java Project</code>，创建一个新的java项目。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/56a3e9ec89aa1f165d0bbf43818f8843_hu_bc2e621cec9b37dc.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/56a3e9ec89aa1f165d0bbf43818f8843_hu_573cad721cfb9c83.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-18-use-vscode-debug-starccm-marco/images/56a3e9ec89aa1f165d0bbf43818f8843_hu_f5ff0202beaa910c.jpg" width="610" height="236" alt="56a3e9ec89aa1f165d0bbf43818f8843.png" title="56a3e9ec89aa1f165d0bbf43818f8843.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>项目类型选择<code>No build tools</code>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/e3fe06a5c9f45db8e2bb95dd2229afb3_hu_f184668ed4cc5821.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-18-use-vscode-debug-starccm-marco/images/e3fe06a5c9f45db8e2bb95dd2229afb3_hu_54ecd36aefa30f0.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-18-use-vscode-debug-starccm-marco/images/e3fe06a5c9f45db8e2bb95dd2229afb3_hu_c9ad229d45f22dd0.jpg" width="623" height="234" alt="e3fe06a5c9f45db8e2bb95dd2229afb3.png" title="e3fe06a5c9f45db8e2bb95dd2229afb3.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/java/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Java</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-18T00:00:00&#43;00:00">
+      2025-04-18
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-04-17-starccm-record-and-write-marco/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
@@ -584,176 +755,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
-      alt="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题" title="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。</p>
-<h2 id="1-smb版本问题">1. SMB版本问题</h2>
-<h3 id="11-smbv3">1.1 SMBv3</h3>
-<p>之前用cifs挂载共享文件夹的时候，没有仔细关注SMB协议的版本<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。以下命令行没有指定协议版本：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mount -t cifs //172.25.64.1/Share /home/dell/Share -o <span class="nv">uid</span><span class="o">=</span>xxx,gid<span class="o">=</span>xxx,username<span class="o">=</span>xxx
-</span></span></code></pre></div><p>用<code>mount</code>命令查看，默认连接协议是3.1版本：<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7f59520785b536ff.webp 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_c3e0b21dd523267.webp 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_deefcdc197cbc7d5.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_5e1a7f35f8d360c4.jpg 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7d40a59cff0ba191.jpg 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_228a05879a1e818f.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7d40a59cff0ba191.jpg" width="1141" height="59" alt="8eb0d44e21043275d3b1241235da9048.png" title="8eb0d44e21043275d3b1241235da9048.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>在3.1版本协议的挂载目录下运行Abaqus程序，无法计算，报错如下：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">mpirun: Warning one or more remote shell commands exited with non-zero status, which may indicate a remote access problem.
-</span></span><span class="line"><span class="cl">driverExceptions.AbaqusExecutionError: (&#39;SIMULIA Job Layout Engine&#39;, 255, &#39;abaqus_test&#39;)
-</span></span><span class="line"><span class="cl">!!!
-</span></span><span class="line"><span class="cl">!!! SIM wrap utility command error:
-</span></span><span class="line"><span class="cl">!!!   System Error open: 无效的参数
-</span></span><span class="line"><span class="cl">!!!
-</span></span><span class="line"><span class="cl">driverExceptions.AbaqusExecutionError: (&#39;SIM Wrap-up&#39;, 1, &#39;abaqus_test&#39;)
-</span></span></code></pre></div><p>在3.1版本协议的挂载目录下运行CFX求解器，无法计算，报错如下：</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/linux/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Linux
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/abaqus/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Abaqus</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/cfx/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cfx</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/ubuntu/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ubuntu</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-04-15T00:00:00&#43;00:00">
-      2025-04-15
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -892,16 +893,16 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/ubuntu/"
+      <a href="/zh-cn/tags/star-ccm&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Ubuntu
+        Star-Ccm&#43;
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/star-ccm&#43;/"
+      <a href="/zh-cn/tags/ubuntu/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Star-Ccm&#43;
+        Ubuntu
       </a>
     </li>
     

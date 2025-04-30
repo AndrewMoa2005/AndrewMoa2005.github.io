@@ -202,6 +202,159 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-03-24-ubuntu24.04-samba-serve/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Ubuntu24.04搭建Samba服务器" title="Ubuntu24.04搭建Samba服务器"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-24-ubuntu24.04-samba-serve/">Ubuntu24.04搭建Samba服务器</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>由于Ubuntu运行在虚拟机中，通过Ubuntu挂载Windows共享文件夹，在挂载点中运行某些CAE软件会出现计算报错。考虑将Ubuntu文件夹共享给Windows，因此需要在Ubuntu系统上搭建Samba服务器。</p>
+<p>首先在Ubuntu上安装samba软件包：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install samba -y
+</span></span></code></pre></div><p>创建共享文件夹：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/LinuxShare
+</span></span></code></pre></div><p>编辑Samba配置文件<code>/etc/samba/smb.conf</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo vim /etc/samba/smb.conf
+</span></span></code></pre></div><p>在文件末尾增加以下内容，保存退出：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Text" data-lang="Text"><span class="line"><span class="cl">[Ubuntu_Share] # 在客户端上显示的共享文件夹的名称
+</span></span><span class="line"><span class="cl">    comment = Samba	# 注释，展示给用户看的
+</span></span><span class="line"><span class="cl">    path = /home/***/LinuxShare	# 共享文件夹的本地路径，填写绝对路径
+</span></span><span class="line"><span class="cl">    public = yes	# 是否允许匿名用户访问
+</span></span><span class="line"><span class="cl">    writable = yes	# 是否允许用户编辑
+</span></span><span class="line"><span class="cl">    available = yes	# 是否可用
+</span></span><span class="line"><span class="cl">    browseable = yes	# 是否可以在网络上浏览
+</span></span><span class="line"><span class="cl">    valid users = user	# 填写Ubuntu登录用户名	
+</span></span></code></pre></div><p>给Samba用户设置密码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo smbpasswd -a user
+</span></span></code></pre></div><p>启动Samba服务的守护进程：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> smbd
+</span></span><span class="line"><span class="cl">sudo systemctl start smbd
+</span></span></code></pre></div><p>查询Samba服务状态：</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-24T00:00:00&#43;00:00">
+      2025-03-24
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-03-21-hyperv-switch-static-ip-address/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/hyperv-bg.png"
@@ -581,192 +734,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-20-ubuntu-install-slurm/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
-      alt="Ubuntu安装Slurm" title="Ubuntu安装Slurm"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-20-ubuntu-install-slurm/">Ubuntu安装Slurm</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>Slurm，和PBS、LSF一样，超算上常用的任务管理系统。Slurm优点是开源免费、活跃度很高，近几年国内新兴的超算平台几乎都提供了Slurm作为主要的任务管理系统。PBS开源后活跃度低得可怜，更新到最新系统后安装一直出问题，提了issue也不见答复。LSF有版权风险，国内应用也不多，属于很少见的类型。至于命令和脚本，这三家都大差不差，学会了其中一家另外的也是手到擒来。</p>
-<p>Ubuntu安装Slurm还是十分简单的，重要的工具基本都编译好了，直接apt安装即可，其他依赖项会自动安装：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install slurmd	<span class="c1"># 安装计算节点守护进程</span>
-</span></span><span class="line"><span class="cl">sudo apt install slurmctld <span class="c1"># 安装管理节点守护进程</span>
-</span></span></code></pre></div><p>Slurm需要有一个专门的用户用于通信等操作，这个用户的默认用户名是<code>slurm</code>，上面的命令其实已经自动在Ubuntu中生成了<code>slurm</code>用户，可以通过下面的命令验证：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">lastlog <span class="p">|</span> grep slurm
-</span></span></code></pre></div><p>如果Ubuntu没有生成<code>slurm</code>用户，可以用以下命令生成：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo useradd slurm
-</span></span></code></pre></div><p>Slurm配置文件主要在 <code>/etc/slurm/</code> 目录下，主配置文件：<code>/etc/slurm/slurm.conf</code>，我们需要生成配置文件。官方提供了辅助生成配置文件的工具：<a href="https://slurm.schedmd.com/configurator.html" target="_blank" rel="noopener">Slurm Configuration Tool</a>
- 。</p>
-<p>根据网页内容提示，填写配置文件其中一些关键部分：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nv">ClusterName</span><span class="o">=</span>Cluster <span class="c1"># 集群命名，任意英文和数字组合</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nv">SlurmctldHost</span><span class="o">=</span>dell-vm <span class="c1"># 管理节点，这里填本机名称</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>dell-vm <span class="c1"># 计算节点，同样填本机名称</span>
-</span></span><span class="line"><span class="cl"><span class="nv">PartitionName</span><span class="o">=</span>debug <span class="c1"># 计算节点所在分区，默认为debug</span>
-</span></span><span class="line"><span class="cl"><span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="c1"># 计算节点CPU核心数，根据实际情况填写</span>
-</span></span><span class="line"><span class="cl"><span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="c1"># CPU插槽数，根据实际情况填写</span>
-</span></span><span class="line"><span class="cl">CoresPerSocket＝32 <span class="c1"># 每插槽核心数，根据实际情况填写</span>
-</span></span><span class="line"><span class="cl"><span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="c1"># 每核心线程数，建议为1，不建议打开超线程</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nv">SlurmUser</span><span class="o">=</span>slurm <span class="c1"># 默认为slurm用户，不建议改成root用户</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nv">StateSaveLocation</span><span class="o">=</span>/var/spool/slurmctld <span class="c1"># 管理节点守护进程的存储文件夹，默认即可</span>
-</span></span><span class="line"><span class="cl"><span class="nv">SlurmdSpoolDir</span><span class="o">=</span>/var/spool/slurmd <span class="c1"># 计算点守护进程的存储文件夹，默认即可</span>
-</span></span></code></pre></div><p>更多解释可以参考中科大网站上的信息。<sup>(1)</p>
-<p>网页内容填写完成后点击最下面的<code>Submit</code>，把显示的配置文件模板拷贝下来，存到<code>/etc/slurm/slurm.conf</code>文件中：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo vim /etc/slurm/slurm.conf	<span class="c1"># 复制粘贴到这个文件里</span>
-</span></span></code></pre></div><p>生成守护进程的读写文件夹：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo mkdir /var/spool/slurmd <span class="c1"># Ubuntu下提示文件夹已存在，无视它</span>
-</span></span><span class="line"><span class="cl">sudo mkdir /var/spool/slurmctld
-</span></span></code></pre></div><p>启动Slurm的服务：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> slurmd
-</span></span><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> slurmctld
-</span></span><span class="line"><span class="cl">sudo systemctl start slurmd
-</span></span><span class="line"><span class="cl">sudo systemctl start slurmctld
-</span></span></code></pre></div><p>查看Slurm守护进程的启动状态：</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/linux/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Linux
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/linux/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Linux</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/slurm/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Slurm</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/ubuntu/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ubuntu</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-20T00:00:00&#43;00:00">
-      2025-03-20
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -905,16 +872,16 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/ubuntu/"
+      <a href="/zh-cn/tags/star-ccm&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Ubuntu
+        Star-Ccm&#43;
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/star-ccm&#43;/"
+      <a href="/zh-cn/tags/ubuntu/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Star-Ccm&#43;
+        Ubuntu
       </a>
     </li>
     

@@ -377,7 +377,10 @@ cd starccm_coolprop
 # Create a working directory
 mkdir -p build && cd build
 # Configure the compilation file and link to the CoolProp dynamic library
-cmake .. -G "Ninja" -DUSE_DOUBLE_PRECISION=ON -DCOOLPROP_LIB_DIR=${HOME}/Share/code/CoolPropLib/static_library/Linux/64bit_GNU_13.3.0 -DCOOLPROP_SRC_DIR=${HOME}/Share/code/CoolProp -DSTARCCM_LIB_DIR=${HOME}/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib
+cmake .. -G "Ninja" -DUSE_DOUBLE_PRECISION=ON \
+    -DCOOLPROP_LIB_DIR=${HOME}/Share/code/CoolPropLib/static_library/Linux/64bit_GNU_13.3.0 \
+    -DCOOLPROP_SRC_DIR=${HOME}/Share/code/CoolProp \
+    -DSTARCCM_LIB_DIR=${HOME}/opt/Siemens/19.06.009-R8/STAR-CCM+19.06.009-R8/star/lib/linux-x86_64-2.28/gnu11.4-r8/lib
 # Compile dynamic library
 cmake --build . --config Release
 # Install

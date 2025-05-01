@@ -271,7 +271,7 @@ cmake --install . --prefix $PWD/../../UserLib
  - 粘度：2×10^-3 N-s/m^2
  - 管道层流入口充分发展满足下面的关系：
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mfrac><mi>u</mi><msub><mi>u</mi><mrow><mi>m</mi></mrow></msub></mfrac><mo>=</mo><mn>2</mn><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">[</mo><mn>1</mn><mo>−</mo><msup><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mfrac><mi>r</mi><msub><mi>r</mi><mrow><mn>0</mn></mrow></msub></mfrac><mo data-mjx-texclass="CLOSE">)</mo></mrow><mrow><mn>2</mn></mrow></msup><mo data-mjx-texclass="CLOSE">]</mo></mrow></math>
-   其中：`um`表示入口的平均速度，`r0`表示管径
+   其中： *u<sub>m</sub>* 表示入口的平均速度， *r<sub>0</sub>* 表示管径
 
 建立一个二维轴对称模型。
 ![4c65248bf12f0d87d139602aa3a2f001.png](./images/4c65248bf12f0d87d139602aa3a2f001.png)

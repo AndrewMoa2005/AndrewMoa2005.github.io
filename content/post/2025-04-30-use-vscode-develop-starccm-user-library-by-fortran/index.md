@@ -271,7 +271,7 @@ The fully developed laminar flow in a circular tube is simulated. The circular t
  - Viscosity: 2×10^-3 N-s/m^2
  - The laminar flow inlet of the duct is fully developed to satisfy the following relationship:
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mfrac><mi>u</mi><msub><mi>u</mi><mrow><mi>m</mi></mrow></msub></mfrac><mo>=</mo><mn>2</mn><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">[</mo><mn>1</mn><mo>−</mo><msup><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mfrac><mi>r</mi><msub><mi>r</mi><mrow><mn>0</mn></mrow></msub></mfrac><mo data-mjx-texclass="CLOSE">)</mo></mrow><mrow><mn>2</mn></mrow></msup><mo data-mjx-texclass="CLOSE">]</mo></mrow></math>
-   Where: `um` represents the average velocity at the inlet, `r0` represents the pipe diameter
+   Where: *u<sub>m</sub>* represents the average velocity at the inlet, *r<sub>0</sub>* represents the pipe diameter
 
 Create a 2D axisymmetric model.
 ![4c65248bf12f0d87d139602aa3a2f001.png](./images/4c65248bf12f0d87d139602aa3a2f001.png)

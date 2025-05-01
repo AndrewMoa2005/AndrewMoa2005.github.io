@@ -281,8 +281,8 @@ Create a new CMake project. The `CMakeLists.txt` file is basically the same as t
 # Specify the source files
 set(SOURCES
     ${CMAKE_BINARY_DIR}/StarReal.f
-    src/parabolicVelocity.f90
-    src/uflib.f90
+    src/parabolicVelocity.f
+    src/uflib.f
 )
 ```
 

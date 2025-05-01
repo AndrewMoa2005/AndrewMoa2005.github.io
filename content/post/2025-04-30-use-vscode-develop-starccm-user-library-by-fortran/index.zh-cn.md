@@ -281,8 +281,8 @@ cmake --install . --prefix $PWD/../../UserLib
 # Specify the source files
 set(SOURCES
     ${CMAKE_BINARY_DIR}/StarReal.f
-    src/parabolicVelocity.f90
-    src/uflib.f90
+    src/parabolicVelocity.f
+    src/uflib.f
 )
 ```
 

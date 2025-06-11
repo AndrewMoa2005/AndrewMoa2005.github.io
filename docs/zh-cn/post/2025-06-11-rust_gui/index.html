@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>Rust图形界面库初探 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="最近打算用rust把以前写的代码重构一下，涉及到GUI界面怎么选择的问题。rust正式发布不过十年光景，在GUI开发这方面还不如老牌的C/C&#43;&#43;，有诸如wxWidgets、qt、gtk&#43;等众多知名又久经考验的GUI界面库。本文选取几款rust的GUI库，简单实现一个边界层计算器，做个横向对比。
+1. slint slint 近期的宣传不可谓不卖力，号称要打造成下一代gui工具包，看来野心不小。slint通过自定义的声明式语言定义ui界面，在vscode下编程可以通过插件预览，也可以通过官方的slintpad 网站预览。
+cargo配置文件如下，slint-build用于将.slint界面文件翻译成.rs文件。
+[package] name = &#34;sLayers-rs&#34; version = &#34;0.1.0&#34; edition = &#34;2024&#34; [dependencies] slint = &#34;1.8.0&#34; [build-dependencies] slint-build = &#34;1.8.0&#34; [profile.release] strip = true opt-level = &#34;z&#34; lto = true codegen-units = 1 panic = &#34;abort&#34; ui界面文件dialog.slint。slint可以把需要调用的参数定义到ui界面中，并自动隐式生成set_和get_方法用于在rs文件中设置这些参数的值。同样的，界面中定义的回调函数也会自动隐式生成on_方法，用于在rs文件中调用。需要注意的是，在rs中更新了ui界面中的参数，关联的控件并不会自动更新显示，需要手动更新控件显示。
+import { Button, LineEdit, SpinBox, CheckBox, GridBox, VerticalBox } from &#34;std-widgets.slint&#34;; export component Dialog inherits Window { title: &#34;Layers&#34;; in-out property &lt;string&gt; tt: &#34;3.0&#34;; in-out property &lt;int&gt; nl: 5; in-out property &lt;string&gt; ft: &#34;0.3&#34;; in-out property &lt;string&gt; gr: &#34;1.5&#34;; callback calculate_first_thickness(); callback calculate_num_layers(); callback calculate_growth_rate(); callback calculate_total_thickness(); callback calculate_value(); VerticalBox { Text { text: &#34;Calculate fluid boundary layer parameters.\nCalculate the selected parameters based on the others.&#34;; } GridBox { Row { b_t := CheckBox { text: &#34;Total thickness (mm)&#34;; checked: true; enabled: !self.checked; toggled() =&gt; { if self.checked { b_n.checked = false; b_f.checked = false; b_g.checked = false; } } } e_t := LineEdit { text: root.tt; input-type: decimal; read-only: b_t.checked; } } Row { b_n := CheckBox { text: &#34;Number of layers&#34;; checked: false; enabled: !self.checked; toggled() =&gt; { if self.checked { b_t.checked = false; b_f.checked = false; b_g.checked = false; } } } e_n := SpinBox { value: root.nl; minimum: 1; } } Row { b_f := CheckBox { text: &#34;First thickness (mm)&#34;; checked: false; enabled: !self.checked; toggled() =&gt; { if self.checked { b_n.checked = false; b_t.checked = false; b_g.checked = false; } } } e_f := LineEdit { text: root.ft; input-type: decimal; read-only: b_f.checked; } } Row { b_g := CheckBox { text: &#34;Growth rate&#34;; checked: false; enabled: !self.checked; toggled() =&gt; { if self.checked { b_n.checked = false; b_f.checked = false; b_t.checked = false; } } } e_g := LineEdit { text: root.gr; input-type: decimal; read-only: b_g.checked; } } } Button { text: &#34;Calculate&#34;; clicked =&gt; { root.tt = e_t.text; root.nl = e_n.value; root.ft = e_f.text; root.gr = e_g.text; if b_t.checked { root.calculate_total_thickness(); } else if b_n.checked { root.calculate_num_layers(); } else if b_f.checked { root.calculate_first_thickness(); } else if b_g.checked { root.calculate_growth_rate(); } e_t.text = root.tt; e_g.text = root.gr; e_f.text = root.ft; e_n.value = root.nl; } } } } build.rs构建脚本调用slint-build将.slint文件翻译成.rs文件。
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2025-06-11-rust_gui/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Rust图形界面库初探">
+  <meta property="og:description" content="最近打算用rust把以前写的代码重构一下，涉及到GUI界面怎么选择的问题。rust正式发布不过十年光景，在GUI开发这方面还不如老牌的C/C&#43;&#43;，有诸如wxWidgets、qt、gtk&#43;等众多知名又久经考验的GUI界面库。本文选取几款rust的GUI库，简单实现一个边界层计算器，做个横向对比。
+1. slint slint 近期的宣传不可谓不卖力，号称要打造成下一代gui工具包，看来野心不小。slint通过自定义的声明式语言定义ui界面，在vscode下编程可以通过插件预览，也可以通过官方的slintpad 网站预览。
+cargo配置文件如下，slint-build用于将.slint界面文件翻译成.rs文件。
+[package] name = &#34;sLayers-rs&#34; version = &#34;0.1.0&#34; edition = &#34;2024&#34; [dependencies] slint = &#34;1.8.0&#34; [build-dependencies] slint-build = &#34;1.8.0&#34; [profile.release] strip = true opt-level = &#34;z&#34; lto = true codegen-units = 1 panic = &#34;abort&#34; ui界面文件dialog.slint。slint可以把需要调用的参数定义到ui界面中，并自动隐式生成set_和get_方法用于在rs文件中设置这些参数的值。同样的，界面中定义的回调函数也会自动隐式生成on_方法，用于在rs文件中调用。需要注意的是，在rs中更新了ui界面中的参数，关联的控件并不会自动更新显示，需要手动更新控件显示。
+import { Button, LineEdit, SpinBox, CheckBox, GridBox, VerticalBox } from &#34;std-widgets.slint&#34;; export component Dialog inherits Window { title: &#34;Layers&#34;; in-out property &lt;string&gt; tt: &#34;3.0&#34;; in-out property &lt;int&gt; nl: 5; in-out property &lt;string&gt; ft: &#34;0.3&#34;; in-out property &lt;string&gt; gr: &#34;1.5&#34;; callback calculate_first_thickness(); callback calculate_num_layers(); callback calculate_growth_rate(); callback calculate_total_thickness(); callback calculate_value(); VerticalBox { Text { text: &#34;Calculate fluid boundary layer parameters.\nCalculate the selected parameters based on the others.&#34;; } GridBox { Row { b_t := CheckBox { text: &#34;Total thickness (mm)&#34;; checked: true; enabled: !self.checked; toggled() =&gt; { if self.checked { b_n.checked = false; b_f.checked = false; b_g.checked = false; } } } e_t := LineEdit { text: root.tt; input-type: decimal; read-only: b_t.checked; } } Row { b_n := CheckBox { text: &#34;Number of layers&#34;; checked: false; enabled: !self.checked; toggled() =&gt; { if self.checked { b_t.checked = false; b_f.checked = false; b_g.checked = false; } } } e_n := SpinBox { value: root.nl; minimum: 1; } } Row { b_f := CheckBox { text: &#34;First thickness (mm)&#34;; checked: false; enabled: !self.checked; toggled() =&gt; { if self.checked { b_n.checked = false; b_t.checked = false; b_g.checked = false; } } } e_f := LineEdit { text: root.ft; input-type: decimal; read-only: b_f.checked; } } Row { b_g := CheckBox { text: &#34;Growth rate&#34;; checked: false; enabled: !self.checked; toggled() =&gt; { if self.checked { b_n.checked = false; b_f.checked = false; b_t.checked = false; } } } e_g := LineEdit { text: root.gr; input-type: decimal; read-only: b_g.checked; } } } Button { text: &#34;Calculate&#34;; clicked =&gt; { root.tt = e_t.text; root.nl = e_n.value; root.ft = e_f.text; root.gr = e_g.text; if b_t.checked { root.calculate_total_thickness(); } else if b_n.checked { root.calculate_num_layers(); } else if b_f.checked { root.calculate_first_thickness(); } else if b_g.checked { root.calculate_growth_rate(); } e_t.text = root.tt; e_g.text = root.gr; e_f.text = root.ft; e_n.value = root.nl; } } } } build.rs构建脚本调用slint-build将.slint文件翻译成.rs文件。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-06-11T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-06-11T00:00:00+00:00">
+    <meta property="article:tag" content="Rust">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Rust图形界面库初探">
+  <meta name="twitter:description" content="最近打算用rust把以前写的代码重构一下，涉及到GUI界面怎么选择的问题。rust正式发布不过十年光景，在GUI开发这方面还不如老牌的C/C&#43;&#43;，有诸如wxWidgets、qt、gtk&#43;等众多知名又久经考验的GUI界面库。本文选取几款rust的GUI库，简单实现一个边界层计算器，做个横向对比。
+1. slint slint 近期的宣传不可谓不卖力，号称要打造成下一代gui工具包，看来野心不小。slint通过自定义的声明式语言定义ui界面，在vscode下编程可以通过插件预览，也可以通过官方的slintpad 网站预览。
+cargo配置文件如下，slint-build用于将.slint界面文件翻译成.rs文件。
+[package] name = &#34;sLayers-rs&#34; version = &#34;0.1.0&#34; edition = &#34;2024&#34; [dependencies] slint = &#34;1.8.0&#34; [build-dependencies] slint-build = &#34;1.8.0&#34; [profile.release] strip = true opt-level = &#34;z&#34; lto = true codegen-units = 1 panic = &#34;abort&#34; ui界面文件dialog.slint。slint可以把需要调用的参数定义到ui界面中，并自动隐式生成set_和get_方法用于在rs文件中设置这些参数的值。同样的，界面中定义的回调函数也会自动隐式生成on_方法，用于在rs文件中调用。需要注意的是，在rs中更新了ui界面中的参数，关联的控件并不会自动更新显示，需要手动更新控件显示。
+import { Button, LineEdit, SpinBox, CheckBox, GridBox, VerticalBox } from &#34;std-widgets.slint&#34;; export component Dialog inherits Window { title: &#34;Layers&#34;; in-out property &lt;string&gt; tt: &#34;3.0&#34;; in-out property &lt;int&gt; nl: 5; in-out property &lt;string&gt; ft: &#34;0.3&#34;; in-out property &lt;string&gt; gr: &#34;1.5&#34;; callback calculate_first_thickness(); callback calculate_num_layers(); callback calculate_growth_rate(); callback calculate_total_thickness(); callback calculate_value(); VerticalBox { Text { text: &#34;Calculate fluid boundary layer parameters.\nCalculate the selected parameters based on the others.&#34;; } GridBox { Row { b_t := CheckBox { text: &#34;Total thickness (mm)&#34;; checked: true; enabled: !self.checked; toggled() =&gt; { if self.checked { b_n.checked = false; b_f.checked = false; b_g.checked = false; } } } e_t := LineEdit { text: root.tt; input-type: decimal; read-only: b_t.checked; } } Row { b_n := CheckBox { text: &#34;Number of layers&#34;; checked: false; enabled: !self.checked; toggled() =&gt; { if self.checked { b_t.checked = false; b_f.checked = false; b_g.checked = false; } } } e_n := SpinBox { value: root.nl; minimum: 1; } } Row { b_f := CheckBox { text: &#34;First thickness (mm)&#34;; checked: false; enabled: !self.checked; toggled() =&gt; { if self.checked { b_n.checked = false; b_t.checked = false; b_g.checked = false; } } } e_f := LineEdit { text: root.ft; input-type: decimal; read-only: b_f.checked; } } Row { b_g := CheckBox { text: &#34;Growth rate&#34;; checked: false; enabled: !self.checked; toggled() =&gt; { if self.checked { b_n.checked = false; b_f.checked = false; b_t.checked = false; } } } e_g := LineEdit { text: root.gr; input-type: decimal; read-only: b_g.checked; } } } Button { text: &#34;Calculate&#34;; clicked =&gt; { root.tt = e_t.text; root.nl = e_n.value; root.ft = e_f.text; root.gr = e_g.text; if b_t.checked { root.calculate_total_thickness(); } else if b_n.checked { root.calculate_num_layers(); } else if b_f.checked { root.calculate_first_thickness(); } else if b_g.checked { root.calculate_growth_rate(); } e_t.text = root.tt; e_g.text = root.gr; e_f.text = root.ft; e_n.value = root.nl; } } } } build.rs构建脚本调用slint-build将.slint文件翻译成.rs文件。">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2025-06-11-rust_gui/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-06-11T00:00:00Z","datePublished":"2025-06-11T00:00:00Z","description":"最近打算用rust把以前写的代码重构一下，涉及到GUI界面怎么选择的问题。rust正式发布不过十年光景，在GUI开发这方面还不如老牌的C/C++，有诸如wxWidgets、qt、gtk+等众多知名又久经考验的GUI界面库。本文选取几款rust的GUI库，简单实现一个边界层计算器，做个横向对比。\n1. slint slint 近期的宣传不可谓不卖力，号称要打造成下一代gui工具包，看来野心不小。slint通过自定义的声明式语言定义ui界面，在vscode下编程可以通过插件预览，也可以通过官方的slintpad 网站预览。\ncargo配置文件如下，slint-build用于将.slint界面文件翻译成.rs文件。\n[package] name = \u0026#34;sLayers-rs\u0026#34; version = \u0026#34;0.1.0\u0026#34; edition = \u0026#34;2024\u0026#34; [dependencies] slint = \u0026#34;1.8.0\u0026#34; [build-dependencies] slint-build = \u0026#34;1.8.0\u0026#34; [profile.release] strip = true opt-level = \u0026#34;z\u0026#34; lto = true codegen-units = 1 panic = \u0026#34;abort\u0026#34; ui界面文件dialog.slint。slint可以把需要调用的参数定义到ui界面中，并自动隐式生成set_和get_方法用于在rs文件中设置这些参数的值。同样的，界面中定义的回调函数也会自动隐式生成on_方法，用于在rs文件中调用。需要注意的是，在rs中更新了ui界面中的参数，关联的控件并不会自动更新显示，需要手动更新控件显示。\nimport { Button, LineEdit, SpinBox, CheckBox, GridBox, VerticalBox } from \u0026#34;std-widgets.slint\u0026#34;; export component Dialog inherits Window { title: \u0026#34;Layers\u0026#34;; in-out property \u0026lt;string\u0026gt; tt: \u0026#34;3.0\u0026#34;; in-out property \u0026lt;int\u0026gt; nl: 5; in-out property \u0026lt;string\u0026gt; ft: \u0026#34;0.3\u0026#34;; in-out property \u0026lt;string\u0026gt; gr: \u0026#34;1.5\u0026#34;; callback calculate_first_thickness(); callback calculate_num_layers(); callback calculate_growth_rate(); callback calculate_total_thickness(); callback calculate_value(); VerticalBox { Text { text: \u0026#34;Calculate fluid boundary layer parameters.\\nCalculate the selected parameters based on the others.\u0026#34;; } GridBox { Row { b_t := CheckBox { text: \u0026#34;Total thickness (mm)\u0026#34;; checked: true; enabled: !self.checked; toggled() =\u0026gt; { if self.checked { b_n.checked = false; b_f.checked = false; b_g.checked = false; } } } e_t := LineEdit { text: root.tt; input-type: decimal; read-only: b_t.checked; } } Row { b_n := CheckBox { text: \u0026#34;Number of layers\u0026#34;; checked: false; enabled: !self.checked; toggled() =\u0026gt; { if self.checked { b_t.checked = false; b_f.checked = false; b_g.checked = false; } } } e_n := SpinBox { value: root.nl; minimum: 1; } } Row { b_f := CheckBox { text: \u0026#34;First thickness (mm)\u0026#34;; checked: false; enabled: !self.checked; toggled() =\u0026gt; { if self.checked { b_n.checked = false; b_t.checked = false; b_g.checked = false; } } } e_f := LineEdit { text: root.ft; input-type: decimal; read-only: b_f.checked; } } Row { b_g := CheckBox { text: \u0026#34;Growth rate\u0026#34;; checked: false; enabled: !self.checked; toggled() =\u0026gt; { if self.checked { b_n.checked = false; b_f.checked = false; b_t.checked = false; } } } e_g := LineEdit { text: root.gr; input-type: decimal; read-only: b_g.checked; } } } Button { text: \u0026#34;Calculate\u0026#34;; clicked =\u0026gt; { root.tt = e_t.text; root.nl = e_n.value; root.ft = e_f.text; root.gr = e_g.text; if b_t.checked { root.calculate_total_thickness(); } else if b_n.checked { root.calculate_num_layers(); } else if b_f.checked { root.calculate_first_thickness(); } else if b_g.checked { root.calculate_growth_rate(); } e_t.text = root.tt; e_g.text = root.gr; e_f.text = root.ft; e_n.value = root.nl; } } } } build.rs构建脚本调用slint-build将.slint文件翻译成.rs文件。\n","image":"/images/code-bg.jpg","name":"Rust图形界面库初探","url":"https://andrewmoa.site/zh-cn/post/2025-06-11-rust_gui/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2025-06-11-rust_gui/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2025-06-11-rust_gui/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="Rust图形界面库初探" title="Rust图形界面库初探"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2025-06-11-rust_gui/">Rust图形界面库初探</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/rust/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Rust</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-06-11T00:00:00&#43;00:00">
+      2025-06-11
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长9分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-slint">1. slint</a></li>
+    <li><a href="#2-egui">2. egui</a></li>
+    <li><a href="#3-fltk-rs">3. fltk-rs</a></li>
+    <li><a href="#4-对比和总结">4. 对比和总结</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>最近打算用rust把以前写的代码重构一下，涉及到GUI界面怎么选择的问题。rust正式发布不过十年光景，在GUI开发这方面还不如老牌的C/C++，有诸如wxWidgets、qt、gtk+等众多知名又久经考验的GUI界面库。本文选取几款rust的GUI库，简单实现一个边界层计算器，做个横向对比。</p>
+<h2 id="1-slint">1. slint</h2>
+<p><a href="https://slint.dev/" target="_blank" rel="noopener">slint</a>
+近期的宣传不可谓不卖力，号称要打造成下一代gui工具包，看来野心不小。slint通过自定义的声明式语言定义ui界面，在vscode下编程可以通过插件预览，也可以通过官方的<a href="https://slintpad.com/" target="_blank" rel="noopener">slintpad</a>
+网站预览。</p>
+<p>cargo配置文件如下，<code>slint-build</code>用于将<code>.slint</code>界面文件翻译成<code>.rs</code>文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="p">[</span><span class="nx">package</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;sLayers-rs&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">version</span> <span class="p">=</span> <span class="s2">&#34;0.1.0&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">edition</span> <span class="p">=</span> <span class="s2">&#34;2024&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">dependencies</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">slint</span> <span class="p">=</span> <span class="s2">&#34;1.8.0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">build-dependencies</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">slint-build</span> <span class="p">=</span> <span class="s2">&#34;1.8.0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">profile</span><span class="p">.</span><span class="nx">release</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">strip</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">opt-level</span> <span class="p">=</span> <span class="s2">&#34;z&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">lto</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">codegen-units</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">panic</span> <span class="p">=</span> <span class="s2">&#34;abort&#34;</span>
+</span></span></code></pre></div><p>ui界面文件<code>dialog.slint</code>。slint可以把需要调用的参数定义到ui界面中，并自动隐式生成<code>set_</code>和<code>get_</code>方法用于在rs文件中设置这些参数的值。同样的，界面中定义的回调函数也会自动隐式生成<code>on_</code>方法，用于在rs文件中调用。需要注意的是，在rs中更新了ui界面中的参数，关联的控件并不会自动更新显示，需要手动更新控件显示。</p>
+<pre tabindex="0"><code>import { Button, LineEdit, SpinBox, CheckBox, GridBox, VerticalBox } from &#34;std-widgets.slint&#34;;
+
+export component Dialog inherits Window {
+    title: &#34;Layers&#34;;
+    in-out property &lt;string&gt; tt: &#34;3.0&#34;;
+    in-out property &lt;int&gt; nl: 5;
+    in-out property &lt;string&gt; ft: &#34;0.3&#34;;
+    in-out property &lt;string&gt; gr: &#34;1.5&#34;;
+    callback calculate_first_thickness();
+    callback calculate_num_layers();
+    callback calculate_growth_rate();
+    callback calculate_total_thickness();
+
+    callback calculate_value();
+    VerticalBox {
+        Text {
+            text: &#34;Calculate fluid boundary layer parameters.\nCalculate the selected parameters based on the others.&#34;;
+        }
+
+        GridBox {
+            Row {
+                b_t := CheckBox {
+                    text: &#34;Total thickness (mm)&#34;;
+                    checked: true;
+                    enabled: !self.checked;
+                    toggled() =&gt; {
+                        if self.checked {
+                            b_n.checked = false;
+                            b_f.checked = false;
+                            b_g.checked = false;
+                        }
+                    }
+                }
+
+                e_t := LineEdit {
+                    text: root.tt;
+                    input-type: decimal;
+                    read-only: b_t.checked;
+                }
+            }
+
+            Row {
+                b_n := CheckBox {
+                    text: &#34;Number of layers&#34;;
+                    checked: false;
+                    enabled: !self.checked;
+                    toggled() =&gt; {
+                        if self.checked {
+                            b_t.checked = false;
+                            b_f.checked = false;
+                            b_g.checked = false;
+                        }
+                    }
+                }
+
+                e_n := SpinBox {
+                    value: root.nl;
+                    minimum: 1;
+                }
+            }
+
+            Row {
+                b_f := CheckBox {
+                    text: &#34;First thickness (mm)&#34;;
+                    checked: false;
+                    enabled: !self.checked;
+                    toggled() =&gt; {
+                        if self.checked {
+                            b_n.checked = false;
+                            b_t.checked = false;
+                            b_g.checked = false;
+                        }
+                    }
+                }
+
+                e_f := LineEdit {
+                    text: root.ft;
+                    input-type: decimal;
+                    read-only: b_f.checked;
+                }
+            }
+
+            Row {
+                b_g := CheckBox {
+                    text: &#34;Growth rate&#34;;
+                    checked: false;
+                    enabled: !self.checked;
+                    toggled() =&gt; {
+                        if self.checked {
+                            b_n.checked = false;
+                            b_f.checked = false;
+                            b_t.checked = false;
+                        }
+                    }
+                }
+
+                e_g := LineEdit {
+                    text: root.gr;
+                    input-type: decimal;
+                    read-only: b_g.checked;
+                }
+            }
+        }
+
+        Button {
+            text: &#34;Calculate&#34;;
+            clicked =&gt; {
+                root.tt = e_t.text;
+                root.nl = e_n.value;
+                root.ft = e_f.text;
+                root.gr = e_g.text;
+                if b_t.checked {
+                    root.calculate_total_thickness();
+                } else if b_n.checked {
+                    root.calculate_num_layers();
+                } else if b_f.checked {
+                    root.calculate_first_thickness();
+                } else if b_g.checked {
+                    root.calculate_growth_rate();
+                }
+                e_t.text = root.tt;
+                e_g.text = root.gr;
+                e_f.text = root.ft;
+                e_n.value = root.nl;
+            }
+        }
+    }
+}
+</code></pre><p><code>build.rs</code>构建脚本调用<code>slint-build</code>将<code>.slint</code>文件翻译成<code>.rs</code>文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">slint_build</span>::<span class="n">compile</span><span class="p">(</span><span class="s">&#34;ui/dialog.slint&#34;</span><span class="p">).</span><span class="n">expect</span><span class="p">(</span><span class="s">&#34;Slint build failed&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>main.rs</code>文件，包含边界层计算的算法实现，通过回调函数更新ui界面参数。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="c1">// Prevent console window in addition to Slint window in Windows release builds when, e.g., starting the app via file manager. Ignored on other platforms.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#![cfg_attr(not(debug_assertions), windows_subsystem = </span><span class="s">&#34;windows&#34;</span><span class="cp">)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">slint</span>::<span class="n">SharedString</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">error</span>::<span class="n">Error</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">slint</span>::<span class="fm">include_modules!</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Dialog</span>::<span class="n">new</span><span class="p">()</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ui</span><span class="p">.</span><span class="n">on_calculate_total_thickness</span><span class="p">({</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">ui_handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">as_weak</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui_handle</span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_nl</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_ft</span><span class="p">().</span><span class="n">to_string</span><span class="p">().</span><span class="n">parse</span>::<span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_gr</span><span class="p">().</span><span class="n">to_string</span><span class="p">().</span><span class="n">parse</span>::<span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="n">n</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">set_tt</span><span class="p">(</span><span class="n">SharedString</span>::<span class="n">from</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">to_string</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ui</span><span class="p">.</span><span class="n">on_calculate_first_thickness</span><span class="p">({</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">ui_handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">as_weak</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui_handle</span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_nl</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_tt</span><span class="p">().</span><span class="n">to_string</span><span class="p">().</span><span class="n">parse</span>::<span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_gr</span><span class="p">().</span><span class="n">to_string</span><span class="p">().</span><span class="n">parse</span>::<span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">fi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">f64</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span>: <span class="kt">f64</span> <span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="n">n</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="p">).</span><span class="n">abs</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-6</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">fi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fi</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.01</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">set_ft</span><span class="p">(</span><span class="n">SharedString</span>::<span class="n">from</span><span class="p">(</span><span class="n">fi</span><span class="p">.</span><span class="n">to_string</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ui</span><span class="p">.</span><span class="n">on_calculate_growth_rate</span><span class="p">({</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">ui_handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">as_weak</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui_handle</span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_nl</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_tt</span><span class="p">().</span><span class="n">to_string</span><span class="p">().</span><span class="n">parse</span>::<span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_ft</span><span class="p">().</span><span class="n">to_string</span><span class="p">().</span><span class="n">parse</span>::<span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">gi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="p">).</span><span class="n">abs</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1e-6</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">gi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gi</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.01</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="n">n</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gi</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">set_gr</span><span class="p">(</span><span class="n">SharedString</span>::<span class="n">from</span><span class="p">(</span><span class="n">gi</span><span class="p">.</span><span class="n">to_string</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ui</span><span class="p">.</span><span class="n">on_calculate_num_layers</span><span class="p">({</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">ui_handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">as_weak</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui_handle</span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">f</span>: <span class="kt">f64</span> <span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_ft</span><span class="p">().</span><span class="n">to_string</span><span class="p">().</span><span class="n">parse</span>::<span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_tt</span><span class="p">().</span><span class="n">to_string</span><span class="p">().</span><span class="n">parse</span>::<span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">get_gr</span><span class="p">().</span><span class="n">to_string</span><span class="p">().</span><span class="n">parse</span>::<span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">set_nl</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ui</span><span class="p">.</span><span class="n">run</span><span class="p">()</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>最终界面效果如下。根据系统主题颜色不同，显示界面颜色也会有所改变。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-11-rust_gui/images/1b70da90fef17365fb750b2c198bc253_hu_5e4ab8579b9f19b5.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-11-rust_gui/images/1b70da90fef17365fb750b2c198bc253_hu_1699b0bb753d9827.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-11-rust_gui/images/1b70da90fef17365fb750b2c198bc253_hu_809c9224971c657d.jpg" width="528" height="433" alt="1b70da90fef17365fb750b2c198bc253.png" title="1b70da90fef17365fb750b2c198bc253.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>生成的release二进制包大小3MB左右。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-11-rust_gui/images/f8870059bf17821b08e01bbed36ea4c9_hu_f5a22b386f4a8f76.webp 320w, /post/2025-06-11-rust_gui/images/f8870059bf17821b08e01bbed36ea4c9_hu_279bceb30da2a5bf.webp 640w, /post/2025-06-11-rust_gui/images/f8870059bf17821b08e01bbed36ea4c9_hu_45b13e8b4ecf327d.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-11-rust_gui/images/f8870059bf17821b08e01bbed36ea4c9_hu_1852a226adc96479.jpg 320w, /post/2025-06-11-rust_gui/images/f8870059bf17821b08e01bbed36ea4c9_hu_8836da29784d42e0.jpg 640w, /post/2025-06-11-rust_gui/images/f8870059bf17821b08e01bbed36ea4c9_hu_3234bc504f89c877.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-11-rust_gui/images/f8870059bf17821b08e01bbed36ea4c9_hu_8836da29784d42e0.jpg" width="1065" height="439" alt="f8870059bf17821b08e01bbed36ea4c9.png" title="f8870059bf17821b08e01bbed36ea4c9.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>运行内存在110MB左右。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-11-rust_gui/images/763bd7c85fb135fca0ae622bb7d88bf7_hu_399dc11895401c7f.webp 320w, /post/2025-06-11-rust_gui/images/763bd7c85fb135fca0ae622bb7d88bf7_hu_defbf555380951d8.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-11-rust_gui/images/763bd7c85fb135fca0ae622bb7d88bf7_hu_99349dc5315aeb63.jpg 320w, /post/2025-06-11-rust_gui/images/763bd7c85fb135fca0ae622bb7d88bf7_hu_fa183ae68676e39f.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-11-rust_gui/images/763bd7c85fb135fca0ae622bb7d88bf7_hu_fa183ae68676e39f.jpg" width="950" height="117" alt="763bd7c85fb135fca0ae622bb7d88bf7.png" title="763bd7c85fb135fca0ae622bb7d88bf7.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>优点：</p>
+<ul>
+<li>通过声明式语言实现ui界面，甚至可以把一些简单的计算逻辑包含在<code>.slint</code>文件中。</li>
+<li>rust原生界面，没有unsafe操作。</li>
+<li>支持跨平台跨设备编译，也支持手机和嵌入式开发。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>不支持多窗口和文件拖放功能，也不支持文件对话框和消息对话框。</li>
+<li>不能调用窗口句柄，也没有提供相关操作方法。</li>
+<li>不支持事件控制，对窗口和控件的操作缺乏更细粒度的支持。</li>
+</ul>
+<h2 id="2-egui">2. egui</h2>
+<p><a href="https://crates.io/crates/egui" target="_blank" rel="noopener">egui</a>
+属于<a href="https://crates.io/crates/eframe" target="_blank" rel="noopener">eframe</a>
+的一部分，目标是打造简单快速又易用的GUI库。eframe是一个跨平台的应用开发框架，支持Windows、Linus、MacOS及Android等多平台应用开发。egui不光支持本地应用开发，甚至可以将代码编译成wasm在浏览器中运行。</p>
+<p>cargo配置文件如下，这里的依赖主要是<code>eframe</code>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="p">[</span><span class="nx">package</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;eLayers-rs&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">version</span> <span class="p">=</span> <span class="s2">&#34;0.1.0&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">edition</span> <span class="p">=</span> <span class="s2">&#34;2024&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">dependencies</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">eframe</span> <span class="p">=</span> <span class="s2">&#34;0.31.1&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">profile</span><span class="p">.</span><span class="nx">release</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">strip</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">opt-level</span> <span class="p">=</span> <span class="s2">&#34;z&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">lto</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">codegen-units</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">panic</span> <span class="p">=</span> <span class="s2">&#34;abort&#34;</span>
+</span></span></code></pre></div><p><code>main.rs</code>文件，ui入口包含在eframe的app结构体中。控件组装和按钮的回调函数都是通过闭包实现的。好处是控件和参数关联实时更新，不需要手动更新控件显示。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#![cfg_attr(not(debug_assertions), windows_subsystem = </span><span class="s">&#34;windows&#34;</span><span class="cp">)]</span><span class="w"> </span><span class="c1">// hide console window on Windows in release
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">eframe</span>::<span class="n">egui</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">eframe</span>::<span class="nb">Result</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eframe</span>::<span class="n">NativeOptions</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">viewport</span>: <span class="nc">egui</span>::<span class="n">ViewportBuilder</span>::<span class="n">default</span><span class="p">().</span><span class="n">with_inner_size</span><span class="p">([</span><span class="mf">320.0</span><span class="p">,</span><span class="w"> </span><span class="mf">240.0</span><span class="p">]),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="o">..</span><span class="nb">Default</span>::<span class="n">default</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">eframe</span>::<span class="n">run_native</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s">&#34;Layers&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">options</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nb">Box</span>::<span class="n">new</span><span class="p">(</span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// This gives us image support:
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">            </span><span class="nb">Ok</span><span class="p">(</span><span class="nb">Box</span>::<span class="o">&lt;</span><span class="n">LayersApp</span><span class="o">&gt;</span>::<span class="n">default</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#[derive(PartialEq)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">enum</span> <span class="nc">Flags</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Total</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">First</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Number</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Growth</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">struct</span> <span class="nc">LayersApp</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">tt</span>: <span class="kt">f64</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ft</span>: <span class="kt">f64</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">gr</span>: <span class="kt">f64</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">nl</span>: <span class="kt">i32</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">checked</span>: <span class="nc">Flags</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="nb">Default</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">LayersApp</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">fn</span> <span class="nf">default</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="bp">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">tt</span>: <span class="mf">3.0</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ft</span>: <span class="mf">0.3</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">gr</span>: <span class="mf">1.5</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">nl</span>: <span class="mi">5</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">checked</span>: <span class="nc">Flags</span>::<span class="n">Total</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">eframe</span>::<span class="n">App</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">LayersApp</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">fn</span> <span class="nf">update</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span>: <span class="kp">&amp;</span><span class="nc">egui</span>::<span class="n">Context</span><span class="p">,</span><span class="w"> </span><span class="n">_frame</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">eframe</span>::<span class="n">Frame</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">egui</span>::<span class="n">CentralPanel</span>::<span class="n">default</span><span class="p">().</span><span class="n">show</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">|</span><span class="n">ui</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">heading</span><span class="p">(</span><span class="s">&#34;Layers&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">label</span><span class="p">(</span><span class="s">&#34;Calculate fluid boundary layer parameters.</span><span class="se">\n</span><span class="s">Calculate the selected parameters based on the others.&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">vertical</span><span class="p">(</span><span class="o">|</span><span class="n">ui</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">egui</span>::<span class="n">Grid</span>::<span class="n">new</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="n">num_columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="n">striped</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="n">show</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span><span class="w"> </span><span class="o">|</span><span class="n">ui</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">radio_value</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">checked</span><span class="p">,</span><span class="w"> </span><span class="n">Flags</span>::<span class="n">Total</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;Total thickness (mm)&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">egui</span>::<span class="n">DragValue</span>::<span class="n">new</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">tt</span><span class="p">).</span><span class="n">max_decimals</span><span class="p">(</span><span class="mi">6</span><span class="p">).</span><span class="n">speed</span><span class="p">(</span><span class="mf">0.1</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">end_row</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">radio_value</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">checked</span><span class="p">,</span><span class="w"> </span><span class="n">Flags</span>::<span class="n">Number</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;Number of layers&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">egui</span>::<span class="n">DragValue</span>::<span class="n">new</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">nl</span><span class="p">).</span><span class="n">speed</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">end_row</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">radio_value</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">checked</span><span class="p">,</span><span class="w"> </span><span class="n">Flags</span>::<span class="n">First</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;First thickness (mm)&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">egui</span>::<span class="n">DragValue</span>::<span class="n">new</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">ft</span><span class="p">).</span><span class="n">max_decimals</span><span class="p">(</span><span class="mi">6</span><span class="p">).</span><span class="n">speed</span><span class="p">(</span><span class="mf">0.1</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">end_row</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">radio_value</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">checked</span><span class="p">,</span><span class="w"> </span><span class="n">Flags</span>::<span class="n">Growth</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;Growth rate&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">egui</span>::<span class="n">DragValue</span>::<span class="n">new</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">gr</span><span class="p">).</span><span class="n">max_decimals</span><span class="p">(</span><span class="mi">6</span><span class="p">).</span><span class="n">speed</span><span class="p">(</span><span class="mf">0.1</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ui</span><span class="p">.</span><span class="n">end_row</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">button</span><span class="p">(</span><span class="s">&#34;Calculate&#34;</span><span class="p">).</span><span class="n">clicked</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">checked</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">Flags</span>::<span class="n">Total</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="bp">self</span><span class="p">.</span><span class="n">nl</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">ft</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">gr</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="bp">self</span><span class="p">.</span><span class="n">tt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">Flags</span>::<span class="n">Number</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">ft</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">gr</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="k">if</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">tt</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="bp">self</span><span class="p">.</span><span class="n">nl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">Flags</span>::<span class="n">First</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">tt</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">nl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">f64</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span>: <span class="kt">f64</span> <span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="bp">self</span><span class="p">.</span><span class="n">nl</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">gr</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">tt</span><span class="p">).</span><span class="n">abs</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-6</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">tt</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.01</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="bp">self</span><span class="p">.</span><span class="n">ft</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">Flags</span>::<span class="n">Growth</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">ft</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">tt</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">tt</span><span class="p">).</span><span class="n">abs</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1e-6</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">tt</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.01</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="bp">self</span><span class="p">.</span><span class="n">nl</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">ft</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="bp">self</span><span class="p">.</span><span class="n">gr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>界面效果如下，和传统的ui界面相比，egui所呈现的风格更类似于网页前端。这里截图显示的系统是浅色主题，如果系统是深色主题，界面背景色会以深色显示。界面偶尔会出现闪烁的情况，因为控件显示和参数关联，可能和界面刷新频率太高有关。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-11-rust_gui/images/8ac3c745c3c5702b1ca18f9bf8cf6171_hu_7e4872de00899988.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-11-rust_gui/images/8ac3c745c3c5702b1ca18f9bf8cf6171_hu_676cbed564bfa90e.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-11-rust_gui/images/8ac3c745c3c5702b1ca18f9bf8cf6171_hu_16c9ce10dd51c89.jpg" width="484" height="407" alt="8ac3c745c3c5702b1ca18f9bf8cf6171.png" title="8ac3c745c3c5702b1ca18f9bf8cf6171.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>生成的release二进制包大小不到3MB。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-11-rust_gui/images/a727d25a314a80bd71ee0391644ccff3_hu_3e0b43847a35b9f1.webp 320w, /post/2025-06-11-rust_gui/images/a727d25a314a80bd71ee0391644ccff3_hu_f3851c33de3fde74.webp 640w, /post/2025-06-11-rust_gui/images/a727d25a314a80bd71ee0391644ccff3_hu_703bcd5403de6d1c.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-11-rust_gui/images/a727d25a314a80bd71ee0391644ccff3_hu_bf1650cda4860b49.jpg 320w, /post/2025-06-11-rust_gui/images/a727d25a314a80bd71ee0391644ccff3_hu_807d72b08451b11b.jpg 640w, /post/2025-06-11-rust_gui/images/a727d25a314a80bd71ee0391644ccff3_hu_4998be6f418701e6.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-11-rust_gui/images/a727d25a314a80bd71ee0391644ccff3_hu_807d72b08451b11b.jpg" width="1051" height="442" alt="a727d25a314a80bd71ee0391644ccff3.png" title="a727d25a314a80bd71ee0391644ccff3.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>运行内存在110MB左右。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-11-rust_gui/images/cb89bf15c974cdee0f3683c77c67d26d_hu_7926122ca57c09df.webp 320w, /post/2025-06-11-rust_gui/images/cb89bf15c974cdee0f3683c77c67d26d_hu_d6aadbd8b4b546dc.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-11-rust_gui/images/cb89bf15c974cdee0f3683c77c67d26d_hu_aa70ac3fa0806816.jpg 320w, /post/2025-06-11-rust_gui/images/cb89bf15c974cdee0f3683c77c67d26d_hu_4fd87b6d9cafa714.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-11-rust_gui/images/cb89bf15c974cdee0f3683c77c67d26d_hu_4fd87b6d9cafa714.jpg" width="808" height="67" alt="cb89bf15c974cdee0f3683c77c67d26d.png" title="cb89bf15c974cdee0f3683c77c67d26d.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>优点：</p>
+<ul>
+<li>支持Web和Native应用开发。</li>
+<li>rust原生，没有unsafe操作。</li>
+<li>支持跨平台。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>没有ui工具，无法快速预览ui界面，没有实现界面和实现方法的分离。</li>
+<li>不能调用窗口句柄，也不支持事件控制。</li>
+<li>开发中，api还不稳定，随时都有可能出现重大调整。</li>
+</ul>
+<h2 id="3-fltk-rs">3. fltk-rs</h2>
+<p><a href="https://www.fltk.org/" target="_blank" rel="noopener">fltk</a>
+原本是C++开发的一个轻量级的GUI库，<a href="https://fltk-rs.github.io/fltk-rs/" target="_blank" rel="noopener">fltk-rs</a>
+是fltk的rust绑定，底层还是通过C++实现的。fltk的界面实现十分简陋，控件组装都是通过较为原始的坐标进行操作，不支持自动排列组合。虽然提供了丰富的控件，但原生主题效果都是类似于<a href="https://en.wikipedia.org/wiki/Motif_%28software%29" target="_blank" rel="noopener">Motif</a>
+的极简风，和现代ui界面差距甚远。不过好在<a href="https://crates.io/crates/fltk-theme" target="_blank" rel="noopener">fltk-theme</a>
+提供了丰富的界面主题用于美化，用户可以在此基础上定制自己的主题风格。</p>
+<p>cargo配置文件如下。这里fltk通过<code>&quot;fltk-bundled&quot;</code>特征下载编译好的lib文件，避免重新编译fltk报错。fltk-rs可以使用fltk提供的界面工具<code>fluid</code>进行ui界面的快速开发和预览，rust下通过<code>fl2rust</code>将<code>fluid</code>生成的<code>.fl</code>文件翻译成<code>.rs</code>文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="p">[</span><span class="nx">package</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;fLayers-rs&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">version</span> <span class="p">=</span> <span class="s2">&#34;0.1.0&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">edition</span> <span class="p">=</span> <span class="s2">&#34;2024&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">dependencies</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fltk</span> <span class="p">=</span> <span class="p">{</span> <span class="nx">version</span> <span class="p">=</span> <span class="s2">&#34;1.5.9&#34;</span><span class="p">,</span> <span class="nx">features</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;fltk-bundled&#34;</span><span class="p">]</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">build-dependencies</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fl2rust</span> <span class="p">=</span> <span class="s2">&#34;0.7.0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">profile</span><span class="p">.</span><span class="nx">release</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">strip</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">opt-level</span> <span class="p">=</span> <span class="s2">&#34;z&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">lto</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">codegen-units</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">panic</span> <span class="p">=</span> <span class="s2">&#34;abort&#34;</span>
+</span></span></code></pre></div><p>ui文件<code>widget.fl</code>，通过<code>fluid</code>生成的，尽量避免手动编辑。</p>
+<pre tabindex="0"><code># data file for the Fltk User Interface Designer (fluid)
+version 1.0403
+header_name {.h}
+code_name {.cxx}
+class Widget {open
+} {
+  Function {make_window()} {open
+  } {
+    Fl_Window window {
+      label Layers open
+      xywh {668 341 360 200} type Double visible
+    } {
+      Fl_Group {} {
+        label {Calculate fluid boundary layer parameters.} open
+        xywh {0 20 360 5} align 5
+      } {}
+      Fl_Group {} {
+        label {Calculate the selected parameters based on the others.} open
+        xywh {0 40 360 5} align 5
+      } {}
+      Fl_Round_Button rb_tt {
+        label {Total thickness (mm)}
+        xywh {0 50 170 25} down_box ROUND_DOWN_BOX value 1
+      }
+      Fl_Value_Input vi_tt {
+        xywh {180 50 170 25} maximum 1e+06 step 0.1 value 3
+      }
+      Fl_Round_Button rb_nl {
+        label {Number of layers}
+        xywh {0 80 170 25} down_box ROUND_DOWN_BOX
+      }
+      Fl_Value_Input vi_nl {
+        xywh {180 80 170 25} maximum 1e+06 step 1 value 5
+      }
+      Fl_Round_Button rb_ft {
+        label {First thickness (mm)}
+        xywh {0 110 170 25} down_box ROUND_DOWN_BOX
+      }
+      Fl_Value_Input vi_ft {
+        xywh {180 110 170 25} maximum 1e+06 step 0.1 value 0.3
+      }
+      Fl_Round_Button rb_gr {
+        label {Growth rate}
+        xywh {0 140 170 25} down_box ROUND_DOWN_BOX
+      }
+      Fl_Value_Input vi_gr {selected
+        xywh {180 140 170 25} maximum 1e+06 step 0.1 value 1.5
+      }
+      Fl_Button bn_calc {
+        label Calculate
+        xywh {10 170 340 22}
+      }
+    }
+  }
+}
+</code></pre><p><code>build.rs</code>构建脚本，告诉<code>fl2rust</code>怎么把ui界面翻译成rs文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="c1">// build.rs
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">env</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">path</span>::<span class="n">PathBuf</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;cargo:rerun-if-changed=ui/widget.fl&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fl2rust</span>::<span class="n">Generator</span>::<span class="n">default</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">out_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PathBuf</span>::<span class="n">from</span><span class="p">(</span><span class="n">env</span>::<span class="n">var</span><span class="p">(</span><span class="s">&#34;OUT_DIR&#34;</span><span class="p">).</span><span class="n">unwrap</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">g</span><span class="p">.</span><span class="n">in_out</span><span class="p">(</span><span class="s">&#34;ui/widget.fl&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">out_path</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#34;widget.rs&#34;</span><span class="p">).</span><span class="n">to_str</span><span class="p">().</span><span class="n">unwrap</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&#34;Failed to generate rust from fl file!&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>main.rs</code>文件，通过闭包实现控件刷新及按钮功能。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="c1">// src/main.rs
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Prevent console window
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#![cfg_attr(not(debug_assertions), windows_subsystem = </span><span class="s">&#34;windows&#34;</span><span class="cp">)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#![allow(unused_variables)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#![allow(unused_mut)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#![allow(unused_imports)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="cp">#![allow(clippy::needless_update)]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">fltk</span>::<span class="p">{</span><span class="n">prelude</span>::<span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="fm">include!</span><span class="p">(</span><span class="fm">concat!</span><span class="p">(</span><span class="fm">env!</span><span class="p">(</span><span class="s">&#34;OUT_DIR&#34;</span><span class="p">),</span><span class="w"> </span><span class="s">&#34;/widget.rs&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span>::<span class="n">App</span>::<span class="n">default</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">show_window</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">app</span><span class="p">.</span><span class="n">run</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">fn</span> <span class="nf">show_window</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">win</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span>::<span class="n">make_window</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">deactivate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">win</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">set_callback</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">deactivate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_gr</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_gr</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">win</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">set_callback</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">deactivate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_gr</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_gr</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">win</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">set_callback</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">deactivate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_gr</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_gr</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">win</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">rb_gr</span><span class="p">.</span><span class="n">set_callback</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_gr</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_gr</span><span class="p">.</span><span class="n">deactivate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">activate</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">vi_tt</span><span class="p">.</span><span class="n">set_precision</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">vi_ft</span><span class="p">.</span><span class="n">set_precision</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">vi_nl</span><span class="p">.</span><span class="n">set_precision</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">vi_gr</span><span class="p">.</span><span class="n">set_precision</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">win</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">win</span><span class="p">.</span><span class="n">bn_calc</span><span class="p">.</span><span class="n">set_callback</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">tt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">vi_tt</span><span class="p">.</span><span class="n">value</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">ft</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">vi_ft</span><span class="p">.</span><span class="n">value</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">nl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">vi_nl</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">i32</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">gr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">vi_gr</span><span class="p">.</span><span class="n">value</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_tt</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="n">nl</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ft</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gr</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">vi_tt</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">v</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_ft</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tt</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">nl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">f64</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span>: <span class="kt">f64</span> <span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="n">nl</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gr</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tt</span><span class="p">).</span><span class="n">abs</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-6</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tt</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.01</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">vi_ft</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">f</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="n">rb_nl</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ft</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gr</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">tt</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">vi_nl</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">f64</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">gi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ft</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">tt</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tt</span><span class="p">).</span><span class="n">abs</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1e-6</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">gi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gi</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tt</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.01</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="n">nl</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ft</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gi</span><span class="p">.</span><span class="n">powi</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ui</span><span class="p">.</span><span class="n">vi_gr</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">gi</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">})</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>界面效果如下。界面配色是固定的，不会随着系统主题变化而改变。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-11-rust_gui/images/ba7b5b0127bfaa54c4e441c6a73daf89_hu_816d030384a91694.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-11-rust_gui/images/ba7b5b0127bfaa54c4e441c6a73daf89_hu_124e953d766cb49f.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-11-rust_gui/images/ba7b5b0127bfaa54c4e441c6a73daf89_hu_febea23894d7ccd8.jpg" width="544" height="347" alt="ba7b5b0127bfaa54c4e441c6a73daf89.png" title="ba7b5b0127bfaa54c4e441c6a73daf89.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>生成的release二进制包只有600多KB大小。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-11-rust_gui/images/f71dd31b3f7554ef1db2c1a0cd6ecf04_hu_cebe4d0d90b1335e.webp 320w, /post/2025-06-11-rust_gui/images/f71dd31b3f7554ef1db2c1a0cd6ecf04_hu_3c2598c24c2fdc23.webp 640w, /post/2025-06-11-rust_gui/images/f71dd31b3f7554ef1db2c1a0cd6ecf04_hu_3eb082f1776cfa0d.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-11-rust_gui/images/f71dd31b3f7554ef1db2c1a0cd6ecf04_hu_9d8d87154dc37e09.jpg 320w, /post/2025-06-11-rust_gui/images/f71dd31b3f7554ef1db2c1a0cd6ecf04_hu_4705567133c458a8.jpg 640w, /post/2025-06-11-rust_gui/images/f71dd31b3f7554ef1db2c1a0cd6ecf04_hu_12b7d8c903070283.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-11-rust_gui/images/f71dd31b3f7554ef1db2c1a0cd6ecf04_hu_4705567133c458a8.jpg" width="1074" height="432" alt="f71dd31b3f7554ef1db2c1a0cd6ecf04.png" title="f71dd31b3f7554ef1db2c1a0cd6ecf04.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>运行内存不到20MB。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-11-rust_gui/images/94a494cb14abc3efa2913395026da38b_hu_f0debe8b301987b7.webp 320w, /post/2025-06-11-rust_gui/images/94a494cb14abc3efa2913395026da38b_hu_cb90e0acfb301ca7.webp 640w, /post/2025-06-11-rust_gui/images/94a494cb14abc3efa2913395026da38b_hu_efe72c605564d615.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-11-rust_gui/images/94a494cb14abc3efa2913395026da38b_hu_9ffba76303c1f504.jpg 320w, /post/2025-06-11-rust_gui/images/94a494cb14abc3efa2913395026da38b_hu_4f7ddab9d6595aa1.jpg 640w, /post/2025-06-11-rust_gui/images/94a494cb14abc3efa2913395026da38b_hu_599b4420fc1485db.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-11-rust_gui/images/94a494cb14abc3efa2913395026da38b_hu_4f7ddab9d6595aa1.jpg" width="966" height="62" alt="94a494cb14abc3efa2913395026da38b.png" title="94a494cb14abc3efa2913395026da38b.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>优点：</p>
+<ul>
+<li>api较为成熟，提供了简单的事件控制功能，支持提取窗口句柄。</li>
+<li>提供了ui工具，可以快速开发和预览界面，支持界面和实现分离。</li>
+<li>支持跨平台。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>原生界面主题风格太老，不适合现代ui风格。</li>
+<li>底层通过C++实现，非rust原生，包含许多unsafe操作。</li>
+<li>控件排列组合方式较为原始，没有自动排列控件的组装器。</li>
+</ul>
+<h2 id="4-对比和总结">4. 对比和总结</h2>
+<p>slint和egui基本可以算得上rust原生GUI，两者内存消耗、生成的二进制包大小基本在同一量级，不过两者ui实现方式和界面效果大相径庭。生态上slint要比egui完善，有ui工具，而且支持界面和实现分离，代价是slint的依赖也更多，构建过程耗时也更长。和传统的C++界面库相比，两者共同的问题是太新功能太少，不支持对显示内容进行更细粒度的控制。像窗口句柄和文件拖放等，虽然有很多办法可以绕开ui库的功能限制来实现，但无形中也增加了学习成本，对开发者来说增加了额外的负担。</p>
+<p>fltk-rs在内存消耗和二进制发布包大小上优于前两者，但底层依赖于C++，不可避免地会用到很多unsafe操作。fltk的发展历程远早于前两者，因此api功能更加完善，对于刚从C/C++转到rust的开发者来说不失为一个好的选择。正是由于fltk的历史比较久远，原生界面风格比较古老，不太符合现代审美风格。而且fltk的控件排列组合方式较为原始，好在有ui工具加持，开发效率算不上太糟糕。</p>
+<p>简而言之：</p>
+<ul>
+<li>从C/C++代码转向rust重构，不追求华丽和现代的界面效果，适合采用fltk-rs</li>
+<li>对应用窗口和事件控制有更多要求的，对应用程序资源控制敏感的，适合采用fltk-rs</li>
+<li>需要兼顾Web和Native应用开发，适合采用egui</li>
+<li>完全采用rust从头开发，追求跨平台和嵌入式功能的，适合采用slint</li>
+</ul>
+<p>至于其他rust的界面库，像Tauri、gtk-rs、CXX-qt等，暂时想不出有什么特别的优势，只能说有缘再会吧。</p>
+<hr>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

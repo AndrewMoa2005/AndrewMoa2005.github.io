@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" dir="ltr">
 <head>
-	<meta name="generator" content="Hugo 0.147.0">
+	<meta name="generator" content="Hugo 0.147.7">
   <title>Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -203,6 +203,272 @@
   <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
     <div class="flex flex-row">
       <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-06-11-rust_gui/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="Rust图形界面库初探" title="Rust图形界面库初探"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-06-11-rust_gui/">Rust图形界面库初探</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>最近打算用rust把以前写的代码重构一下，涉及到GUI界面怎么选择的问题。rust正式发布不过十年光景，在GUI开发这方面还不如老牌的C/C++，有诸如wxWidgets、qt、gtk+等众多知名又久经考验的GUI界面库。本文选取几款rust的GUI库，简单实现一个边界层计算器，做个横向对比。</p>
+<h2 id="1-slint">1. slint</h2>
+<p><a href="https://slint.dev/" target="_blank" rel="noopener">slint</a>
+近期的宣传不可谓不卖力，号称要打造成下一代gui工具包，看来野心不小。slint通过自定义的声明式语言定义ui界面，在vscode下编程可以通过插件预览，也可以通过官方的<a href="https://slintpad.com/" target="_blank" rel="noopener">slintpad</a>
+网站预览。</p>
+<p>cargo配置文件如下，<code>slint-build</code>用于将<code>.slint</code>界面文件翻译成<code>.rs</code>文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="p">[</span><span class="nx">package</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;sLayers-rs&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">version</span> <span class="p">=</span> <span class="s2">&#34;0.1.0&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">edition</span> <span class="p">=</span> <span class="s2">&#34;2024&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">dependencies</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">slint</span> <span class="p">=</span> <span class="s2">&#34;1.8.0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">build-dependencies</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">slint-build</span> <span class="p">=</span> <span class="s2">&#34;1.8.0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">profile</span><span class="p">.</span><span class="nx">release</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">strip</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">opt-level</span> <span class="p">=</span> <span class="s2">&#34;z&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">lto</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">codegen-units</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">panic</span> <span class="p">=</span> <span class="s2">&#34;abort&#34;</span>
+</span></span></code></pre></div><p>ui界面文件<code>dialog.slint</code>。slint可以把需要调用的参数定义到ui界面中，并自动隐式生成<code>set_</code>和<code>get_</code>方法用于在rs文件中设置这些参数的值。同样的，界面中定义的回调函数也会自动隐式生成<code>on_</code>方法，用于在rs文件中调用。需要注意的是，在rs中更新了ui界面中的参数，关联的控件并不会自动更新显示，需要手动更新控件显示。</p>
+<pre tabindex="0"><code>import { Button, LineEdit, SpinBox, CheckBox, GridBox, VerticalBox } from &#34;std-widgets.slint&#34;;
+<p>export component Dialog inherits Window {
+title: &quot;Layers&quot;;
+in-out property &lt;string&gt; tt: &quot;3.0&quot;;
+in-out property &lt;int&gt; nl: 5;
+in-out property &lt;string&gt; ft: &quot;0.3&quot;;
+in-out property &lt;string&gt; gr: &quot;1.5&quot;;
+callback calculate_first_thickness();
+callback calculate_num_layers();
+callback calculate_growth_rate();
+callback calculate_total_thickness();</p>
+<pre><code>callback calculate_value();
+VerticalBox {
+    Text {
+        text: &amp;#34;Calculate fluid boundary layer parameters.\nCalculate the selected parameters based on the others.&amp;#34;;
+    }
+
+    GridBox {
+        Row {
+            b_t := CheckBox {
+                text: &amp;#34;Total thickness (mm)&amp;#34;;
+                checked: true;
+                enabled: !self.checked;
+                toggled() =&amp;gt; {
+                    if self.checked {
+                        b_n.checked = false;
+                        b_f.checked = false;
+                        b_g.checked = false;
+                    }
+                }
+            }
+
+            e_t := LineEdit {
+                text: root.tt;
+                input-type: decimal;
+                read-only: b_t.checked;
+            }
+        }
+
+        Row {
+            b_n := CheckBox {
+                text: &amp;#34;Number of layers&amp;#34;;
+                checked: false;
+                enabled: !self.checked;
+                toggled() =&amp;gt; {
+                    if self.checked {
+                        b_t.checked = false;
+                        b_f.checked = false;
+                        b_g.checked = false;
+                    }
+                }
+            }
+
+            e_n := SpinBox {
+                value: root.nl;
+                minimum: 1;
+            }
+        }
+
+        Row {
+            b_f := CheckBox {
+                text: &amp;#34;First thickness (mm)&amp;#34;;
+                checked: false;
+                enabled: !self.checked;
+                toggled() =&amp;gt; {
+                    if self.checked {
+                        b_n.checked = false;
+                        b_t.checked = false;
+                        b_g.checked = false;
+                    }
+                }
+            }
+
+            e_f := LineEdit {
+                text: root.ft;
+                input-type: decimal;
+                read-only: b_f.checked;
+            }
+        }
+
+        Row {
+            b_g := CheckBox {
+                text: &amp;#34;Growth rate&amp;#34;;
+                checked: false;
+                enabled: !self.checked;
+                toggled() =&amp;gt; {
+                    if self.checked {
+                        b_n.checked = false;
+                        b_f.checked = false;
+                        b_t.checked = false;
+                    }
+                }
+            }
+
+            e_g := LineEdit {
+                text: root.gr;
+                input-type: decimal;
+                read-only: b_g.checked;
+            }
+        }
+    }
+
+    Button {
+        text: &amp;#34;Calculate&amp;#34;;
+        clicked =&amp;gt; {
+            root.tt = e_t.text;
+            root.nl = e_n.value;
+            root.ft = e_f.text;
+            root.gr = e_g.text;
+            if b_t.checked {
+                root.calculate_total_thickness();
+            } else if b_n.checked {
+                root.calculate_num_layers();
+            } else if b_f.checked {
+                root.calculate_first_thickness();
+            } else if b_g.checked {
+                root.calculate_growth_rate();
+            }
+            e_t.text = root.tt;
+            e_g.text = root.gr;
+            e_f.text = root.ft;
+            e_n.value = root.nl;
+        }
+    }
+}
+</code></pre>
+<p>}</code></pre><p><code>build.rs</code>构建脚本调用<code>slint-build</code>将<code>.slint</code>文件翻译成<code>.rs</code>文件。</p></p>
+
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/rust/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Rust</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-06-11T00:00:00&#43;00:00">
+      2025-06-11
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长9分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
@@ -562,187 +828,6 @@
     </i>
     <span>
       阅读时长5分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-04-22-use-vscode-coding-starccm-assistant/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
-      alt="使用VSCode开发STAR-CCM&#43;模拟助手" title="使用VSCode开发STAR-CCM&#43;模拟助手"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-04-22-use-vscode-coding-starccm-assistant/">使用VSCode开发STAR-CCM+模拟助手</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>STAR-CCM+模拟助手(Simulation Assistant)相当于一个插件，在插件内部封装了java宏命令。使用的时候，通过调用宏命令，执行一些流程性的操作。相比于直接执行java宏文件，可以更好地与用户进行交互，对不熟悉java的用户来说明显更加友好。因为模拟助手大多应用于前后处理当中，许多咨询公司针对这方面开发的定制化插件也更倾向于采用相同的方式。</p>
-<p>官方文档采用NetBeans演示了创建模拟助手项目的流程，但是演示的NetBeans版本已经很老旧了。官方文档更新缓慢，描述又过于笼统。这里采用VSCode重新实现并演示一遍，相关配置可以参考<a href="../2025-04-18-use-vscode-debug-starccm-marco/">使用VSCode调试STAR-CCM+宏</a>
-，以下演示材料来自于STAR-CCM+官方的教程文件。</p>
-<h2 id="1-建立模拟助手项目">1. 建立模拟助手项目</h2>
-<p>参考<a href="../2025-04-18-use-vscode-debug-starccm-marco/">使用VSCode调试STAR-CCM+宏</a>
-中的内容建立java项目，项目类型一样选择<code>No build tools</code>，名称根据自己需要起一个。</p>
-<p>项目创建完成后，编辑<code>[项目文件夹]/.vscode</code>下的<code>settings.json</code>文件，将下面这些目录添加到项目依赖中<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>：</p>
-<ul>
-<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/core</code></li>
-<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/core/locale</code></li>
-<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/lib</code></li>
-<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/modules</code></li>
-<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/modules/ext</code></li>
-<li><code>[STAR-CCM+_Installation]/star/lib/java/platform/modules/locale</code>
-<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_e60aa013d2842592.webp 320w, /post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_8da92df4d0b27b1a.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_18057fce958f698e.jpg 320w, /post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_8c5eda4cdba13e1e.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/7f5cd0780c9474a6fedde666d32345f9_hu_8c5eda4cdba13e1e.jpg" width="835" height="224" alt="7f5cd0780c9474a6fedde666d32345f9.png" title="7f5cd0780c9474a6fedde666d32345f9.png" loading="lazy" />
-  </picture>
-</div>
-</li>
-</ul>
-<p>因为模拟助手需要加载到STAR-CCM+中，需要保证两者jdk版本一致。编辑<code>[项目文件夹]/.vscode</code>下的<code>settings.json</code>文件，增加一行设置，指定jdk为STAR-CCM+自带的版本。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="s2">&#34;java.jdt.ls.java.home&#34;</span><span class="err">:</span> <span class="s2">&#34;[STAR-CCM+_Installation]/jdk/[platform]/jdk[version]&#34;</span>
-</span></span></code></pre></div><p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_ff69245f23e7f4c6.webp 320w, /post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_ad77e0ad0ef18060.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_f3360a2de05f5a17.jpg 320w, /post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_8421feffad7cc73e.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/2d65d65d95dd1c70148bd6d3e1799ac0_hu_8421feffad7cc73e.jpg" width="816" height="271" alt="2d65d65d95dd1c70148bd6d3e1799ac0.png" title="2d65d65d95dd1c70148bd6d3e1799ac0.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>在<code>JAVA PROJECTS</code>里确认jdk版本，确保和STAR-CCM+自带的版本一致。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/faa980ab915d9e4f8cc472f9fe54167a_hu_3f88a0cc3799b363.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/faa980ab915d9e4f8cc472f9fe54167a_hu_7c819f05fed8eb5f.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/faa980ab915d9e4f8cc472f9fe54167a_hu_5b87ce1482d48e26.jpg" width="381" height="144" alt="faa980ab915d9e4f8cc472f9fe54167a.png" title="faa980ab915d9e4f8cc472f9fe54167a.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<h2 id="2-项目开发">2. 项目开发</h2>
-<p>将自动生成的<code>[项目文件夹]/src</code>下面的源文件删除，创建文件夹<code>Assistant</code>，将官方教程中的java源文件复制粘贴到其中<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/70cc6904b31e239e7da1853d42eb9941_hu_adc787662008e90.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/70cc6904b31e239e7da1853d42eb9941_hu_e07fe28ded3b518f.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-22-use-vscode-coding-starccm-assistant/images/70cc6904b31e239e7da1853d42eb9941_hu_314082ffd113761b.jpg" width="372" height="272" alt="70cc6904b31e239e7da1853d42eb9941.png" title="70cc6904b31e239e7da1853d42eb9941.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/cfd/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Cfd
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/java/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Java</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/star-ccm&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Star-Ccm&#43;</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-04-22T00:00:00&#43;00:00">
-      2025-04-22
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
     </span>
   </div>
 </div>

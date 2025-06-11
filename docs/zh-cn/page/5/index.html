@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" dir="ltr">
 <head>
-	<meta name="generator" content="Hugo 0.147.0">
+	<meta name="generator" content="Hugo 0.147.7">
   <title>Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -203,6 +203,187 @@
   <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
     <div class="flex flex-row">
       <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-26-slurm-submit-fluent-and-cfx-script/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/vortex-bg.jpg"
+      alt="Slurm提交Fluent和CFX的计算脚本" title="Slurm提交Fluent和CFX的计算脚本"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-26-slurm-submit-fluent-and-cfx-script/">Slurm提交Fluent和CFX的计算脚本</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <h2 id="1-fluent">1. Fluent</h2>
+<p>首先要编写Fluent的jou脚本：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">/file/read-case &#34;small_fan.cas.h5&#34; 
+</span></span><span class="line"><span class="cl">/solve/initialize/hyb-initialization 
+</span></span><span class="line"><span class="cl">/solve/iterate 100 
+</span></span><span class="line"><span class="cl">/file/write-case &#34;small_fan_results.cas.h5&#34; ok 
+</span></span><span class="line"><span class="cl">/file/write-data &#34;small_fan_results.dat.h5&#34; ok 
+</span></span><span class="line"><span class="cl">/exit ok 
+</span></span></code></pre></div><p>这个jou文件很简单，就是告诉Fluent读取哪个文件、怎么初始化、迭代多少步、如何保存直至最后退出。如果计算比较复杂的，比如涉及到UDF加载或特殊条件初始化设置的，还需要增加相应的命令行。不熟悉怎么编写TUI命令的话，可以通过Fluent图形界面下面的命令行窗口录制脚本。</p>
+<p>编写Slurm脚本：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash 
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --job-name=fluent_test	# 任务名称</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --partition=debug </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --output=%j.out </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --error=%j.err </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 1	# 计算节点数</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --ntasks-per-node=32	# 每节点计算进程数</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$SLURM_SUBMIT_DIR</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/opt/ansys2025r1.env	<span class="c1"># 载入许可证设置环境变量，这里应该使用绝对路径</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">FLUENT</span><span class="o">=</span>/ansys_inc/v251/fluent/bin/fluent	<span class="c1"># fluent可执行文件路径</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MPI_TYPE</span><span class="o">=</span>intel <span class="c1"># intel or openmpi </span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">JOU_FILE</span><span class="o">=</span><span class="sb">`</span>find . -name <span class="s2">&#34;*.jou&#34;</span><span class="sb">`</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MACHINEFILE</span><span class="o">=</span><span class="nv">$SLURM_JOBID</span>.node 
+</span></span><span class="line"><span class="cl">scontrol show hostnames <span class="nv">$SLURM_JOB_NODELIST</span> &gt; <span class="nv">$MACHINEFILE</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#注意fluent根据2维3维单双精度的不同有4钟计算模式：2d、3d、2ddp、3ddp，根据自己的需求选择对应的计算模式</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$FLUENT</span> 3ddp -g -t<span class="nv">$SLURM_NPROCS</span> -cnf<span class="o">=</span><span class="nv">$MACHINEFILE</span> -mpi<span class="o">=</span><span class="nv">$MPI_TYPE</span> -ssh -i <span class="nv">$JOU_FILE</span>
+</span></span></code></pre></div><p>保存以上脚本，将待提交的cas文件和jou文件放到脚本所在文件夹，通过<code>sbatch</code>命令提交脚本即可。计算完成后将输出的结果文件下载到本地机器上处理。</p>
+<h2 id="2-cfx">2. CFX</h2>
+<p>相比fluent，cfx计算脚本简单很多：</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/cfx/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cfx</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/fluent/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Fluent</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/slurm/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Slurm</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-26T00:00:00&#43;00:00">
+      2025-03-26
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
@@ -498,208 +679,6 @@
     </i>
     <span>
       阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-25-ubuntu24.04-install-ansys2025r1/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
-      alt="Ubuntu24.04安装Ansys2025R1" title="Ubuntu24.04安装Ansys2025R1"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-25-ubuntu24.04-install-ansys2025r1/">Ubuntu24.04安装Ansys2025R1</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <h2 id="1-准备工作">1. 准备工作</h2>
-<p>全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_e6df891d02f49e3b.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_be31c8832fc1a078.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_485a5ec525d78a02.jpg" width="603" height="456" alt="e8b6a55779447694ef28a8a9560f2bab.png" title="e8b6a55779447694ef28a8a9560f2bab.png" loading="lazy" />
-  </picture>
-</div>
-<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_311d2c221ce0c964.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_55ea2f9a1de38f2b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_c64a9486d469e79c.jpg" width="597" height="498" alt="3f912a7795844465627dc878eb409e95.png" title="3f912a7795844465627dc878eb409e95.png" loading="lazy" />
-  </picture>
-</div>
-<p>安装过程中至少需要8GB内存，推荐内存16~32GB。</p></p>
-<p>安装过程中的依赖工具：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install libnsl2 libpcre3 lsb-* ldap-utils libunistring5 xfonts-100dpi xfonts-75dpi
-</span></span></code></pre></div><p>其他运行时的依赖工具安装，请查询官方文档。</p>
-<p>Ansys2025R1安装文件中包含9个<code>.iso</code>安装文件，用以下命令挂载<code>.iso</code>文件到指定路径：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1
-</span></span><span class="line"><span class="cl">sudo mount <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/Share/Ansys/ANSYS2025R1_LINX64_DISK1.iso <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1 -o loop
-</span></span></code></pre></div><p>同样的办法，将剩下的安装包分别挂载至其他文件夹。</p>
-<h2 id="2-安装许可证服务器">2. 安装许可证服务器</h2>
-<h3 id="21-安装ansys-license-manager">2.1 安装Ansys License Manager</h3>
-<p>由于Ansys安装需要用到图形界面，因此需要先通过远程连接进入Ubuntu桌面系统。</p>
-<p>进入第一个安装包的挂载点，运行安装程序：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1
-</span></span><span class="line"><span class="cl">sudo ./INSTALL <span class="c1"># 由于需要以服务形式运行，建议以管理员用户权限运行安装程序</span>
-</span></span></code></pre></div><p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_5831ab07b17cae41.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_e334336d3856452d.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_fe3867f407d36e29.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_7f1fb588b6f2c0d1.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_a73fd8dcf1dc600a.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_92fa09b75d1ad315.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_a73fd8dcf1dc600a.jpg" width="1041" height="647" alt="598ba0142449e130e1d6680aef25e2db.png" title="598ba0142449e130e1d6680aef25e2db.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/linux/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Linux
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/ansys/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ansys</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/cae/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cae</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/linux/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Linux</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/ubuntu/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ubuntu</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-25T00:00:00&#43;00:00">
-      2025-03-25
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长2分钟
     </span>
   </div>
 </div>

@@ -202,6 +202,178 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-02-28-ansa-washer-mesh/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
+      alt="Ansa螺钉孔washer网格" title="Ansa螺钉孔washer网格"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-02-28-ansa-washer-mesh/">Ansa螺钉孔washer网格</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/ff86c5fd4ac5cc0624c9013d21a1dab5_hu_f61bd20bc9225c6c.jpg" width="274" height="276" alt="ff86c5fd4ac5cc0624c9013d21a1dab5.png" title="ff86c5fd4ac5cc0624c9013d21a1dab5.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>但默认设置生成的网格螺钉孔貌似都没有按washer处理。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-02-28-ansa-washer-mesh/images/6ea45853b136275e0c8325e7b4a47341_hu_1b8d0b86abdd0d5f.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-02-28-ansa-washer-mesh/images/6ea45853b136275e0c8325e7b4a47341_hu_fea246e151c454cf.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/6ea45853b136275e0c8325e7b4a47341_hu_1b842213d859c9b4.jpg" width="355" height="206" alt="6ea45853b136275e0c8325e7b4a47341.png" title="6ea45853b136275e0c8325e7b4a47341.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>有几种方法，其一是通过几何处理手动添加<code>Zone Cut</code>的方式，这种方法手工处理工作量太大，不推荐</p>
+<p>另一种方法需要手动<code>Reconstruct</code>网格，首先在网格参数设置里设置孔的特征参数。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-02-28-ansa-washer-mesh/images/363c5b51b1b6eab2ba3b44bd907c10dd_hu_a777d43b89185676.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-02-28-ansa-washer-mesh/images/363c5b51b1b6eab2ba3b44bd907c10dd_hu_23597564ac14f085.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/363c5b51b1b6eab2ba3b44bd907c10dd_hu_5114612957df8435.jpg" width="509" height="31" alt="363c5b51b1b6eab2ba3b44bd907c10dd.png" title="363c5b51b1b6eab2ba3b44bd907c10dd.png" loading="lazy" />
+  </picture>
+</div>
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-02-28-ansa-washer-mesh/images/6db3f7dddb8aaa1cea878f831db1abc0_hu_d69bf35daa1e44cd.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-02-28-ansa-washer-mesh/images/6db3f7dddb8aaa1cea878f831db1abc0_hu_ef0a10c44553e148.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/6db3f7dddb8aaa1cea878f831db1abc0_hu_8644326483dff6fa.jpg" width="608" height="505" alt="6db3f7dddb8aaa1cea878f831db1abc0.png" title="6db3f7dddb8aaa1cea878f831db1abc0.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>返回<code>Mesh</code>里，<code>Reconstrust</code>就有了。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-02-28-ansa-washer-mesh/images/5489ac8734b83c3b95fbac196237c402_hu_96a410cea234b60b.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-02-28-ansa-washer-mesh/images/5489ac8734b83c3b95fbac196237c402_hu_e265c4b9b186adcd.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/5489ac8734b83c3b95fbac196237c402_hu_2b98d549e25fba12.jpg" width="605" height="513" alt="5489ac8734b83c3b95fbac196237c402.png" title="5489ac8734b83c3b95fbac196237c402.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<hr>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/ansa/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Ansa
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/ansa/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ansa</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-02-28T00:00:00&#43;00:00">
+      2025-02-28
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-02-27-ansa-midsurf/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
@@ -492,196 +664,6 @@
     </i>
     <time datetime="2025-02-27T00:00:00&#43;00:00">
       2025-02-27
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2022-04-08-deploy-starccm-on-scp/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/post-bg-tech.jpg"
-      alt="超算平台部署STAR-CCM&#43;" title="超算平台部署STAR-CCM&#43;"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2022-04-08-deploy-starccm-on-scp/">超算平台部署STAR-CCM+</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>最近提供超算试用的平台挺多的，很多平台都有免费试用的申请。因工作需要申请了某超算平台的账号并进行了相关的试用，就超算平台部署STAR-CCM+软件及应用的过程做一个简单的记录，也为后续相关应用提供参考。</p>
-<h2 id="1-超算平台信息">1. 超算平台信息</h2>
-<p>远程登陆超算可以通过SSH连接，某些平台还提供的webSSH、webVNC连接，支持通过浏览器连接命令行或图形界面。具体登陆方式请参考平台提供的相关文档。</p>
-<p>首次登陆安装部署软件之前应当先了解超算平台的配置，确定平台是否支持需要安装的软件。通过以下命令了解超算平台的发行版信息。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">lsb_release -a
-</span></span></code></pre></div><p>可以了解到该平台发行版为CentOS，版本7.9.2009。</p>
-<p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_69a9fa85e9dc37c7.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_68626ded0948fc0a.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_c6660f9e8382d4c4.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_b8d9ec5f5deda9e6.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/01-%E5%8F%91%E8%A1%8C%E7%89%88%E4%BF%A1%E6%81%AF_hu_b8d9ec5f5deda9e6.jpg" width="821" height="159" alt="01-发行版信息.png" title="01-发行版信息.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>该超算平台所用并行作业调度系统为开源的Slurm，可以通过以下命令查看可供调用的计算资源。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sinfo -a
-</span></span></code></pre></div><p>输出比较长，这里只截了一部分。下图中<code>amd_256</code>表示计算节点所在分区，记住它，后面编写脚本会用到。</p>
-<p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_23ab3e0550b301be.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_6ec65493eeb0837f.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_b6af80631d2e6bf3.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_2ae6168b5cda1058.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/02-%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF_hu_2ae6168b5cda1058.jpg" width="820" height="441" alt="02-计算节点信息.png" title="02-计算节点信息.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<h2 id="2-软件安装">2. 软件安装</h2>
-<p>软件上传及存储请参考平台提供的相关文档。</p>
-<p>本文安装的是16.06.010双精度Linux版本。通过以下命令解压<code>tar.gz</code>安装包。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tar xvzf <span class="o">[</span>file-name<span class="o">]</span>.tar.gz
-</span></span></code></pre></div><p>安装文件被解压到<code>starccm+_16.06.010</code>目录中，进入该目录运行<code>.sh</code>文件开始安装。注意，此处不需要root用户权限（多数情况下平台是不会提供root账号的，但不影响软件安装）。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./STAR-CCM+16.06.010_01_linux-x86_64-2.17_gnu9.2-r8.sh
-</span></span></code></pre></div><p>用VNC连接的可以通过图形界面安装，不想通过图形界面安装可以用以下命令强制通过控制台安装。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./STAR-CCM+16.06.010_01_linux-x86_64-2.17_gnu9.2-r8.sh -i console
-</span></span></code></pre></div><p>本文采用控制台方式进行安装。首先提示LICENSE，如下图所示，按<code>ENTER</code>继续。</p>
-<p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_f0cd6b5b705a6fdd.webp 320w, /post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_eca3229eb4dc00c2.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_ca52d1957af5bdbb.jpg 320w, /post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_604e7647a8d33916.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2022-04-08-deploy-starccm-on-scp/images/03-LICENSE%E6%8F%90%E7%A4%BA_hu_604e7647a8d33916.jpg" width="820" height="465" alt="03-LICENSE提示.png" title="03-LICENSE提示.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/zhihu/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Zhihu
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/cfd/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cfd</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/slurm/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Slurm</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/star-ccm&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Star-Ccm&#43;</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2022-04-08T00:00:00&#43;00:00">
-      2022-04-08
     </time>
   </div>
 

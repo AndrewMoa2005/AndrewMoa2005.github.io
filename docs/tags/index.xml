@@ -9,8 +9,15 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Thu, 01 May 2025 12:55:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 11 Jun 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rust</title>
+      <link>https://andrewmoa.site/tags/rust/</link>
+      <pubDate>Wed, 11 Jun 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/tags/rust/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Fortran</title>
       <link>https://andrewmoa.site/tags/fortran/</link>

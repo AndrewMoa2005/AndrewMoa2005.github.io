@@ -9,8 +9,15 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Thu, 01 May 2025 12:55:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 11 Jun 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Exploring Rust Graphical Interface Libraries</title>
+      <link>https://andrewmoa.site/post/2025-06-11-rust_gui/</link>
+      <pubDate>Wed, 11 Jun 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-06-11-rust_gui/</guid>
+      <description>&lt;p&gt;Recently, I plan to refactor the code I wrote previously using Rust, which involves the question of how to choose a GUI interface. Rust has only been officially released for ten years, and is not as good as the old C/C++ in GUI development. There are many well-known and time-tested GUI interface libraries such as wxWidgets, qt, gtk+, etc. This article selects several Rust GUI libraries and simply implements a boundary layer calculator for horizontal comparison.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Use VSCode to develop STAR-CCM&#43; user library: build dynamic link library through Fortran</title>
       <link>https://andrewmoa.site/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/</link>

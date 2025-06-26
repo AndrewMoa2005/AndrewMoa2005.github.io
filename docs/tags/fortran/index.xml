@@ -9,8 +9,15 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Thu, 01 May 2025 12:58:34 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 23 Jun 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/fortran/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Matrix multiplication operation (I) - using OpenMP to speed up loop calculation</title>
+      <link>https://andrewmoa.site/post/2025-06-23-matrix_multiplication-1/</link>
+      <pubDate>Mon, 23 Jun 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-06-23-matrix_multiplication-1/</guid>
+      <description>&lt;p&gt;Speaking of matrices, anyone who studies science and engineering will think of the fear of being dominated by linear algebra classes. Matrix multiplication operations are indispensable for various industrial and scientific research numerical calculations, and are also used in various benchmarking software. The time consumption of matrix multiplication operations is also an important indicator for judging the floating-point operation performance of computers. The purpose of this article is to verify the performance differences of various implementation methods through matrix multiplication operations, and compare the performance differences of different computing platforms to provide a reference for high-performance computing development.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Use VSCode to develop STAR-CCM&#43; user library: build dynamic link library through Fortran</title>
       <link>https://andrewmoa.site/post/2025-04-30-use-vscode-develop-starccm-user-library-by-fortran/</link>

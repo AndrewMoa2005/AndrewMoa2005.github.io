@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" dir="ltr">
 <head>
-	<meta name="generator" content="Hugo 0.147.7">
+	<meta name="generator" content="Hugo 0.147.8">
   <title>Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -203,6 +203,170 @@
   <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
     <div class="flex flex-row">
       <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
+      alt="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数" title="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">使用VSCode开发STAR-CCM+用户程序：通过CoolProp计算物性参数</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>STAR-CCM+用户程序(用户库)<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>是通过外部编译器(通常是C/C++，也支持Fortran)按一定的规则编译构建的动态链接库，将构建好的动态链接库注册到sim文件中，可以实现某些自定义功能。一个用户程序通常包含一个或多个用户自定义的函数，这些自定义函数一般用于实现特殊的配置或场函数。</p>
+<p>用户程序需要先注册动态链接库才能调用，而动态链接库的格式往往与操作系统、硬件平台等密切相关，因此用户程序通常都是针对特定平台进行编译，无法实现跨平台运行。</p>
+<p>本文尝试用VSCode编写STAR-CCM+动态链接库，利用开源的热力学库CoolProp为STAR-CCM+拓展物性参数计算功能；通过CMake构建用户程序，确保在不同平台下能正确生成动态链接库文件。</p>
+<h2 id="1-coolprop介绍">1. CoolProp介绍</h2>
+<p><a href="http://www.coolprop.org/" target="_blank" rel="noopener">CoolProp</a>
+是一个开源跨平台的热力学库，定位上类似于NIST的REFPROP，包含各种流体物性参数，同时支持多种编程语言，也支持通过MATLAB、Excel甚至javascript调用进行物性参数计算<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>。</p>
+<p>Windows平台通过以下命令下载编译、安装CoolProp<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 推荐使用PowerShell，需要先安装cmake、git及clang-cl编译器</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 下载CoolProp源码及其依赖</span>
+</span></span><span class="line"><span class="cl"><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">CoolProp</span><span class="p">/</span><span class="n">CoolProp</span> <span class="p">-</span><span class="n">-recursive</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd </span><span class="n">CoolProp</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 建立工作目录</span>
+</span></span><span class="line"><span class="cl"><span class="n">mkdir</span> <span class="n">build</span> <span class="p">&amp;&amp;</span> <span class="nb">cd </span><span class="n">build</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 配置静态库编译文件</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">..</span> <span class="n">-DCOOLPROP_STATIC_LIBRARY</span><span class="p">=</span><span class="n">ON</span> <span class="n">-G</span> <span class="s2">&#34;Visual Studio 17 2022&#34;</span> <span class="n">-T</span> <span class="n">ClangCL</span><span class="p">,</span><span class="n">host</span><span class="p">=</span><span class="n">x64</span> <span class="n">-A</span> <span class="n">x64</span> 
+</span></span><span class="line"><span class="cl"><span class="c"># 编译静态库</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">-</span><span class="n">-build</span> <span class="p">.</span> <span class="p">-</span><span class="n">-config</span> <span class="n">Release</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 安装静态库</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">-</span><span class="n">-install</span> <span class="p">.</span> <span class="p">-</span><span class="n">-prefix</span> <span class="nv">$PWD</span><span class="p">/../../</span><span class="n">CoolPropLib</span>
+</span></span></code></pre></div><p>Linux平台通过以下命令编译、安装CoolProp：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 需要先安装cmake、git及gcc编译器</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 下载CoolProp源码及其依赖</span>
+</span></span><span class="line"><span class="cl">git clone https://github.com/CoolProp/CoolProp --recursive
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> CoolProp
+</span></span><span class="line"><span class="cl"><span class="c1"># 建立工作目录</span>
+</span></span><span class="line"><span class="cl">mkdir -p build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置静态库编译文件，默认架构为64位</span>
+</span></span><span class="line"><span class="cl">cmake .. -DCOOLPROP_STATIC_LIBRARY<span class="o">=</span>ON -DCOOLPROP_FPIC<span class="o">=</span>ON -G <span class="s2">&#34;Ninja&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 编译静态库，使用32个核心加速编译</span>
+</span></span><span class="line"><span class="cl">cmake --build . --config Release -- -j32
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装静态库</span>
+</span></span><span class="line"><span class="cl">cmake --install . --prefix <span class="nv">$PWD</span>/../../CoolPropLib
+</span></span></code></pre></div><p>得益于软件良好的封装，CoolProp相关函数的调用十分简单，以下是官方示例代码<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>：</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/cfd/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Cfd
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/c&#43;&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">C&#43;&#43;</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/star-ccm&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Star-Ccm&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-29T00:00:00&#43;00:00">
+      2025-04-29
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长5分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
@@ -556,208 +720,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-04-17-starccm-record-and-write-marco/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
-      alt="STAR-CCM&#43;宏文件录制和编写" title="STAR-CCM&#43;宏文件录制和编写"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-04-17-starccm-record-and-write-marco/">STAR-CCM+宏文件录制和编写</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>STAR-CCM+宏本质上就是一个java文件，语法和普通的java没有什么区别。使用宏可以帮助我们简化处理过程，尤其是一些重复的流程性的操作。通过编写宏文件完成一些流程操作可以极大地解放人力资源，甚至可以在求解过程中完成某些特定的操作。</p>
-<h2 id="1-录制宏">1. 录制宏</h2>
-<p>STAR-CCM+宏本质就是分析过程中的各种操作命令的集合，与其从头开始讲解复杂繁琐的java语法+API，不如直接从工程问题上手。</p>
-<p>STAR-CCM+宏操作的入口在左上角工具栏里，从左到右依次是“播放宏”、“开始录制”、“暂停录制”和“停止录制”按钮，相关操作选项也可以在“文件”菜单中找到。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-17-starccm-record-and-write-marco/images/8eb213bb22b885f81c06dcdb3eedd943_hu_d8b32a9be73c54ad.webp 320w, /post/2025-04-17-starccm-record-and-write-marco/images/8eb213bb22b885f81c06dcdb3eedd943_hu_b785363c8fb37b4e.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-17-starccm-record-and-write-marco/images/8eb213bb22b885f81c06dcdb3eedd943_hu_e7f530ebf38f5c5b.jpg 320w, /post/2025-04-17-starccm-record-and-write-marco/images/8eb213bb22b885f81c06dcdb3eedd943_hu_b1505efef7c1bd0e.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-17-starccm-record-and-write-marco/images/8eb213bb22b885f81c06dcdb3eedd943_hu_b1505efef7c1bd0e.jpg" width="771" height="86" alt="8eb213bb22b885f81c06dcdb3eedd943.png" title="8eb213bb22b885f81c06dcdb3eedd943.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>点击“开始录制”会弹出对话框，提示宏的保存位置。如果过程中用到一些场景化的图形操作，可以勾选上“包括图形命令”；但一般情况下不建议勾选，尤其是涉及到超算提交的场合。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-17-starccm-record-and-write-marco/images/07127786a188bff13345a15a58d3e7e4_hu_1ae359c4407f915c.webp 320w, /post/2025-04-17-starccm-record-and-write-marco/images/07127786a188bff13345a15a58d3e7e4_hu_ab91c75e2b129e4d.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-17-starccm-record-and-write-marco/images/07127786a188bff13345a15a58d3e7e4_hu_d82fc1179f9cb8b0.jpg 320w, /post/2025-04-17-starccm-record-and-write-marco/images/07127786a188bff13345a15a58d3e7e4_hu_61dab57287a0c258.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-17-starccm-record-and-write-marco/images/07127786a188bff13345a15a58d3e7e4_hu_61dab57287a0c258.jpg" width="641" height="395" alt="07127786a188bff13345a15a58d3e7e4.png" title="07127786a188bff13345a15a58d3e7e4.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>接下来就可以在输出窗口中看到录制java过程的代码，此时可以正常地执行分析操作，STAR-CCM+会把相关操作转换成对应的java代码，并显示在输出窗口中。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-17-starccm-record-and-write-marco/images/51fce847b53231bf3cda774399192e37_hu_a4bcb12358d1352e.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-17-starccm-record-and-write-marco/images/51fce847b53231bf3cda774399192e37_hu_d4aca9d582021ae0.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-17-starccm-record-and-write-marco/images/51fce847b53231bf3cda774399192e37_hu_fa21624746cc271c.jpg" width="513" height="98" alt="51fce847b53231bf3cda774399192e37.png" title="51fce847b53231bf3cda774399192e37.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>当分析操作完成后点击“停止录制”，可以在输出窗口中看到完整的java代码，同时该代码也被保存到java文件中。</p>
-<p>下面是录制的宏代码示例，作用是将原有网格清除并重新划分体网格。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Java" data-lang="Java"><span class="line"><span class="cl"><span class="c1">// Simcenter STAR-CCM+ macro: reGenerateMesh.java</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// Written by Simcenter STAR-CCM+ 19.06.009</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 上面两行注释是录制时生成的，记录保存宏的文件名、STAR-CCM+版本信息</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">package</span><span class="w"> </span><span class="nn">macro</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.*</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">star.common.*</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">star.meshing.*</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 类名和文件名要一致</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">reGenerateMesh</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">StarMacro</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//这个函数是整个宏的入口	</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">execute</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">execute0</span><span class="p">();</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//这个函数执行网格清除和划分操作</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">execute0</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Simulation</span><span class="w"> </span><span class="n">simulation_0</span><span class="w"> </span><span class="o">=</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">getActiveSimulation</span><span class="p">();</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">MeshPipelineController</span><span class="w"> </span><span class="n">meshPipelineController_0</span><span class="w"> </span><span class="o">=</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">simulation_0</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">MeshPipelineController</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">//清除原来的网格</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">meshPipelineController_0</span><span class="p">.</span><span class="na">clearGeneratedMeshes</span><span class="p">();</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="c1">//生成体网格</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">meshPipelineController_0</span><span class="p">.</span><span class="na">generateVolumeMesh</span><span class="p">();</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
-</span></span></span></code></pre></div><p>具体代码的作用可以查看STAR-CCM+的帮助文件，不过大部分的API的命名都比较直观，根据其命名也能推测出来。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-04-17-starccm-record-and-write-marco/images/3f50c712cf6d83b26df0cd1ea4f56c30_hu_61099bc8895f37a9.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-04-17-starccm-record-and-write-marco/images/3f50c712cf6d83b26df0cd1ea4f56c30_hu_ec06e6e7533bcbb.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-17-starccm-record-and-write-marco/images/3f50c712cf6d83b26df0cd1ea4f56c30_hu_36ac19028f2b89e3.jpg" width="341" height="317" alt="3f50c712cf6d83b26df0cd1ea4f56c30.png" title="3f50c712cf6d83b26df0cd1ea4f56c30.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/cfd/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Cfd
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/java/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Java</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/star-ccm&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Star-Ccm&#43;</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-04-17T00:00:00&#43;00:00">
-      2025-04-17
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长2分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -924,6 +886,13 @@
     </li>
     
     <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/c&#43;&#43;/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        C&#43;&#43;
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
       <a href="/zh-cn/tags/cfd/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Cfd
@@ -934,13 +903,6 @@
       <a href="/zh-cn/tags/cfx/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Cfx
-      </a>
-    </li>
-    
-    <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/java/"
-        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Java
       </a>
     </li>
     

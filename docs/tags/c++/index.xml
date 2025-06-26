@@ -9,8 +9,22 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Mon, 23 Jun 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 26 Jun 2025 14:49:54 +0800</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/c++/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Matrix multiplication operation (Ⅲ) - using MPI parallel acceleration</title>
+      <link>https://andrewmoa.site/post/2025-06-25-matrix_multiplication-3/</link>
+      <pubDate>Wed, 25 Jun 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-06-25-matrix_multiplication-3/</guid>
+      <description>&lt;p&gt;MPI is a parallel computing protocol and is currently the most commonly used interface program for high-performance computing clusters. MPI communicates through inter-process messages and can call multiple cores across nodes to perform parallel computing, which is not available in OpenMP. MPI is implemented on different platforms, such as MS-MPI and Intel MPI under Windows, OpenMPI and MPICH under Linux, etc.&lt;/p&gt;&#xA;&lt;h2 id=&#34;1-mpi-parallel-acceleration-loop-calculation&#34;&gt;1. MPI parallel acceleration loop calculation&lt;/h2&gt;&#xA;&lt;h3 id=&#34;11-c-implementation&#34;&gt;1.1 C Implementation&lt;/h3&gt;&#xA;&lt;p&gt;MPI needs to initialize the main program interface and establish a message broadcast mechanism; at the same time, the array to be calculated is divided and broadcast to different processes. In the past, these operations were implemented internally by OpenMP or other parallel libraries, and programmers did not need to care about how the underlying implementation was implemented. However, using MPI requires programmers to manually allocate the global and local space of each process and control the broadcast of each message, which undoubtedly increases the additional learning cost.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Matrix multiplication operation (Ⅱ) - Accelerated operation based on BLAS library</title>
+      <link>https://andrewmoa.site/post/2025-06-24-matrix_multiplication-2/</link>
+      <pubDate>Tue, 24 Jun 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-06-24-matrix_multiplication-2/</guid>
+      <description>&lt;p&gt;BLAS was originally developed as a linear algebra library using Fortran, and was later ported to C/C++. As a core component of modern high-performance computing, it has formed a set of standards. There are open source implementations such as Netlib BLAS, GotoBLAS and its successor OpenBLAS. Commercially, each manufacturer has corresponding implementations for its own platform, such as Intel&amp;rsquo;s MKL, NVIDIA&amp;rsquo;s CUDA, AMD&amp;rsquo;s AOCL and ROCm. Some of them are optimized for CPU platforms, and some use GPU parallel acceleration. This article uses different BLAS libraries to implement matrix operations and analyzes the performance differences between different implementations.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Matrix multiplication operation (I) - using OpenMP to speed up loop calculation</title>
       <link>https://andrewmoa.site/post/2025-06-23-matrix_multiplication-1/</link>

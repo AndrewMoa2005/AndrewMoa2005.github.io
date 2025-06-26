@@ -202,6 +202,354 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-04-16-solve-openmpi-warning/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="解决OpenMPI的&#34;Authorization required, but no authorization protocol specified&#34;错误提示" title="解决OpenMPI的&#34;Authorization required, but no authorization protocol specified&#34;错误提示"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-16-solve-openmpi-warning/">解决OpenMPI的&quot;Authorization required, but no authorization protocol specified&quot;错误提示</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>最近在用OpenFOAM和SU2提交计算时，反复出现&quot;Authorization required, but no authorization protocol specified&quot;报错信息。尽管不理会它最终还是能完成计算，但总是出现的报错信息让人心里不安。</p>
+<p>怀疑是OpenMPI的问题，通过以下命令验证：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mpirun -np <span class="m">2</span> hostname
+</span></span></code></pre></div><p>果然出现报错信息：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-16-solve-openmpi-warning/images/9369ef647d5aff57821c1d728ec4eca1_hu_feaa59b997d0af4b.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-16-solve-openmpi-warning/images/9369ef647d5aff57821c1d728ec4eca1_hu_cc36ad4eeb903d1a.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-16-solve-openmpi-warning/images/9369ef647d5aff57821c1d728ec4eca1_hu_11ebaa1f21fee8e4.jpg" width="626" height="104" alt="9369ef647d5aff57821c1d728ec4eca1.png" title="9369ef647d5aff57821c1d728ec4eca1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>翻阅网上信息，比较靠谱的解决方案是这个<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>：在Slurm脚本中增加以下环境变量：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">HWLOC_COMPONENTS</span><span class="o">=</span>-gl
+</span></span></code></pre></div><p>测试一下，报错问题解决了：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-16-solve-openmpi-warning/images/b3c56243fce578a837d01d68ab24e935_hu_f50d1be9528506b.webp 320w, /post/2025-04-16-solve-openmpi-warning/images/b3c56243fce578a837d01d68ab24e935_hu_eb9127d957e110b8.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-16-solve-openmpi-warning/images/b3c56243fce578a837d01d68ab24e935_hu_90600186078682a0.jpg 320w, /post/2025-04-16-solve-openmpi-warning/images/b3c56243fce578a837d01d68ab24e935_hu_f8b637f6cb1259b4.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-16-solve-openmpi-warning/images/b3c56243fce578a837d01d68ab24e935_hu_f8b637f6cb1259b4.jpg" width="700" height="59" alt="b3c56243fce578a837d01d68ab24e935.png" title="b3c56243fce578a837d01d68ab24e935.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://github.com/3dem/relion/issues/1211#issuecomment-2505284712" target="_blank" rel="noopener">github issue</a>
+&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/openfoam/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Openfoam</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/su2/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Su2</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-16T00:00:00&#43;00:00">
+      2025-04-16
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题" title="Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">Linux挂载Windows共享文件夹无法运行Abaqus和CFX求解器的问题</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>近期发现一个问题，Abaqus和CFX无法在Linux挂载的Windows共享文件夹上进行计算。Linux是虚拟机部署的，在虚拟机本地路径上启动计算程序，虽然不会出现报错，但会导致虚拟磁盘占用空间增大，并且对读写效率也有一定的影响。</p>
+<h2 id="1-smb版本问题">1. SMB版本问题</h2>
+<h3 id="11-smbv3">1.1 SMBv3</h3>
+<p>之前用cifs挂载共享文件夹的时候，没有仔细关注SMB协议的版本<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。以下命令行没有指定协议版本：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mount -t cifs //172.25.64.1/Share /home/dell/Share -o <span class="nv">uid</span><span class="o">=</span>xxx,gid<span class="o">=</span>xxx,username<span class="o">=</span>xxx
+</span></span></code></pre></div><p>用<code>mount</code>命令查看，默认连接协议是3.1版本：<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7f59520785b536ff.webp 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_c3e0b21dd523267.webp 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_deefcdc197cbc7d5.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_5e1a7f35f8d360c4.jpg 320w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7d40a59cff0ba191.jpg 640w, /post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_228a05879a1e818f.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/images/8eb0d44e21043275d3b1241235da9048_hu_7d40a59cff0ba191.jpg" width="1141" height="59" alt="8eb0d44e21043275d3b1241235da9048.png" title="8eb0d44e21043275d3b1241235da9048.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>在3.1版本协议的挂载目录下运行Abaqus程序，无法计算，报错如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">mpirun: Warning one or more remote shell commands exited with non-zero status, which may indicate a remote access problem.
+</span></span><span class="line"><span class="cl">driverExceptions.AbaqusExecutionError: (&#39;SIMULIA Job Layout Engine&#39;, 255, &#39;abaqus_test&#39;)
+</span></span><span class="line"><span class="cl">!!!
+</span></span><span class="line"><span class="cl">!!! SIM wrap utility command error:
+</span></span><span class="line"><span class="cl">!!!   System Error open: 无效的参数
+</span></span><span class="line"><span class="cl">!!!
+</span></span><span class="line"><span class="cl">driverExceptions.AbaqusExecutionError: (&#39;SIM Wrap-up&#39;, 1, &#39;abaqus_test&#39;)
+</span></span></code></pre></div><p>在3.1版本协议的挂载目录下运行CFX求解器，无法计算，报错如下：</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/abaqus/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Abaqus</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cfx/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cfx</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-04-15T00:00:00&#43;00:00">
+      2025-04-15
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-04-03-ansa-abaqus-bolt-pretension/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/abaqus-bg.jpg"
@@ -379,403 +727,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-04-02-image2base64/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
-      alt="一款基于Qt6的图片base64转换工具" title="一款基于Qt6的图片base64转换工具"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-04-02-image2base64/">一款基于Qt6的图片base64转换工具</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>经常写Markdown的小伙伴都会遇到一个问题，那就是图片存储问题。Markdown本身并不支持图片内置，传统用法一般通过外链引用本机或网络上的图片。但是当文章在网络上发表时，存储图片就成了个问题，虽然可以通过图床上传，但是操作麻烦。</p>
-<p>好在Markdown支持通过base64<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>编码数据渲染图片，这里根据这个功能编写了一个小工具<a href="https://github.com/AndrewMoa2005/Image2Base64" target="_blank" rel="noopener">Image2Base64</a>
-，可以方便地在图片文件和base64编码之间转换。</p>
-<h2 id="1-软件功能">1. 软件功能</h2>
-<p>下面就是这个软件的图形界面，这个截图就是通过base64渲染的。<div class="not-prose">
-<figure>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA&#43;oAAAIUCAIAAAACE0FYAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAgAElEQVR4nO3dfXBc5Z0n&#43;ue0XvwKUcC8T2IhbJzxJJNg&#43;2omkIU1juxrYBPslE3WO7VoqF2DKwko2YIp1bBjPMOUqnBtIkMyAmavVywV7gZv4ewMhrU0xMOtBe54bE8IGTPGjmLHIWxuPIlsya&#43;Suu8frZZaVsuSjKzWI38&#43;RVHS8enu32mpn&#43;fbz/mdVlJXVxcAmES6urryv33//fdDCJWVlcWpBoAxVRpC&#43;Na3vlXsMgAAgGF8/etfTxW7BgAAYKTEdwAAiIb4DgAA0RDfAQAgGuI7AABEo3QkO2UymcEbkyQZ62IAAIBzGT6&#43;//CHPzx58uTg7TNmzJg/f35p6YjeAAAAAB/e8OE7SZKPfexjl19&#43;ef7G9957r7Ozc&#43;/evRI8AACMmxH1vpeXl08bKJVKhRCyCb6np6fwzQ5suiW5ZdOBMay2WA5suiW5/9ViVwEAwHCScxrnSnbv3j14&#43;&#43;7duz9MJed56Wp3JpzqyXRnMp2dnfv37z/vh7/YvXp/7nfprHcHr96fTJK3PgAA4ywzhHEuY9euXZ&#43;95XNnJfjdu3d/9pbP7dq167zvdtR9Lwc&#43;&#43;NWenxxuP97bDT8tlUmXF&#43;iMDyGEOQ&#43;9kXnovCub/F69P3l8/v5MZs6gfzmw6fFnQ7i5CDUBADA2Fi5c&#43;NYb/&#43;uzt3zurTf&#43;18KFC0Muu/d9e35Gt/r&#43;/&#43;776es/PvDWW2/9/d/&#43;TdWMkr995a/37d&#43;/959P7D38v8&#43;7govVgU2P/7jxuYcGZ/dwYNO9L65uXDv&#43;JQEAMJb6Evzu3bvHJLuHUcX3n3zwq3cO/uL35/zWO7t2Hti//88bv/3B&#43;z9v&#43;/EPPza95I132351tPPsG/R3jL96f3LLplc33dLXJpJrGunvDznQ&#43;68D&#43;0j6mktu2bTp/ry9&#43;5tOhu8wObDplkG9KQP/dYRdKoU6XQqVXWjboIIPbHsxrA4bBx/FgU331n3y0YduHElFAABMbH0JfkyyexhVfP&#43;Hn/78n9750Vcfru/p6SkrLf34ddcmSfKLX/7qm99u&#43;vmhgz/86c/Pees36x4Pz2UymVfWPntHknz/7kwmk9nfGOo2vhpCCAc2bQzPZZuSXln77B19of&#43;O8Ep263PhxWdzd5VrOslkMpn9q1&#43;cO0Q0z6Xoe8Nzmcwzy4eoa85Db2SeC/cWbEAf4Nk7skXnV1io7AOb7q37ZG/VvQ9bqOD9e998s25v9h73N4a6e7MB/tX75764ev&#43;Q1QIATFQT55rRyW2k8f1UV/evO050n&#43;gIIZSXlf2Hugfv/vK/WfuH9yZJ0t3Tc/rYb37x66PnvIObextFlt&#43;9Ntzc&#43;PDyEEKYc&#43;Mnw4/fOxBCmPPQMw&#43;FbNy&#43;IxfTX/3&#43;s7kdQ5jz0KNr&#43;7eHN&#43;vmZn8T5ta92XsXAxzYdEsyd&#43;&#43;jmUwmk3kjv0Elbzm//0ZzHnojG6PnPz50hF/7Si5UL3&#43;48eZnv//qEGXPufGT4dk78u9/qIL7jm7OQ4&#43;uffPFbQfCq/ffMURDDQDABDfUBaNFuWx04ujrmenrovmQdzii&#43;P7eB0fe2PuTEMLtn6&#43;Z84n5v3Xt1cczJb861jnr2utKUqnS0tI/XLXiTHf3&#43;VdxYNMtvavkmcz&#43;xuEv2by5cX/eb8Mbg/PunIfeyIbxs9fUlz9T4Ea5dfq5ex89xzr9SMvOPkR2RT8X4gcXPHf&#43;oMPcv&#43;nx/px/R/bLWzaNuBoAACaW/H73/D74D3OfI4rvH59V8ZvjJ0MI77YdPNR24NDP3093/Ob6qy4/sPcfe9Lp7u7uZ//v/z69vPz8q9i/983c6vyBbS&#43;&#43;md24/O61b/b21uQ&#43;i2Xw9vDq/UMtl49oTT0c2HRLLoGfO7pn19tDtjvmzbV3Lx&#43;i7AObNmUX5t/Y33jzm3v3D1HwnDtX93XMHNj0&#43;LM3r75zeW/Bvc044ebG/Zk3fHQPAECUBl&#43;rOiYJfkQfHDm1rPSuRb/zd&#43;8d3P2z/ZXXXbv/pwe/8&#43;x/Li0t7e7uDiFccdlHr/itj3/8io&#43;edxFh&#43;cONj8&#43;dm9SFEG5eu7Z/GXt/4y1zs61SNzc2rg0vDt4e1r6Seebcd37uz68c8adbrg3fT5I7&#43;h5z&#43;VBlz3noxo15Oy4fquA5D73xyt4ke&#43;uw9pWMlhkAgDExQVrtFy1atGvXrrOuVc0m&#43;EWLFp13Q1FSV1f3rW996xx7vP3225dffvnll1/et&#43;WLf7iuK9cqc93VV9698kudmZIv3XzTJdOmnF8RI5K9/rNAowwAAFwUvv71rw&#43;/&#43;p7JZA4fPnz48OHstz8/mb6l5v/8zS9/cfOnP/m3u97&#43;&#43;Jy5nZmSpTf99gXI7gc23bLxxjdyH95yx7M3N&#43;6X3QEAuJgNH98/85nP5K/tHz1x6oorr3z/n2/oONP1LxYv/vgVl3268rqZF2Tdfc5Dz82/JdeHcnOjlXcAAC52I&#43;p9z&#43;8fqpgx7V9&#43;cu4Fq2egETemAwDAxWAUf7YJAAAoLvEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAARKM0hHD06NFilwEAAAzP6jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;j6/WuoqlTW0ffp/x0da0tGiltDUtraioqKh7vq&#43;G1rqKutYR33aEu47mbgEumA818hv04OIyNvF94gTOEEJf8ssxTsWnremB&#43;vlb2tvbG28pdinAyLTW5Y27Yzgl9N/vWYN5a90oHmfAvGBWAKI2aVffa7e099oSVhmsz0/Vupb2lnVVRXjkn&#43;zbWT3vhuLWAIxWdcOe3nF3fv2CMRl2W&#43;sqNs7rvdP2xpq8f2lr2th8ftXtadi7alRvL0a1tg1wwU3a&#43;N6vprF9T8PeVcZegHFyw7zqsbibtqaNexueLvT&#43;va3pga0rGmrP616r1j1cu3Pr9olzxhhgdMY8vrfWVSxtau09S1nX2n/es3&#43;tI&#43;8cZl6m7js/urSpKb8Xp/&#43;8aYHVkhE2Z1ctW1HdvK015BZRWuv67m50xZz10GfdsLUuu//Z1eadUl7VPPTzNnifQdUOODvdV2/ebuc4LzyKggc&#43;ft&#43;e4/Vjba2rWNUcdtYvqKioay287HXO34pB&#43;xSqp&#43;ANCzy9eY1hrXWFtgKDtG3furP2ztxaeaHBodC2QS/Ptu1bw4rw5ODXbFvTA/XzH143p/CDj&#43;aineFra62rWFC/MzSvKjAOD/Ewg3coOHSHoWeHAg9ReIgd4nENejC5lY5kpyNHjhTcPmvWrEKbd9ZvXLGnvb2qta5iVUVz7Zb29sbQ1rR0wZOt6xprQlvTk&#43;Hp9vaqkI1pdXe2N9aE1rqKVWFLe3tNCKGtaemCEBpCCP3nTat6t9fNGXj29Lw0r9q2pb29MYQwumLyFbxhCGFn/b6Hc8f7QNOylnVV&#43;fcWWusqVu0dXNG59smrtrWuYtXehj3t2aWo1rqKirotueejf7cB9ZxHwUM9beP3Y61pbN8SKjbO29Oyriq0NW0s8HQN/1tR6Ak59w0LP703zKveue8nIVSF1m17q6vDgbZQU9W6rbl6xZ7sUzXUqwPOzxDjavGNZCLYWb&#43;goj6EEEJ1w57eF1ehwaH36paWvBduoZdn2LdzZ/P8h9vbG0P&#43;GNVat2Drij0tNaF123kdSVvTxt5X8Ihqq2nfM2/pgn0PZ4eLYcefgSPJ4C39Q/dQI3&#43;hh7hh8DN2NoMeTA4jmQVGFN9HeF851b3nOmvurA175z1YE0IIVXPmh60H2kJNVdW6xnVtTUsr6neGEEKoDSGE1m3N/WN91bqHa&#43;uzka11W3PYGXLTQQih&#43;kBbqMkLmFXrWtrXjbCqbCt1CKF2S9/wNZpiBih0w&#43;yx9x7vshXVWwfdW/YpGXRn59ynv9rsbn1TQs2DDdULtrU21tQM3G3g9lEXPKRx/LGe28huXuAJCQVvmHe3hZ7exmUrquuzt9674umH9z2wvW3dsgN7q1c82LvnhA1bxGiCB6Nhf9urG/a0nB1SCw0OVXPmh/pVFXv7di/8up7TP0T1DiHb29bNeXLV3oY9jUOPGEPOC31vLvrKHFlt&#43;YYdf84aSQZvyR&#43;RCo78hR/inFVlqzfoQfxGOAuMe&#43;97W9PSiooHwtPZ64eG747suxKqvb29/XyvYWx9sj6sWDb4pqMt5sPfcIz1vycZxoUueJx/rOd989HdsHreDdk3NnsPtLVu27tiWdUN88LW7a3btxb8dQL61NxZG/YeaBtqcKhpbG9vb386PJDX0zH45Vmgg/5w08be1rpsv8nO&#43;gUjburoe4DcS3/ktRW8m/OflYYbugs8xHBVjeKuhivMoAcT3rjH95/s25lbxm3bvjW74hFq7qzdWf9kb69e3scJDNgeWusGNfyNpMcxe3qw4MVPoypm2BsWNJJ7G8k&#43;ud0e6O8eH/CeJNvaH7I9oXlNp6Mu&#43;PyM7Y/13EZ28wJPyLlvOOTTW7VsRdj6wMbm&#43;XOqsl9vNJHBcFq3NYf5c6qGGBzamppaQwhV61r2NGQ7NQq&#43;PKuWrQi5V2W242XZbeta&#43;sPoltpQ3bDn7Ew68t73EdaWb9jxZ8AOrU1NbUOOLaMaIc9dVQjBoAcXk3GP7zUPNoTehZMH9s3vX&#43;3Y07B3VfbqmQfCitpQYHvFtjtH0ffenLtVxcZ5g0b38ytm2BsWPuDGLbXN5763Ee0Tsj3h83sftqJiVdiSd1i1YVt284L6&#43;VsGt4KPouDzMl4/1pHfvNATcu4bDvn0Vi1bEXb2viWqWrYi7DSRQWE7819B2dddwcGhat2cvBdodr9CL8&#43;qdS25V&#43;WC&#43;vlbxvozZEdaW9WyFdW5S1eHHX/yd9g2p3fhvODYMtTIX&#43;ghClR1NoMeXDySurq6xx577Nw7HTlyZFx73bIX20yQD/ueUMUU1tbUf1nVBBbBMwlFNt6D7WhM5NoAJoeRjLSPPfbYBPnc97ampXmfHbaqubqY7/QnVDFR80wCAIyxkX7yzAVWte7peUsrKlaFEPI/u0AxcfNMAgCMsQkS30f1EZAX3oQqZnhV61rai13DECJ7JgEAJroJ0jwDAAAMT3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEY8L81VUAovXEE08UuwSAODzyyCMf8h7EdwDGwIefkAAmvTFZ7NA8AwAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGqXFLgCAYbz22mvj&#43;XBLliwZz4cDYFTEd4AILFq0aHweaNeuXePzQACcH80zAAAQDfEdAACiIb4DxKeru6u7p3vk2wGYNPS&#43;A0Smq7vr8f/xeElJyRdv&#43;uKnZ3962O0ATCZW3wEic&#43;LMidfeea2yqvLev7h3y1tbztr&#43;id/5xL1NA7YDMJmI7wDxOfzrw0l5svZLa//TK//psS2PdXV39W4/cnj6ldMf&#43;fePfGv7t/K3AzBpiO8AEZoSjnUcy5RmalfW/t3P/u4PvvMHRzqOZP/laOfR1PRU3b&#43;r&#43;4df/MMffLt/OwCTg/gOEKEp4fjJ450nOzvOdCy/ffm0y6Z94Ztf&#43;OGhH4YkdJ7s7DjZ0dnduXrl6suuvuwLT3zh7UNvF7tcAMaMS1cBIjQlHD99vCfVkypNneg5MXfe3I9e/tGv/revhimh83RnKpVKJanjqeOfXvTpK2dd&#43;W//4t8&#43;evejqz67qthFAzAGrL4DRGhKOH76eOepzs4znR2nO46dPjb1o1PvuP2Oy2ZddrzreMeZjs4znZ2nO4&#43;ePHrJ1Zf867v/9ROvPPHYf9cKDzAZWH0HiNCUcKLrxOlwOhVSJZmSVCaVyqRKykpuv/X2Y13HUkkqlaRKQkkqpFIhlSpPffGuL/7N//M37za9&#43;53a78y6ZFaxqwfg/Fl9B4jQlHC863hnV2dnV2dHd0dnT2dnT2dHd8exzLGO7o6O7o7O7s7eL7o6O890dnR3fO6znztRfuILT37h7Z9phQeImNV3gAiVJSd6ThzPHC8pKUn1pFKpVEmqpH/RPUmlQqoklKQyqVQ6VZIpSaVTqZ7UDVU3TJ8&#43;fc1//jeP/av1q/4PrfAAURLfAeKTlCYne052ZjpTPbmAnslF9mw7TUj1dtT0lKTSqZKeklR3KtWTuvSSS3937u/&#43;ySvrf/zBjx&#43;949Gy0rJiHwoAoyO&#43;A8QnKUtOdp/sSHeUpAcE994vklQqkyoJJal0KpVOlXSXpLpTqe5USXdJqiuVSqU&#43;87FP/49//Kt9v9r/7dVPaoUHiIved4AIlSQn0ifKy8tLp5SWlJekylNJeRKmhGRKEqaEUB5CeciUZnpKerqSrtPh9KnMqZM9J090nTjZdfLkmZNdXV03Xjo3lUo2tG7o7uku9sEAMApW3wHik5Qkvzz1y55MT0iFkITe/ychZEIIIWRC6A6hK6S6UsnpJHUqlZxKwsmQOZFJH09njmfSnemS0yW/e9Onr7&#43;2MiRFPhYARkV8B4hPUpqEsiSUhVAewpQQpobeRfeSEJIQ0iF0h3AmpJN0SIeerp7&#43;U61JCEkom16W&#43;njptMumf&#43;Nz3yhNmQgAYmLUBohPkkqF0kwoC70JvjyX4Etz8b0rtxjfE0JZCF0hlIZQEkIqTPvI9PSMzJd/&#43;57/ePujZSUuXQWIjPgOEKFUbxYPJSGU5iX48hBSIXSHkMqtwedSe/a/Sy/7SE8q86c3/8fVn1pd7GMA4HyI7wDxSZJUSNK9Xe/Z/7LL8NNCKAnhTAiZELpywT0JIQmlJaUzKy6dHmb8xeefuunam4p9BACcJ/EdID5JKnulau5a1ezlp6kwM5l5csrJnp6e/gtSMyGEMK10Wmn5lHkz5n1nyVNXzLxi/AsGYKz44EiA&#43;CRJkqST0BN6/&#43;sOoTt85HhF&#43;d9PKztVFs6E0JXb3hM&#43;UlKROl224mNf/O5dz8vuALGz&#43;g4QnyQkoScJXSF0hXAmhLJwZbjqxPunz2ROJR1JOBPC6RBOh9AVrgxXnfzNmccW/MnqT6wqdtUAjAGr7wDxSUIq6UrCmRDOhPLu8qvOXFv6v6d85zObkpBKOpLQEcLxUH66/OpT15a2T3n&#43;9v8iuwNMGlbfAeKThCScSUIqXDLz0impaZWZ2d9Z8lR5KE9CEjqScCZcEi6d0jFtdsns7yx/6ooZGmYAJg&#43;r7wDxSTJJaVfqyplXpaaV3zFr&#43;Xdve/6K6VeEEJKQlB5PXdl1VepI&#43;R2XL/9uzfOyO8AkY/UdID5TS8p&#43;e17Vj3p&#43;9sef&#43;KN75qwesH1G1Y9&#43;/rM//t0/uudGn&#43;wOMAmJ7wCRmTFlxo0zPtad7nruE3950xU3Ddh&#43;yce6j3c9d&#43;tf3nSlT3YHmJzEd4DIlJaUPv/7L2a/OHv7rQW2AzCZGOIB4jNUQBfcASY9l64CAEA0xHcAAIiG06wAEdi1a1exSwBgQhDfASa6JUuWFLsEACYKzTMAABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDRSmUym2DUAAADDy2Qy4jsAAMRBfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANDKZTCqdThe7DAAAYHjpdNrqOwAAxEHzDAAAREN8BwCAaIjvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQjUwmk0qn08UuAwAAGF46nbb6DgAAcchkMqmrrrqq2GUAAADDu&#43;qqq1JdXV3FLgMAABheV1dXqtg1AAAAIyW&#43;AwBANMR3AACIhvgOAADRSL3//vvFrgEAABje&#43;&#43;&#43;/n&#43;ro6Ch2GQAAwPA6OjpSn/rUp4pdBgAAMLxPfepTet8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIRuqdd94pdg0AAMDw3nnnndSsWbOKXQYAADC81KVXpU6fPl3sMgAAgOHNyJxIXXfddcUuAwAAGN51113n0lUAAIiG&#43;A4AAHE4deqU&#43;A4AAHGYOnWq&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaJQWuwAAhvHaa6&#43;N58MtWbJkPB8OgFER3wEisGjRovF5oF27do3PAwFwfjTPAABANFKnTp0qdg0AAMDwTp06ZfUdYDLr7unu6u4a&#43;XYAJrjU1KlTi10DABfE24fe/krzV55/6/mzkvpQ2wGY4KZOnZoqKysrdhkAjL0tb225t&#43;neW2&#43;5teXtlhNnTgzY/hf3/t6C3ztrOwATX1lZmU&#43;eAZhsurq7/nzrn7f8Y8sj//6RS2dd&#43;tY/vZXJZPq2/88f/c&#43;1X1pbPr38rfd6twMQEfEdYFI50nHkK//XV04lp&#43;r&#43;XV26JH2082gIIUmSIx1HvrL5K8e6j9V&#43;qbYn03O042iYUuxaARg9l64CTB5vH3r7C0984bKrL1u9cnVnd2fHyY7Ok50hCT889MMvfPML0y6btnzJ8o4zHZ0nOo&#43;fPC6&#43;A8TI6jvAJLHlrS2Pf//xu2vuvmb2Nb8&#43;8et0Jp3OpNPpdJgSvvrfvvr53/v8rCtm/ebEb3q6e9Jd6ZJ0ifgOECPxHSB6Xd1df/79P9/29rYv3/3lspllR08dTWfS6ZDuyfSETLhs1mU1n60pKS85dvpYNrunu9KlmVLxHSBG4jtA3I50HPlK81d&#43;eeqXX7zzi12lXafOnEqH3uyeDul0Jn37rbefDqd7unvS3el0dzrdle4501OeKRffAWIkvgNE7O2fvb3u&#43;XWXz7r8c5/5XEdPRzqdTifpnqSnN8GHnmwLTU&#43;6N7v3rb5PDVPFd4DofO973xPfAWK15e&#43;3PPbXGz4553euufqao6ePplPpdEm6J9WTTvJCfDa7p9PpdLon&#43;2VPuqe7J52kQ1lS7CMAYHTuuece8R0gPl3dXY&#43;/8viL/7DlM3M&#43;fckll3Sc6kiXptMl6Z50T7okF&#43;L7FuCzIT709Ef5nnQqlUpKxXeA&#43;IjvAJE50nHkqy8&#43;&#43;E//37uf&#43;a1PlyQlHac70qXpnkxP7&#43;WqycDV974tfb006XRPuqcslCVW3wEiJL4DxKS7p3tD64ZUKrlx5tyuM12nw&#43;nelfUknUllMiGTSTKhJITSEEp6/7ZHkklCT0hSSSpJJZkklUmVpEtOnDmheQYgOnrfAeJzyYxLf/7B&#43;2/v&#43;WHPlJ7UzFQyI0nNTCXTkzAtZKZm0lPTmSmZdHk6lIVQmvvrfOkQukPoDqErhDMhnA4lZ0qS6f5yH0Bk7rznHmM3QExKS0r/w&#43;e&#43;MfWyaaXzystmlGWbZLpC15lw5kxypqukq6e0J12eDlNDmB7C9BBmhDAjhOkhTAthSghTQygPoTwkZYned4AYie8Akbl8xuX/dXXzlxfek5pdOq1iekiFkAq9DTOlvem8N6lPz/03LYRpIUwNoSxkV&#43;WT0iRJmQIA4mPsBohPWUnZn9ZseHzxn6ZmlV466yO9CT4b4ktCKMsl&#43;Gl58X1Kf3bvbYs3AwDEZtv3vmfwBojV6k&#43;t/u6/&#43;q8zZ15a8dHLSktLQxJCkpfjy0KYkovvUwam9iQkqSRJTAEAkdH7DhC3m6696a9Wbp330XnTpv7G6ucAABBXSURBVMycVjYthBAyuX9LQkiFkvKSmcnMbGTvlQkhE5JMkqT0vgNEZqZTpwCxu2LmFd&#43;96/kVH/9i6kzZR0orQk/o/a87hK5Qdrqs/O&#43;mf6SzInTnNvaEkA5JJkkS8R0gPuI7QPTKSsr&#43;7F/86WML/yR9NLkyuSr70ZDhZAjHQ9KRnDxxsuedcGXHVeFMCF29/yXdSRLEd4D4iO8Ak8TqT6x6/vb/UnpsytVnri0/Ux5OhNAZks4kCanvfGZT6QdTrjp1bXlXeTgdwpmQdCWJKQAgQsZugMnjpqtv&#43;qvlL83OzL706EcvOX1p6AhJR5KE5KYrb/qrJS9VpmdfGj56SXJpOBWSM1bfAaIkvgNMKlfMuOK7Nc/fMWt56p/Lr&#43;y&#43;qux4SRKSTCZzxfQrvnvb83fMWp6aUn7ljKvKulJJRnwHiI/4DjDZlJWU/dnvb/jjT/7R6d&#43;kPzl97mVTp2WvUi0rKfuzRRv&#43;&#43;Lf/6HRF&#43;pM33njZlGmuXgWIjvgOMDndc&#43;Pq5279y2PHTn7iksoZU2b0b5&#43;z&#43;rnf&#43;8tj5Sc/MWPAdgCiUFrsAgC4UG668qatn//rEEJpyYDR/qYrbtp6W4HtAEx8Bm6AyWyogC64A0RK8wwAAERDfAcAgGg4eQoQgV27dhW7BAAmBPEdYKJbsmRJsUsAYKLQPAMAALH4QHwHAIBYXCO&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAESi8z3xHQAAItFxTHwHAIBIXLNIfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIxQfiOwAAxOIa8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgEp3vie8AABCJjmPiOwAAROKaReI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0RDfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQCw&#43;EN8BACAW14jvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AAJHofE98BwCASHQcE98BACAS1ywS3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAACiIb4DAEA0xHcAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAABi8YH4DgAAsbhGfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIROd74jsAAESi45j4DgAAkbhmkfgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEA3xHQAAoiG&#43;AwBANMR3AACIhvgOAADREN8BACAa4jsAAERDfAcAgGiI7wAAEIsPxHcAAIjFNeI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQCQ63xPfAQAgEh3HSotdAgCTwRNPPFHsEgAuAtcsEt8B&#43;LAeeeSRYpcAcLHQPAMAANEQ3wEAIBriOwAAREN8BwCAaIjvAAAQDfEdAACi4YMjYaJ77bXXil3ChbJkyZKC2y/CQwbGzUQeYQoOERO54A/JLHB&#43;xHeIwKJFi4pdwtjbtWvXOf71IjxkYNxMzBHmHEPExCz4QzILnDfNMwAAEA3xHQAAoqF5BgAmrRE22k7iVmOYfCZOfG9rWrpg38PtjTXFLgSACae1rmLjvD0t66qKXUiEhm23vZBNxiOY3P1sYXQ&#43;KFbzTFvT0oqKutYiPTpcVA5uXjm7T/2OYpczPgYc9MrNB4tdz&#43;TX1rTUoD6ZtDUtraioWNrUdtb21rqCm4nAjvpJNRP0H85kOJrRuaZI8b1t&#43;9ZQXd28bayHevMHFLRw/euHDh06dOj19ftqR5VlD25eGeHIuKN&#43;9m0v35U95EOHDr1&#43;18u3RXgUGNIvsMOHDy9fvnz79u1D7VBdHbZuHxDU25o2Nl/wurgAdtTPnl0bmnOj4tKWyFc1dtT3H87rc5&#43;66Ab44sT3tu1bw4qnH64d&#43;/wOnEvlfV9bs/vlHxwsdh0X1I762hfWNL90X2VuQ&#43;V9LzWveaH2ohvf4RwOHz68du3aG2644dZbbx1qn/krVoT6J/Mm6rbtW0NDQ&#43;04lDf5/OhHPxrhxgsgOyoealic27C4IW&#43;IjNDBn&#43;5buP7&#43;3sOpvO&#43;l/iO7SBQlvrdt3xpWLKuqubO2eeNZJ&#43;Ba6yp65a249G/s35y/KNP7dWtdxYL6naF5lfN6MAJ57SV9wXbgth31s2/bsDu8UNvXftJ/snLirtzsaHmhf1jPWbx0Tdj304Mhdz6h4FnXwUe3o372ys2b6yf6IU9c/aN3blRuratY2tRUN3Bj/p5Lm5rqKpY2tRUc0rfXnTUV9GtrWmroH7G&#43;7L5x48Zp06YNud&#43;cdQ/nT9StT9aHFcvm5O2QbbEpMD0X6rHJ7ty7X97Mvqo5b6cCM35rXf7vz1lbh/qNGrmhxoShXv59e67cvLl&#43;hONCZ2fn888/39LSkr&#43;xpaXl&#43;eef7&#43;zsHH3No1RwVMz9W39HzcCpYNBzcnDzyrzD3THSY78gKq&#43;ft3vDM4OXZM6e1wbUnPfNcHPZ8PNjkRUjvmdf/1Uh1NxZu3PAebnmVdvubG9vb29v31LbvCr7Cm2tq1i1t2FPe&#43;/2sGrIU6k1je17GqpD7Zb2dlfAQEEHNz/1wsK7bq8M4eDmZ8I3syce&#43;1amD27&#43;xoZ5uZOrDYvD4oZDr69fGNY0Hzr00n2VYUf97Kfmvt7fj1L8AWwUrp&#43;7cPf&#43;n/Z&#43;80Jty9Kzjn3Io9u9Yf/SbN9R2PANAX40shckZsfuPSu2LsiN3Tvr993Z3t7evqch1D/Q1Jbdc1XYkt3z6bC1OYRQaEjvv2H1oLUfzmH79u3Lly8/fPhw9tuRZvcQQnai7l2Ab2va2Fz7cP702tb0ZHj67Fk7hL7ZPH8ubq2rWLB1xZ729saagT/x9i21&#43;TsVmPFvmFe9c99PQgihddve6uq9B9pCCK3bmqtXLDvrFyP3GzVqhcaEUOjln9&#43;z8c3w8gsjvP&#43;ZM2euX7&#43;&#43;tbW1L8G3tLS0trauX79&#43;5syZ51Px2NhRP7t23/pco2FzqM0LpoOekwFnb3e0vLDma0VcwF/c0LzmhdqzkvTgeS2/5oM/eHn3mq&#43;NZC4byfxYZEWI73kvubPze&#43;2W3LXpNQ82ZFvjW7c1Vzc83TcC9G0HRmH3httmz549e/ZtL9/1evaUaeV9DfeF7FpCbW4Gqrx&#43;XnihdqgVlR0tL/Tdz&#43;zbNuzuXc2Ox8K51/d&#43;taY5N/guvn/9whdadpzj6HJrVpW337WwCEVHrHVbc9hZvyC7KrqgfmfIpq4QqhserAkhhKplK6pze&#43;a2hVC17uHaIe5x0A3zVa1rsXIzhFtvvfWGG25Yu3bt4cOHR5XdQ&#43;iddjc2tYXWJ&#43;tD348pq2pd47qQXX8fsIKeN5tnbcvG9dwPaMBPPNTcWdv71RAzftWyFblEsHfF0w/P37q9LbQd2JuLEuf&#43;xRiZAmNCCAVe/gOWsSvv&#43;9qakT9EfoKfGNm993C&#43;2RfCBxx7oedk8dJcFt7R8sKapcXNsIsbeq/n6s/whea1vpoP/uDl3WuWLh7JXDb6&#43;XGcdb43/vF9wIi&#43;qjnsHNBXNxLV8264MKXBpJW7dPVQrt3x4OaVs2d/I7u&#43;8Pr6XC5d3JBdUvrGEGcU&#43;&#43;5mwH1NMIuXrhl8UnXHMxt2z7u&#43;8pw3jOLo4lLdt47a3u60aPFMmzZt48aN2QQ/uuweQvYN1c6t25v6l95y2pqWVlQ8kF1/39NwjuTcvHdvdd/bt9GpnndDNpfvPdDWum3vimVVN8wLW7e3Zptwz&#43;MOi6kvwY93du&#43;P3cPqX&#43;YoeEf3rw8v/&#43;Dgwc1PFT29Z1Xe91L/CvkQ81r24A/&#43;4OXQ987r3KP9&#43;c2P46nj2LjH99ZtzaF2S/94vqU29K&#43;m933V1vRA/c7aO2t6z9s9cFbjXe8rtncsaNu&#43;defgB&#43;rrgxz8BfDT/btziy4Hf/Dy7uzGg5s37wghVN730uvr81pNeg2MxTvqJ2zvzOL71y98If8Ddg5uXln7Qv9KUgh960sHN39jQ3Y9Jpqji0de10UIobVu6I&#43;QGbDn&#43;X60iRH&#43;nPoS/Cizewih9wdUf1bjTAjhJ/t25hbLC0/EObUPt7TsWbF1Qa75daif&#43;JAzftWyFWHrAxub58&#43;pyn69cYzTe4ExoaABA8XBzU&#43;NtHmmTzbBj/u6&#43;&#43;L714cNtw1o4F&#43;5&#43;WD2cPqbAnc8syHcdXtl73cFn5PK2&#43;8KLz/zTF4SLo6Dm1cOGKQXzr1&#43;iHmt9z3HM8&#43;8nDu2YUf7Ec6Pfa30g7&#43;40K5ZNN5/timb3vPOqdXcWRtWbWttrLkhhFAbtlVUrAohhFC7pfePPNQ0tm&#43;pq1hQUR9y29dVhRCq1j3dsHXBgor6EKpra3Nv&#43;quWraiuX1XRXN2w5&#43;nxOyiIz&#43;L71z91222zN4QQFq5Z07u6UHnf9c/Mnl0bQghhTfOhxSF7znhD7ewXFq5//aX7Gl5fv/K22bNz/95QlMpHoPK&#43;lw7dvnll9vBCyK605C&#43;vrAkteceZjfWLYzm6iax5VUVz9qvqhj0t6xr3NCxdUFERQsiO6UPeriZvz&#43;qGhtqwNbs9b0hvmTPkrRmZadOmffvb3z6vm9Y82FDdvO/Os//yUs2DDRuz83D&#43;RDyEqnUt7XPqKioqQu2W9sbGLbUVvb8t&#43;T/xIWb8bH6vr699uCb39dYVT4/l2nuhMaGg/IFi4fr1a8LLo36sojTMVN730qHr62f3jYprmg81VIZQ2XCoeeDW/pGy8HNSed/X5s2u3bf&#43;9b79iqLyvm/OXZkrL1d3ZaF5LWTfc2zYMK/5UGX2&#43;&#43;FG&#43;xHOjwcvxIGNVFJXV/fYY4&#43;de6cjR47MmjVrXOoBzvbaa69dyL&#43;JWDS7du0a6s&#43;5X8hDPrh55W37v1acK4/OcchZE3mwHb/a/A3OMbVkyZKR/NXV1157bXzqmQgGjjAfYkzIXgM5dp12Qw0R4z4LnOs5GcODLtIsUExjMgs89thj4736DgADtTUtfXJOS/aMa2vdqubqhj2y&#43;xialDGoSA5uXvnM9b2fMr6jvvaFhcVehh5vBzc/9cKarx2qLHYdFzvxHYDiqlr39LyludbJ6gYr72PpolpWv/AGNG0sXD&#43;GK&#43;8R2FE/u/aFXGclRSW&#43;AxeVyvteOlTsGhikal1L&#43;7piF8HFaZRjQuV9Lx2674IVM0EUfk4WNxxyVdAEUZS/ugoAAJwPq&#43;8QgWGvPJt8LsJDBsZNdCNMdAV/eBfhIY&#43;c&#43;A4T3bmvUp&#43;ULsJDBsZNdCNMdAV/eBfhIY&#43;K5hkAAIiG&#43;A4AANEQ3wEAIBriOwAAREN8BwCAWHwgvgMAQCyuEd8BACAa4jsAAERjpH&#43;26ciRIxe0DgAmOBMBwEQwovg&#43;a9asC10HABOZiQBggtA8AwAAkeh8T3wHAIBIdBwT3wEAIBLXLBLfAQAgGuI7AABEQ3wHAIBoiO8AABAN8R0AAKIhvgMAQDTEdwAAiIb4DgAA0Ujq6uqKXQMAY6mrqyv/2/fffz&#43;EUFlZOcKbv/vuu8ePX/3rgRuXLvrou&#43;&#43;&#43;&#43;6Mf/eiee&#43;4ZkyIBOD//P8Ohjj3a0SoUAAAAAElFTkSuQmCC"
-      alt="4cdbc8106d0296e6261e6abdfa0b0096" 
-      loading="lazy"
-    >
-  </figure></div>
-</p>
-<p>软件界面左侧窗口是图片显示窗口，可以通过拖放打开图片，支持bmp、png、jpg等主流格式的图片(暂不支持gif动图显示)，支持右键菜单，支持图片放大缩小和重置等基本操作。</p>
-<p>左侧窗口下方的<code>Paste</code>按钮可以将剪贴板中的图像数据读取并显示出来，方便通过截图软件和剪贴板交互读取图像数据。</p>
-<p>右侧窗口是文本显示窗口，如果转换成功这里会图片对应的base64编码并显示出来。下方的Markdown复选框用于添加Markdown的图片语法标签，点击<code>Copy</code>按钮后可以将文本数据复制到剪贴板，之后就可以直接在MD文件中粘贴了。</p>
-<p>值得注意的是，<code>Copy</code>按钮左侧的组合框可以选择base64对应的图片格式。没错，base64也是有对应格式区分的，base64本质上是将二进制编码的文本化，因此不同图片原始格式的大小所导致的base64编码长度自然不一样，甚至图片的复杂程度和压缩比等因素对base64编码长度都有影响。</p>
-<p>右侧窗口下方的<code>Save as</code>按钮支持将图片文件以原始格式或base64编码(txt文件)存储。通过中间的两个方向按钮可以实现将图片转换成base64编码，或者将base64编码转换成图片。需要注意的是，将base64编码转换成图片时，请不要包含markdown的语法标签，否则会报错。</p>
-<p>该软件经过测试，可以使用png格式base64编码，通过markdown语法标签在<a href="https://github.com/marktext/marktext" target="_blank" rel="noopener">marktext</a>
-和<a href="https://joplinapp.org/" target="_blank" rel="noopener">joplin</a>
-上渲染图片，其他格式不保证能成功，取决于markdown编辑器的渲染引擎。对于一般屏幕截图，推荐采用png格式。</p>
-<h2 id="2-代码解析">2. 代码解析</h2>
-<h3 id="21-c实现">2.1 C++实现</h3>
-<p>该软件基于Qt6实现，图片格式编码、渲染以及base64转换都是通过Qt实现的。</p>
-<p>图片显示通过QLabel实现，重载了QLabel类<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，并做了一些调整。</p>
-<p><code>photolabel.h</code>：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#ifndef PHOTOLABEL_H
-</span></span></span><span class="line"><span class="cl"><span class="cp">#define PHOTOLABEL_H
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;QObject&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;QLabel&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;QMenu&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;QDragEnterEvent&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;QDropEvent&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">PhotoLabel</span> <span class="o">:</span> <span class="k">public</span> <span class="n">QLabel</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">Q_OBJECT</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="k">explicit</span> <span class="n">PhotoLabel</span><span class="p">(</span><span class="n">QWidget</span><span class="o">*</span> <span class="n">parent</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="nf">openFile</span><span class="p">(</span><span class="n">QString</span><span class="p">);</span>     <span class="c1">//打开图片文件
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">clearShow</span><span class="p">();</span>           <span class="c1">//清空显示
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">setImage</span><span class="p">(</span><span class="n">QImage</span><span class="o">&amp;</span><span class="p">);</span>     <span class="c1">//设置图片
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">openAction</span><span class="p">();</span>          <span class="c1">//调用打开文件对话框
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">pasteAction</span><span class="p">();</span>         <span class="c1">//粘贴来自剪贴板的图片
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">const</span> <span class="n">QImage</span><span class="o">&amp;</span> <span class="n">getImage</span><span class="p">();</span>   <span class="c1">//调用存储的图片数据
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="nl">signals</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">	<span class="c1">// 图片加载成功信号
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="n">imageLoadSuccess</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">protected</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="n">contextMenuEvent</span><span class="p">(</span><span class="n">QContextMenuEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>   <span class="c1">//右键菜单
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="n">QPaintEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>               <span class="c1">//QPaint画图
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">wheelEvent</span><span class="p">(</span><span class="n">QWheelEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>               <span class="c1">//鼠标滚轮滚动
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="n">QMouseEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>          <span class="c1">//鼠标摁下
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="n">QMouseEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>           <span class="c1">//鼠标松开
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="n">QMouseEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>        <span class="c1">//鼠标发射事件
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//拖放文件
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">dragEnterEvent</span><span class="p">(</span><span class="n">QDragEnterEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="nf">dragMoveEvent</span><span class="p">(</span><span class="n">QDragMoveEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="nf">dropEvent</span><span class="p">(</span><span class="n">QDropEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">private</span> <span class="nl">slots</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="n">initWidget</span><span class="p">();</span>      <span class="c1">//初始化
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">onSelectImage</span><span class="p">();</span>   <span class="c1">//选择打开图片
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">onPasteImage</span><span class="p">();</span>    <span class="c1">//选择粘贴图片
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">onZoomInImage</span><span class="p">();</span>   <span class="c1">//图片放大
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">onZoomOutImage</span><span class="p">();</span>  <span class="c1">//图片缩小
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="nf">onPresetImage</span><span class="p">();</span>   <span class="c1">//图片还原
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="k">private</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="n">QImage</span> <span class="n">m_image</span><span class="p">;</span>           <span class="c1">//显示的图片
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">qreal</span> <span class="n">m_zoomValue</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>  <span class="c1">//鼠标缩放值
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">int</span> <span class="n">m_xPtInterval</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>    <span class="c1">//平移X轴的值
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">int</span> <span class="n">m_yPtInterval</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>    <span class="c1">//平移Y轴的值
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">QPoint</span> <span class="n">m_oldPos</span><span class="p">;</span>          <span class="c1">//旧的鼠标位置
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">bool</span> <span class="n">m_pressed</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>   <span class="c1">//鼠标是否被摁压
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">QString</span> <span class="n">m_localFileName</span><span class="p">;</span>  <span class="c1">//文件名称
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">QMenu</span><span class="o">*</span> <span class="n">m_menu</span><span class="p">;</span>            <span class="c1">//右键菜单
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cp">#endif </span><span class="c1">// PHOTOLABEL_H
-</span></span></span></code></pre></div><p><code>photolabel.cpp</code>：</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/code/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Code
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/c&#43;&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">C&#43;&#43;</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/python/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Python</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/qt/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Qt</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-04-02T00:00:00&#43;00:00">
-      2025-04-02
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长7分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-27-openfoam-compile-install-cfmesh-and-ccmtool/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/vortex-bg.jpg"
-      alt="OpenFOAM编译安装cfmesh和ccm工具" title="OpenFOAM编译安装cfmesh和ccm工具"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-27-openfoam-compile-install-cfmesh-and-ccmtool/">OpenFOAM编译安装cfmesh和ccm工具</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <h2 id="1-编译cfmesh">1. 编译cfmesh</h2>
-<p>前期编译安装的是com版的OpenFOAM，版本号是v2412，没有附带cfmesh的源码。根据官方文档的提示，需要手动下载cfmesh的源码文件：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>
-</span></span><span class="line"><span class="cl">git submodule update --init --recursive plugins/cfmesh
-</span></span></code></pre></div><p>出现以下错误：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">fatal: 不是 git 仓库（或者任何父目录）：.git
-</span></span></code></pre></div><p>无语了，直接通过git下载源码到指定文件夹，文件夹和URL路径可以查看<code>.gitmodules</code>文件：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>
-</span></span><span class="line"><span class="cl">git clone https://develop.openfoam.com/Community/integration-cfmesh.git plugins/cfmesh
-</span></span></code></pre></div><p>进入cfmesh文件夹，开始编译：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> plugins/cfmesh
-</span></span><span class="line"><span class="cl">./Allwmake -jN <span class="c1"># N替换成CPU核心数</span>
-</span></span></code></pre></div><p>运行pMesh，验证是否安装成功：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">pMesh -help
-</span></span></code></pre></div><h2 id="2-编译ccm工具">2. 编译ccm工具</h2>
-<p>OpenFOAM的ccm工具包含ccmToFoam和foamToCcm，前者用于将STAR-CCM+输出的ccm格式网格转换成OpenFOAM的网格，后者相反。需要先编译安装第三方库libccmio：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_THIRD_PARTY_DIR</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 下载libccmio</span>
-</span></span><span class="line"><span class="cl">wget http://portal.nersc.gov/project/visit/third_party/libccmio-2.6.1.tar.gz
-</span></span><span class="line"><span class="cl"><span class="c1"># 备选链接</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># wget https://sourceforge.net/projects/foam-extend/files/ThirdParty/libccmio-2.6.1.tar.gz</span>
-</span></span><span class="line"><span class="cl">tar xvzf libccmio-2.6.1.tar.gz	<span class="c1"># 解压下载的压缩包</span>
-</span></span><span class="line"><span class="cl">./makeCCMIO	<span class="c1"># 运行libccmio的编译程序</span>
-</span></span></code></pre></div><p>接下来编译ccmToFoam：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># 先编译libccm</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>/src/conversion/ccm
-</span></span><span class="line"><span class="cl">./Allwmake
-</span></span><span class="line"><span class="cl"><span class="c1"># 然后编译ccmToFoam和foamToCcm</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$WM_PROJECT_DIR</span>/applications/utilities/mesh/conversion/ccm
-</span></span><span class="line"><span class="cl">./Allwmake
-</span></span></code></pre></div><p>运行ccmToFoam，验证是否安装成功：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">ccmToFoam -help
-</span></span></code></pre></div><hr>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/cfd/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Cfd
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/linux/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Linux</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/openfoam/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Openfoam</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-27T00:00:00&#43;00:00">
-      2025-03-27
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -842,16 +793,16 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/categories/zhihu/"
+      <a href="/zh-cn/categories/code/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Zhihu
+        Code
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/categories/code/"
+      <a href="/zh-cn/categories/zhihu/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Code
+        Zhihu
       </a>
     </li>
     
@@ -935,16 +886,16 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/slurm/"
+      <a href="/zh-cn/tags/c&#43;&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Slurm
+        C&#43;&#43;
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/c&#43;&#43;/"
+      <a href="/zh-cn/tags/slurm/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        C&#43;&#43;
+        Slurm
       </a>
     </li>
     

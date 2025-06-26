@@ -1425,7 +1425,7 @@ rand = "0.9.1"
 
 ```
 
-Compiled using the msvc tool chain under Windows, the Release program execution effect is as follows:
+Compiled using the msvc toolchain under Windows, the Release program execution effect is as follows:
 ```powershell
 PS D:\example\efficiency_v3\rust\mathru-rs> cargo run --release -- -l 10 -n 10
     Finished `release` profile [optimized] target(s) in 0.05s

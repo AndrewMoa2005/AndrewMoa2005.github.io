@@ -202,6 +202,343 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-03-06-abaqus-command/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/abaqus-bg.jpg"
+      alt="Abaqus提交命令" title="Abaqus提交命令"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-06-abaqus-command/">Abaqus提交命令</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>用Ansa输出inp文件之后，可以通过Abaqus CAE窗口界面提交inp文件进行计算，也可以通过命令行方式提交计算。使用命令行提交需要添加Path，Windows下通常是<code>[Abaqus安装目录]\Commands</code>路径。</p>
+<p>其实Windows下装完Abaqus后，开始菜单会出现<code>Abaqus Command</code>快捷方式，点击该快捷方式可以通过命令行提交abaqus计算文件，不需要添加Path。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-06-abaqus-command/images/a6ed3616d120e0eeb3087d0596b3cb2b_hu_62f3e42a6beefa4e.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-06-abaqus-command/images/a6ed3616d120e0eeb3087d0596b3cb2b_hu_499244e671e0877b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-06-abaqus-command/images/a6ed3616d120e0eeb3087d0596b3cb2b_hu_9a362545124e24a.jpg" width="533" height="197" alt="a6ed3616d120e0eeb3087d0596b3cb2b.png" title="a6ed3616d120e0eeb3087d0596b3cb2b.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>使用以下命令行提交inp计算文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">abaqus <span class="nv">job</span><span class="o">=[</span>文件名<span class="o">]</span>  <span class="nv">cpus</span><span class="o">=[</span>核心数<span class="o">]</span> <span class="nv">double</span><span class="o">=</span>both <span class="nv">output_precision</span><span class="o">=</span>full int <span class="nv">ask</span><span class="o">=</span>off
+</span></span></code></pre></div><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_601fddfb5bacc81b.webp 320w, /post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_9eb11fba4df48a9e.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_9fcad9b854e0b6ec.jpg 320w, /post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_b08b7741d1fde42f.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_b08b7741d1fde42f.jpg" width="690" height="385" alt="c410e740fc2aa52bde5adab8a2d1d217.png" title="c410e740fc2aa52bde5adab8a2d1d217.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>通常来说通过<code>job</code>指定文件名就可以开始计算了，其他一些命令开关不是必要选项，它们的含义如下：</p>
+<ul>
+<li><code>help</code> →查看帮助</li>
+<li><code>double={ explicit | both | off | constraint }</code> → 计算精度</li>
+<li><code>output_precision={ single | full }</code> → 输出结果精度</li>
+<li><code>int / interactive</code> → 打印求解过程</li>
+<li><code>ask=off</code> → 不询问直接覆盖</li>
+<li><code>memory=5gb</code> → 指定最大运行内存5GB</li>
+<li><code>scratch=D:\Temp</code> → 指定计算临时文件存储地</li>
+</ul>
+<p>参考资料：https://abaqus-docs.mit.edu/2017/English/SIMACAEEXCRefMap/simaexc-c-analysisproc.htm</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/ansa/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Ansa
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/abaqus/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Abaqus</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-06T00:00:00&#43;00:00">
+      2025-03-06
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-05-ansa-unit/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
+      alt="Ansa单位制" title="Ansa单位制"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-05-ansa-unit/">Ansa单位制</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>Ansa导入step模型默认长度单位是mm，重量是ton。但我们常用的SI单位制长度是m，重量是kg。关于两种单位的转换如下表所示。</p>
+<table>
+  <thead>
+      <tr>
+          <th>长度</th>
+          <th>质量</th>
+          <th>时间</th>
+          <th>力</th>
+          <th>应力</th>
+          <th>能量</th>
+          <th>密度</th>
+          <th>杨氏模量</th>
+          <th>速度 (56.3KPH)</th>
+          <th>重力</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>m</td>
+          <td>kg</td>
+          <td>s</td>
+          <td>N</td>
+          <td>Pa</td>
+          <td>Joule</td>
+          <td>7.83E+03</td>
+          <td>2.07E+11</td>
+          <td>15.64</td>
+          <td>9.81</td>
+      </tr>
+      <tr>
+          <td>mm</td>
+          <td>ton</td>
+          <td>s</td>
+          <td>N</td>
+          <td>MPa</td>
+          <td>N-mm</td>
+          <td>7.83E-09</td>
+          <td>2.07E+05</td>
+          <td>1.564E+04</td>
+          <td>9.81E+03</td>
+      </tr>
+  </tbody>
+</table>
+<p>在定义模型参数时，应注意根据长度选择对应的单位制。</p>
+<hr>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/ansa/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Ansa
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/ansa/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ansa</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-05T00:00:00&#43;00:00">
+      2025-03-05
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-03-05-ansa-connector/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
@@ -377,350 +714,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-02-28-ansa-washer-mesh/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
-      alt="Ansa螺钉孔washer网格" title="Ansa螺钉孔washer网格"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-02-28-ansa-washer-mesh/">Ansa螺钉孔washer网格</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>使用Ansa建面网格的时候我们都希望螺钉孔能处理成washer网格的形式，方便后面加约束。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/ff86c5fd4ac5cc0624c9013d21a1dab5_hu_f61bd20bc9225c6c.jpg" width="274" height="276" alt="ff86c5fd4ac5cc0624c9013d21a1dab5.png" title="ff86c5fd4ac5cc0624c9013d21a1dab5.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>但默认设置生成的网格螺钉孔貌似都没有按washer处理。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-28-ansa-washer-mesh/images/6ea45853b136275e0c8325e7b4a47341_hu_1b8d0b86abdd0d5f.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-28-ansa-washer-mesh/images/6ea45853b136275e0c8325e7b4a47341_hu_fea246e151c454cf.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/6ea45853b136275e0c8325e7b4a47341_hu_1b842213d859c9b4.jpg" width="355" height="206" alt="6ea45853b136275e0c8325e7b4a47341.png" title="6ea45853b136275e0c8325e7b4a47341.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>有几种方法，其一是通过几何处理手动添加<code>Zone Cut</code>的方式，这种方法手工处理工作量太大，不推荐</p>
-<p>另一种方法需要手动<code>Reconstruct</code>网格，首先在网格参数设置里设置孔的特征参数。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-28-ansa-washer-mesh/images/363c5b51b1b6eab2ba3b44bd907c10dd_hu_a777d43b89185676.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-28-ansa-washer-mesh/images/363c5b51b1b6eab2ba3b44bd907c10dd_hu_23597564ac14f085.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/363c5b51b1b6eab2ba3b44bd907c10dd_hu_5114612957df8435.jpg" width="509" height="31" alt="363c5b51b1b6eab2ba3b44bd907c10dd.png" title="363c5b51b1b6eab2ba3b44bd907c10dd.png" loading="lazy" />
-  </picture>
-</div>
-<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-28-ansa-washer-mesh/images/6db3f7dddb8aaa1cea878f831db1abc0_hu_d69bf35daa1e44cd.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-28-ansa-washer-mesh/images/6db3f7dddb8aaa1cea878f831db1abc0_hu_ef0a10c44553e148.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/6db3f7dddb8aaa1cea878f831db1abc0_hu_8644326483dff6fa.jpg" width="608" height="505" alt="6db3f7dddb8aaa1cea878f831db1abc0.png" title="6db3f7dddb8aaa1cea878f831db1abc0.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>返回<code>Mesh</code>里，<code>Reconstrust</code>就有了。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-28-ansa-washer-mesh/images/5489ac8734b83c3b95fbac196237c402_hu_96a410cea234b60b.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-28-ansa-washer-mesh/images/5489ac8734b83c3b95fbac196237c402_hu_e265c4b9b186adcd.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-28-ansa-washer-mesh/images/5489ac8734b83c3b95fbac196237c402_hu_2b98d549e25fba12.jpg" width="605" height="513" alt="5489ac8734b83c3b95fbac196237c402.png" title="5489ac8734b83c3b95fbac196237c402.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<hr>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/ansa/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Ansa
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/ansa/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ansa</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/cae/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cae</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-02-28T00:00:00&#43;00:00">
-      2025-02-28
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-02-27-ansa-midsurf/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
-      alt="Ansa抽中面功能" title="Ansa抽中面功能"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-02-27-ansa-midsurf/">Ansa抽中面功能</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>ANSA针对钣金件抽中面有几种不同处理方式。</p>
-<h2 id="1-skin方法">1. <code>Skin</code>方法</h2>
-<p><code>TOPO</code>→<code>Mid.Surfa.</code>→<code>Skin</code>，选中整个几何体然后无脑按鼠标中键就可以自动抽中面。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-27-ansa-midsurf/images/0f525cbbea14aa2904b78e9e80f86f98_hu_d5fbc0f32981e2b5.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-27-ansa-midsurf/images/0f525cbbea14aa2904b78e9e80f86f98_hu_1503de43edbeda05.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-27-ansa-midsurf/images/0f525cbbea14aa2904b78e9e80f86f98_hu_12f460258f4e52b4.jpg" width="376" height="508" alt="0f525cbbea14aa2904b78e9e80f86f98.png" title="0f525cbbea14aa2904b78e9e80f86f98.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>适合一些厚度比较均匀的钣金结构件，没有筋条、凸台、凹坑等特征。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-27-ansa-midsurf/images/86e9dc3696bc04b9a2811e5e191d2ae8_hu_9167e628052ed553.webp 320w, /post/2025-02-27-ansa-midsurf/images/86e9dc3696bc04b9a2811e5e191d2ae8_hu_66e30b4dc52ef65.webp 640w, /post/2025-02-27-ansa-midsurf/images/86e9dc3696bc04b9a2811e5e191d2ae8_hu_1fcfc771bffbf3c4.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-27-ansa-midsurf/images/86e9dc3696bc04b9a2811e5e191d2ae8_hu_8da0db6072c31110.jpg 320w, /post/2025-02-27-ansa-midsurf/images/86e9dc3696bc04b9a2811e5e191d2ae8_hu_404b1a628e14c0e8.jpg 640w, /post/2025-02-27-ansa-midsurf/images/86e9dc3696bc04b9a2811e5e191d2ae8_hu_7d9be3287799a14a.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-27-ansa-midsurf/images/86e9dc3696bc04b9a2811e5e191d2ae8_hu_404b1a628e14c0e8.jpg" width="1243" height="749" alt="86e9dc3696bc04b9a2811e5e191d2ae8.png" title="86e9dc3696bc04b9a2811e5e191d2ae8.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>抽出来的中面是几何不带网格，需要手动画网格，会自动删除原来的几何并添加厚度。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-27-ansa-midsurf/images/65641a61f8dc0512e7817886b49376ac_hu_3f67fe295f1083b8.webp 320w, /post/2025-02-27-ansa-midsurf/images/65641a61f8dc0512e7817886b49376ac_hu_3901ef99e99f4871.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-27-ansa-midsurf/images/65641a61f8dc0512e7817886b49376ac_hu_45476d7d82931359.jpg 320w, /post/2025-02-27-ansa-midsurf/images/65641a61f8dc0512e7817886b49376ac_hu_87c5488af3ca8481.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-27-ansa-midsurf/images/65641a61f8dc0512e7817886b49376ac_hu_87c5488af3ca8481.jpg" width="712" height="967" alt="65641a61f8dc0512e7817886b49376ac.png" title="65641a61f8dc0512e7817886b49376ac.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>对一些挤压件像挤压铝型材也支持，但是有圆角的话要先处理掉，不然抽出来的中面圆角会保留并放大。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-27-ansa-midsurf/images/943f3baab965a035e5eb414649bfc120_hu_2134bed6e2133b09.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-27-ansa-midsurf/images/943f3baab965a035e5eb414649bfc120_hu_77b05c9e94375ba1.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-27-ansa-midsurf/images/943f3baab965a035e5eb414649bfc120_hu_fbb1163e2bc18828.jpg" width="467" height="706" alt="943f3baab965a035e5eb414649bfc120.png" title="943f3baab965a035e5eb414649bfc120.png" loading="lazy" />
-  </picture>
-</div>
-<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-02-27-ansa-midsurf/images/68c5c4d9c15d8b0aa5963fcc69b65e0a_hu_c0b666646bc6a1f9.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-02-27-ansa-midsurf/images/68c5c4d9c15d8b0aa5963fcc69b65e0a_hu_ebca170bed1b7f80.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-02-27-ansa-midsurf/images/68c5c4d9c15d8b0aa5963fcc69b65e0a_hu_f1c8470e854ba35e.jpg" width="326" height="397" alt="68c5c4d9c15d8b0aa5963fcc69b65e0a.png" title="68c5c4d9c15d8b0aa5963fcc69b65e0a.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/ansa/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Ansa
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/ansa/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ansa</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/cae/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cae</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-02-27T00:00:00&#43;00:00">
-      2025-02-27
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -787,16 +780,16 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/categories/zhihu/"
+      <a href="/zh-cn/categories/code/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Zhihu
+        Code
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/categories/code/"
+      <a href="/zh-cn/categories/zhihu/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Code
+        Zhihu
       </a>
     </li>
     
@@ -880,16 +873,16 @@
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/slurm/"
+      <a href="/zh-cn/tags/c&#43;&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Slurm
+        C&#43;&#43;
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/c&#43;&#43;/"
+      <a href="/zh-cn/tags/slurm/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        C&#43;&#43;
+        Slurm
       </a>
     </li>
     

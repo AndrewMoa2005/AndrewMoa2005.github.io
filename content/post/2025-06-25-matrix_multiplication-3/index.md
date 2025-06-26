@@ -1369,7 +1369,7 @@ Average Time: 0.337995s, Min Time: 0.267384s
 ```
 It can be seen that the calculation speed has been greatly improved compared with the previous method. Hyperthreading is not used here, but the result is very close to the effect of using OpenBLAS alone to accelerate the calculation, and the double-precision floating-point calculation performance is even better. Using hyperthreading during the test did not achieve better results, and there is a high probability that the program will crash, which may be caused by the mixing of OpenMP and MPI.
 
-# 4. Summarize
+## 4. Summarize
 
 Running on a single machine, writing an MPI program requires separate control of memory and message broadcasting, which makes coding and debugging more troublesome and brings additional performance overhead. Compared with OpenMP, it has no performance advantage, but OpenMP has more advantages in coding.
 

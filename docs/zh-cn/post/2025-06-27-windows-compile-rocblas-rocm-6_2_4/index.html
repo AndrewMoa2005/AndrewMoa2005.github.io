@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>Windows下编译rocblas-rocm-6.2.4 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="之前演示矩阵运算加速的时候本来想尝试一下AMD自家的ROCm，程序编译完运行结果碰到报错：
+rocBLAS error: Cannot read D:\example\efficiency_v3\rocm\build\Release\/rocblas/library/TensileLibrary.dat: No such file or directory for GPU arch : gfx1150 List of available TensileLibrary Files : 查询官网文档，ROCm不支持Radeon 880M核显(AI H 365w处理器)1。除非自己编译rocblas，否则没法运行。
+查了一下网上的教程文章234，没有适配这款核显的，自己开搞吧。
+1. 下载工具和源码 需要用到的工具见下表，没有就去官网下载安装。
+序号 软件/工具包 版本 1 Visual Studio Community 2022 2 AMD HIP SDK for Windows5 6.2.4 3 Python 3.13 4 Git for Windows 2.7.4 5 Strawberry Perl 5.40.0.1 6 CMake 3.30.1 我的机器上装了vcpkg，除了前两个从官网下载安装之外，后面的都是从vcpkg的downloads\tools目录提取的，将路径添加到环境变量即可。
+# 配置工具包路径 $Env:HIP_PATH=&#34;C:\Program Files\AMD\ROCm\6.2&#34; $Env:GIT_BIN_PATH = &#34;D:\vcpkg\downloads\tools\git-2.7.4-windows\bin&#34; $Env:PERL_PATH = &#34;D:\vcpkg\downloads\tools\perl\5.40.0.1&#34; $Env:CMAKE_BIN_PATH = &#34;D:\vcpkg\downloads\tools\cmake-3.30.1-windows\cmake-3.30.1-windows-i386\bin&#34; # 配置系统环境变量 $Env:PATH &#43;= &#34;;$Env:HIP_PATH\bin;$Env:GIT_BIN_PATH;$Env:PERL_PATH\perl\site\bin;$Env:PERL_PATH\perl\bin;$Env:PERL_PATH\c\bin;$Env:CMAKE_BIN_PATH&#34; 从Github上下载rocBLAS和Tensile的源码，注意版本和本机安装的AMD HIP SDK版本要一致。这里还要下载补丁文件Tensile-fix-fallback-arch-build.patch，确保可以为不支持的显卡编译内容。
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="Windows下编译rocblas-rocm-6.2.4">
+  <meta property="og:description" content="之前演示矩阵运算加速的时候本来想尝试一下AMD自家的ROCm，程序编译完运行结果碰到报错：
+rocBLAS error: Cannot read D:\example\efficiency_v3\rocm\build\Release\/rocblas/library/TensileLibrary.dat: No such file or directory for GPU arch : gfx1150 List of available TensileLibrary Files : 查询官网文档，ROCm不支持Radeon 880M核显(AI H 365w处理器)1。除非自己编译rocblas，否则没法运行。
+查了一下网上的教程文章234，没有适配这款核显的，自己开搞吧。
+1. 下载工具和源码 需要用到的工具见下表，没有就去官网下载安装。
+序号 软件/工具包 版本 1 Visual Studio Community 2022 2 AMD HIP SDK for Windows5 6.2.4 3 Python 3.13 4 Git for Windows 2.7.4 5 Strawberry Perl 5.40.0.1 6 CMake 3.30.1 我的机器上装了vcpkg，除了前两个从官网下载安装之外，后面的都是从vcpkg的downloads\tools目录提取的，将路径添加到环境变量即可。
+# 配置工具包路径 $Env:HIP_PATH=&#34;C:\Program Files\AMD\ROCm\6.2&#34; $Env:GIT_BIN_PATH = &#34;D:\vcpkg\downloads\tools\git-2.7.4-windows\bin&#34; $Env:PERL_PATH = &#34;D:\vcpkg\downloads\tools\perl\5.40.0.1&#34; $Env:CMAKE_BIN_PATH = &#34;D:\vcpkg\downloads\tools\cmake-3.30.1-windows\cmake-3.30.1-windows-i386\bin&#34; # 配置系统环境变量 $Env:PATH &#43;= &#34;;$Env:HIP_PATH\bin;$Env:GIT_BIN_PATH;$Env:PERL_PATH\perl\site\bin;$Env:PERL_PATH\perl\bin;$Env:PERL_PATH\c\bin;$Env:CMAKE_BIN_PATH&#34; 从Github上下载rocBLAS和Tensile的源码，注意版本和本机安装的AMD HIP SDK版本要一致。这里还要下载补丁文件Tensile-fix-fallback-arch-build.patch，确保可以为不支持的显卡编译内容。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-06-27T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-06-27T00:00:00+00:00">
+    <meta property="article:tag" content="C&#43;&#43;">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Windows下编译rocblas-rocm-6.2.4">
+  <meta name="twitter:description" content="之前演示矩阵运算加速的时候本来想尝试一下AMD自家的ROCm，程序编译完运行结果碰到报错：
+rocBLAS error: Cannot read D:\example\efficiency_v3\rocm\build\Release\/rocblas/library/TensileLibrary.dat: No such file or directory for GPU arch : gfx1150 List of available TensileLibrary Files : 查询官网文档，ROCm不支持Radeon 880M核显(AI H 365w处理器)1。除非自己编译rocblas，否则没法运行。
+查了一下网上的教程文章234，没有适配这款核显的，自己开搞吧。
+1. 下载工具和源码 需要用到的工具见下表，没有就去官网下载安装。
+序号 软件/工具包 版本 1 Visual Studio Community 2022 2 AMD HIP SDK for Windows5 6.2.4 3 Python 3.13 4 Git for Windows 2.7.4 5 Strawberry Perl 5.40.0.1 6 CMake 3.30.1 我的机器上装了vcpkg，除了前两个从官网下载安装之外，后面的都是从vcpkg的downloads\tools目录提取的，将路径添加到环境变量即可。
+# 配置工具包路径 $Env:HIP_PATH=&#34;C:\Program Files\AMD\ROCm\6.2&#34; $Env:GIT_BIN_PATH = &#34;D:\vcpkg\downloads\tools\git-2.7.4-windows\bin&#34; $Env:PERL_PATH = &#34;D:\vcpkg\downloads\tools\perl\5.40.0.1&#34; $Env:CMAKE_BIN_PATH = &#34;D:\vcpkg\downloads\tools\cmake-3.30.1-windows\cmake-3.30.1-windows-i386\bin&#34; # 配置系统环境变量 $Env:PATH &#43;= &#34;;$Env:HIP_PATH\bin;$Env:GIT_BIN_PATH;$Env:PERL_PATH\perl\site\bin;$Env:PERL_PATH\perl\bin;$Env:PERL_PATH\c\bin;$Env:CMAKE_BIN_PATH&#34; 从Github上下载rocBLAS和Tensile的源码，注意版本和本机安装的AMD HIP SDK版本要一致。这里还要下载补丁文件Tensile-fix-fallback-arch-build.patch，确保可以为不支持的显卡编译内容。">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-06-27T00:00:00Z","datePublished":"2025-06-27T00:00:00Z","description":"之前演示矩阵运算加速的时候本来想尝试一下AMD自家的ROCm，程序编译完运行结果碰到报错：\nrocBLAS error: Cannot read D:\\example\\efficiency_v3\\rocm\\build\\Release\\/rocblas/library/TensileLibrary.dat: No such file or directory for GPU arch : gfx1150 List of available TensileLibrary Files : 查询官网文档，ROCm不支持Radeon 880M核显(AI H 365w处理器)1。除非自己编译rocblas，否则没法运行。\n查了一下网上的教程文章234，没有适配这款核显的，自己开搞吧。\n1. 下载工具和源码 需要用到的工具见下表，没有就去官网下载安装。\n序号 软件/工具包 版本 1 Visual Studio Community 2022 2 AMD HIP SDK for Windows5 6.2.4 3 Python 3.13 4 Git for Windows 2.7.4 5 Strawberry Perl 5.40.0.1 6 CMake 3.30.1 我的机器上装了vcpkg，除了前两个从官网下载安装之外，后面的都是从vcpkg的downloads\\tools目录提取的，将路径添加到环境变量即可。\n# 配置工具包路径 $Env:HIP_PATH=\u0026#34;C:\\Program Files\\AMD\\ROCm\\6.2\u0026#34; $Env:GIT_BIN_PATH = \u0026#34;D:\\vcpkg\\downloads\\tools\\git-2.7.4-windows\\bin\u0026#34; $Env:PERL_PATH = \u0026#34;D:\\vcpkg\\downloads\\tools\\perl\\5.40.0.1\u0026#34; $Env:CMAKE_BIN_PATH = \u0026#34;D:\\vcpkg\\downloads\\tools\\cmake-3.30.1-windows\\cmake-3.30.1-windows-i386\\bin\u0026#34; # 配置系统环境变量 $Env:PATH += \u0026#34;;$Env:HIP_PATH\\bin;$Env:GIT_BIN_PATH;$Env:PERL_PATH\\perl\\site\\bin;$Env:PERL_PATH\\perl\\bin;$Env:PERL_PATH\\c\\bin;$Env:CMAKE_BIN_PATH\u0026#34; 从Github上下载rocBLAS和Tensile的源码，注意版本和本机安装的AMD HIP SDK版本要一致。这里还要下载补丁文件Tensile-fix-fallback-arch-build.patch，确保可以为不支持的显卡编译内容。\n","image":"/images/code-bg.jpg","name":"Windows下编译rocblas-rocm-6.2.4","url":"https://andrewmoa.site/zh-cn/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="Windows下编译rocblas-rocm-6.2.4" title="Windows下编译rocblas-rocm-6.2.4"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/">Windows下编译rocblas-rocm-6.2.4</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/c&#43;&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">C&#43;&#43;</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-06-27T00:00:00&#43;00:00">
+      2025-06-27
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长8分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-下载工具和源码">1. 下载工具和源码</a></li>
+    <li><a href="#2-修改源码">2. 修改源码</a></li>
+    <li><a href="#3-编译安装">3. 编译安装</a></li>
+    <li><a href="#4-编译测试">4. 编译测试</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>之前演示矩阵运算加速的时候本来想尝试一下AMD自家的ROCm，程序编译完运行结果碰到报错：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">rocBLAS error: Cannot read D:\example\efficiency_v3\rocm\build\Release\/rocblas/library/TensileLibrary.dat: No such file or directory for GPU arch : gfx1150
+</span></span><span class="line"><span class="cl"> List of available TensileLibrary Files : 
+</span></span></code></pre></div><p>查询官网文档，ROCm不支持Radeon 880M核显(AI H 365w处理器)<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。除非自己编译rocblas，否则没法运行。</p>
+<p>查了一下网上的教程文章<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>，没有适配这款核显的，自己开搞吧。</p>
+<h2 id="1-下载工具和源码">1. 下载工具和源码</h2>
+<p>需要用到的工具见下表，没有就去官网下载安装。</p>
+<table>
+  <thead>
+      <tr>
+          <th>序号</th>
+          <th>软件/工具包</th>
+          <th>版本</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>Visual Studio Community</td>
+          <td>2022</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>AMD HIP SDK for Windows<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup></td>
+          <td>6.2.4</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>Python</td>
+          <td>3.13</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>Git for Windows</td>
+          <td>2.7.4</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>Strawberry Perl</td>
+          <td>5.40.0.1</td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td>CMake</td>
+          <td>3.30.1</td>
+      </tr>
+  </tbody>
+</table>
+<p>我的机器上装了vcpkg，除了前两个从官网下载安装之外，后面的都是从vcpkg的<code>downloads\tools</code>目录提取的，将路径添加到环境变量即可。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 配置工具包路径</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$Env:HIP_PATH</span><span class="p">=</span><span class="s2">&#34;C:\Program Files\AMD\ROCm\6.2&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$Env:GIT_BIN_PATH</span> <span class="p">=</span> <span class="s2">&#34;D:\vcpkg\downloads\tools\git-2.7.4-windows\bin&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$Env:PERL_PATH</span> <span class="p">=</span> <span class="s2">&#34;D:\vcpkg\downloads\tools\perl\5.40.0.1&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$Env:CMAKE_BIN_PATH</span> <span class="p">=</span> <span class="s2">&#34;D:\vcpkg\downloads\tools\cmake-3.30.1-windows\cmake-3.30.1-windows-i386\bin&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># 配置系统环境变量</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$Env:PATH</span> <span class="p">+=</span> <span class="s2">&#34;;</span><span class="nv">$Env:HIP_PATH</span><span class="s2">\bin;</span><span class="nv">$Env:GIT_BIN_PATH</span><span class="s2">;</span><span class="nv">$Env:PERL_PATH</span><span class="s2">\perl\site\bin;</span><span class="nv">$Env:PERL_PATH</span><span class="s2">\perl\bin;</span><span class="nv">$Env:PERL_PATH</span><span class="s2">\c\bin;</span><span class="nv">$Env:CMAKE_BIN_PATH</span><span class="s2">&#34;</span>
+</span></span></code></pre></div><p>从Github上下载<strong>rocBLAS</strong>和<strong>Tensile</strong>的源码，注意版本和本机安装的<strong>AMD HIP SDK</strong>版本要一致。这里还要下载补丁文件<strong>Tensile-fix-fallback-arch-build.patch</strong>，确保可以为不支持的显卡编译内容。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 创建工作目录</span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-Item</span> <span class="n">-Path</span> <span class="n">D:</span><span class="p">\</span><span class="n">rocblas_build</span> <span class="n">-ItemType</span> <span class="n">Directory</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 下载rocBLAS</span>
+</span></span><span class="line"><span class="cl"><span class="n">git</span> <span class="n">clone</span> <span class="n">-b</span> <span class="n">rocm</span><span class="p">-</span><span class="mf">6.2</span><span class="p">.</span><span class="py">4</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">ROCm</span><span class="p">/</span><span class="n">rocBLAS</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 下载Tensile</span>
+</span></span><span class="line"><span class="cl"><span class="n">git</span> <span class="n">clone</span> <span class="n">-b</span> <span class="n">rocm</span><span class="p">-</span><span class="mf">6.2</span><span class="p">.</span><span class="py">4</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">ROCm</span><span class="p">/</span><span class="n">Tensile</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 下载Tensile补丁</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">raw</span><span class="p">.</span><span class="py">githubusercontent</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">ulyssesrr</span><span class="p">/</span><span class="nb">docker-rocm</span><span class="n">-xtra</span><span class="p">/</span><span class="n">f25f12835c1d0a5efa80763b5381accf175b200e</span><span class="p">/</span><span class="nb">rocm-xtra</span><span class="n">-rocblas-builder</span><span class="p">/</span><span class="n">patches</span><span class="p">/</span><span class="nb">Tensile-fix</span><span class="n">-fallback-arch-build</span><span class="p">.</span><span class="py">patch</span> <span class="n">-OutFile</span> <span class="nb">Tensile-fix</span><span class="n">-fallback-arch-build</span><span class="p">.</span><span class="py">patch</span>
+</span></span></code></pre></div><p>鉴于国内Github访问现状，下载下来的源码最好先打包备份一下，确保出错后可以回滚更改。</p>
+<h2 id="2-修改源码">2. 修改源码</h2>
+<p>进入<code>Tensile</code>文件夹打补丁：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 复制patch文件到git文件夹</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Copy-Item</span> <span class="n">-Path</span> <span class="nb">Tensile-fix</span><span class="n">-fallback-arch-build</span><span class="p">.</span><span class="py">patch</span> <span class="n">-Destination</span> <span class="nv">$PWD</span><span class="p">/</span><span class="n">Tensile</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 进入Tensile源码目录</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd </span><span class="n">Tensile</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 应用patch文件</span>
+</span></span><span class="line"><span class="cl"><span class="n">git</span> <span class="n">apply</span> <span class="nb">Tensile-fix</span><span class="n">-fallback-arch-build</span><span class="p">.</span><span class="py">patch</span>
+</span></span></code></pre></div><p>这里应用补丁失败，看来补丁版本太旧了，需要手动修改一下。下面是修改后的<code>Tensile-fix-fallback-arch-build.patch</code>文件，将它另存为并参考上面的命令重新打补丁即可。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-patch" data-lang="patch"><span class="line"><span class="cl"><span class="gh">diff --git a/Tensile/TensileCreateLibrary.py b/Tensile/TensileCreateLibrary.py
+</span></span></span><span class="line"><span class="cl"><span class="gh">index ac0486d8..d069949c 100644
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="gd">--- a/Tensile/TensileCreateLibrary.py
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+++ b/Tensile/TensileCreateLibrary.py
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span><span class="gu">@@ -949,12 +949,11 @@ def generateLogicDataAndSolutions(logicFiles, args):
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>       for key, value in masterLibraries.items():
+</span></span><span class="line"><span class="cl">         if key != &#34;fallback&#34;:
+</span></span><span class="line"><span class="cl">           value.insert(deepcopy(masterLibraries[&#34;fallback&#34;]))
+</span></span><span class="line"><span class="cl"><span class="gd">-      for archName in archs:
+</span></span></span><span class="line"><span class="cl"><span class="gd">-        archName = archName.split(&#39;-&#39;, 1)[0]
+</span></span></span><span class="line"><span class="cl"><span class="gd">-        if archName not in masterLibraries:
+</span></span></span><span class="line"><span class="cl"><span class="gd">-          print1(&#34;Using fallback for arch: &#34; + archName)
+</span></span></span><span class="line"><span class="cl"><span class="gd">-          masterLibraries[archName] = deepcopy(masterLibraries[&#34;fallback&#34;])
+</span></span></span><span class="line"><span class="cl"><span class="gd">-          masterLibraries[archName].version = args.version
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+      for architectureName in parseArchitecturesFromArgs(args.Architecture, True):
+</span></span></span><span class="line"><span class="cl"><span class="gi">+        if architectureName not in masterLibraries:
+</span></span></span><span class="line"><span class="cl"><span class="gi">+          print(&#34;Using fallback for arch: &#34;+architectureName)
+</span></span></span><span class="line"><span class="cl"><span class="gi">+          masterLibraries[architectureName] = deepcopy(masterLibraries[&#34;fallback&#34;])
+</span></span></span><span class="line"><span class="cl"><span class="gi">+          masterLibraries[architectureName].version = args.version
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> 
+</span></span><span class="line"><span class="cl">       masterLibraries.pop(&#34;fallback&#34;)
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="gu">@@ -1027,6 +1027,17 @@ def WriteClientLibraryFromSolutions(solutionList, libraryWorkingPath, tensileSou
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span> 
+</span></span><span class="line"><span class="cl">   return (codeObjectFiles, newLibrary)
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="gi">+def parseArchitecturesFromArgs(architectureArgValue, handleLiteralAllAsList):
+</span></span></span><span class="line"><span class="cl"><span class="gi">+  if architectureArgValue == &#39;all&#39; and handleLiteralAllAsList:
+</span></span></span><span class="line"><span class="cl"><span class="gi">+    archs = [gfxName(arch) for arch in globalParameters[&#39;SupportedISA&#39;]]
+</span></span></span><span class="line"><span class="cl"><span class="gi">+  else:
+</span></span></span><span class="line"><span class="cl"><span class="gi">+    if &#34;;&#34; in architectureArgValue:
+</span></span></span><span class="line"><span class="cl"><span class="gi">+      archs = architectureArgValue.split(&#34;;&#34;) # user arg list format
+</span></span></span><span class="line"><span class="cl"><span class="gi">+    else:
+</span></span></span><span class="line"><span class="cl"><span class="gi">+      archs = architectureArgValue.split(&#34;_&#34;) # workaround for cmake list in list issue
+</span></span></span><span class="line"><span class="cl"><span class="gi">+
+</span></span></span><span class="line"><span class="cl"><span class="gi">+  return archs
+</span></span></span><span class="line"><span class="cl"><span class="gi">+
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> ################################################################################
+</span></span><span class="line"><span class="cl"> # Write Master Solution Index CSV
+</span></span><span class="line"><span class="cl"> ################################################################################
+</span></span><span class="line"><span class="cl"><span class="gu">@@ -1167,10 +1178,7 @@ def TensileCreateLibrary():
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>   if not os.path.exists(logicPath):
+</span></span><span class="line"><span class="cl">     printExit(&#34;LogicPath %s doesn&#39;t exist&#34; % logicPath)
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="gd">-  if &#34;;&#34; in arguments[&#34;Architecture&#34;]:
+</span></span></span><span class="line"><span class="cl"><span class="gd">-    archs = arguments[&#34;Architecture&#34;].split(&#34;;&#34;) # user arg list format
+</span></span></span><span class="line"><span class="cl"><span class="gd">-  else:
+</span></span></span><span class="line"><span class="cl"><span class="gd">-    archs = arguments[&#34;Architecture&#34;].split(&#34;_&#34;) # workaround for cmake list in list issue
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+  archs = parseArchitecturesFromArgs(arguments[&#34;Architecture&#34;], False)
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>   logicArchs = set()
+</span></span><span class="line"><span class="cl">   for arch in archs:
+</span></span><span class="line"><span class="cl">     if arch in architectureMap:
+</span></span></code></pre></div><p>接下来要给<strong>Tensile</strong>的源码增加AMD Radeon 880M的架构，用<code>hipinfo</code>命令查看本机显卡架构，下面的<code>gcnArchName:</code>所对应的<code>gfx1150</code>才是显卡的架构名称。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">--------------------------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="n">device</span><span class="c">#                           0</span>
+</span></span><span class="line"><span class="cl"><span class="n">Name</span><span class="err">:</span>                             <span class="n">AMD</span> <span class="n">Radeon</span><span class="p">(</span><span class="n">TM</span><span class="p">)</span> <span class="mf">880M</span> <span class="n">Graphics</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="n">gcnArchName</span><span class="err">:</span>                      <span class="n">gfx1150</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span></code></pre></div><p>然后在<code>Tensile\Tensile\Source\CMakeLists.txt</code>、<code>Tensile\AsmCaps.py</code>和<code>Tensile\Common.py</code>3个文件当中增加显卡架构名称和参数，也可以打下面的补丁：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-patch" data-lang="patch"><span class="line"><span class="cl"><span class="gh">diff --git a/Tensile/AsmCaps.py b/Tensile/AsmCaps.py
+</span></span></span><span class="line"><span class="cl"><span class="gh">index 783f9af8..27f29f5a 100644
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="gd">--- a/Tensile/AsmCaps.py
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+++ b/Tensile/AsmCaps.py
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span><span class="gu">@@ -771,6 +771,50 @@ CACHED_ASM_CAPS = \
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>               &#39;v_mov_b64&#39;: False,
+</span></span><span class="line"><span class="cl">               &#39;v_pk_fma_f16&#39;: True,
+</span></span><span class="line"><span class="cl">               &#39;v_pk_fmac_f16&#39;: False},
+</span></span><span class="line"><span class="cl"><span class="gi">+ (11, 5, 0): {&#39;HasAddLshl&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasAtomicAdd&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasDirectToLdsDest&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasDirectToLdsNoDest&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasExplicitCO&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasExplicitNC&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasGLCModifier&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasNTModifier&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasLshlOr&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_b8&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_bf16_1k&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_bf16_original&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_constSrc&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_f64&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_f8&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_i8_908&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_i8_940&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_vgpr&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasMFMA_xf32&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasSMulHi&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;HasWMMA&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;KernargPreloading&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;MaxLgkmcnt&#39;: 15,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;MaxVmcnt&#39;: 63,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;SupportedISA&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;SupportedSource&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;VOP3v_dot4_i32_i8&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_dot2_f32_f16&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_dot2c_f32_f16&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_dot4_i32_i8&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_dot4c_i32_i8&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_fma_f16&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_fma_f32&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_fma_f64&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_fma_mix_f32&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_fmac_f16&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_fmac_f32&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_mac_f16&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_mac_f32&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_mad_mix_f32&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_mov_b64&#39;: False,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_pk_fma_f16&#39;: True,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+              &#39;v_pk_fmac_f16&#39;: False},
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>  (11, 5, 1): {&#39;HasAddLshl&#39;: True,
+</span></span><span class="line"><span class="cl">               &#39;HasAtomicAdd&#39;: True,
+</span></span><span class="line"><span class="cl">               &#39;HasDirectToLdsDest&#39;: False,
+</span></span><span class="line"><span class="cl"><span class="gh">diff --git a/Tensile/Common.py b/Tensile/Common.py
+</span></span></span><span class="line"><span class="cl"><span class="gh">index e440e942..57813169 100644
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="gd">--- a/Tensile/Common.py
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+++ b/Tensile/Common.py
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span><span class="gu">@@ -229,7 +229,7 @@ globalParameters[&#34;SupportedISA&#34;] = [(8,0,3),
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>                                     (9,4,0), (9,4,1), (9,4,2),
+</span></span><span class="line"><span class="cl">                                     (10,1,0), (10,1,1), (10,1,2), (10,3,0), (10,3,1),
+</span></span><span class="line"><span class="cl">                                     (11,0,0), (11,0,1), (11,0,2),
+</span></span><span class="line"><span class="cl"><span class="gd">-                                    (11,5,1)] # assembly kernels writer supports these architectures
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+                                    (11,5,0), (11,5,1)] # assembly kernels writer supports these architectures
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> 
+</span></span><span class="line"><span class="cl"> globalParameters[&#34;CleanupBuildFiles&#34;] = False                     # cleanup build files (e.g. kernel assembly) once no longer needed
+</span></span><span class="line"><span class="cl"> globalParameters[&#34;GenerateManifestAndExit&#34;] = False               # Output manifest file with list of expected library objects and exit
+</span></span><span class="line"><span class="cl"><span class="gu">@@ -308,7 +308,7 @@ architectureMap = {
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>   &#39;gfx1010&#39;:&#39;navi10&#39;, &#39;gfx1011&#39;:&#39;navi12&#39;, &#39;gfx1012&#39;:&#39;navi14&#39;,
+</span></span><span class="line"><span class="cl">   &#39;gfx1030&#39;:&#39;navi21&#39;, &#39;gfx1031&#39;:&#39;navi22&#39;, &#39;gfx1032&#39;:&#39;navi23&#39;, &#39;gfx1034&#39;:&#39;navi24&#39;, &#39;gfx1035&#39;:&#39;rembrandt&#39;,
+</span></span><span class="line"><span class="cl">   &#39;gfx1100&#39;:&#39;navi31&#39;, &#39;gfx1101&#39;:&#39;navi32&#39;, &#39;gfx1102&#39;:&#39;navi33&#39;,
+</span></span><span class="line"><span class="cl"><span class="gd">-  &#39;gfx1151&#39;:&#39;gfx1151&#39;
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+  &#39;gfx1150&#39;:&#39;gfx1150&#39;, &#39;gfx1151&#39;:&#39;gfx1151&#39;
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> }
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"> def getArchitectureName(gfxName):
+</span></span><span class="line"><span class="cl"><span class="gh">diff --git a/Tensile/Source/CMakeLists.txt b/Tensile/Source/CMakeLists.txt
+</span></span></span><span class="line"><span class="cl"><span class="gh">index e973a9ed..8904f4a7 100644
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="gd">--- a/Tensile/Source/CMakeLists.txt
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+++ b/Tensile/Source/CMakeLists.txt
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span><span class="gu">@@ -51,9 +51,9 @@ if(NOT DEFINED CXX_VERSION_STRING)
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span> endif()
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"> if(CMAKE_CXX_COMPILER STREQUAL &#34;hipcc&#34;)
+</span></span><span class="line"><span class="cl"><span class="gd">-  set(TENSILE_GPU_ARCHS gfx803 gfx900 gfx906:xnack- gfx908:xnack- gfx90a:xnack- gfx1010 gfx1011 gfx1012 gfx1030 gfx1031 gfx1032 gfx1034 gfx1035 gfx1100 gfx1101 gfx1102 CACHE STRING &#34;GPU architectures&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+  set(TENSILE_GPU_ARCHS gfx803 gfx900 gfx906:xnack- gfx908:xnack- gfx90a:xnack- gfx1010 gfx1011 gfx1012 gfx1030 gfx1031 gfx1032 gfx1034 gfx1035 gfx1100 gfx1101 gfx1102 gfx1150 CACHE STRING &#34;GPU architectures&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> else()
+</span></span><span class="line"><span class="cl"><span class="gd">-  set(TENSILE_GPU_ARCHS gfx803 gfx900 gfx906 gfx908 gfx90a gfx1010 gfx1011 gfx1012 gfx1030 gfx1031 gfx1032 gfx1034 gfx1035 gfx1100 gfx1101 gfx1102 CACHE STRING &#34;GPU architectures&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+  set(TENSILE_GPU_ARCHS gfx803 gfx900 gfx906 gfx908 gfx90a gfx1010 gfx1011 gfx1012 gfx1030 gfx1031 gfx1032 gfx1034 gfx1035 gfx1100 gfx1101 gfx1102 gfx1150 CACHE STRING &#34;GPU architectures&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> endif()
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"> include(CMakeDependentOption)
+</span></span></code></pre></div><p>然后在<strong>rocBLAS</strong>的源码<code>rocBLAS\CMakeLists.txt</code>文件中也要增加显卡架构名称，可以打下面的补丁：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-patch" data-lang="patch"><span class="line"><span class="cl"><span class="gh">diff --git a/CMakeLists.txt b/CMakeLists.txt                                                       
+</span></span></span><span class="line"><span class="cl"><span class="gh">index dd521358..9c074139 100644
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="gd">--- a/CMakeLists.txt
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+++ b/CMakeLists.txt
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span><span class="gu">@@ -111,7 +111,7 @@ list( APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/llvm ${ROCM_PATH} ${ROCM_PATH}/hip /
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span> set( TARGET_LIST_ROCM_5.6 &#34;gfx803;gfx900;gfx906:xnack-;gfx908:xnack-;gfx90a:xnack+;gfx90a:xnack-;gfx1010;gfx1012;gfx1030;gfx1100;gfx1101;gfx1102&#34;)
+</span></span><span class="line"><span class="cl"> set( TARGET_LIST_ROCM_5.7 &#34;gfx803;gfx900;gfx906:xnack-;gfx908:xnack-;gfx90a:xnack+;gfx90a:xnack-;gfx940;gfx941;gfx942;gfx1010;gfx1012;gfx1030;gfx1100;gfx1101;gfx1102&#34;)
+</span></span><span class="line"><span class="cl"> set( TARGET_LIST_ROCM_6.0 &#34;gfx900;gfx906:xnack-;gfx908:xnack-;gfx90a:xnack+;gfx90a:xnack-;gfx940;gfx941;gfx942;gfx1010;gfx1012;gfx1030;gfx1100;gfx1101;gfx1102&#34;)
+</span></span><span class="line"><span class="cl"><span class="gd">-set( TARGET_LIST_ROCM_6.2.4 &#34;gfx900;gfx906:xnack-;gfx908:xnack-;gfx90a:xnack+;gfx90a:xnack-;gfx940;gfx941;gfx942;gfx1010;gfx1012;gfx1030;gfx1100;gfx1101;gfx1102;gfx1151&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+set( TARGET_LIST_ROCM_6.2.4 &#34;gfx900;gfx906:xnack-;gfx908:xnack-;gfx90a:xnack+;gfx90a:xnack-;gfx940;gfx941;gfx942;gfx1010;gfx1012;gfx1030;gfx1100;gfx1101;gfx1102;gfx1150;gfx1151&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> 
+</span></span><span class="line"><span class="cl"> if(ROCM_PLATFORM_VERSION)
+</span></span><span class="line"><span class="cl">   if(${ROCM_PLATFORM_VERSION} VERSION_LESS 5.7.0)
+</span></span></code></pre></div><h2 id="3-编译安装">3. 编译安装</h2>
+<p>下面的命令初始化<strong>x64 Native Tools Command Prompt for VS</strong>命令行工具并进入<strong>rocBLAS</strong>源码目录，执行python命令下载vcpkg安装依赖。边下载边编译，笔记本的话最好插上电并打开性能模式。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 载入vc环境</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmd</span> <span class="p">/</span><span class="n">c</span> <span class="s2">&#34;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 进入rocBLAS源码目录</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd </span><span class="n">rocBLAS</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 执行以下命令，下载一堆依赖</span>
+</span></span><span class="line"><span class="cl"><span class="n">python</span> <span class="n">rdeps</span><span class="p">.</span><span class="py">py</span>
+</span></span></code></pre></div><p>依赖文件有一部分会存在临时文件夹<code>C:\github</code>里面，编译成功后再删除它。</p>
+<p>接下来执行命令生成库文件，时间有点长：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">python</span> <span class="n">rmake</span><span class="p">.</span><span class="py">py</span> <span class="n">-a</span> <span class="n">gfx1150</span> <span class="p">-</span><span class="n">-no-lazy-library-loading</span> <span class="p">-</span><span class="n">-no-merge-architectures</span> <span class="n">-t</span> <span class="nv">$PWD</span><span class="p">\..\</span><span class="n">Tensile</span> <span class="p">-</span><span class="n">-cmake-arg</span><span class="p">=</span><span class="s2">&#34;-DROCM_PLATFORM_VERSION=6.2.4&#34;</span>
+</span></span></code></pre></div><p>执行完后会在<strong>rocBLAS</strong>源码目录的<code>build\release\staging</code>路径下面生成<code>rocblas.dll</code>文件。</p>
+<p>最后执行以下命令，将生成的库文件和<strong>Tensile</strong>的架构文件复制到新的文件夹中：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 创建文件夹</span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-Item</span> <span class="n">-Path</span> <span class="nv">$PWD</span><span class="p">\..\</span><span class="n">rocblas_dll</span> <span class="n">-ItemType</span> <span class="n">Directory</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 复制rocblas.dll文件到新文件夹中</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Copy-Item</span> <span class="n">-Path</span> <span class="nv">$PWD</span><span class="p">\</span><span class="n">build</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">staging</span><span class="p">\</span><span class="n">rocblas</span><span class="p">.</span><span class="py">dll</span> <span class="n">-Destination</span>  <span class="nv">$PWD</span><span class="p">\..\</span><span class="n">rocblas_dll</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 复制Tensile架构文件</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Copy-Item</span> <span class="n">-Path</span> <span class="nv">$PWD</span><span class="p">\</span><span class="n">build</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">Tensile</span><span class="p">\</span><span class="n">library</span> <span class="n">-Destination</span> <span class="nv">$PWD</span><span class="p">\..\</span><span class="n">rocblas_dll</span><span class="p">\</span><span class="n">rocblas</span><span class="p">\</span><span class="n">library</span> <span class="n">-Recurse</span>
+</span></span></code></pre></div><p>生成的dll文件比HIP SDK自带的dll小了很多，如何使用新生成的rocblas有两种办法：</p>
+<ol>
+<li>
+<p>将<code>rocblas_dll</code>文件夹中打包的dll文件及架构文件和编译出来的程序一起发布，比较简单，不用改动HIP SDK的安装文件；</p>
+</li>
+<li>
+<p>将HIP SDK安装路径的<code>bin</code>添加到PATH中，备份原来的rocblas.dll然后复制新生成的rocblas.dll到该路径，复制新生成的gfx1150的<code>TensileLibrary_gfx1150.dat</code>文件和<code>Kernels.so-000-gfx1150.hsaco</code>到HIP SDK安装路径的<code>bin\rocblas\library</code>路径下面，将生成的<code>TensileManifest.txt</code>的内容拷贝添加到原来的<code>TensileManifest.txt</code>中。</p>
+</li>
+</ol>
+<p>最后别忘了删除临时文件夹：<code>C:\github</code></p>
+<h2 id="4-编译测试">4. 编译测试</h2>
+<p>接下来编一个矩阵乘法计算程序，测试一下ROCm加速的性能怎么样。主程序<code>main.c</code>和<a href="../2025-06-23-matrix_multiplication-1">矩阵乘法运算(一)-使用OpenMP加速循环计算</a>
+中的2.1一样，<code>blas.c</code>文件如下所示：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="c1">// References: https://github.com/ROCm/rocBLAS-Examples/blob/develop/Languages/C/main.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;assert.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;hip/hip_runtime_api.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;rocblas/rocblas.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#ifndef CHECK_HIP_ERROR
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define CHECK_HIP_ERROR(error)                    \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    if (error != hipSuccess)                      \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    {                                             \
+</span></span></span><span class="line"><span class="cl"><span class="cp">        fprintf(stderr,                           \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                &#34;hip error: &#39;%s&#39;(%d) at %s:%d\n&#34;, \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                hipGetErrorString(error),         \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                error,                            \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                __FILE__,                         \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                __LINE__);                        \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    }
+</span></span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#ifndef CHECK_ROCBLAS_STATUS
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define CHECK_ROCBLAS_STATUS(status)                  \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    if (status != rocblas_status_success)             \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    {                                                 \
+</span></span></span><span class="line"><span class="cl"><span class="cp">        fprintf(stderr, &#34;rocBLAS error: &#34;);           \
+</span></span></span><span class="line"><span class="cl"><span class="cp">        fprintf(stderr,                               \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                &#34;rocBLAS error: &#39;%s&#39;(%d) at %s:%d\n&#34;, \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                rocblas_status_to_string(status),     \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                status,                               \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                __FILE__,                             \
+</span></span></span><span class="line"><span class="cl"><span class="cp">                __LINE__);                            \
+</span></span></span><span class="line"><span class="cl"><span class="cp">    }
+</span></span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">matrix_multiply_float</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">float</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">float</span> <span class="n">B</span><span class="p">[],</span> <span class="kt">float</span> <span class="n">C</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">size_t</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rows</span> <span class="o">=</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">typedef</span> <span class="kt">float</span> <span class="n">data_type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">rocblas_handle</span> <span class="n">handle</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rocblas_status</span> <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_create_handle</span><span class="p">(</span><span class="o">&amp;</span><span class="n">handle</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">hipStream_t</span> <span class="n">test_stream</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_get_stream</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">test_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="o">*</span><span class="n">da</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="o">*</span><span class="n">db</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="o">*</span><span class="n">dc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipMalloc</span><span class="p">((</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span><span class="o">&amp;</span><span class="n">da</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">cols</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipMalloc</span><span class="p">((</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span><span class="o">&amp;</span><span class="n">db</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">cols</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipMalloc</span><span class="p">((</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span><span class="o">&amp;</span><span class="n">dc</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">cols</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// upload asynchronously from pinned memory
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_set_matrix_async</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">),</span> <span class="n">A</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">da</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">test_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_set_matrix_async</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">),</span> <span class="n">B</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">test_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// scalar arguments will be from host memory
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_set_pointer_mode</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">rocblas_pointer_mode_host</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="n">beta</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// invoke asynchronous computation
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_sgemm</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">rocblas_operation_none</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">rocblas_operation_none</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">rows</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">cols</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">n</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">&amp;</span><span class="n">alpha</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">da</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">n</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">db</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">n</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">&amp;</span><span class="n">beta</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">dc</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// fetch results asynchronously to pinned memory
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_get_matrix_async</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">),</span> <span class="n">dc</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">test_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// wait on transfer to be finished
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipStreamSynchronize</span><span class="p">(</span><span class="n">test_stream</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipFree</span><span class="p">(</span><span class="n">da</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipFree</span><span class="p">(</span><span class="n">db</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipFree</span><span class="p">(</span><span class="n">dc</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_destroy_handle</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">matrix_multiply_double</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">double</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">double</span> <span class="n">B</span><span class="p">[],</span> <span class="kt">double</span> <span class="n">C</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">size_t</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rows</span> <span class="o">=</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">typedef</span> <span class="kt">double</span> <span class="n">data_type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">rocblas_handle</span> <span class="n">handle</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rocblas_status</span> <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_create_handle</span><span class="p">(</span><span class="o">&amp;</span><span class="n">handle</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">hipStream_t</span> <span class="n">test_stream</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_get_stream</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">test_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="o">*</span><span class="n">da</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="o">*</span><span class="n">db</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="o">*</span><span class="n">dc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipMalloc</span><span class="p">((</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span><span class="o">&amp;</span><span class="n">da</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">cols</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipMalloc</span><span class="p">((</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span><span class="o">&amp;</span><span class="n">db</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">cols</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipMalloc</span><span class="p">((</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span><span class="o">&amp;</span><span class="n">dc</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">cols</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// upload asynchronously from pinned memory
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_set_matrix_async</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">),</span> <span class="n">A</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">da</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">test_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_set_matrix_async</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">),</span> <span class="n">B</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">test_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// scalar arguments will be from host memory
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_set_pointer_mode</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">rocblas_pointer_mode_host</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data_type</span> <span class="n">beta</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// invoke asynchronous computation
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_dgemm</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">rocblas_operation_none</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">rocblas_operation_none</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">rows</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">cols</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">n</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">&amp;</span><span class="n">alpha</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">da</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">n</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">db</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">n</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">&amp;</span><span class="n">beta</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">dc</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// fetch results asynchronously to pinned memory
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_get_matrix_async</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">data_type</span><span class="p">),</span> <span class="n">dc</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">test_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// wait on transfer to be finished
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipStreamSynchronize</span><span class="p">(</span><span class="n">test_stream</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipFree</span><span class="p">(</span><span class="n">da</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipFree</span><span class="p">(</span><span class="n">db</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_HIP_ERROR</span><span class="p">(</span><span class="nf">hipFree</span><span class="p">(</span><span class="n">dc</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">rstatus</span> <span class="o">=</span> <span class="nf">rocblas_destroy_handle</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">CHECK_ROCBLAS_STATUS</span><span class="p">(</span><span class="n">rstatus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>cmake配置文件<code>CMakeLists.txt</code>如下，通过变量<code>ROCM_DIR</code>传递HIP安装路径，这里编译用的是<code>-DROCM_DIR=C:/Program Files/AMD/ROCm/6.2</code>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmake" data-lang="cmake"><span class="line"><span class="cl"><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.13</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">string</span><span class="p">(</span><span class="s">REGEX</span> <span class="s">MATCHALL</span> <span class="s2">&#34;[a-zA-Z]+\ |[a-zA-Z]+$&#34;</span> <span class="s">DIRNAME</span> <span class="s2">&#34;${CMAKE_CURRENT_SOURCE_DIR}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">project</span><span class="p">(</span><span class="o">${</span><span class="nv">DIRNAME</span><span class="o">}</span> <span class="s">LANGUAGES</span> <span class="s">C</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;PROJECT_NAME: ${PROJECT_NAME}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_C_STANDARD</span> <span class="s">11</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">EXECUTE_FILE_NAME</span> <span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span><span class="s">_</span><span class="o">${</span><span class="nv">CMAKE_C_COMPILER_FRONTEND_VARIANT</span><span class="o">}</span><span class="s">_</span><span class="o">${</span><span class="nv">CMAKE_C_COMPILER_ID</span><span class="o">}</span><span class="s">_</span><span class="o">${</span><span class="nv">CMAKE_C_COMPILER_VERSION</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">string</span><span class="p">(</span><span class="s">TOLOWER</span> <span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">EXECUTE_FILE_NAME</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;EXECUTE_FILE_NAME: ${EXECUTE_FILE_NAME}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># setting aocl directory
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span><span class="p">(</span><span class="s">DEFINED</span> <span class="s">ROCM_DIR</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;ROCM_DIR is set to: ${ROCM_DIR}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">else</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>    <span class="nb">message</span><span class="p">(</span><span class="s">FATAL_ERROR</span> <span class="s2">&#34;ROCM_DIR is not defined. Please set it to the AOCL installation directory.&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_C_FLAGS</span> <span class="s2">&#34;${CMAKE_C_FLAGS} -D__HIP_PLATFORM_AMD__&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Enable AOCL BLAS
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">set</span><span class="p">(</span><span class="s">ROCM_INCLUDE_DIRS</span> <span class="o">${</span><span class="nv">ROCM_DIR</span><span class="o">}</span><span class="s">/include</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">ROCM_LINK_DIR</span> <span class="o">${</span><span class="nv">ROCM_DIR</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">ROCM_LIBS</span> <span class="s2">&#34;rocblas;amdhip64&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">SRC_LIST</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/main.c</span>
+</span></span><span class="line"><span class="cl">    <span class="s">src/blas.c</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">add_executable</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="o">${</span><span class="nv">SRC_LIST</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">target_include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">PRIVATE</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">ROCM_INCLUDE_DIRS</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">target_link_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">PRIVATE</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">ROCM_LINK_DIR</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">PRIVATE</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">ROCM_LIBS</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span></code></pre></div><p>在Windows平台下使用vs2022的clang-cl编译，运行效果如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">PS </span><span class="n">D:</span><span class="p">\</span><span class="n">example</span><span class="p">\</span><span class="n">efficiency_v3</span><span class="p">\</span><span class="n">rocm</span><span class="p">\</span><span class="n">build</span><span class="p">\</span><span class="n">Release</span><span class="p">&gt;</span> <span class="p">.</span><span class="s2">&#34;D:/example/efficiency_v3/rocm/build/Release/rocm_msvc_clang_19.1.5.exe&#34;</span> <span class="n">-l</span> <span class="mf">10</span> <span class="n">-n</span> <span class="mf">12</span>
+</span></span><span class="line"><span class="cl"><span class="n">Using</span> <span class="n">float</span> <span class="n">precision</span> <span class="k">for</span> <span class="n">matrix</span> <span class="n">multiplication</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl"><span class="mf">1</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">595000s</span><span class="p">(</span><span class="mf">230</span><span class="p">.</span><span class="n">990Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">2</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">146214s</span><span class="p">(</span><span class="mf">939</span><span class="p">.</span><span class="n">986Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">3</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">147548s</span><span class="p">(</span><span class="mf">931</span><span class="p">.</span><span class="n">486Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">4</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">146811s</span><span class="p">(</span><span class="mf">936</span><span class="p">.</span><span class="n">165Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">5</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">152827s</span><span class="p">(</span><span class="mf">899</span><span class="p">.</span><span class="n">311Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">6</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">143523s</span><span class="p">(</span><span class="mf">957</span><span class="p">.</span><span class="n">610Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">7</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">147841s</span><span class="p">(</span><span class="mf">929</span><span class="p">.</span><span class="n">642Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">8</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">152921s</span><span class="p">(</span><span class="mf">898</span><span class="p">.</span><span class="n">757Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">9</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">173812s</span><span class="p">(</span><span class="mf">790</span><span class="p">.</span><span class="n">734Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">10</span>      <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">172323s</span><span class="p">(</span><span class="mf">797</span><span class="p">.</span><span class="n">565Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Average</span> <span class="n">Gflops</span><span class="err">:</span> <span class="mf">831.225</span><span class="p">,</span> <span class="n">Max</span> <span class="n">Gflops</span><span class="err">:</span> <span class="mf">957.610</span>
+</span></span><span class="line"><span class="cl"><span class="n">Average</span> <span class="n">Time</span><span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">197882s</span><span class="p">,</span> <span class="n">Min</span> <span class="n">Time</span><span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">143523s</span>
+</span></span><span class="line"><span class="cl"><span class="nb">PS </span><span class="n">D:</span><span class="p">\</span><span class="n">example</span><span class="p">\</span><span class="n">efficiency_v3</span><span class="p">\</span><span class="n">rocm</span><span class="p">\</span><span class="n">build</span><span class="p">\</span><span class="n">Release</span><span class="p">&gt;</span> <span class="p">.</span><span class="s2">&#34;D:/example/efficiency_v3/rocm/build/Release/rocm_msvc_clang_19.1.5.exe&#34;</span> <span class="n">-l</span> <span class="mf">10</span> <span class="n">-n</span> <span class="mf">12</span> <span class="n">-double</span>
+</span></span><span class="line"><span class="cl"><span class="n">Using</span> <span class="n">double</span> <span class="n">precision</span> <span class="k">for</span> <span class="n">matrix</span> <span class="n">multiplication</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl"><span class="mf">1</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">694739s</span><span class="p">(</span><span class="mf">81</span><span class="p">.</span><span class="n">097Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">2</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">185994s</span><span class="p">(</span><span class="mf">115</span><span class="p">.</span><span class="n">885Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">3</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">262083s</span><span class="p">(</span><span class="mf">108</span><span class="p">.</span><span class="n">898Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">4</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">232974s</span><span class="p">(</span><span class="mf">111</span><span class="p">.</span><span class="n">469Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">5</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">156926s</span><span class="p">(</span><span class="mf">118</span><span class="p">.</span><span class="n">797Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">6</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">220483s</span><span class="p">(</span><span class="mf">112</span><span class="p">.</span><span class="n">610Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">7</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">270335s</span><span class="p">(</span><span class="mf">108</span><span class="p">.</span><span class="n">191Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">8</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">209922s</span><span class="p">(</span><span class="mf">113</span><span class="p">.</span><span class="n">593Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">9</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">226809s</span><span class="p">(</span><span class="mf">112</span><span class="p">.</span><span class="n">030Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">10</span>      <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">335011s</span><span class="p">(</span><span class="mf">102</span><span class="p">.</span><span class="n">950Gflops</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Average</span> <span class="n">Gflops</span><span class="err">:</span> <span class="mf">108.552</span><span class="p">,</span> <span class="n">Max</span> <span class="n">Gflops</span><span class="err">:</span> <span class="mf">118.797</span>
+</span></span><span class="line"><span class="cl"><span class="n">Average</span> <span class="n">Time</span><span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">279528s</span><span class="p">,</span> <span class="n">Min</span> <span class="n">Time</span><span class="err">:</span> <span class="mf">1</span><span class="p">.</span><span class="n">156926s</span>
+</span></span></code></pre></div><p>性能表现和opencl差不多，期待开发更多玩法。</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://rocm.docs.amd.com/projects/install-on-windows/en/latest/reference/system-requirements.html" target="_blank" rel="noopener">System requirements (Windows)</a>
+&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://www.bilibili.com/opus/950640016858546201" target="_blank" rel="noopener">AMD 680M显卡编译rocBLAS使用SD</a>
+&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p><a href="https://www.bilibili.com/opus/930119242935697447" target="_blank" rel="noopener">Windows编译AMD ROCm rocblas教程</a>
+&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p><a href="https://zhuanlan.zhihu.com/p/680642344" target="_blank" rel="noopener">Windows下编译rocBLAS</a>
+&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5">
+<p><a href="https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html" target="_blank" rel="noopener">AMD HIP SDK for Windows</a>
+&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

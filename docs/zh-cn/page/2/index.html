@@ -206,6 +206,217 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-06-23-matrix_multiplication-1/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="矩阵乘法运算(一)-使用OpenMP加速循环计算" title="矩阵乘法运算(一)-使用OpenMP加速循环计算"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-06-23-matrix_multiplication-1/">矩阵乘法运算(一)-使用OpenMP加速循环计算</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>说到矩阵，只要是理工科都会想到被线性代数课支配的恐惧。矩阵乘法运算，往大了说各种工业和科研数值计算离不开它，往小了说各种跑分软件也会用到它，矩阵乘法运算的耗时也是评判计算机浮点运算性能的重要指标。本文的目的是通过矩阵乘法运算验证各种实现方式的性能差异，并对比不同计算平台的性能差异，为高性能计算开发提供参考。</p>
+<h2 id="1-矩阵乘法算法">1. 矩阵乘法算法</h2>
+<p>矩阵乘法运算也成为矩阵点乘，可以用下图表示<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>，通常由A矩阵对应行和B矩阵对应列的元素相乘并累加，形成C矩阵对应行列的值。要求A矩阵的列数要与B矩阵的行数相等，C矩阵的尺寸则相当于B矩阵的行数×A矩阵的列数。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_ca1ba86b3d0ff44b.webp 320w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_152641224c20d9c8.webp 640w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_fdb29b53f62cf657.webp 960w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_fc47eb19c1e6b84f.webp 1280w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_9d0e40a2784dbb10.webp 1600w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_d069d32946e84337.webp 1920w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_459c32de344b1547.jpg 320w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_7c7416563f69bcd8.jpg 640w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_6bce63bd57b3d50b.jpg 960w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_18731d945c01b319.jpg 1280w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_b8cee494789e09f2.jpg 1600w, /post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_d032c6b5a4fd99cd.jpg 1920w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-06-23-matrix_multiplication-1/images/06d7ac8e02b5dab1769e5284772bdf9e_hu_7c7416563f69bcd8.jpg" width="1920" height="1920" alt="06d7ac8e02b5dab1769e5284772bdf9e.png" title="06d7ac8e02b5dab1769e5284772bdf9e.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>用C语言表示一个M×N矩阵点乘一个N×T矩阵，一般写成3层循环嵌套的形式。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">T</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">			<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">j</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span></code></pre></div><p>通常认为一个N×N维矩阵的乘法次数为N的3次方，用O(n<sup>3</sup>)表示计算复杂度。也有一些算法，将其中某些乘法运算转化成加法，减少了乘法运算次数。比如Strassen算法<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>，理论上计算复杂度只有O(n<sup>2.807</sup>)，降低了大矩阵相乘的耗时。更新的算法比如Coppersmith-Winograd方法，计算复杂度更是号称只有O(n<sup>2.3727</sup>)。这种算法上的差异不在本文讨论之列。</p>
+<h2 id="2-循环嵌套并行化">2. 循环嵌套并行化</h2>
+<p>现代计算机处理器一般都为多核心，为充分利用处理器性能，使用openmp等并行库对计算程序进行并行优化不失为一个好的选项。使用单核心进行循环嵌套求解没有实际意义，这里不做演示，有兴趣的可以在下面的代码中单独去掉并行库后进行编译计算。</p>
+<h3 id="21-c实现">2.1 C实现</h3>
+<p>C实现很简单，通过三层循环嵌套实现矩阵相乘算法。这里通过openmp将前两层循环合并分配到不同线程中展开计算<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>，以充分利用多核心处理器的性能。以下是<code>openmp.c</code>的示例代码。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;omp.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">matrix_multiply_float</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">float</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">float</span> <span class="n">B</span><span class="p">[],</span> <span class="kt">float</span> <span class="n">C</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#pragma omp parallel for collapse(2) shared(A, B, C)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">C</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">			<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="n">C</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">j</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">matrix_multiply_double</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">double</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">double</span> <span class="n">B</span><span class="p">[],</span> <span class="kt">double</span> <span class="n">C</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#pragma omp parallel for collapse(2) shared(A, B, C)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">C</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">			<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="n">C</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">j</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>在<code>main.c</code>中定义一些命令行开关，用户可以自定义矩阵尺寸、循环次数、计算精度等。这里定义了一个性能参数，GFLOPs，用来衡量单位时间内执行浮点运算的能力，1GFLOPs相当于1秒内执行10<sup>9</sup>次浮点运算。</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/c&#43;&#43;/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">C&#43;&#43;</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/fortran/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Fortran</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/rust/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Rust</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-06-23T00:00:00&#43;00:00">
+      2025-06-23
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长34分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-06-11-rust_gui/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
@@ -686,170 +897,6 @@ VerticalBox {
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
-      alt="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数" title="使用VSCode开发STAR-CCM&#43;用户程序：通过CoolProp计算物性参数"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-04-29-use-vscode-develop-starccm-user-library-with-coolprop/">使用VSCode开发STAR-CCM+用户程序：通过CoolProp计算物性参数</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>STAR-CCM+用户程序(用户库)<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>是通过外部编译器(通常是C/C++，也支持Fortran)按一定的规则编译构建的动态链接库，将构建好的动态链接库注册到sim文件中，可以实现某些自定义功能。一个用户程序通常包含一个或多个用户自定义的函数，这些自定义函数一般用于实现特殊的配置或场函数。</p>
-<p>用户程序需要先注册动态链接库才能调用，而动态链接库的格式往往与操作系统、硬件平台等密切相关，因此用户程序通常都是针对特定平台进行编译，无法实现跨平台运行。</p>
-<p>本文尝试用VSCode编写STAR-CCM+动态链接库，利用开源的热力学库CoolProp为STAR-CCM+拓展物性参数计算功能；通过CMake构建用户程序，确保在不同平台下能正确生成动态链接库文件。</p>
-<h2 id="1-coolprop介绍">1. CoolProp介绍</h2>
-<p><a href="http://www.coolprop.org/" target="_blank" rel="noopener">CoolProp</a>
-是一个开源跨平台的热力学库，定位上类似于NIST的REFPROP，包含各种流体物性参数，同时支持多种编程语言，也支持通过MATLAB、Excel甚至javascript调用进行物性参数计算<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>。</p>
-<p>Windows平台通过以下命令下载编译、安装CoolProp<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 推荐使用PowerShell，需要先安装cmake、git及clang-cl编译器</span>
-</span></span><span class="line"><span class="cl"><span class="c"># 下载CoolProp源码及其依赖</span>
-</span></span><span class="line"><span class="cl"><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">CoolProp</span><span class="p">/</span><span class="n">CoolProp</span> <span class="p">-</span><span class="n">-recursive</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd </span><span class="n">CoolProp</span>
-</span></span><span class="line"><span class="cl"><span class="c"># 建立工作目录</span>
-</span></span><span class="line"><span class="cl"><span class="n">mkdir</span> <span class="n">build</span> <span class="p">&amp;&amp;</span> <span class="nb">cd </span><span class="n">build</span>
-</span></span><span class="line"><span class="cl"><span class="c"># 配置静态库编译文件</span>
-</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">..</span> <span class="n">-DCOOLPROP_STATIC_LIBRARY</span><span class="p">=</span><span class="n">ON</span> <span class="n">-G</span> <span class="s2">&#34;Visual Studio 17 2022&#34;</span> <span class="n">-T</span> <span class="n">ClangCL</span><span class="p">,</span><span class="n">host</span><span class="p">=</span><span class="n">x64</span> <span class="n">-A</span> <span class="n">x64</span> 
-</span></span><span class="line"><span class="cl"><span class="c"># 编译静态库</span>
-</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">-</span><span class="n">-build</span> <span class="p">.</span> <span class="p">-</span><span class="n">-config</span> <span class="n">Release</span>
-</span></span><span class="line"><span class="cl"><span class="c"># 安装静态库</span>
-</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="p">-</span><span class="n">-install</span> <span class="p">.</span> <span class="p">-</span><span class="n">-prefix</span> <span class="nv">$PWD</span><span class="p">/../../</span><span class="n">CoolPropLib</span>
-</span></span></code></pre></div><p>Linux平台通过以下命令编译、安装CoolProp：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 需要先安装cmake、git及gcc编译器</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 下载CoolProp源码及其依赖</span>
-</span></span><span class="line"><span class="cl">git clone https://github.com/CoolProp/CoolProp --recursive
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> CoolProp
-</span></span><span class="line"><span class="cl"><span class="c1"># 建立工作目录</span>
-</span></span><span class="line"><span class="cl">mkdir -p build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
-</span></span><span class="line"><span class="cl"><span class="c1"># 配置静态库编译文件，默认架构为64位</span>
-</span></span><span class="line"><span class="cl">cmake .. -DCOOLPROP_STATIC_LIBRARY<span class="o">=</span>ON -DCOOLPROP_FPIC<span class="o">=</span>ON -G <span class="s2">&#34;Ninja&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 编译静态库，使用32个核心加速编译</span>
-</span></span><span class="line"><span class="cl">cmake --build . --config Release -- -j32
-</span></span><span class="line"><span class="cl"><span class="c1"># 安装静态库</span>
-</span></span><span class="line"><span class="cl">cmake --install . --prefix <span class="nv">$PWD</span>/../../CoolPropLib
-</span></span></code></pre></div><p>得益于软件良好的封装，CoolProp相关函数的调用十分简单，以下是官方示例代码<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>：</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/cfd/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Cfd
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/c&#43;&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">C&#43;&#43;</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/star-ccm&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Star-Ccm&#43;</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-04-29T00:00:00&#43;00:00">
-      2025-04-29
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长5分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -1002,16 +1049,16 @@ VerticalBox {
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/abaqus/"
+      <a href="/zh-cn/tags/c&#43;&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Abaqus
+        C&#43;&#43;
       </a>
     </li>
     
     <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/c&#43;&#43;/"
+      <a href="/zh-cn/tags/abaqus/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        C&#43;&#43;
+        Abaqus
       </a>
     </li>
     

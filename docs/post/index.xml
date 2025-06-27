@@ -9,8 +9,15 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Thu, 26 Jun 2025 15:23:01 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 27 Jun 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Compile rocblas-rocm-6.2.4 under Windows</title>
+      <link>https://andrewmoa.site/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/</link>
+      <pubDate>Fri, 27 Jun 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/</guid>
+      <description>&lt;p&gt;When I was demonstrating matrix operation acceleration before, I wanted to try AMD&amp;rsquo;s own ROCm. After compiling and running the program, I encountered an error:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-txt&#34; data-lang=&#34;txt&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;rocBLAS error: Cannot read D:\example\efficiency_v3\rocm\build\Release\/rocblas/library/TensileLibrary.dat: No such file or directory for GPU arch : gfx1150&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; List of available TensileLibrary Files : &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;According to the official website, ROCm does not support Radeon 880M integrated graphics (AI H 365w processor)&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;. Unless you compile rocblas yourself, it will not work.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Matrix multiplication operation (Ⅲ) - using MPI parallel acceleration</title>
       <link>https://andrewmoa.site/post/2025-06-25-matrix_multiplication-3/</link>

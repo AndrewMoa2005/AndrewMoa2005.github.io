@@ -1406,106 +1406,106 @@
 <h3 id="31-fortran编译器优化">3.1 fortran编译器优化</h3>
 <p>虽然前面的分块矩阵已经有了很大的提升，但和之前提到的编译器底层优化和专业数学库比起来，这点性能还是有点不够。现在尝试将mpi配合fortran编译器的底层优化，看能否在性能上进一步提升。</p>
 <p><code>main.c</code>和<code>CMakeLists.txt</code>基本和1.2相同，这里改动<code>mpi2c.f90</code>文件，使用fortran内置函数matmul实现矩阵运算功能：</p>
-<pre tabindex="0"><code class="language-fortan" data-lang="fortan">subroutine matrix_multiply_float(n, rank, size, local_A, B, local_C) bind(C, name=&#34;matrix_multiply_float&#34;)
-    use, intrinsic :: iso_c_binding
-    implicit none
-    integer(c_int), value, intent(in) :: n, rank, size
-    real(c_float), intent(in) :: local_A(*)
-    real(c_float), intent(in) :: B(*)
-    real(c_float), intent(out) :: local_C(*)
-    real(c_float), allocatable :: local_A_2d(:, :)
-    real(c_float), allocatable :: B_2d(:, :)
-    real(c_float), allocatable :: local_C_2d(:, :)
-    integer(c_int) :: rows_per_process
-    integer(c_int) :: remainder
-    integer(c_int) :: i, j
-
-    remainder = mod(n, size)
-    rows_per_process = n / size
-    if (rank &lt; remainder) then
-        rows_per_process = rows_per_process + 1
-    end if
-
-    allocate(local_A_2d(rows_per_process, n))
-    allocate(B_2d(n, n))
-    allocate(local_C_2d(rows_per_process, n))
-
-    ! 将一维数组转换为二维数组
-    do i = 1, rows_per_process
-        do j = 1, n
-            local_A_2d(i, j) = local_A((i - 1) * n + j)
-        end do
-    end do
-
-    do i = 1, n
-        do j = 1, n
-            B_2d(i, j) = B((i - 1) * n + j)
-        end do
-    end do
-
-    ! 使用 matmul 进行矩阵乘法计算
-    local_C_2d = matmul(local_A_2d, B_2d)
-
-    ! 将二维数组转换为一维数组
-    do i = 1, rows_per_process
-        do j = 1, n
-            local_C((i - 1) * n + j) = local_C_2d(i, j)
-        end do
-    end do
-
-    deallocate(local_A_2d, B_2d, local_C_2d)
-end subroutine matrix_multiply_float
-
-subroutine matrix_multiply_double(n, rank, size, local_A, B, local_C) bind(C, name=&#34;matrix_multiply_double&#34;)
-    use, intrinsic :: iso_c_binding
-    implicit none
-    integer(c_int), value, intent(in) :: n, rank, size
-    real(c_double), intent(in) :: local_A(*)
-    real(c_double), intent(in) :: B(*)
-    real(c_double), intent(out) :: local_C(*)
-    real(c_double), allocatable :: local_A_2d(:, :)
-    real(c_double), allocatable :: B_2d(:, :)
-    real(c_double), allocatable :: local_C_2d(:, :)
-    integer(c_int) :: rows_per_process
-    integer(c_int) :: remainder
-    integer(c_int) :: i, j
-
-    remainder = mod(n, size)
-    rows_per_process = n / size
-    if (rank &lt; remainder) then
-        rows_per_process = rows_per_process + 1
-    end if
-
-    allocate(local_A_2d(rows_per_process, n))
-    allocate(B_2d(n, n))
-    allocate(local_C_2d(rows_per_process, n))
-
-    ! 将一维数组转换为二维数组
-    do i = 1, rows_per_process
-        do j = 1, n
-            local_A_2d(i, j) = local_A((i - 1) * n + j)
-        end do
-    end do
-
-    do i = 1, n
-        do j = 1, n
-            B_2d(i, j) = B((i - 1) * n + j)
-        end do
-    end do
-
-    ! 使用 matmul 进行矩阵乘法计算
-    local_C_2d = matmul(local_A_2d, B_2d)
-
-    ! 将二维数组转换为一维数组
-    do i = 1, rows_per_process
-        do j = 1, n
-            local_C((i - 1) * n + j) = local_C_2d(i, j)
-        end do
-    end do
-
-    deallocate(local_A_2d, B_2d, local_C_2d)
-end subroutine matrix_multiply_double
-</code></pre><p>使用MSYS2的ucrt64工具编译，在Windows下执行Release程序，效果如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fortran" data-lang="fortran"><span class="line"><span class="cl"><span class="k">subroutine</span><span class="w"> </span><span class="n">matrix_multiply_float</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">local_A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">local_C</span><span class="p">)</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;matrix_multiply_float&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">iso_c_binding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">implicit</span><span class="w"> </span><span class="k">none</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="k">c_int</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_float</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">local_A</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_float</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">B</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_float</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">local_C</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_float</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">local_A_2d</span><span class="p">(:,</span><span class="w"> </span><span class="p">:)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_float</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">B_2d</span><span class="p">(:,</span><span class="w"> </span><span class="p">:)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_float</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">local_C_2d</span><span class="p">(:,</span><span class="w"> </span><span class="p">:)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="k">c_int</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rows_per_process</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="k">c_int</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">remainder</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="k">c_int</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">remainder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">rows_per_process</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rank</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">remainder</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">rows_per_process</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rows_per_process</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">if</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="n">local_A_2d</span><span class="p">(</span><span class="n">rows_per_process</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="n">B_2d</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="n">local_C_2d</span><span class="p">(</span><span class="n">rows_per_process</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">! 将一维数组转换为二维数组
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="w">    </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">rows_per_process</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">do</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">local_A_2d</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">local_A</span><span class="p">((</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">do</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">B_2d</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="p">((</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">! 使用 matmul 进行矩阵乘法计算
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="w">    </span><span class="n">local_C_2d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">matmul</span><span class="p">(</span><span class="n">local_A_2d</span><span class="p">,</span><span class="w"> </span><span class="n">B_2d</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">! 将二维数组转换为一维数组
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="w">    </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">rows_per_process</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">do</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">local_C</span><span class="p">((</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">local_C_2d</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">deallocate</span><span class="p">(</span><span class="n">local_A_2d</span><span class="p">,</span><span class="w"> </span><span class="n">B_2d</span><span class="p">,</span><span class="w"> </span><span class="n">local_C_2d</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">end</span><span class="w"> </span><span class="k">subroutine</span><span class="w"> </span><span class="n">matrix_multiply_float</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">subroutine</span><span class="w"> </span><span class="n">matrix_multiply_double</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">local_A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">local_C</span><span class="p">)</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;matrix_multiply_double&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">iso_c_binding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">implicit</span><span class="w"> </span><span class="k">none</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="k">c_int</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_double</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">local_A</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_double</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">B</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_double</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">local_C</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_double</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">local_A_2d</span><span class="p">(:,</span><span class="w"> </span><span class="p">:)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_double</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">B_2d</span><span class="p">(:,</span><span class="w"> </span><span class="p">:)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">real</span><span class="p">(</span><span class="k">c_double</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">local_C_2d</span><span class="p">(:,</span><span class="w"> </span><span class="p">:)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="k">c_int</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rows_per_process</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="k">c_int</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">remainder</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="k">c_int</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">remainder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">rows_per_process</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">size</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rank</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">remainder</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">rows_per_process</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rows_per_process</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">if</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="n">local_A_2d</span><span class="p">(</span><span class="n">rows_per_process</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="n">B_2d</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="n">local_C_2d</span><span class="p">(</span><span class="n">rows_per_process</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">! 将一维数组转换为二维数组
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="w">    </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">rows_per_process</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">do</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">local_A_2d</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">local_A</span><span class="p">((</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">do</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">B_2d</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="p">((</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">! 使用 matmul 进行矩阵乘法计算
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="w">    </span><span class="n">local_C_2d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">matmul</span><span class="p">(</span><span class="n">local_A_2d</span><span class="p">,</span><span class="w"> </span><span class="n">B_2d</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">! 将二维数组转换为一维数组
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="w">    </span><span class="k">do</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">rows_per_process</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">do</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">local_C</span><span class="p">((</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">local_C_2d</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">end</span><span class="w"> </span><span class="k">do</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">deallocate</span><span class="p">(</span><span class="n">local_A_2d</span><span class="p">,</span><span class="w"> </span><span class="n">B_2d</span><span class="p">,</span><span class="w"> </span><span class="n">local_C_2d</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">end</span><span class="w"> </span><span class="k">subroutine</span><span class="w"> </span><span class="n">matrix_multiply_double</span><span class="w">
+</span></span></span></code></pre></div><p>使用MSYS2的ucrt64工具编译，在Windows下执行Release程序，效果如下：</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">PS </span><span class="n">D:</span><span class="p">\</span><span class="n">example</span><span class="p">\</span><span class="n">efficiency_v3</span><span class="p">\</span><span class="n">fortran</span><span class="p">\</span><span class="nb">matmul-mpi</span><span class="n">-fortran</span><span class="p">\</span><span class="n">build</span><span class="p">&gt;</span> <span class="n">mpiexec</span> <span class="n">-n</span> <span class="mf">20</span> <span class="n">D:</span><span class="p">/</span><span class="n">example</span><span class="p">/</span><span class="n">efficiency_v3</span><span class="p">/</span><span class="n">fortran</span><span class="p">/</span><span class="nb">matmul-mpi</span><span class="n">-fortran</span><span class="p">/</span><span class="n">build</span><span class="p">/</span><span class="nb">matmul-mpi</span><span class="n">-fortran_gnu_gnu_15</span><span class="p">.</span><span class="py">1</span><span class="p">.</span><span class="py">0</span><span class="p">.</span><span class="py">exe</span> <span class="n">-l</span> <span class="mf">10</span> <span class="n">-n</span> <span class="mf">12</span>        
 </span></span><span class="line"><span class="cl"><span class="n">Using</span> <span class="n">float</span> <span class="n">precision</span> <span class="k">for</span> <span class="n">matrix</span> <span class="n">multiplication</span><span class="p">.</span>
 </span></span><span class="line"><span class="cl"><span class="mf">1</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">797250s</span><span class="p">(</span><span class="mf">172</span><span class="p">.</span><span class="n">391Gflops</span><span class="p">)</span>

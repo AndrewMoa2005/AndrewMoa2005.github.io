@@ -1107,7 +1107,7 @@ It seems a bit slower than the C implementation, but in fact, the Fortran calcul
 Although the previous block matrix has been greatly improved, compared with the compiler's underlying optimization and professional math library mentioned above, this performance is still a bit insufficient. Now try to combine MPI with the underlying optimization of the Fortran compiler to see if the performance can be further improved.
 
 `main.c` and `CMakeLists.txt` are basically the same as 1.2. Here, the `mpi2c.f90` file is modified to use the Fortran built-in function matmul to implement matrix operation functions:
-```fortan
+```fortran
 subroutine matrix_multiply_float(n, rank, size, local_A, B, local_C) bind(C, name="matrix_multiply_float")
     use, intrinsic :: iso_c_binding
     implicit none

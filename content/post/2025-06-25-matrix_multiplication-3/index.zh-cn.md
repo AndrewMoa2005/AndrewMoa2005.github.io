@@ -1107,7 +1107,7 @@ Average Time: 0.066628s, Min Time: 0.063268s
 虽然前面的分块矩阵已经有了很大的提升，但和之前提到的编译器底层优化和专业数学库比起来，这点性能还是有点不够。现在尝试将mpi配合fortran编译器的底层优化，看能否在性能上进一步提升。
 
 `main.c`和`CMakeLists.txt`基本和1.2相同，这里改动`mpi2c.f90`文件，使用fortran内置函数matmul实现矩阵运算功能：
-```fortan
+```fortran
 subroutine matrix_multiply_float(n, rank, size, local_A, B, local_C) bind(C, name="matrix_multiply_float")
     use, intrinsic :: iso_c_binding
     implicit none

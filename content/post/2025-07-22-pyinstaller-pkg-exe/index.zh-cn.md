@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 ```
 
 cmake配置文件`CMakeLists.txt`编写如下，输出的可执行文件名称包含文件夹名、工具链名称、编译器命名和版本等。
-```
+```cmake
 cmake_minimum_required(VERSION 3.13)
 get_filename_component(CURRENT_DIR ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
 get_filename_component(FOLDER_NAME ${CURRENT_DIR} NAME)

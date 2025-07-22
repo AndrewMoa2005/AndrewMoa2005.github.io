@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 ```
 
 The cmake configuration file `CMakeLists.txt` is written as follows. The output executable file name contains the folder name, tool chain name, compiler name and version, etc.
-```
+```cmake
 cmake_minimum_required(VERSION 3.13)
 get_filename_component(CURRENT_DIR ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
 get_filename_component(FOLDER_NAME ${CURRENT_DIR} NAME)

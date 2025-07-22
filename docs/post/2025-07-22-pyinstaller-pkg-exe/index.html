@@ -22,7 +22,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
     <meta property="article:published_time" content="2025-07-22T00:00:00+00:00">
-    <meta property="article:modified_time" content="2025-07-22T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-07-22T16:35:31+08:00">
     <meta property="article:tag" content="Python">
     <meta property="article:tag" content="Qt">
 
@@ -61,7 +61,7 @@
 
   
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-07-22T00:00:00Z","datePublished":"2025-07-22T00:00:00Z","description":"The executable program compiled using the Qt dynamic link library will rely on a large number of dynamic link library files. If you want to publish the program written on your local computer to other people\u0026rsquo;s computers, you need to package and publish the dependent dynamic link library files together with the executable program. There are many ways to package and publish, and the principle is the same. The executable program and the dependent files are packaged and compressed into a separate executable file through a compression program. When the user executes the executable file, it is automatically decompressed and run.\n","image":"/images/code-bg.jpg","name":"Use pyinstaller to package Windows executable files","url":"https://andrewmoa.site/post/2025-07-22-pyinstaller-pkg-exe/"}
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-07-22T16:35:31+08:00","datePublished":"2025-07-22T00:00:00Z","description":"The executable program compiled using the Qt dynamic link library will rely on a large number of dynamic link library files. If you want to publish the program written on your local computer to other people\u0026rsquo;s computers, you need to package and publish the dependent dynamic link library files together with the executable program. There are many ways to package and publish, and the principle is the same. The executable program and the dependent files are packaged and compressed into a separate executable file through a compression program. When the user executes the executable file, it is automatically decompressed and run.\n","image":"/images/code-bg.jpg","name":"Use pyinstaller to package Windows executable files","url":"https://andrewmoa.site/post/2025-07-22-pyinstaller-pkg-exe/"}
 </script>
 
 </head>
@@ -415,38 +415,38 @@
 </span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><p>The cmake configuration file <code>CMakeLists.txt</code> is written as follows. The output executable file name contains the folder name, tool chain name, compiler name and version, etc.</p>
-<pre tabindex="0"><code>cmake_minimum_required(VERSION 3.13)
-get_filename_component(CURRENT_DIR ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
-get_filename_component(FOLDER_NAME ${CURRENT_DIR} NAME)
-message(STATUS &#34;FOLDER_NAME: ${FOLDER_NAME}&#34;)
-project(${FOLDER_NAME} LANGUAGES CXX)
-message(STATUS &#34;PROJECT_NAME: ${PROJECT_NAME}&#34;)
-set(CMAKE_CXX_STANDARD 17)
-
-get_filename_component(FILE_NAME ${CMAKE_CXX_COMPILER} NAME)
-string(REGEX REPLACE &#34;.exe&#34; &#34;&#34; COMPILER_TMP &#34;${FILE_NAME}&#34;)
-string(REGEX REPLACE &#34;-&#34; &#34;&#34; COMPILER &#34;${COMPILER_TMP}&#34;)
-message(STATUS &#34;COMPILER: ${COMPILER}&#34;)
-set(EXECUTE_FILE_NAME ${PROJECT_NAME}_${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}_${COMPILER}_${CMAKE_CXX_COMPILER_VERSION})
-string(TOLOWER ${EXECUTE_FILE_NAME} EXECUTE_FILE_NAME)
-message(STATUS &#34;EXECUTE_FILE_NAME: ${EXECUTE_FILE_NAME}&#34;)
-
-# CGAL_Qt6 is needed for the drawing.
-find_package(CGAL REQUIRED OPTIONAL_COMPONENTS Qt6)
-add_executable(${EXECUTE_FILE_NAME} draw_surface_mesh.cpp)
-
-if(CGAL_Qt6_FOUND)
-  # link it with the required CGAL libraries
-  target_link_libraries(${EXECUTE_FILE_NAME} PUBLIC CGAL::CGAL_Basic_viewer)
-endif()
-
-# set installation directories
-install(TARGETS ${EXECUTE_FILE_NAME}
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-)
-</code></pre><p>Under msys2 and vcpkg toolchains, static compilation using qt failed. Using msys2&rsquo;s clang64 toolchain with qt6 dynamic link library, the generated executable program name is <code>surface_mesh_viewer_gnu_clang++_20.1.8.exe</code> (the project folder name is <code>surface_mesh_viewer</code>).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmake" data-lang="cmake"><span class="line"><span class="cl"><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.13</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">get_filename_component</span><span class="p">(</span><span class="s">CURRENT_DIR</span> <span class="o">${</span><span class="nv">CMAKE_CURRENT_LIST_FILE</span><span class="o">}</span> <span class="s">DIRECTORY</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">get_filename_component</span><span class="p">(</span><span class="s">FOLDER_NAME</span> <span class="o">${</span><span class="nv">CURRENT_DIR</span><span class="o">}</span> <span class="s">NAME</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;FOLDER_NAME: ${FOLDER_NAME}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">project</span><span class="p">(</span><span class="o">${</span><span class="nv">FOLDER_NAME</span><span class="o">}</span> <span class="s">LANGUAGES</span> <span class="s">CXX</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;PROJECT_NAME: ${PROJECT_NAME}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_STANDARD</span> <span class="s">17</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">get_filename_component</span><span class="p">(</span><span class="s">FILE_NAME</span> <span class="o">${</span><span class="nv">CMAKE_CXX_COMPILER</span><span class="o">}</span> <span class="s">NAME</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">string</span><span class="p">(</span><span class="s">REGEX</span> <span class="s">REPLACE</span> <span class="s2">&#34;.exe&#34;</span> <span class="s2">&#34;&#34;</span> <span class="s">COMPILER_TMP</span> <span class="s2">&#34;${FILE_NAME}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">string</span><span class="p">(</span><span class="s">REGEX</span> <span class="s">REPLACE</span> <span class="s2">&#34;-&#34;</span> <span class="s2">&#34;&#34;</span> <span class="s">COMPILER</span> <span class="s2">&#34;${COMPILER_TMP}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;COMPILER: ${COMPILER}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">EXECUTE_FILE_NAME</span> <span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span><span class="s">_</span><span class="o">${</span><span class="nv">CMAKE_CXX_COMPILER_FRONTEND_VARIANT</span><span class="o">}</span><span class="s">_</span><span class="o">${</span><span class="nv">COMPILER</span><span class="o">}</span><span class="s">_</span><span class="o">${</span><span class="nv">CMAKE_CXX_COMPILER_VERSION</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">string</span><span class="p">(</span><span class="s">TOLOWER</span> <span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">EXECUTE_FILE_NAME</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&#34;EXECUTE_FILE_NAME: ${EXECUTE_FILE_NAME}&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># CGAL_Qt6 is needed for the drawing.
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">find_package</span><span class="p">(</span><span class="s">CGAL</span> <span class="s">REQUIRED</span> <span class="s">OPTIONAL_COMPONENTS</span> <span class="s">Qt6</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">add_executable</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">draw_surface_mesh.cpp</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">if</span><span class="p">(</span><span class="s">CGAL_Qt6_FOUND</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>  <span class="c"># link it with the required CGAL libraries
+</span></span></span><span class="line"><span class="cl"><span class="c"></span>  <span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">PUBLIC</span> <span class="s">CGAL::CGAL_Basic_viewer</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># set installation directories
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">install</span><span class="p">(</span><span class="s">TARGETS</span> <span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="s">RUNTIME</span> <span class="s">DESTINATION</span> <span class="s">bin</span>
+</span></span><span class="line"><span class="cl">  <span class="s">LIBRARY</span> <span class="s">DESTINATION</span> <span class="s">lib</span>
+</span></span><span class="line"><span class="cl">  <span class="s">ARCHIVE</span> <span class="s">DESTINATION</span> <span class="s">lib</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span></code></pre></div><p>Under msys2 and vcpkg toolchains, static compilation using qt failed. Using msys2&rsquo;s clang64 toolchain with qt6 dynamic link library, the generated executable program name is <code>surface_mesh_viewer_gnu_clang++_20.1.8.exe</code> (the project folder name is <code>surface_mesh_viewer</code>).</p>
 <h2 id="2-deploy-qt-application">2. Deploy Qt application</h2>
 <p>Open the clang64 command line terminal of msys2 and use the following command to deploy the Qt program.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Into the build folder</span>

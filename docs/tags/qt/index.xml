@@ -9,8 +9,15 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Mon, 21 Apr 2025 17:30:33 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 22 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/qt/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Use pyinstaller to package Windows executable files</title>
+      <link>https://andrewmoa.site/post/2025-07-22-pyinstaller-pkg-exe/</link>
+      <pubDate>Tue, 22 Jul 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-07-22-pyinstaller-pkg-exe/</guid>
+      <description>&lt;p&gt;The executable program compiled using the Qt dynamic link library will rely on a large number of dynamic link library files. If you want to publish the program written on your local computer to other people&amp;rsquo;s computers, you need to package and publish the dependent dynamic link library files together with the executable program. There are many ways to package and publish, and the principle is the same. The executable program and the dependent files are packaged and compressed into a separate executable file through a compression program. When the user executes the executable file, it is automatically decompressed and run.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>A Qt6-based image base64 conversion tool</title>
       <link>https://andrewmoa.site/post/2025-04-02-image2base64/</link>

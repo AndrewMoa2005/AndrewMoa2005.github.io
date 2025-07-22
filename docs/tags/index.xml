@@ -9,8 +9,36 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Fri, 27 Jun 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 22 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Python</title>
+      <link>https://andrewmoa.site/tags/python/</link>
+      <pubDate>Tue, 22 Jul 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/tags/python/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Qt</title>
+      <link>https://andrewmoa.site/tags/qt/</link>
+      <pubDate>Tue, 22 Jul 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/tags/qt/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Linux</title>
+      <link>https://andrewmoa.site/tags/linux/</link>
+      <pubDate>Fri, 18 Jul 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/tags/linux/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ubuntu</title>
+      <link>https://andrewmoa.site/tags/ubuntu/</link>
+      <pubDate>Fri, 18 Jul 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/tags/ubuntu/</guid>
+      <description></description>
+    </item>
     <item>
       <title>C&#43;&#43;</title>
       <link>https://andrewmoa.site/tags/c&#43;&#43;/</link>
@@ -47,13 +75,6 @@
       <description></description>
     </item>
     <item>
-      <title>Linux</title>
-      <link>https://andrewmoa.site/tags/linux/</link>
-      <pubDate>Wed, 16 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
-      <guid>https://andrewmoa.site/tags/linux/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>Openfoam</title>
       <link>https://andrewmoa.site/tags/openfoam/</link>
       <pubDate>Wed, 16 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
@@ -82,13 +103,6 @@
       <description></description>
     </item>
     <item>
-      <title>Ubuntu</title>
-      <link>https://andrewmoa.site/tags/ubuntu/</link>
-      <pubDate>Tue, 15 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
-      <guid>https://andrewmoa.site/tags/ubuntu/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>Ansa</title>
       <link>https://andrewmoa.site/tags/ansa/</link>
       <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
@@ -100,20 +114,6 @@
       <link>https://andrewmoa.site/tags/cae/</link>
       <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
       <guid>https://andrewmoa.site/tags/cae/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Python</title>
-      <link>https://andrewmoa.site/tags/python/</link>
-      <pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
-      <guid>https://andrewmoa.site/tags/python/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Qt</title>
-      <link>https://andrewmoa.site/tags/qt/</link>
-      <pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
-      <guid>https://andrewmoa.site/tags/qt/</guid>
       <description></description>
     </item>
     <item>

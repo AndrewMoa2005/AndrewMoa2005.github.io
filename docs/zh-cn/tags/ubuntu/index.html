@@ -202,6 +202,163 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-07-18-ubuntu-setup-soft-router/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Ubuntu搭建软路由" title="Ubuntu搭建软路由"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-07-18-ubuntu-setup-soft-router/">Ubuntu搭建软路由</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>把原先工作用的工作站改成了Ubuntu 24.04，需要通过Windows办公笔记本直连工作站进行操作。一开始在无线网下连接，上传下载数据太慢。后来通过有线网卡桥接，但有时候数据却不通过有线网卡传输反而走无线网卡。禁用笔记本无线网卡无法上网办公，也不是一个好办法。</p>
+<h2 id="1-临时方案">1. 临时方案</h2>
+<p>工作站作为主机A，笔记本作为主机B，主机B通过有线共享主机A的无线网络<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。</p>
+<h3 id="11-查询当前设备网卡">1.1 查询当前设备网卡</h3>
+<p>查询两台机子的网卡信息</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">iwconfig
+</span></span></code></pre></div><h3 id="12-配置主机a的静态ip并作为软路由">1.2 配置主机A的静态IP并作为软路由</h3>
+<p>可以通过GUI配置，主机A只需要设置IP地址和子网掩码信息。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo ifconfig eno1 192.168.68.1/24 <span class="c1"># enol 为A主机内接的有线网卡名称</span>
+</span></span><span class="line"><span class="cl">ifconfig <span class="c1"># 查询效果</span>
+</span></span></code></pre></div><h3 id="13-配置主机b的静态ip网关和dns">1.3 配置主机B的静态IP、网关和DNS</h3>
+<p>这一步也可以通过GUI配置，主机B需要配置IP地址、子网掩码，网关设置成主机A的IP地址，另外还需要设置DNS地址。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo ifconfig enp0s31f6 192.168.68.2/24 <span class="c1"># enp0s31f6 为A主机有线网卡名称</span>
+</span></span><span class="line"><span class="cl">sudo route add -net 0.0.0.0/0 gw 192.168.68.1 <span class="c1"># 添加网关</span>
+</span></span><span class="line"><span class="cl">sudo chmod +666 /etc/resolv.conf 
+</span></span><span class="line"><span class="cl">sudo <span class="nb">echo</span> <span class="s2">&#34;nameserver 114.114.114.114&#34;</span> &gt; /etc/resolv.conf <span class="c1"># 添加DNS</span>
+</span></span></code></pre></div><h3 id="14-打开ip转发功能">1.4 打开IP转发功能</h3>
+<p>Linux默认是禁止IP转发的，需要手动打开该功能。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo bash -c <span class="s1">&#39;echo 1 &gt; /proc/sys/net/ipv4/ip_forward&#39;</span>   <span class="c1"># 打开ip转发</span>
+</span></span></code></pre></div><h3 id="15-配置nat">1.5 配置NAT</h3>
+<p>通过<code>iptables</code>设置路由转发。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo iptables -F
+</span></span><span class="line"><span class="cl">sudo iptables -P INPUT ACCEPT
+</span></span><span class="line"><span class="cl">sudo iptables -P FORWARD ACCEPT
+</span></span><span class="line"><span class="cl">sudo iptables -t nat -A POSTROUTING -o wlp0s20f3 -j MASQUERADE     <span class="c1"># wlp0s20f3为A主机接外网的无线网卡</span>
+</span></span></code></pre></div><p>这个方案每次主机A重启都要重新按1.4、1.5设置一遍，非常不方便。</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-07-18T00:00:00&#43;00:00">
+      2025-07-18
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-04-15-linux-mount-windows-dir-cannot-run-abaqus-and-cfx/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
@@ -558,208 +715,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-25-ubuntu24.04-install-ansys2025r1/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
-      alt="Ubuntu24.04安装Ansys2025R1" title="Ubuntu24.04安装Ansys2025R1"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-25-ubuntu24.04-install-ansys2025r1/">Ubuntu24.04安装Ansys2025R1</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <h2 id="1-准备工作">1. 准备工作</h2>
-<p>全部安装需要161GB磁盘空间，请确保磁盘剩余可用空间满足需求，可以根据自己需求选择安装内容。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_e6df891d02f49e3b.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_be31c8832fc1a078.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/e8b6a55779447694ef28a8a9560f2bab_hu_485a5ec525d78a02.jpg" width="603" height="456" alt="e8b6a55779447694ef28a8a9560f2bab.png" title="e8b6a55779447694ef28a8a9560f2bab.png" loading="lazy" />
-  </picture>
-</div>
-<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_311d2c221ce0c964.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_55ea2f9a1de38f2b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/3f912a7795844465627dc878eb409e95_hu_c64a9486d469e79c.jpg" width="597" height="498" alt="3f912a7795844465627dc878eb409e95.png" title="3f912a7795844465627dc878eb409e95.png" loading="lazy" />
-  </picture>
-</div>
-<p>安装过程中至少需要8GB内存，推荐内存16~32GB。</p></p>
-<p>安装过程中的依赖工具：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install libnsl2 libpcre3 lsb-* ldap-utils libunistring5 xfonts-100dpi xfonts-75dpi
-</span></span></code></pre></div><p>其他运行时的依赖工具安装，请查询官方文档。</p>
-<p>Ansys2025R1安装文件中包含9个<code>.iso</code>安装文件，用以下命令挂载<code>.iso</code>文件到指定路径：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1
-</span></span><span class="line"><span class="cl">sudo mount <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/Share/Ansys/ANSYS2025R1_LINX64_DISK1.iso <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1 -o loop
-</span></span></code></pre></div><p>同样的办法，将剩下的安装包分别挂载至其他文件夹。</p>
-<h2 id="2-安装许可证服务器">2. 安装许可证服务器</h2>
-<h3 id="21-安装ansys-license-manager">2.1 安装Ansys License Manager</h3>
-<p>由于Ansys安装需要用到图形界面，因此需要先通过远程连接进入Ubuntu桌面系统。</p>
-<p>进入第一个安装包的挂载点，运行安装程序：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/ISO/1
-</span></span><span class="line"><span class="cl">sudo ./INSTALL <span class="c1"># 由于需要以服务形式运行，建议以管理员用户权限运行安装程序</span>
-</span></span></code></pre></div><p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_5831ab07b17cae41.webp 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_e334336d3856452d.webp 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_fe3867f407d36e29.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_7f1fb588b6f2c0d1.jpg 320w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_a73fd8dcf1dc600a.jpg 640w, /post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_92fa09b75d1ad315.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-25-ubuntu24.04-install-ansys2025r1/images/598ba0142449e130e1d6680aef25e2db_hu_a73fd8dcf1dc600a.jpg" width="1041" height="647" alt="598ba0142449e130e1d6680aef25e2db.png" title="598ba0142449e130e1d6680aef25e2db.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/linux/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Linux
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/ansys/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ansys</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/cae/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cae</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/linux/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Linux</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/ubuntu/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ubuntu</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-25T00:00:00&#43;00:00">
-      2025-03-25
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长2分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -891,6 +846,13 @@
     </li>
     
     <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/ubuntu/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ubuntu
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
       <a href="/zh-cn/tags/ansa/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Ansa
@@ -901,13 +863,6 @@
       <a href="/zh-cn/tags/star-ccm&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Star-Ccm&#43;
-      </a>
-    </li>
-    
-    <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/ubuntu/"
-        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Ubuntu
       </a>
     </li>
     

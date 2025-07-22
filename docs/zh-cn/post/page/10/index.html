@@ -202,6 +202,363 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-03-19-hyperv-install-ubuntu24/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/hyperv-bg.png"
+      alt="Hyper-V安装Ubuntu24.04" title="Hyper-V安装Ubuntu24.04"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-19-hyperv-install-ubuntu24/">Hyper-V安装Ubuntu24.04</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <h2 id="1-需求">1. 需求</h2>
+<p>考虑在新电脑上安装Linux，不是双系统，因为还要满足日常办公。不喜欢折腾的可以用WSL，这里用Hyper-V实现，同时通过端口映射实现外网访问虚拟机。</p>
+<h2 id="2-准备工作">2. 准备工作</h2>
+<h3 id="21-下载ubuntu">2.1 下载Ubuntu</h3>
+<p>笔者是做CFD的，自然离不开Fluent，这玩意儿挑发行版的。从官网资料确认支持哪个发行版，支持哪个就装哪个，免得后面倒腾回来重装系统。</p>
+<p><a href="https://www.ansys.com/content/dam/it-solutions/platform-support/2024-r1/ansys-platform-support-strategy-plans-january-2024.pdf" target="_blank" rel="noopener">Ansys Computing Platform Support 2024R1</a>
+</p>
+<p>这里选择Ubuntu，前往官网下载最新的发行版。</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_9e76efa233b8f578.webp 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_95d8b2287d054749.webp 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_9f2c89122d2967fb.webp 960w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_a97ab8b9de571179.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_b7a04ca03356fb6f.jpg 320w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_10366ec9244ebdf6.jpg 640w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_19787a07f12c5c16.jpg 960w, /post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_8fcee50eb8dfc6fd.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/2fd636d62e1453b3b54ad4074cde6c48_hu_10366ec9244ebdf6.jpg" width="1348" height="422" alt="2fd636d62e1453b3b54ad4074cde6c48.png" title="2fd636d62e1453b3b54ad4074cde6c48.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="22-开启hyper-v支持">2.2 开启Hyper-V支持</h3>
+<p>在开始菜单搜索“启用或关闭Windows功能”，开启虚拟化支持。</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_82d66e112c2e31bf.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_15261c51b798312b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/973c3b93cf91c5138b89bbeaeb2bf103_hu_45517c4355f2a6a5.jpg" width="359" height="223" alt="973c3b93cf91c5138b89bbeaeb2bf103.png" title="973c3b93cf91c5138b89bbeaeb2bf103.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>把Hyper-V勾上，安装并重启就行了。</p>
+<p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_65e8bfb420337851.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_ac27ca9d65ae1408.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-19-hyperv-install-ubuntu24/images/4e7e7f54c61f0f16af1595cb8c0b220e_hu_744e82011576ebce.jpg" width="410" height="398" alt="4e7e7f54c61f0f16af1595cb8c0b220e.png" title="4e7e7f54c61f0f16af1595cb8c0b220e.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/linux/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Linux</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/virtual-machine/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Virtual-Machine</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-19T00:00:00&#43;00:00">
+      2025-03-19
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长2分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-18-ansa-thin-mesh/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
+      alt="Ansa薄板网格建模" title="Ansa薄板网格建模"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-18-ansa-thin-mesh/">Ansa薄板网格建模</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>由于近期经常做一些冷板结构分析，涉及到薄板建模的。虽然尝试过用Shell单元进行分析，但相比于Solid单元，Shell单元做出来的结果应力、位移均有所偏大，而且涉及到接触问题更容易出现计算不收敛的情况。所幸Ansa提供了通过Shell单元拉伸生成体网格的方式，可以快速通过Shell单元生成Solid网格，极大地节省了建模时间。</p>
+<p>建模步骤如下：</p>
+<ol>
+<li>
+<p>薄板实体简化为Shell并划分网格，可以参考<a href="../2025-02-27-ansa-midsurf/">Ansa抽中面功能</a>
+。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-18-ansa-thin-mesh/images/5c6da744441c0b43367e9d1ff0296ec1_hu_11fd2b4b864ac1f3.webp 320w, /post/2025-03-18-ansa-thin-mesh/images/5c6da744441c0b43367e9d1ff0296ec1_hu_340ce747105afb2a.webp 640w, /post/2025-03-18-ansa-thin-mesh/images/5c6da744441c0b43367e9d1ff0296ec1_hu_6ffac32bba563321.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-18-ansa-thin-mesh/images/5c6da744441c0b43367e9d1ff0296ec1_hu_64b54c6565b00f17.jpg 320w, /post/2025-03-18-ansa-thin-mesh/images/5c6da744441c0b43367e9d1ff0296ec1_hu_2fec3d3f3387bc2c.jpg 640w, /post/2025-03-18-ansa-thin-mesh/images/5c6da744441c0b43367e9d1ff0296ec1_hu_890fde642abe00c5.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-18-ansa-thin-mesh/images/5c6da744441c0b43367e9d1ff0296ec1_hu_2fec3d3f3387bc2c.jpg" width="1205" height="702" alt="5c6da744441c0b43367e9d1ff0296ec1.png" title="5c6da744441c0b43367e9d1ff0296ec1.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p><code>Volume Mesh</code>→<code>Extrude</code>调出<code>Extrude</code>窗口，选中要拉伸的Shell单元。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-18-ansa-thin-mesh/images/02fe91f7f3a74047ccd442f4eaa42505_hu_56b1c57be46170a8.webp 320w, /post/2025-03-18-ansa-thin-mesh/images/02fe91f7f3a74047ccd442f4eaa42505_hu_ce7a4ea046914ce0.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-18-ansa-thin-mesh/images/02fe91f7f3a74047ccd442f4eaa42505_hu_b6fe89bb6220081e.jpg 320w, /post/2025-03-18-ansa-thin-mesh/images/02fe91f7f3a74047ccd442f4eaa42505_hu_451afb1f4f952c89.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-18-ansa-thin-mesh/images/02fe91f7f3a74047ccd442f4eaa42505_hu_451afb1f4f952c89.jpg" width="670" height="502" alt="02fe91f7f3a74047ccd442f4eaa42505.png" title="02fe91f7f3a74047ccd442f4eaa42505.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>目标面选择<code>None</code>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-18-ansa-thin-mesh/images/5818d8ffc832684765e7312eafe76ea9_hu_d57cc72f33611b83.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-18-ansa-thin-mesh/images/5818d8ffc832684765e7312eafe76ea9_hu_2eebf3e4840dba82.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-18-ansa-thin-mesh/images/5818d8ffc832684765e7312eafe76ea9_hu_4b4396dd6e97d4b7.jpg" width="402" height="448" alt="5818d8ffc832684765e7312eafe76ea9.png" title="5818d8ffc832684765e7312eafe76ea9.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+</li>
+<li>
+<p>拉伸方式选择<code>Offse</code>，方向选择<code>Both sides (middle)</code>。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-03-18-ansa-thin-mesh/images/d464570c23719e82fcd4d152a9278f8d_hu_57c95a120fc938c.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-03-18-ansa-thin-mesh/images/d464570c23719e82fcd4d152a9278f8d_hu_f779be59f4e45ec1.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-18-ansa-thin-mesh/images/d464570c23719e82fcd4d152a9278f8d_hu_824965d80210636b.jpg" width="402" height="448" alt="d464570c23719e82fcd4d152a9278f8d.png" title="d464570c23719e82fcd4d152a9278f8d.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/ansa/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Ansa
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/ansa/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ansa</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/cae/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Cae</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-18T00:00:00&#43;00:00">
+      2025-03-18
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-03-10-abaqus-contact/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/abaqus-bg.jpg"
@@ -401,343 +758,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-06-abaqus-command/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/abaqus-bg.jpg"
-      alt="Abaqus提交命令" title="Abaqus提交命令"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-06-abaqus-command/">Abaqus提交命令</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>用Ansa输出inp文件之后，可以通过Abaqus CAE窗口界面提交inp文件进行计算，也可以通过命令行方式提交计算。使用命令行提交需要添加Path，Windows下通常是<code>[Abaqus安装目录]\Commands</code>路径。</p>
-<p>其实Windows下装完Abaqus后，开始菜单会出现<code>Abaqus Command</code>快捷方式，点击该快捷方式可以通过命令行提交abaqus计算文件，不需要添加Path。<div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-06-abaqus-command/images/a6ed3616d120e0eeb3087d0596b3cb2b_hu_62f3e42a6beefa4e.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-06-abaqus-command/images/a6ed3616d120e0eeb3087d0596b3cb2b_hu_499244e671e0877b.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-06-abaqus-command/images/a6ed3616d120e0eeb3087d0596b3cb2b_hu_9a362545124e24a.jpg" width="533" height="197" alt="a6ed3616d120e0eeb3087d0596b3cb2b.png" title="a6ed3616d120e0eeb3087d0596b3cb2b.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>使用以下命令行提交inp计算文件。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">abaqus <span class="nv">job</span><span class="o">=[</span>文件名<span class="o">]</span>  <span class="nv">cpus</span><span class="o">=[</span>核心数<span class="o">]</span> <span class="nv">double</span><span class="o">=</span>both <span class="nv">output_precision</span><span class="o">=</span>full int <span class="nv">ask</span><span class="o">=</span>off
-</span></span></code></pre></div><p><div class="not-prose">
-<picture>
-    <source type="image/webp" srcset="/post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_601fddfb5bacc81b.webp 320w, /post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_9eb11fba4df48a9e.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <source type="image/jpeg" srcset="/post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_9fcad9b854e0b6ec.jpg 320w, /post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_b08b7741d1fde42f.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
-    <img class="h-auto max-w-full rounded-lg" src="/post/2025-03-06-abaqus-command/images/c410e740fc2aa52bde5adab8a2d1d217_hu_b08b7741d1fde42f.jpg" width="690" height="385" alt="c410e740fc2aa52bde5adab8a2d1d217.png" title="c410e740fc2aa52bde5adab8a2d1d217.png" loading="lazy" />
-  </picture>
-</div>
-</p>
-<p>通常来说通过<code>job</code>指定文件名就可以开始计算了，其他一些命令开关不是必要选项，它们的含义如下：</p>
-<ul>
-<li><code>help</code> →查看帮助</li>
-<li><code>double={ explicit | both | off | constraint }</code> → 计算精度</li>
-<li><code>output_precision={ single | full }</code> → 输出结果精度</li>
-<li><code>int / interactive</code> → 打印求解过程</li>
-<li><code>ask=off</code> → 不询问直接覆盖</li>
-<li><code>memory=5gb</code> → 指定最大运行内存5GB</li>
-<li><code>scratch=D:\Temp</code> → 指定计算临时文件存储地</li>
-</ul>
-<p>参考资料：https://abaqus-docs.mit.edu/2017/English/SIMACAEEXCRefMap/simaexc-c-analysisproc.htm</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/ansa/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Ansa
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/abaqus/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Abaqus</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/cae/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cae</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-06T00:00:00&#43;00:00">
-      2025-03-06
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-05-ansa-unit/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/grid-bg.jpg"
-      alt="Ansa单位制" title="Ansa单位制"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-05-ansa-unit/">Ansa单位制</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>Ansa导入step模型默认长度单位是mm，重量是ton。但我们常用的SI单位制长度是m，重量是kg。关于两种单位的转换如下表所示。</p>
-<table>
-  <thead>
-      <tr>
-          <th>长度</th>
-          <th>质量</th>
-          <th>时间</th>
-          <th>力</th>
-          <th>应力</th>
-          <th>能量</th>
-          <th>密度</th>
-          <th>杨氏模量</th>
-          <th>速度 (56.3KPH)</th>
-          <th>重力</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>m</td>
-          <td>kg</td>
-          <td>s</td>
-          <td>N</td>
-          <td>Pa</td>
-          <td>Joule</td>
-          <td>7.83E+03</td>
-          <td>2.07E+11</td>
-          <td>15.64</td>
-          <td>9.81</td>
-      </tr>
-      <tr>
-          <td>mm</td>
-          <td>ton</td>
-          <td>s</td>
-          <td>N</td>
-          <td>MPa</td>
-          <td>N-mm</td>
-          <td>7.83E-09</td>
-          <td>2.07E+05</td>
-          <td>1.564E+04</td>
-          <td>9.81E+03</td>
-      </tr>
-  </tbody>
-</table>
-<p>在定义模型参数时，应注意根据长度选择对应的单位制。</p>
-<hr>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/ansa/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Ansa
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/ansa/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Ansa</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/cae/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Cae</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-05T00:00:00&#43;00:00">
-      2025-03-05
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -869,6 +889,13 @@
     </li>
     
     <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/ubuntu/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ubuntu
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
       <a href="/zh-cn/tags/ansa/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Ansa
@@ -879,13 +906,6 @@
       <a href="/zh-cn/tags/star-ccm&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Star-Ccm&#43;
-      </a>
-    </li>
-    
-    <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/ubuntu/"
-        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Ubuntu
       </a>
     </li>
     

@@ -202,6 +202,210 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
+              <a href="/zh-cn/post/2025-07-22-pyinstaller-pkg-exe/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="使用pyinstaller打包exe程序" title="使用pyinstaller打包exe程序"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-07-22-pyinstaller-pkg-exe/">使用pyinstaller打包exe程序</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>使用qt动态链接库编译出来的可执行程序会依赖一大堆动态链接库文件，想要将本机上编写的程序发布到其他人的计算机上，就需要将依赖的动态链接库文件和可执行程序一起打包发布。打包发布的方法有很多，原理都是一样的，通过压缩程序将可执行程序和依赖文件一起打包压缩成单独的可执行文件，用户执行该可执行文件时自动解压并运行。</p>
+<p>常见的打包方案有WinRAR<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>、7-Zip<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>等，通过压缩软件的自解压模块制作带脚本的自解压程序，但这些方案有一个共同的缺点，没办法传递命令行参数。本文提供新的思路，通过pyinstaller打包功能，实现qt程序打包，并且通过python实现命令行参数传递。</p>
+<h2 id="1-示例程序">1. 示例程序</h2>
+<p>编写一个CGAL程序，调用qt显示面网格。下面的代码参考CGAL文档<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>并做了一些调整，在程序启动时开启对话框接收文件输入，也可以通过命令行传入网格文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;CGAL/Simple_cartesian.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;CGAL/Surface_mesh.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;CGAL/draw_surface_mesh.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;fstream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;QApplication&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;QFileDialog&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">Simple_cartesian</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">Kernel</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">Kernel</span><span class="o">::</span><span class="n">Point_3</span> <span class="n">Point</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">Surface_mesh</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span> <span class="n">Mesh</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">QApplication</span> <span class="n">app</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">filename</span> <span class="o">=</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">?</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">:</span> <span class="n">QFileDialog</span><span class="o">::</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="k">nullptr</span><span class="p">,</span> <span class="s">&#34;Open a mesh file&#34;</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="s">&#34;Supported formats (*.off *.stl *.obj *.ply);;OFF format (*.off);;STL format (*.stl);;OBJ format (*.obj);;PLY format (*.ply)&#34;</span><span class="p">).</span><span class="n">toStdString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Mesh</span> <span class="n">sm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">read_polygon_mesh</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sm</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">find_last_of</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;stl&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid STL file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">find_last_of</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;obj&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid OBJ file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">find_last_of</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;ply&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid PLY file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">find_last_of</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;off&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid OFF file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;(Unknown file format.)&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Internal color property maps are used if they exist and are called
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// &#34;v:color&#34;, &#34;e:color&#34; and &#34;f:color&#34;.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">auto</span> <span class="n">vcm</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">      <span class="n">sm</span><span class="p">.</span><span class="n">add_property_map</span><span class="o">&lt;</span><span class="n">Mesh</span><span class="o">::</span><span class="n">Vertex_index</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">Color</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&#34;v:color&#34;</span><span class="p">).</span><span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">auto</span> <span class="n">ecm</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">      <span class="n">sm</span><span class="p">.</span><span class="n">add_property_map</span><span class="o">&lt;</span><span class="n">Mesh</span><span class="o">::</span><span class="n">Edge_index</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">Color</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&#34;e:color&#34;</span><span class="p">).</span><span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">auto</span> <span class="n">fcm</span> <span class="o">=</span> <span class="n">sm</span><span class="p">.</span><span class="n">add_property_map</span><span class="o">&lt;</span><span class="n">Mesh</span><span class="o">::</span><span class="n">Face_index</span><span class="o">&gt;</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                   <span class="s">&#34;f:color&#34;</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">white</span><span class="p">()</span> <span class="cm">/*default*/</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                 <span class="p">.</span><span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">v</span> <span class="p">:</span> <span class="n">vertices</span><span class="p">(</span><span class="n">sm</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">idx</span><span class="p">()</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">put</span><span class="p">(</span><span class="n">vcm</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">black</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">put</span><span class="p">(</span><span class="n">vcm</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">blue</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">e</span> <span class="p">:</span> <span class="n">edges</span><span class="p">(</span><span class="n">sm</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">put</span><span class="p">(</span><span class="n">ecm</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">gray</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">put</span><span class="p">(</span><span class="n">fcm</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">sm</span><span class="p">.</span><span class="n">faces</span><span class="p">().</span><span class="n">begin</span><span class="p">()),</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">red</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Draw!
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">CGAL</span><span class="o">::</span><span class="n">draw</span><span class="p">(</span><span class="n">sm</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>cmake配置文件<code>CMakeLists.txt</code>编写如下，输出的可执行文件名称包含文件夹名、工具链名称、编译器命名和版本等。</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/python/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Python</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/qt/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Qt</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-07-22T00:00:00&#43;00:00">
+      2025-07-22
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长3分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
               <a href="/zh-cn/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
@@ -976,201 +1180,6 @@
             </div>
           </article>
         
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-06-24-matrix_multiplication-2/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
-      alt="矩阵乘法运算(二)-基于BLAS库的加速运算" title="矩阵乘法运算(二)-基于BLAS库的加速运算"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-06-24-matrix_multiplication-2/">矩阵乘法运算(二)-基于BLAS库的加速运算</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>BLAS最初是采用fortran开发的线性代数库，后来移植到C/C++上，作为现代高性能计算的核心组件，已经形成了一套标准。有开源的实现如Netlib BLAS、GotoBLAS及其后继者OpenBLAS，商业上各个厂商针对自家平台都有相应的实现，比如Intel的MKL、NVIDIA的CUDA、AMD的AOCL和ROCm。其中有针对CPU平台进行优化的，也有采用GPU并行加速的。本文通过使用不同BLAS库实现矩阵运算，分析不同实现间的性能差异。</p>
-<h2 id="1-cpu并行加速blas库">1. CPU并行加速BLAS库</h2>
-<h3 id="11-intel-mkl">1.1 Intel MKL</h3>
-<p><code>main.c</code>文件同<a href="../2025-06-23-matrix_multiplication-1">矩阵乘法运算(一)-使用OpenMP加速循环计算</a>
-中的2.1，<code>blas.c</code>引入mkl的blas库，并使用gemm函数执行矩阵乘法运算。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mkl_cblas.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">matrix_multiply_float</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">float</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">float</span> <span class="n">B</span><span class="p">[],</span> <span class="kt">float</span> <span class="n">C</span><span class="p">[])</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">cblas_sgemm</span><span class="p">(</span><span class="n">CblasRowMajor</span><span class="p">,</span> <span class="n">CblasNoTrans</span><span class="p">,</span> <span class="n">CblasNoTrans</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">matrix_multiply_double</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">double</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">double</span> <span class="n">B</span><span class="p">[],</span> <span class="kt">double</span> <span class="n">C</span><span class="p">[])</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">cblas_dgemm</span><span class="p">(</span><span class="n">CblasRowMajor</span><span class="p">,</span> <span class="n">CblasNoTrans</span><span class="p">,</span> <span class="n">CblasNoTrans</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><code>CMakeLists.txt</code>包含了mkl和openmp库文件，mkl底层默认使用openmp进行并行化，因此要链接到openmp库。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmake" data-lang="cmake"><span class="line"><span class="cl"><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.13</span><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">project</span><span class="p">(</span><span class="s">mkl</span> <span class="s">LANGUAGES</span> <span class="s">C</span><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_C_STANDARD</span> <span class="s">11</span><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">EXECUTE_FILE_NAME</span> <span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span><span class="s">_</span><span class="o">${</span><span class="nv">CMAKE_C_COMPILER_FRONTEND_VARIANT</span><span class="o">}</span><span class="s">_</span><span class="o">${</span><span class="nv">CMAKE_C_COMPILER_ID</span><span class="o">}</span><span class="s">_</span><span class="o">${</span><span class="nv">CMAKE_C_COMPILER_VERSION</span><span class="o">}</span><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">string</span><span class="p">(</span><span class="s">TOLOWER</span> <span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">EXECUTE_FILE_NAME</span><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">MKL_LINK</span> <span class="s">static</span><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Enable OpenMP
-</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">find_package</span><span class="p">(</span><span class="s">OpenMP</span> <span class="s">REQUIRED</span><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Enable MKL
-</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">find_package</span><span class="p">(</span><span class="s">MKL</span> <span class="s">CONFIG</span> <span class="s">REQUIRED</span><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span><span class="p">(</span><span class="s">SRC_LIST</span>
-</span></span><span class="line"><span class="cl">    <span class="s">src/main.c</span>
-</span></span><span class="line"><span class="cl">    <span class="s">src/blas.c</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">add_executable</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="o">${</span><span class="nv">SRC_LIST</span><span class="o">}</span><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">target_compile_options</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">PUBLIC</span>
-</span></span><span class="line"><span class="cl">    <span class="o">$&lt;</span><span class="nv">TARGET_PROPERTY:MKL::MKL,INTERFACE_COMPILE_OPTIONS</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">target_include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">PUBLIC</span>
-</span></span><span class="line"><span class="cl">    <span class="o">$&lt;</span><span class="nv">TARGET_PROPERTY:MKL::MKL,INTERFACE_INCLUDE_DIRECTORIES</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">EXECUTE_FILE_NAME</span><span class="o">}</span> <span class="s">PUBLIC</span>
-</span></span><span class="line"><span class="cl">    <span class="s">OpenMP::OpenMP_C</span>
-</span></span><span class="line"><span class="cl">    <span class="o">$&lt;</span><span class="nv">LINK_ONLY:MKL::MKL</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
-</span></span></span></code></pre></div><p>编译机器是AMD笔记本，处理器是AI 9 365w，在Windows下使用vs2022的clang-cl编译并运行，Release程序执行效果如下：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">PS </span><span class="n">D:</span><span class="p">\</span><span class="n">example</span><span class="p">\</span><span class="n">efficiency_v3</span><span class="p">\</span><span class="n">c</span><span class="p">\</span><span class="n">mkl</span><span class="p">\</span><span class="n">build</span><span class="p">\</span><span class="n">Release</span><span class="p">&gt;</span> <span class="p">.</span><span class="s2">&#34;D:/example/efficiency_v3/c/mkl/build/Release/mkl_msvc_clang_19.1.5.exe&#34;</span> <span class="n">-l</span> <span class="mf">10</span> <span class="n">-n</span> <span class="mf">12</span>
-</span></span><span class="line"><span class="cl"><span class="n">Using</span> <span class="n">float</span> <span class="n">precision</span> <span class="k">for</span> <span class="n">matrix</span> <span class="n">multiplication</span><span class="p">.</span>
-</span></span><span class="line"><span class="cl"><span class="mf">1</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">218935s</span><span class="p">(</span><span class="mf">627</span><span class="p">.</span><span class="n">761Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">2</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">211711s</span><span class="p">(</span><span class="mf">649</span><span class="p">.</span><span class="n">183Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">3</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">215178s</span><span class="p">(</span><span class="mf">638</span><span class="p">.</span><span class="n">722Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">4</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">223452s</span><span class="p">(</span><span class="mf">615</span><span class="p">.</span><span class="n">072Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">5</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">202687s</span><span class="p">(</span><span class="mf">678</span><span class="p">.</span><span class="n">085Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">6</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">203175s</span><span class="p">(</span><span class="mf">676</span><span class="p">.</span><span class="n">455Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">7</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">225790s</span><span class="p">(</span><span class="mf">608</span><span class="p">.</span><span class="n">702Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">8</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">204435s</span><span class="p">(</span><span class="mf">672</span><span class="p">.</span><span class="n">287Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">9</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">217666s</span><span class="p">(</span><span class="mf">631</span><span class="p">.</span><span class="n">421Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">10</span>      <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">217374s</span><span class="p">(</span><span class="mf">632</span><span class="p">.</span><span class="n">270Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">Average</span> <span class="n">Gflops</span><span class="err">:</span> <span class="mf">642.996</span><span class="p">,</span> <span class="n">Max</span> <span class="n">Gflops</span><span class="err">:</span> <span class="mf">678.085</span>
-</span></span><span class="line"><span class="cl"><span class="n">Average</span> <span class="n">Time</span><span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">214040s</span><span class="p">,</span> <span class="n">Min</span> <span class="n">Time</span><span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">202687s</span>
-</span></span><span class="line"><span class="cl"><span class="nb">PS </span><span class="n">D:</span><span class="p">\</span><span class="n">example</span><span class="p">\</span><span class="n">efficiency_v3</span><span class="p">\</span><span class="n">c</span><span class="p">\</span><span class="n">mkl</span><span class="p">\</span><span class="n">build</span><span class="p">\</span><span class="n">Release</span><span class="p">&gt;</span> <span class="p">.</span><span class="s2">&#34;D:/example/efficiency_v3/c/mkl/build/Release/mkl_msvc_clang_19.1.5.exe&#34;</span> <span class="n">-l</span> <span class="mf">10</span> <span class="n">-n</span> <span class="mf">12</span> <span class="n">-double</span>
-</span></span><span class="line"><span class="cl"><span class="n">Using</span> <span class="n">double</span> <span class="n">precision</span> <span class="k">for</span> <span class="n">matrix</span> <span class="n">multiplication</span><span class="p">.</span>
-</span></span><span class="line"><span class="cl"><span class="mf">1</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">400238s</span><span class="p">(</span><span class="mf">343</span><span class="p">.</span><span class="n">393Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">2</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">365257s</span><span class="p">(</span><span class="mf">376</span><span class="p">.</span><span class="n">280Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">3</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">375613s</span><span class="p">(</span><span class="mf">365</span><span class="p">.</span><span class="n">906Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">4</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">353108s</span><span class="p">(</span><span class="mf">389</span><span class="p">.</span><span class="n">226Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">5</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">380444s</span><span class="p">(</span><span class="mf">361</span><span class="p">.</span><span class="n">260Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">6</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">381736s</span><span class="p">(</span><span class="mf">360</span><span class="p">.</span><span class="n">036Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">7</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">392378s</span><span class="p">(</span><span class="mf">350</span><span class="p">.</span><span class="n">272Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">8</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">382949s</span><span class="p">(</span><span class="mf">358</span><span class="p">.</span><span class="n">897Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">9</span>       <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">401440s</span><span class="p">(</span><span class="mf">342</span><span class="p">.</span><span class="n">365Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="mf">10</span>      <span class="err">:</span> <span class="mf">4096</span> <span class="n">x</span> <span class="mf">4096</span> <span class="n">Matrix</span> <span class="n">multiply</span> <span class="n">wall</span> <span class="n">time</span> <span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">413794s</span><span class="p">(</span><span class="mf">332</span><span class="p">.</span><span class="n">143Gflops</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">Average</span> <span class="n">Gflops</span><span class="err">:</span> <span class="mf">357.978</span><span class="p">,</span> <span class="n">Max</span> <span class="n">Gflops</span><span class="err">:</span> <span class="mf">389.226</span>
-</span></span><span class="line"><span class="cl"><span class="n">Average</span> <span class="n">Time</span><span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">384696s</span><span class="p">,</span> <span class="n">Min</span> <span class="n">Time</span><span class="err">:</span> <span class="mf">0</span><span class="p">.</span><span class="n">353108s</span>
-</span></span></code></pre></div><p>想要在AMD机器上正常运行Intel mkl程序，建议在环境变量中加入<code>MKL_DEBUG_CPU_TYPE=5</code>。</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/code/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Code
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/c&#43;&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">C&#43;&#43;</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-06-24T00:00:00&#43;00:00">
-      2025-06-24
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长17分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
       </section>
       <aside class="hidden md:flex flex-col md:w-1/3 ml-3 top-0 sticky self-start">
         <section class="pl-6 mt-6 w-full max-w-4xl lg:max-w-5xl">
@@ -1302,6 +1311,13 @@
     </li>
     
     <li class="mt-2 mr-2">
+      <a href="/zh-cn/tags/ubuntu/"
+        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
+        Ubuntu
+      </a>
+    </li>
+    
+    <li class="mt-2 mr-2">
       <a href="/zh-cn/tags/ansa/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Ansa
@@ -1312,13 +1328,6 @@
       <a href="/zh-cn/tags/star-ccm&#43;/"
         class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
         Star-Ccm&#43;
-      </a>
-    </li>
-    
-    <li class="mt-2 mr-2">
-      <a href="/zh-cn/tags/ubuntu/"
-        class="rounded-sm px-2 py-1 text-sm text-slate-800 dark:text-slate-300 ring-1 ring-slate-900/5 dark:ring-slate-50/5 backdrop-blur-sm bg-slate-50 dark:bg-gray-700">
-        Ubuntu
       </a>
     </li>
     

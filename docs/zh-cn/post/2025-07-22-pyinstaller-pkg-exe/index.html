@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>使用pyinstaller打包exe程序 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="使用qt动态链接库编译出来的可执行程序会依赖一大堆动态链接库文件，想要将本机上编写的程序发布到其他人的计算机上，就需要将依赖的动态链接库文件和可执行程序一起打包发布。打包发布的方法有很多，原理都是一样的，通过压缩程序将可执行程序和依赖文件一起打包压缩成单独的可执行文件，用户执行该可执行文件时自动解压并运行。
+常见的打包方案有WinRAR1、7-Zip2等，通过压缩软件的自解压模块制作带脚本的自解压程序，但这些方案有一个共同的缺点，没办法传递命令行参数。本文提供新的思路，通过pyinstaller打包功能，实现qt程序打包，并且通过python实现命令行参数传递。
+1. 示例程序 编写一个CGAL程序，调用qt显示面网格。下面的代码参考CGAL文档3并做了一些调整，在程序启动时开启对话框接收文件输入，也可以通过命令行传入网格文件。
+#include &lt;CGAL/Simple_cartesian.h&gt; #include &lt;CGAL/Surface_mesh.h&gt; #include &lt;CGAL/draw_surface_mesh.h&gt; #include &lt;fstream&gt; #include &lt;QApplication&gt; #include &lt;QFileDialog&gt; typedef CGAL::Simple_cartesian&lt;double&gt; Kernel; typedef Kernel::Point_3 Point; typedef CGAL::Surface_mesh&lt;Point&gt; Mesh; int main(int argc, char *argv[]) { QApplication app(argc, argv); const std::string filename = (argc &gt; 1) ? argv[1] : QFileDialog::getOpenFileName(nullptr, &#34;Open a mesh file&#34;, &#34;&#34;, &#34;Supported formats (*.off *.stl *.obj *.ply);;OFF format (*.off);;STL format (*.stl);;OBJ format (*.obj);;PLY format (*.ply)&#34;).toStdString(); if (filename.empty()) return EXIT_FAILURE; Mesh sm; if (!CGAL::IO::read_polygon_mesh(filename, sm)) { if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;stl&#34;) std::cerr &lt;&lt; &#34;Invalid STL file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;obj&#34;) std::cerr &lt;&lt; &#34;Invalid OBJ file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;ply&#34;) std::cerr &lt;&lt; &#34;Invalid PLY file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;off&#34;) std::cerr &lt;&lt; &#34;Invalid OFF file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else std::cerr &lt;&lt; &#34;Invalid file: &#34; &lt;&lt; filename &lt;&lt; &#34;(Unknown file format.)&#34; &lt;&lt; std::endl; return EXIT_FAILURE; } // Internal color property maps are used if they exist and are called // &#34;v:color&#34;, &#34;e:color&#34; and &#34;f:color&#34;. auto vcm = sm.add_property_map&lt;Mesh::Vertex_index, CGAL::IO::Color&gt;(&#34;v:color&#34;).first; auto ecm = sm.add_property_map&lt;Mesh::Edge_index, CGAL::IO::Color&gt;(&#34;e:color&#34;).first; auto fcm = sm.add_property_map&lt;Mesh::Face_index&gt;( &#34;f:color&#34;, CGAL::IO::white() /*default*/) .first; for (auto v : vertices(sm)) { if (v.idx() % 2) { put(vcm, v, CGAL::IO::black()); } else { put(vcm, v, CGAL::IO::blue()); } } for (auto e : edges(sm)) { put(ecm, e, CGAL::IO::gray()); } put(fcm, *(sm.faces().begin()), CGAL::IO::red()); // Draw! CGAL::draw(sm); return EXIT_SUCCESS; } cmake配置文件CMakeLists.txt编写如下，输出的可执行文件名称包含文件夹名、工具链名称、编译器命名和版本等。
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2025-07-22-pyinstaller-pkg-exe/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="使用pyinstaller打包exe程序">
+  <meta property="og:description" content="使用qt动态链接库编译出来的可执行程序会依赖一大堆动态链接库文件，想要将本机上编写的程序发布到其他人的计算机上，就需要将依赖的动态链接库文件和可执行程序一起打包发布。打包发布的方法有很多，原理都是一样的，通过压缩程序将可执行程序和依赖文件一起打包压缩成单独的可执行文件，用户执行该可执行文件时自动解压并运行。
+常见的打包方案有WinRAR1、7-Zip2等，通过压缩软件的自解压模块制作带脚本的自解压程序，但这些方案有一个共同的缺点，没办法传递命令行参数。本文提供新的思路，通过pyinstaller打包功能，实现qt程序打包，并且通过python实现命令行参数传递。
+1. 示例程序 编写一个CGAL程序，调用qt显示面网格。下面的代码参考CGAL文档3并做了一些调整，在程序启动时开启对话框接收文件输入，也可以通过命令行传入网格文件。
+#include &lt;CGAL/Simple_cartesian.h&gt; #include &lt;CGAL/Surface_mesh.h&gt; #include &lt;CGAL/draw_surface_mesh.h&gt; #include &lt;fstream&gt; #include &lt;QApplication&gt; #include &lt;QFileDialog&gt; typedef CGAL::Simple_cartesian&lt;double&gt; Kernel; typedef Kernel::Point_3 Point; typedef CGAL::Surface_mesh&lt;Point&gt; Mesh; int main(int argc, char *argv[]) { QApplication app(argc, argv); const std::string filename = (argc &gt; 1) ? argv[1] : QFileDialog::getOpenFileName(nullptr, &#34;Open a mesh file&#34;, &#34;&#34;, &#34;Supported formats (*.off *.stl *.obj *.ply);;OFF format (*.off);;STL format (*.stl);;OBJ format (*.obj);;PLY format (*.ply)&#34;).toStdString(); if (filename.empty()) return EXIT_FAILURE; Mesh sm; if (!CGAL::IO::read_polygon_mesh(filename, sm)) { if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;stl&#34;) std::cerr &lt;&lt; &#34;Invalid STL file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;obj&#34;) std::cerr &lt;&lt; &#34;Invalid OBJ file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;ply&#34;) std::cerr &lt;&lt; &#34;Invalid PLY file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;off&#34;) std::cerr &lt;&lt; &#34;Invalid OFF file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else std::cerr &lt;&lt; &#34;Invalid file: &#34; &lt;&lt; filename &lt;&lt; &#34;(Unknown file format.)&#34; &lt;&lt; std::endl; return EXIT_FAILURE; } // Internal color property maps are used if they exist and are called // &#34;v:color&#34;, &#34;e:color&#34; and &#34;f:color&#34;. auto vcm = sm.add_property_map&lt;Mesh::Vertex_index, CGAL::IO::Color&gt;(&#34;v:color&#34;).first; auto ecm = sm.add_property_map&lt;Mesh::Edge_index, CGAL::IO::Color&gt;(&#34;e:color&#34;).first; auto fcm = sm.add_property_map&lt;Mesh::Face_index&gt;( &#34;f:color&#34;, CGAL::IO::white() /*default*/) .first; for (auto v : vertices(sm)) { if (v.idx() % 2) { put(vcm, v, CGAL::IO::black()); } else { put(vcm, v, CGAL::IO::blue()); } } for (auto e : edges(sm)) { put(ecm, e, CGAL::IO::gray()); } put(fcm, *(sm.faces().begin()), CGAL::IO::red()); // Draw! CGAL::draw(sm); return EXIT_SUCCESS; } cmake配置文件CMakeLists.txt编写如下，输出的可执行文件名称包含文件夹名、工具链名称、编译器命名和版本等。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-07-22T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-07-22T00:00:00+00:00">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Qt">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="使用pyinstaller打包exe程序">
+  <meta name="twitter:description" content="使用qt动态链接库编译出来的可执行程序会依赖一大堆动态链接库文件，想要将本机上编写的程序发布到其他人的计算机上，就需要将依赖的动态链接库文件和可执行程序一起打包发布。打包发布的方法有很多，原理都是一样的，通过压缩程序将可执行程序和依赖文件一起打包压缩成单独的可执行文件，用户执行该可执行文件时自动解压并运行。
+常见的打包方案有WinRAR1、7-Zip2等，通过压缩软件的自解压模块制作带脚本的自解压程序，但这些方案有一个共同的缺点，没办法传递命令行参数。本文提供新的思路，通过pyinstaller打包功能，实现qt程序打包，并且通过python实现命令行参数传递。
+1. 示例程序 编写一个CGAL程序，调用qt显示面网格。下面的代码参考CGAL文档3并做了一些调整，在程序启动时开启对话框接收文件输入，也可以通过命令行传入网格文件。
+#include &lt;CGAL/Simple_cartesian.h&gt; #include &lt;CGAL/Surface_mesh.h&gt; #include &lt;CGAL/draw_surface_mesh.h&gt; #include &lt;fstream&gt; #include &lt;QApplication&gt; #include &lt;QFileDialog&gt; typedef CGAL::Simple_cartesian&lt;double&gt; Kernel; typedef Kernel::Point_3 Point; typedef CGAL::Surface_mesh&lt;Point&gt; Mesh; int main(int argc, char *argv[]) { QApplication app(argc, argv); const std::string filename = (argc &gt; 1) ? argv[1] : QFileDialog::getOpenFileName(nullptr, &#34;Open a mesh file&#34;, &#34;&#34;, &#34;Supported formats (*.off *.stl *.obj *.ply);;OFF format (*.off);;STL format (*.stl);;OBJ format (*.obj);;PLY format (*.ply)&#34;).toStdString(); if (filename.empty()) return EXIT_FAILURE; Mesh sm; if (!CGAL::IO::read_polygon_mesh(filename, sm)) { if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;stl&#34;) std::cerr &lt;&lt; &#34;Invalid STL file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;obj&#34;) std::cerr &lt;&lt; &#34;Invalid OBJ file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;ply&#34;) std::cerr &lt;&lt; &#34;Invalid PLY file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else if (filename.substr(filename.find_last_of(&#34;.&#34;) &#43; 1) == &#34;off&#34;) std::cerr &lt;&lt; &#34;Invalid OFF file: &#34; &lt;&lt; filename &lt;&lt; std::endl; else std::cerr &lt;&lt; &#34;Invalid file: &#34; &lt;&lt; filename &lt;&lt; &#34;(Unknown file format.)&#34; &lt;&lt; std::endl; return EXIT_FAILURE; } // Internal color property maps are used if they exist and are called // &#34;v:color&#34;, &#34;e:color&#34; and &#34;f:color&#34;. auto vcm = sm.add_property_map&lt;Mesh::Vertex_index, CGAL::IO::Color&gt;(&#34;v:color&#34;).first; auto ecm = sm.add_property_map&lt;Mesh::Edge_index, CGAL::IO::Color&gt;(&#34;e:color&#34;).first; auto fcm = sm.add_property_map&lt;Mesh::Face_index&gt;( &#34;f:color&#34;, CGAL::IO::white() /*default*/) .first; for (auto v : vertices(sm)) { if (v.idx() % 2) { put(vcm, v, CGAL::IO::black()); } else { put(vcm, v, CGAL::IO::blue()); } } for (auto e : edges(sm)) { put(ecm, e, CGAL::IO::gray()); } put(fcm, *(sm.faces().begin()), CGAL::IO::red()); // Draw! CGAL::draw(sm); return EXIT_SUCCESS; } cmake配置文件CMakeLists.txt编写如下，输出的可执行文件名称包含文件夹名、工具链名称、编译器命名和版本等。">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2025-07-22-pyinstaller-pkg-exe/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-07-22T00:00:00Z","datePublished":"2025-07-22T00:00:00Z","description":"使用qt动态链接库编译出来的可执行程序会依赖一大堆动态链接库文件，想要将本机上编写的程序发布到其他人的计算机上，就需要将依赖的动态链接库文件和可执行程序一起打包发布。打包发布的方法有很多，原理都是一样的，通过压缩程序将可执行程序和依赖文件一起打包压缩成单独的可执行文件，用户执行该可执行文件时自动解压并运行。\n常见的打包方案有WinRAR1、7-Zip2等，通过压缩软件的自解压模块制作带脚本的自解压程序，但这些方案有一个共同的缺点，没办法传递命令行参数。本文提供新的思路，通过pyinstaller打包功能，实现qt程序打包，并且通过python实现命令行参数传递。\n1. 示例程序 编写一个CGAL程序，调用qt显示面网格。下面的代码参考CGAL文档3并做了一些调整，在程序启动时开启对话框接收文件输入，也可以通过命令行传入网格文件。\n#include \u0026lt;CGAL/Simple_cartesian.h\u0026gt; #include \u0026lt;CGAL/Surface_mesh.h\u0026gt; #include \u0026lt;CGAL/draw_surface_mesh.h\u0026gt; #include \u0026lt;fstream\u0026gt; #include \u0026lt;QApplication\u0026gt; #include \u0026lt;QFileDialog\u0026gt; typedef CGAL::Simple_cartesian\u0026lt;double\u0026gt; Kernel; typedef Kernel::Point_3 Point; typedef CGAL::Surface_mesh\u0026lt;Point\u0026gt; Mesh; int main(int argc, char *argv[]) { QApplication app(argc, argv); const std::string filename = (argc \u0026gt; 1) ? argv[1] : QFileDialog::getOpenFileName(nullptr, \u0026#34;Open a mesh file\u0026#34;, \u0026#34;\u0026#34;, \u0026#34;Supported formats (*.off *.stl *.obj *.ply);;OFF format (*.off);;STL format (*.stl);;OBJ format (*.obj);;PLY format (*.ply)\u0026#34;).toStdString(); if (filename.empty()) return EXIT_FAILURE; Mesh sm; if (!CGAL::IO::read_polygon_mesh(filename, sm)) { if (filename.substr(filename.find_last_of(\u0026#34;.\u0026#34;) + 1) == \u0026#34;stl\u0026#34;) std::cerr \u0026lt;\u0026lt; \u0026#34;Invalid STL file: \u0026#34; \u0026lt;\u0026lt; filename \u0026lt;\u0026lt; std::endl; else if (filename.substr(filename.find_last_of(\u0026#34;.\u0026#34;) + 1) == \u0026#34;obj\u0026#34;) std::cerr \u0026lt;\u0026lt; \u0026#34;Invalid OBJ file: \u0026#34; \u0026lt;\u0026lt; filename \u0026lt;\u0026lt; std::endl; else if (filename.substr(filename.find_last_of(\u0026#34;.\u0026#34;) + 1) == \u0026#34;ply\u0026#34;) std::cerr \u0026lt;\u0026lt; \u0026#34;Invalid PLY file: \u0026#34; \u0026lt;\u0026lt; filename \u0026lt;\u0026lt; std::endl; else if (filename.substr(filename.find_last_of(\u0026#34;.\u0026#34;) + 1) == \u0026#34;off\u0026#34;) std::cerr \u0026lt;\u0026lt; \u0026#34;Invalid OFF file: \u0026#34; \u0026lt;\u0026lt; filename \u0026lt;\u0026lt; std::endl; else std::cerr \u0026lt;\u0026lt; \u0026#34;Invalid file: \u0026#34; \u0026lt;\u0026lt; filename \u0026lt;\u0026lt; \u0026#34;(Unknown file format.)\u0026#34; \u0026lt;\u0026lt; std::endl; return EXIT_FAILURE; } // Internal color property maps are used if they exist and are called // \u0026#34;v:color\u0026#34;, \u0026#34;e:color\u0026#34; and \u0026#34;f:color\u0026#34;. auto vcm = sm.add_property_map\u0026lt;Mesh::Vertex_index, CGAL::IO::Color\u0026gt;(\u0026#34;v:color\u0026#34;).first; auto ecm = sm.add_property_map\u0026lt;Mesh::Edge_index, CGAL::IO::Color\u0026gt;(\u0026#34;e:color\u0026#34;).first; auto fcm = sm.add_property_map\u0026lt;Mesh::Face_index\u0026gt;( \u0026#34;f:color\u0026#34;, CGAL::IO::white() /*default*/) .first; for (auto v : vertices(sm)) { if (v.idx() % 2) { put(vcm, v, CGAL::IO::black()); } else { put(vcm, v, CGAL::IO::blue()); } } for (auto e : edges(sm)) { put(ecm, e, CGAL::IO::gray()); } put(fcm, *(sm.faces().begin()), CGAL::IO::red()); // Draw! CGAL::draw(sm); return EXIT_SUCCESS; } cmake配置文件CMakeLists.txt编写如下，输出的可执行文件名称包含文件夹名、工具链名称、编译器命名和版本等。\n","image":"/images/code-bg.jpg","name":"使用pyinstaller打包exe程序","url":"https://andrewmoa.site/zh-cn/post/2025-07-22-pyinstaller-pkg-exe/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2025-07-22-pyinstaller-pkg-exe/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2025-07-22-pyinstaller-pkg-exe/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="使用pyinstaller打包exe程序" title="使用pyinstaller打包exe程序"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2025-07-22-pyinstaller-pkg-exe/">使用pyinstaller打包exe程序</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/python/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Python</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/qt/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Qt</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-07-22T00:00:00&#43;00:00">
+      2025-07-22
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长3分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-示例程序">1. 示例程序</a></li>
+    <li><a href="#2-部署qt程序">2. 部署Qt程序</a></li>
+    <li><a href="#3-编写python脚本">3. 编写python脚本</a></li>
+    <li><a href="#4-打包发布测试">4. 打包发布测试</a></li>
+    <li><a href="#5-总结">5. 总结</a></li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>使用qt动态链接库编译出来的可执行程序会依赖一大堆动态链接库文件，想要将本机上编写的程序发布到其他人的计算机上，就需要将依赖的动态链接库文件和可执行程序一起打包发布。打包发布的方法有很多，原理都是一样的，通过压缩程序将可执行程序和依赖文件一起打包压缩成单独的可执行文件，用户执行该可执行文件时自动解压并运行。</p>
+<p>常见的打包方案有WinRAR<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>、7-Zip<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>等，通过压缩软件的自解压模块制作带脚本的自解压程序，但这些方案有一个共同的缺点，没办法传递命令行参数。本文提供新的思路，通过pyinstaller打包功能，实现qt程序打包，并且通过python实现命令行参数传递。</p>
+<h2 id="1-示例程序">1. 示例程序</h2>
+<p>编写一个CGAL程序，调用qt显示面网格。下面的代码参考CGAL文档<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>并做了一些调整，在程序启动时开启对话框接收文件输入，也可以通过命令行传入网格文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;CGAL/Simple_cartesian.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;CGAL/Surface_mesh.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;CGAL/draw_surface_mesh.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;fstream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;QApplication&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;QFileDialog&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">Simple_cartesian</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">Kernel</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">Kernel</span><span class="o">::</span><span class="n">Point_3</span> <span class="n">Point</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">Surface_mesh</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span> <span class="n">Mesh</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">QApplication</span> <span class="n">app</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">filename</span> <span class="o">=</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">?</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">:</span> <span class="n">QFileDialog</span><span class="o">::</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="k">nullptr</span><span class="p">,</span> <span class="s">&#34;Open a mesh file&#34;</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">,</span> <span class="s">&#34;Supported formats (*.off *.stl *.obj *.ply);;OFF format (*.off);;STL format (*.stl);;OBJ format (*.obj);;PLY format (*.ply)&#34;</span><span class="p">).</span><span class="n">toStdString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">Mesh</span> <span class="n">sm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">read_polygon_mesh</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sm</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">find_last_of</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;stl&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid STL file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">find_last_of</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;obj&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid OBJ file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">find_last_of</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;ply&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid PLY file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">find_last_of</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#34;off&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid OFF file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Invalid file: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">filename</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;(Unknown file format.)&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Internal color property maps are used if they exist and are called
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// &#34;v:color&#34;, &#34;e:color&#34; and &#34;f:color&#34;.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">auto</span> <span class="n">vcm</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">      <span class="n">sm</span><span class="p">.</span><span class="n">add_property_map</span><span class="o">&lt;</span><span class="n">Mesh</span><span class="o">::</span><span class="n">Vertex_index</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">Color</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&#34;v:color&#34;</span><span class="p">).</span><span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">auto</span> <span class="n">ecm</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">      <span class="n">sm</span><span class="p">.</span><span class="n">add_property_map</span><span class="o">&lt;</span><span class="n">Mesh</span><span class="o">::</span><span class="n">Edge_index</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">Color</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&#34;e:color&#34;</span><span class="p">).</span><span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">auto</span> <span class="n">fcm</span> <span class="o">=</span> <span class="n">sm</span><span class="p">.</span><span class="n">add_property_map</span><span class="o">&lt;</span><span class="n">Mesh</span><span class="o">::</span><span class="n">Face_index</span><span class="o">&gt;</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                   <span class="s">&#34;f:color&#34;</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">white</span><span class="p">()</span> <span class="cm">/*default*/</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                 <span class="p">.</span><span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">v</span> <span class="p">:</span> <span class="n">vertices</span><span class="p">(</span><span class="n">sm</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">idx</span><span class="p">()</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">put</span><span class="p">(</span><span class="n">vcm</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">black</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">put</span><span class="p">(</span><span class="n">vcm</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">blue</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">e</span> <span class="p">:</span> <span class="n">edges</span><span class="p">(</span><span class="n">sm</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">put</span><span class="p">(</span><span class="n">ecm</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">gray</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">put</span><span class="p">(</span><span class="n">fcm</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">sm</span><span class="p">.</span><span class="n">faces</span><span class="p">().</span><span class="n">begin</span><span class="p">()),</span> <span class="n">CGAL</span><span class="o">::</span><span class="n">IO</span><span class="o">::</span><span class="n">red</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Draw!
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">CGAL</span><span class="o">::</span><span class="n">draw</span><span class="p">(</span><span class="n">sm</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>cmake配置文件<code>CMakeLists.txt</code>编写如下，输出的可执行文件名称包含文件夹名、工具链名称、编译器命名和版本等。</p>
+<pre tabindex="0"><code>cmake_minimum_required(VERSION 3.13)
+get_filename_component(CURRENT_DIR ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
+get_filename_component(FOLDER_NAME ${CURRENT_DIR} NAME)
+message(STATUS &#34;FOLDER_NAME: ${FOLDER_NAME}&#34;)
+project(${FOLDER_NAME} LANGUAGES CXX)
+message(STATUS &#34;PROJECT_NAME: ${PROJECT_NAME}&#34;)
+set(CMAKE_CXX_STANDARD 17)
+
+get_filename_component(FILE_NAME ${CMAKE_CXX_COMPILER} NAME)
+string(REGEX REPLACE &#34;.exe&#34; &#34;&#34; COMPILER_TMP &#34;${FILE_NAME}&#34;)
+string(REGEX REPLACE &#34;-&#34; &#34;&#34; COMPILER &#34;${COMPILER_TMP}&#34;)
+message(STATUS &#34;COMPILER: ${COMPILER}&#34;)
+set(EXECUTE_FILE_NAME ${PROJECT_NAME}_${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}_${COMPILER}_${CMAKE_CXX_COMPILER_VERSION})
+string(TOLOWER ${EXECUTE_FILE_NAME} EXECUTE_FILE_NAME)
+message(STATUS &#34;EXECUTE_FILE_NAME: ${EXECUTE_FILE_NAME}&#34;)
+
+# CGAL_Qt6 is needed for the drawing.
+find_package(CGAL REQUIRED OPTIONAL_COMPONENTS Qt6)
+add_executable(${EXECUTE_FILE_NAME} draw_surface_mesh.cpp)
+
+if(CGAL_Qt6_FOUND)
+  # link it with the required CGAL libraries
+  target_link_libraries(${EXECUTE_FILE_NAME} PUBLIC CGAL::CGAL_Basic_viewer)
+endif()
+
+# set installation directories
+install(TARGETS ${EXECUTE_FILE_NAME}
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
+</code></pre><p>在msys2和vcpkg工具链下，使用qt静态编译均不成功。使用msys2的clang64工具链搭配qt6动态链接库，生成的可执行程序名称为<code>surface_mesh_viewer_gnu_clang++_20.1.8.exe</code>(项目文件夹名称为<code>surface_mesh_viewer</code>)。</p>
+<h2 id="2-部署qt程序">2. 部署Qt程序</h2>
+<p>打开msys2的clang64命令行终端，使用以下命令部署qt程序。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 进入项目的构建文件夹</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="sb">`</span>cygpath -u <span class="s1">&#39;D:\example\cgal\surface_mesh_viewer\build&#39;</span><span class="sb">`</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 新建depoly文件夹</span>
+</span></span><span class="line"><span class="cl">mkdir depoly <span class="o">&amp;&amp;</span> <span class="nb">cd</span> depoly
+</span></span><span class="line"><span class="cl">cp ../surface_mesh_viewer_gnu_clang++_20.1.8.exe .
+</span></span><span class="line"><span class="cl"><span class="c1"># 部署qt程序</span>
+</span></span><span class="line"><span class="cl">windeployqt6 surface_mesh_viewer_gnu_clang++_20.1.8.exe
+</span></span></code></pre></div><p>vcpkg的<code>windeployqt6</code>在文件夹<code>[vcpkg-install-dir]\installed\x64-windows\tools\Qt6\bin</code>下，使用vcpkg编译的话要先将这个路径加入PATH，再执行<code>windeployqt6</code>命令。</p>
+<p>执行完后可以看到文件夹下自动生成了qt的动态库依赖文件。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-07-22-pyinstaller-pkg-exe/images/a9c75259d0a8014414c29f8949da5026_hu_2bacbed68c83e3f.webp 320w, /post/2025-07-22-pyinstaller-pkg-exe/images/a9c75259d0a8014414c29f8949da5026_hu_50cc680955ef0963.webp 640w, /post/2025-07-22-pyinstaller-pkg-exe/images/a9c75259d0a8014414c29f8949da5026_hu_fe5c625da57abcde.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-07-22-pyinstaller-pkg-exe/images/a9c75259d0a8014414c29f8949da5026_hu_7e075ebe3a27c03b.jpg 320w, /post/2025-07-22-pyinstaller-pkg-exe/images/a9c75259d0a8014414c29f8949da5026_hu_1543e9ab4cec437b.jpg 640w, /post/2025-07-22-pyinstaller-pkg-exe/images/a9c75259d0a8014414c29f8949da5026_hu_f39d5d024a8ca032.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-07-22-pyinstaller-pkg-exe/images/a9c75259d0a8014414c29f8949da5026_hu_1543e9ab4cec437b.jpg" width="1094" height="621" alt="a9c75259d0a8014414c29f8949da5026.png" title="a9c75259d0a8014414c29f8949da5026.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>用<code>ldd</code>扫描，发现还有一些依赖的dll文件没有正确拷贝到文件夹中。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-07-22-pyinstaller-pkg-exe/images/e730038a0053cb06d88444049b5eeba8_hu_27ab77d70bb0828b.webp 320w, /post/2025-07-22-pyinstaller-pkg-exe/images/e730038a0053cb06d88444049b5eeba8_hu_9b42ed30e12382b1.webp 640w, /post/2025-07-22-pyinstaller-pkg-exe/images/e730038a0053cb06d88444049b5eeba8_hu_be1eeaabe45ebd58.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-07-22-pyinstaller-pkg-exe/images/e730038a0053cb06d88444049b5eeba8_hu_ef6090d03fbf58d.jpg 320w, /post/2025-07-22-pyinstaller-pkg-exe/images/e730038a0053cb06d88444049b5eeba8_hu_367d441833fa33c1.jpg 640w, /post/2025-07-22-pyinstaller-pkg-exe/images/e730038a0053cb06d88444049b5eeba8_hu_15f6a32ce2160c4.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-07-22-pyinstaller-pkg-exe/images/e730038a0053cb06d88444049b5eeba8_hu_367d441833fa33c1.jpg" width="1111" height="653" alt="e730038a0053cb06d88444049b5eeba8.png" title="e730038a0053cb06d88444049b5eeba8.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>使用以下命令将剩下的dll文件拷贝到文件夹中。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">deplist</span><span class="o">=</span><span class="k">$(</span> ldd surface_mesh_viewer_gnu_clang++_20.1.8.exe <span class="p">|</span> awk <span class="s1">&#39;{if (match($3,&#34;/&#34;)){ if (!match($3,&#34;/c/&#34;)){ print $3}}}&#39;</span> <span class="k">)</span>
+</span></span><span class="line"><span class="cl">cp -L -n <span class="nv">$deplist</span> .
+</span></span></code></pre></div><p>上面的命令只能在msys2工具链下使用，如果使用的是vcpkg那就只能自己手动复制粘贴了。</p>
+<p>最后进入<code>depoly</code>文件夹，双击exe程序可以正常运行，表示qt程序部署成功。以下命令将<code>depoly</code>文件夹打包成tar.xz压缩包备用(也可以通过7-Zip创建tar.xz压缩文件，需要先将文件夹打包成tar再压缩成xz，实测7-Zip生成的压缩包体积比xz命令行生成的小)。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> ..
+</span></span><span class="line"><span class="cl">tar cvJf depoly.tar.xz depoly
+</span></span></code></pre></div><h2 id="3-编写python脚本">3. 编写python脚本</h2>
+<p>建立一个新项目文件夹，将上面生成的<code>depoly.tar.xz</code>拷贝到其中。在该项目文件夹中新建并编写启动脚本<code>launch.py</code>，用于创建临时文件夹、解压tar.xz压缩包、传递命令行参数和启动应用程序。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">subprocess</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tempfile</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tarfile</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Setup the names of the package, directory, and program</span>
+</span></span><span class="line"><span class="cl"><span class="n">archive_file_name</span> <span class="o">=</span> <span class="s2">&#34;depoly.tar.xz&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">sub_directory_name</span> <span class="o">=</span> <span class="s2">&#34;depoly&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">run_file_name</span> <span class="o">=</span> <span class="s2">&#34;surface_mesh_viewer_gnu_clang++_20.1.8.exe&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Function to extract the tar file</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">extract_xz</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&#34;r:xz&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Create a temporary directory</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdirname</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Get the current working directory path</span>
+</span></span><span class="line"><span class="cl">        <span class="n">pwd</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmpdirname</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Extract the tar.xz archive to the temporary directory</span>
+</span></span><span class="line"><span class="cl">        <span class="n">extract_xz</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">archive_file_name</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">            <span class="n">tmpdirname</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Define the executable file path</span>
+</span></span><span class="line"><span class="cl">        <span class="n">run</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pwd</span> <span class="o">/</span> <span class="n">sub_directory_name</span> <span class="o">/</span> <span class="n">run_file_name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Modify the environment variable</span>
+</span></span><span class="line"><span class="cl">        <span class="n">env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">env</span><span class="p">[</span><span class="s2">&#34;PATH&#34;</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&#34;;&#34;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pwd</span> <span class="o">/</span> <span class="n">sub_directory_name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Add command-line parameters to the list</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">run</span> <span class="o">+=</span> <span class="s2">&#34; &#34;</span> <span class="o">+</span> <span class="n">i</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Use subprocess.Popen creates a child process</span>
+</span></span><span class="line"><span class="cl">        <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Wait for the process to complete</span>
+</span></span><span class="line"><span class="cl">        <span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">main</span><span class="p">()</span>
+</span></span></code></pre></div><p>脚本中，<code>archive_file_name</code>对应前面输出的tar.xz压缩包的名称，<code>sub_directory_name</code>对应打包部署qt程序的文件夹名称，<code>run_file_name</code>是要执行的qt程序名称。这三个变量可以根据自己的需要调整。</p>
+<h2 id="4-打包发布测试">4. 打包发布测试</h2>
+<p>接下来运行下面的命令，将python脚本和tar文件打包成单独的可执行文件并发布。注意<code>--add-data=depoly.tar.xz:.</code>开关中的<code>depoly.tar.xz</code>对应上面压缩包的名称，而且后面的<code>:.</code>不能省略。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">pyinstaller</span> <span class="p">-</span><span class="n">-onefile</span> <span class="p">-</span><span class="n">-windowed</span> <span class="p">-</span><span class="n">-add-data</span><span class="p">=</span><span class="n">depoly</span><span class="p">.</span><span class="py">tar</span><span class="p">.</span><span class="n">xz</span><span class="err">:</span><span class="p">.</span> <span class="p">-</span><span class="n">-name</span> <span class="n">surface_mesh_viewer</span><span class="p">.</span><span class="py">exe</span> <span class="n">launch</span><span class="p">.</span><span class="py">py</span>
+</span></span></code></pre></div><p>如果需要给打包发布的程序添加图标，可以在上面的命令行中附加<code>--icon &quot;app.ico&quot;</code>传递图标文件，<code>app.ico</code>对应图标文件名称。</p>
+<p>最后测试下打包发布的程序。通过命令行传递参数，可以正常识别并启动。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-07-22-pyinstaller-pkg-exe/images/805524d919aacee93d9a5d369337e8f4_hu_38ee70079cdfd766.webp 320w, /post/2025-07-22-pyinstaller-pkg-exe/images/805524d919aacee93d9a5d369337e8f4_hu_9fd4eef95de8f9c2.webp 640w, /post/2025-07-22-pyinstaller-pkg-exe/images/805524d919aacee93d9a5d369337e8f4_hu_f537591c1ff4a93f.webp 960w, /post/2025-07-22-pyinstaller-pkg-exe/images/805524d919aacee93d9a5d369337e8f4_hu_7b7701d7aa9ae0f.webp 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-07-22-pyinstaller-pkg-exe/images/805524d919aacee93d9a5d369337e8f4_hu_68bc6e148a6ef826.jpg 320w, /post/2025-07-22-pyinstaller-pkg-exe/images/805524d919aacee93d9a5d369337e8f4_hu_969b36cca07e53dd.jpg 640w, /post/2025-07-22-pyinstaller-pkg-exe/images/805524d919aacee93d9a5d369337e8f4_hu_dc434e99f908ad3e.jpg 960w, /post/2025-07-22-pyinstaller-pkg-exe/images/805524d919aacee93d9a5d369337e8f4_hu_8e83b866913caf20.jpg 1280w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-07-22-pyinstaller-pkg-exe/images/805524d919aacee93d9a5d369337e8f4_hu_969b36cca07e53dd.jpg" width="1299" height="363" alt="805524d919aacee93d9a5d369337e8f4.png" title="805524d919aacee93d9a5d369337e8f4.png" loading="lazy" />
+  </picture>
+</div>
+
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-07-22-pyinstaller-pkg-exe/images/4ede5208d8934c723040abad6372fa96_hu_f87c4592cf0b5b56.webp 320w, /post/2025-07-22-pyinstaller-pkg-exe/images/4ede5208d8934c723040abad6372fa96_hu_ec3bfd52a886f14d.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-07-22-pyinstaller-pkg-exe/images/4ede5208d8934c723040abad6372fa96_hu_36f246eed93c58cc.jpg 320w, /post/2025-07-22-pyinstaller-pkg-exe/images/4ede5208d8934c723040abad6372fa96_hu_49cb4e345947c742.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-07-22-pyinstaller-pkg-exe/images/4ede5208d8934c723040abad6372fa96_hu_49cb4e345947c742.jpg" width="754" height="722" alt="4ede5208d8934c723040abad6372fa96.png" title="4ede5208d8934c723040abad6372fa96.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h2 id="5-总结">5. 总结</h2>
+<p>这个方法适合发布工具类的较小的应用程序，每次运行都要解压到临时文件夹，再通过python脚本传递命令行参数启动程序，程序运行完后python脚本自动清理临时文件夹。</p>
+<p>如果打包发布的程序体积较大，或者需要反复启动运行，直接解压到临时文件夹显然不合适。这种情况建议重新规划解压路径，最好是做成类似安装包的形式，第一次启动时解压到固定的文件夹，后续直接从该文件夹启动，减少启动等待时间。</p>
+<p>上面的示例代码在Windows平台下通过测试，至于其他平台比如Linux，个人觉得没啥必要性。如果有类似的需求，还是考虑AppImage吧。</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://www.jianshu.com/p/564058646398" target="_blank" rel="noopener">利用 WinRAR 自解压功能制作独立 exe 程序</a>
+&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://www.cnblogs.com/sparkdev/p/5635612.html" target="_blank" rel="noopener">7z制作自解压安装包</a>
+&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p><a href="https://doc.cgal.org/latest/Manual/devman_create_and_use_a_cmakelist.html" target="_blank" rel="noopener">Minimal Example Using Qt6</a>
+&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

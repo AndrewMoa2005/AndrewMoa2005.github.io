@@ -23,7 +23,7 @@
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
     <meta property="article:published_time" content="2025-08-25T00:00:00+00:00">
-    <meta property="article:modified_time" content="2025-08-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-08-25T15:47:08+08:00">
     <meta property="article:tag" content="Python">
     <meta property="article:tag" content="Qt">
 
@@ -63,7 +63,7 @@
 
   
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-08-25T00:00:00Z","datePublished":"2025-08-25T00:00:00Z","description":"最近工作中经常遇到需要通过散点数据拟合函数曲线的情况，比较典型的例子是通过换热器的压降拟合多孔介质参数，以及拟合流体介质的多项式密度。虽然相关的工作可以通过Excel、Origin等实现，但是操作繁琐而且支持的函数类型有限。这里使用Python编写了一个简单的工具包，通过numpy和scipy实现函数拟合功能，用PySide编写了用户界面，实现了从输入数据到输出拟合函数参数的功能，并且支持数据预测和自定义函数功能。\n1. 软件简介 源码地址：PyCFF 1.1 用户界面 下面是软件的启动界面。软件界面通过PySide(Qt)实现。支持函数绘图功能，用户可以自定义绘图内容及输出保存图片。 下面是软件的输入界面。输入数据通过表格的方式展示，用户通过指定列来选择要拟合函数的自变量(x)和因变量(y)。用户不仅可以在表格中手动输入数据，也可以通过Excel等表格软件粘贴输入，还可以通过粘贴替换列的方式快速输入大量数据。 下面是软件的输出界面。软件预定义了一些常用函数，用户点击运算后在左侧表格中输出函数参数，并且在文本框中输出函数的完整表达式。用户可以自定义输出参数的精度和是否采用科学计数法，输出参数默认采用的是6位小数的科学计数法表示，满足大部分工程计算的需求。 ","image":"/images/code-bg.jpg","name":"PyCFF——一款基于Python的曲线拟合工具","url":"https://andrewmoa.site/zh-cn/post/2025-08-25-pycff/"}
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-08-25T15:47:08+08:00","datePublished":"2025-08-25T00:00:00Z","description":"最近工作中经常遇到需要通过散点数据拟合函数曲线的情况，比较典型的例子是通过换热器的压降拟合多孔介质参数，以及拟合流体介质的多项式密度。虽然相关的工作可以通过Excel、Origin等实现，但是操作繁琐而且支持的函数类型有限。这里使用Python编写了一个简单的工具包，通过numpy和scipy实现函数拟合功能，用PySide编写了用户界面，实现了从输入数据到输出拟合函数参数的功能，并且支持数据预测和自定义函数功能。\n1. 软件简介 源码地址：PyCFF 1.1 用户界面 下面是软件的启动界面。软件界面通过PySide(Qt)实现。支持函数绘图功能，用户可以自定义绘图内容及输出保存图片。 下面是软件的输入界面。输入数据通过表格的方式展示，用户通过指定列来选择要拟合函数的自变量(x)和因变量(y)。用户不仅可以在表格中手动输入数据，也可以通过Excel等表格软件粘贴输入，还可以通过粘贴替换列的方式快速输入大量数据。 下面是软件的输出界面。软件预定义了一些常用函数，用户点击运算后在左侧表格中输出函数参数，并且在文本框中输出函数的完整表达式。用户可以自定义输出参数的精度和是否采用科学计数法，输出参数默认采用的是6位小数的科学计数法表示，满足大部分工程计算的需求。 ","image":"/images/code-bg.jpg","name":"PyCFF——一款基于Python的曲线拟合工具","url":"https://andrewmoa.site/zh-cn/post/2025-08-25-pycff/"}
 </script>
 
 </head>
@@ -225,9 +225,9 @@
     
       
       <li>
-        <a href="/zh-cn/categories/code/"
+        <a href="/zh-cn/categories/tech/"
           class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Code
+          Tech
         </a>
       </li>
       
@@ -344,6 +344,14 @@
         <li><a href="#22-构建脚本">2.2 构建脚本</a></li>
       </ul>
     </li>
+    <li><a href="#3-快速上手">3. 快速上手</a>
+      <ul>
+        <li><a href="#31-输入">3.1 输入</a></li>
+        <li><a href="#32-绘图">3.2 绘图</a></li>
+        <li><a href="#33-输出">3.3 输出</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-规划">4. 规划</a></li>
   </ul>
 </nav></aside>
         </section>
@@ -558,6 +566,72 @@
 <p>使用以下命令即可快速构建whl发布包：</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python build.py -g
 </span></span></code></pre></div><p>生成的whl文件在<code>[source_dir]/build/dist</code>路径下，通过<code>pip install pycff-{version}-py3-none-{platform}.whl</code>安装该发布包。发布包安装后，可以通过<code>pycff</code>或者<code>python -m pycff</code>启动主程序。</p>
+<h2 id="3-快速上手">3. 快速上手</h2>
+<h3 id="31-输入">3.1 输入</h3>
+<p>在<code>输入</code>标签进行数据输入操作。</p>
+<ul>
+<li>程序初始展示的是一个2×5大小的表格数据，除了可以通过顶部的输入栏调整表格大小外，还可以根据右键菜单的<code>插入</code>、<code>删除</code>操作调整表格大小。</li>
+<li>可以通过复制粘贴excel表格获取数据，也可以通过读写文件(目前只支持csv文件读写)来加载/保存数据。</li>
+<li>可以自己定义行标题和列标题名称，用于对数据作区分。</li>
+<li>可以通过右键菜单的“粘贴替换列”将剪贴板中的数据快速载入指定列中，自动按非数字字符分割，用于快速读取大量数据。</li>
+<li>数据输入完毕之后，通过右侧的复选框选择自变量(x)和因变量(y)对应的数据列，再点击<code>刷新</code>按钮将表格数据载入。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/08d924f7c34483ac3b9fac9ab3bcfcaa_hu_2fe85210cd16e8d2.webp 320w, /post/2025-08-25-pycff/images/08d924f7c34483ac3b9fac9ab3bcfcaa_hu_78f6bac20fce63.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/08d924f7c34483ac3b9fac9ab3bcfcaa_hu_f71eea1f447f5eb5.jpg 320w, /post/2025-08-25-pycff/images/08d924f7c34483ac3b9fac9ab3bcfcaa_hu_23a01987d465a00d.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/08d924f7c34483ac3b9fac9ab3bcfcaa_hu_23a01987d465a00d.jpg" width="800" height="600" alt="08d924f7c34483ac3b9fac9ab3bcfcaa.png" title="08d924f7c34483ac3b9fac9ab3bcfcaa.png" loading="lazy" />
+  </picture>
+</div>
+</li>
+</ul>
+<h3 id="32-绘图">3.2 绘图</h3>
+<p>在<code>绘图</code>标签中进行简单的绘图操作。</p>
+<ul>
+<li>初始绘图展示的是前面5×2表格散点数据(红色实线段)和拟合曲线(黑色平滑虚线)。</li>
+<li>点击该标签中的<code>刷新</code>按钮，通过输入数据绘制散点图。</li>
+<li>可以自定义绘图标题、坐标轴标签和数字格式，以及曲线的标签、颜色、线型和粗细等参数。</li>
+<li>支持保存绘图，目前支持输出SVG和PNG格式文件。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/6781c6902ea52192aac443d99ae10d08_hu_921e9a64b8a3e68.webp 320w, /post/2025-08-25-pycff/images/6781c6902ea52192aac443d99ae10d08_hu_c1a9c59de88a475e.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/6781c6902ea52192aac443d99ae10d08_hu_4a66cb6ac57b5527.jpg 320w, /post/2025-08-25-pycff/images/6781c6902ea52192aac443d99ae10d08_hu_1a53e86ef6f057da.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/6781c6902ea52192aac443d99ae10d08_hu_1a53e86ef6f057da.jpg" width="800" height="600" alt="6781c6902ea52192aac443d99ae10d08.png" title="6781c6902ea52192aac443d99ae10d08.png" loading="lazy" />
+  </picture>
+</div>
+</li>
+</ul>
+<h3 id="33-输出">3.3 输出</h3>
+<p>在<code>输出</code>标签中进行函数拟合操作。</p>
+<ul>
+<li>在左侧顶部复选框中选择函数类型，预定义函数或者自定义函数。</li>
+<li>点击右侧上方的<code>计算</code>按钮，在左侧表格中显示计算的函数参数和R<sup>2</sup>值，同时右侧文本框中显示完整的函数表达式。</li>
+<li>可以通过右侧顶部的复选框自定义显示参数的数字格式。</li>
+<li>计算出函数参数之后，点击<code>刷新</code>按钮，在<code>绘图</code>标签中绘制散点图和函数曲线对比，可以自定义函数曲线的细化程度。</li>
+<li>在底部的左右两组输入框，可以通过输入X值计算函数的Y值，或者通过给定Y值预测X值，用于数据预测。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/363f66cf5fc80ae388534d21623831ca_hu_851e66946cf8de7f.webp 320w, /post/2025-08-25-pycff/images/363f66cf5fc80ae388534d21623831ca_hu_2339b0a71d0b126d.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/363f66cf5fc80ae388534d21623831ca_hu_c33bebb052369985.jpg 320w, /post/2025-08-25-pycff/images/363f66cf5fc80ae388534d21623831ca_hu_35602f71f47f486.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/363f66cf5fc80ae388534d21623831ca_hu_35602f71f47f486.jpg" width="800" height="600" alt="363f66cf5fc80ae388534d21623831ca.png" title="363f66cf5fc80ae388534d21623831ca.png" loading="lazy" />
+  </picture>
+</div>
+
+<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/4d24afb2912539b86aa61ece5ff11e07_hu_a6b2ba1b3c916f9.webp 320w, /post/2025-08-25-pycff/images/4d24afb2912539b86aa61ece5ff11e07_hu_82ecec7de1668c8f.webp 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/4d24afb2912539b86aa61ece5ff11e07_hu_153faa6b5962cc49.jpg 320w, /post/2025-08-25-pycff/images/4d24afb2912539b86aa61ece5ff11e07_hu_72dcab8fd536fdc6.jpg 640w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/4d24afb2912539b86aa61ece5ff11e07_hu_72dcab8fd536fdc6.jpg" width="719" height="377" alt="4d24afb2912539b86aa61ece5ff11e07.png" title="4d24afb2912539b86aa61ece5ff11e07.png" loading="lazy" />
+  </picture>
+</div>
+</li>
+</ul>
+<h2 id="4-规划">4. 规划</h2>
+<p>目前程序实现了表格输入输出、绘图、函数拟合等基本功能，未来计划新增以下功能：</p>
+<ul>
+<li>表格实现公式计算</li>
+<li>实现excel文件读写</li>
+<li>绘图数据复制到剪贴板</li>
+<li>其他用户关心的问题……</li>
+</ul>
+<p>更多意见和建议，欢迎提交<a href="https://github.com/AndrewMoa2005/PyCFF/issues" target="_blank" rel="noopener">Issues</a>
+</p>
 
       </article>
 

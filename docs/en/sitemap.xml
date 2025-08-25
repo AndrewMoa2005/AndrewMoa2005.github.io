@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://andrewmoa.site/categories/</loc>
-    <lastmod>2025-08-25T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-25T15:47:08+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-CN"
@@ -15,21 +15,8 @@
                 href="https://andrewmoa.site/categories/"
                 />
   </url><url>
-    <loc>https://andrewmoa.site/categories/code/</loc>
-    <lastmod>2025-08-25T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-CN"
-                href="https://andrewmoa.site/zh-cn/categories/code/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://andrewmoa.site/categories/code/"
-                />
-  </url><url>
     <loc>https://andrewmoa.site/post/</loc>
-    <lastmod>2025-08-25T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-25T15:47:08+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-CN"
@@ -42,7 +29,7 @@
                 />
   </url><url>
     <loc>https://andrewmoa.site/post/2025-08-25-pycff/</loc>
-    <lastmod>2025-08-25T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-25T15:47:08+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-CN"
@@ -55,7 +42,7 @@
                 />
   </url><url>
     <loc>https://andrewmoa.site/tags/python/</loc>
-    <lastmod>2025-08-25T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-25T15:47:08+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-CN"
@@ -68,7 +55,7 @@
                 />
   </url><url>
     <loc>https://andrewmoa.site/tags/qt/</loc>
-    <lastmod>2025-08-25T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-25T15:47:08+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-CN"
@@ -81,7 +68,7 @@
                 />
   </url><url>
     <loc>https://andrewmoa.site/tags/</loc>
-    <lastmod>2025-08-25T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-25T15:47:08+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-CN"
@@ -91,6 +78,32 @@
                 rel="alternate"
                 hreflang="en-US"
                 href="https://andrewmoa.site/tags/"
+                />
+  </url><url>
+    <loc>https://andrewmoa.site/categories/tech/</loc>
+    <lastmod>2025-08-25T15:47:08+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-CN"
+                href="https://andrewmoa.site/zh-cn/categories/tech/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://andrewmoa.site/categories/tech/"
+                />
+  </url><url>
+    <loc>https://andrewmoa.site/categories/code/</loc>
+    <lastmod>2025-07-22T16:58:14+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-CN"
+                href="https://andrewmoa.site/zh-cn/categories/code/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://andrewmoa.site/categories/code/"
                 />
   </url><url>
     <loc>https://andrewmoa.site/post/2025-07-22-pyinstaller-pkg-exe/</loc>
@@ -598,19 +611,6 @@
                 rel="alternate"
                 hreflang="en-US"
                 href="https://andrewmoa.site/post/2025-03-26-tabby-setup-msys2/"
-                />
-  </url><url>
-    <loc>https://andrewmoa.site/categories/tech/</loc>
-    <lastmod>2025-04-21T17:30:33+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-CN"
-                href="https://andrewmoa.site/zh-cn/categories/tech/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://andrewmoa.site/categories/tech/"
                 />
   </url><url>
     <loc>https://andrewmoa.site/tags/ansys/</loc>

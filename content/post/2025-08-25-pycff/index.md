@@ -9,7 +9,7 @@ tags = [
 
 ]
 categories = [
-    "code",
+    "tech",
 ]
 series = [""]
 aliases = [""]
@@ -122,3 +122,49 @@ You can quickly build the whl distribution package using the following command:
 python build.py -g
 ```
 The generated whl file is in the `[source_dir]/build/dist` path. You can install the release package through `pip install pycff-{version}-py3-none-{platform}.whl`. After the release package is installed, you can start the main program through `pycff` or `python -m pycff`.
+
+## 3. Quick Start
+
+### 3.1 Input
+
+Perform data input operations in the `Input` tag.
+
+ - The program initially displays a 2×5 table. You can resize the table using the top input bar and the "Insert" and "Delete" options on the right-click menu.
+ - You can copy and paste Excel spreadsheets to access data, or load and save data by reading and writing files (currently only CSV files are supported).
+ - You can define row and column headers to distinguish data.
+ - You can use the "Paste Replace Column" option on the right-click menu to quickly load data from the clipboard into a specified column. The data is automatically split by non-numeric characters, making it easy to quickly read large amounts of data.
+ - After entering data, select the columns corresponding to the independent variable (x) and dependent variable (y) using the checkboxes on the right, then click the "Refresh" button to load the table data.
+![08d924f7c34483ac3b9fac9ab3bcfcaa.png](./images/08d924f7c34483ac3b9fac9ab3bcfcaa.png)
+
+### 3.2 Plot
+
+Perform simple plotting operations in the Plot tab.
+
+ - The initial plot displays the scatter plot data (red solid lines) and the fitted curve (black smooth dashed line) from the previous 5×2 table.
+ - Click the Refresh button in this tab to draw the scatter plot using the input data.
+ - You can customize the plot title, axis labels, and number format, as well as curve labels, colors, line types, and thickness.
+ - You can save plots, currently supporting SVG and PNG formats.
+![6781c6902ea52192aac443d99ae10d08.png](./images/6781c6902ea52192aac443d99ae10d08.png)
+
+### 3.3 Output
+
+Perform function fitting in the "Output" tab.
+
+ - Select the function type from the checkbox at the top left: a predefined function or a custom function.
+ - Click the "Calculate" button at the top right. The calculated function parameters and R<sup>2</sup> value will be displayed in the table on the left, and the complete function expression will be displayed in the text box on the right.
+ - You can customize the numeric format of the displayed parameters using the checkbox at the top right.
+ - After calculating the function parameters, click the "Refresh" button to plot a scatter plot and function curve in the "Plot" tab. You can customize the level of detail of the function curve.
+ - In the two sets of input boxes at the bottom, you can calculate the Y value of the function by entering an X value, or predict the X value given a Y value for data prediction.
+![363f66cf5fc80ae388534d21623831ca.png](./images/363f66cf5fc80ae388534d21623831ca.png)
+![4d24afb2912539b86aa61ece5ff11e07.png](./images/4d24afb2912539b86aa61ece5ff11e07.png)
+
+## 4. Plan
+
+Currently, the program implements basic functions such as table input and output, plotting, and function fitting. Future plans include the following features:
+
+ - Formula calculation in tables
+ - Reading and writing Excel files
+ - Copying plotted data to the clipboard
+ - Other user concerns...
+
+For further comments and suggestions, please submit [Issues](https://github.com/AndrewMoa2005/PyCFF/issues).

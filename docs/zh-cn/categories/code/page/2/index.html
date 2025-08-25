@@ -202,610 +202,6 @@
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
-              <a href="/zh-cn/post/2025-06-25-matrix_multiplication-3/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
-      alt="矩阵乘法运算(三)-使用MPI并行加速" title="矩阵乘法运算(三)-使用MPI并行加速"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-06-25-matrix_multiplication-3/">矩阵乘法运算(三)-使用MPI并行加速</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>MPI是一种并行计算协议，也是目前高性能计算集群最为常用的接口程序。MPI通过进程间消息进行通讯，可以跨节点调用多核心执行并行计算，这是OpenMP所不具备的。不同平台均有mpi实现，比如Windows下的MS-MPI和Intel MPI，Linux下的OpenMPI和MPICH等。</p>
-<h2 id="1-mpi并行加速循环计算">1. MPI并行加速循环计算</h2>
-<h3 id="11-c实现">1.1 C实现</h3>
-<p>mpi需要对主程序接口进行初始化，建立消息广播机制；同时将需要计算的数组进行分割，广播到不同的进程中。以往这些操作都是openmp或其他并行库内部实现的，程序员不需要关心底层如何实现。但使用mpi需要程序员对每个进程的全局和局部空间进行手动分配，需要控制每个消息的广播，无疑增加了额外的学习成本。</p>
-<p>这里将<code>main.c</code>文件修改如下。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;mpi.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="cp">#define MAX(a, b) ((a) &gt; (b) ? (a) : (b))
-</span></span></span><span class="line"><span class="cl"><span class="cp">#define MIN(a, b) ((a) &lt; (b) ? (a) : (b))
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">void</span> <span class="nf">matrix_multiply_float</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rank</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="kt">float</span> <span class="n">local_A</span><span class="p">[],</span> <span class="kt">float</span> <span class="n">B</span><span class="p">[],</span> <span class="kt">float</span> <span class="n">local_C</span><span class="p">[]);</span>
-</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">void</span> <span class="nf">matrix_multiply_double</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rank</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="kt">double</span> <span class="n">local_A</span><span class="p">[],</span> <span class="kt">double</span> <span class="n">B</span><span class="p">[],</span> <span class="kt">double</span> <span class="n">local_C</span><span class="p">[]);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Initialize matrix
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">initialize_matrix_float</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">float</span> <span class="n">matrix</span><span class="p">[])</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">srand</span><span class="p">((</span><span class="kt">unsigned</span><span class="p">)</span><span class="nf">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">matrix</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nf">rand</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="kt">float</span><span class="p">)(</span><span class="n">RAND_MAX</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">initialize_matrix_double</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">double</span> <span class="n">matrix</span><span class="p">[])</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">srand</span><span class="p">((</span><span class="kt">unsigned</span><span class="p">)</span><span class="nf">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">matrix</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nf">rand</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">RAND_MAX</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// Execute matrix multiply and print results
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">mpi_float</span><span class="p">(</span><span class="kt">int</span> <span class="n">dim</span><span class="p">,</span> <span class="kt">int</span> <span class="n">loop_num</span><span class="p">,</span> <span class="kt">double</span> <span class="o">*</span><span class="n">ave_gflops</span><span class="p">,</span> <span class="kt">double</span> <span class="o">*</span><span class="n">max_gflops</span><span class="p">,</span> <span class="kt">double</span> <span class="o">*</span><span class="n">ave_time</span><span class="p">,</span> <span class="kt">double</span> <span class="o">*</span><span class="n">min_time</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">rank</span><span class="p">,</span> <span class="n">size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">MPI_Comm_rank</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rank</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">MPI_Comm_size</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// Use volatile to prevent compiler optimizations
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">volatile</span> <span class="kt">float</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">*</span><span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="n">local_c</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">timespec</span> <span class="n">start_ns</span><span class="p">,</span> <span class="n">end_ns</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">double</span> <span class="n">cpu_time</span><span class="p">,</span> <span class="n">total_cpu_time</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 计算每个进程处理的行数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">rows_per_process</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">/</span> <span class="n">size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">remainder</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">%</span> <span class="n">size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">&lt;</span> <span class="n">remainder</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">rows_per_process</span><span class="o">++</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">loop_num</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">check_indices</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">float</span> <span class="n">check_value</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 主进程分配完整矩阵内存
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">            <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">b</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Memory allocation failed</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">initialize_matrix_float</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">initialize_matrix_float</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            <span class="c1">// 生成校验值
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">int</span> <span class="n">check_row</span> <span class="o">=</span> <span class="nf">rand</span><span class="p">()</span> <span class="o">%</span> <span class="n">dim</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">check_col</span> <span class="o">=</span> <span class="nf">rand</span><span class="p">()</span> <span class="o">%</span> <span class="n">dim</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">check_value</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">dim</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="n">check_value</span> <span class="o">+=</span> <span class="n">a</span><span class="p">[</span><span class="n">check_row</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">check_col</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            <span class="n">check_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">check_row</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">check_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">check_col</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            <span class="c1">// 广播校验行列索引和校验值
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="n">check_indices</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MPI_INT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">check_value</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MPI_FLOAT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">else</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">a</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">b</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="n">check_indices</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MPI_INT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">check_value</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MPI_FLOAT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 为每个进程分配局部矩阵空间
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">float</span> <span class="o">*</span><span class="n">local_A</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="n">local_c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span> <span class="o">*</span><span class="p">)</span><span class="nf">calloc</span><span class="p">(</span><span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">local_A</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">local_c</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Memory allocation failed</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 分发矩阵 A 的行到各个进程
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">int</span> <span class="o">*</span><span class="n">sendcounts</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">size</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="o">*</span><span class="n">displs</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">size</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">p</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">sendcounts</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">&lt;</span> <span class="n">remainder</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span><span class="p">)</span> <span class="o">:</span> <span class="p">((</span><span class="n">rows_per_process</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dim</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="n">displs</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">offset</span> <span class="o">+=</span> <span class="n">sendcounts</span><span class="p">[</span><span class="n">p</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">MPI_Scatterv</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">sendcounts</span><span class="p">,</span> <span class="n">displs</span><span class="p">,</span> <span class="n">MPI_FLOAT</span><span class="p">,</span> <span class="n">local_A</span><span class="p">,</span> <span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="n">MPI_FLOAT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 所有进程都需要完整的矩阵 B
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">float</span> <span class="o">*</span><span class="n">full_B</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">full_B</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Memory allocation failed for full_B</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">memcpy</span><span class="p">(</span><span class="n">full_B</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="n">full_B</span><span class="p">,</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="n">MPI_FLOAT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="nf">timespec_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">start_ns</span><span class="p">,</span> <span class="n">TIME_UTC</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">matrix_multiply_float</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">local_A</span><span class="p">,</span> <span class="n">full_B</span><span class="p">,</span> <span class="n">local_c</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">timespec_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">end_ns</span><span class="p">,</span> <span class="n">TIME_UTC</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="n">cpu_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_ns</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">-</span> <span class="n">start_ns</span><span class="p">.</span><span class="n">tv_sec</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">end_ns</span><span class="p">.</span><span class="n">tv_nsec</span> <span class="o">-</span> <span class="n">start_ns</span><span class="p">.</span><span class="n">tv_nsec</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 使用 MPI_Reduce 对所有进程的 cpu_time 求和
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">MPI_Reduce</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cpu_time</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">total_cpu_time</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="n">MPI_SUM</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="c1">// 计算平均值
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">cpu_time</span> <span class="o">=</span> <span class="n">total_cpu_time</span> <span class="o">/</span> <span class="n">size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 将平均值广播给所有进程
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cpu_time</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="kt">double</span> <span class="n">gflops</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">cpu_time</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\t</span><span class="s">: %d x %d Matrix multiply wall time : %.6fs(%.3fGflops)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">cpu_time</span><span class="p">,</span> <span class="n">gflops</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span> <span class="c1">// 强制刷新标准输出缓冲区
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 收集所有进程的局部结果到主进程
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">float</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Memory allocation failed for c matrix</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">MPI_Gatherv</span><span class="p">(</span><span class="n">local_c</span><span class="p">,</span> <span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="n">MPI_FLOAT</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">sendcounts</span><span class="p">,</span> <span class="n">displs</span><span class="p">,</span> <span class="n">MPI_FLOAT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 主进程进行校验
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">check_row</span> <span class="o">=</span> <span class="n">check_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">check_col</span> <span class="o">=</span> <span class="n">check_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">            <span class="kt">float</span> <span class="n">result_value</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">check_row</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">check_col</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nf">fabs</span><span class="p">(</span><span class="n">result_value</span> <span class="o">-</span> <span class="n">check_value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.001</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Verification failed at iteration %d: expected %.6f, got %.6f</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">check_value</span><span class="p">,</span> <span class="n">result_value</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">free</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// Free memory
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">free</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">free</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">local_A</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">local_c</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">sendcounts</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">displs</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">full_B</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">ave_gflops</span> <span class="o">+=</span> <span class="n">gflops</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">max_gflops</span> <span class="o">=</span> <span class="nf">MAX</span><span class="p">(</span><span class="o">*</span><span class="n">max_gflops</span><span class="p">,</span> <span class="n">gflops</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">ave_time</span> <span class="o">+=</span> <span class="n">cpu_time</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">min_time</span> <span class="o">=</span> <span class="nf">MIN</span><span class="p">(</span><span class="o">*</span><span class="n">min_time</span><span class="p">,</span> <span class="n">cpu_time</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">ave_gflops</span> <span class="o">/=</span> <span class="n">loop_num</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">ave_time</span> <span class="o">/=</span> <span class="n">loop_num</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mpi_double</span><span class="p">(</span><span class="kt">int</span> <span class="n">dim</span><span class="p">,</span> <span class="kt">int</span> <span class="n">loop_num</span><span class="p">,</span> <span class="kt">double</span> <span class="o">*</span><span class="n">ave_gflops</span><span class="p">,</span> <span class="kt">double</span> <span class="o">*</span><span class="n">max_gflops</span><span class="p">,</span> <span class="kt">double</span> <span class="o">*</span><span class="n">ave_time</span><span class="p">,</span> <span class="kt">double</span> <span class="o">*</span><span class="n">min_time</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">rank</span><span class="p">,</span> <span class="n">size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">MPI_Comm_rank</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rank</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">MPI_Comm_size</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// Use volatile to prevent compiler optimizations
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">volatile</span> <span class="kt">double</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">*</span><span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="n">local_c</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">timespec</span> <span class="n">start_ns</span><span class="p">,</span> <span class="n">end_ns</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">double</span> <span class="n">cpu_time</span><span class="p">,</span> <span class="n">total_cpu_time</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 计算每个进程处理的行数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">rows_per_process</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">/</span> <span class="n">size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">remainder</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">%</span> <span class="n">size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">&lt;</span> <span class="n">remainder</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">rows_per_process</span><span class="o">++</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">loop_num</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">check_indices</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">double</span> <span class="n">check_value</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 主进程分配完整矩阵内存
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">            <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">b</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Memory allocation failed</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">initialize_matrix_double</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">initialize_matrix_double</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            <span class="c1">// 生成校验值
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">int</span> <span class="n">check_row</span> <span class="o">=</span> <span class="nf">rand</span><span class="p">()</span> <span class="o">%</span> <span class="n">dim</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">check_col</span> <span class="o">=</span> <span class="nf">rand</span><span class="p">()</span> <span class="o">%</span> <span class="n">dim</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">check_value</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">dim</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="n">check_value</span> <span class="o">+=</span> <span class="n">a</span><span class="p">[</span><span class="n">check_row</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">check_col</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            <span class="n">check_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">check_row</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">check_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">check_col</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            <span class="c1">// 广播校验行列索引和校验值
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="n">check_indices</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MPI_INT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">check_value</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">else</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">a</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">b</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="n">check_indices</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MPI_INT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">check_value</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 为每个进程分配局部矩阵空间
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">double</span> <span class="o">*</span><span class="n">local_A</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="n">local_c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span> <span class="o">*</span><span class="p">)</span><span class="nf">calloc</span><span class="p">(</span><span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">local_A</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">local_c</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Memory allocation failed</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 分发矩阵 A 的行到各个进程
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">int</span> <span class="o">*</span><span class="n">sendcounts</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">size</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="o">*</span><span class="n">displs</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">size</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">;</span> <span class="n">p</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">sendcounts</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">&lt;</span> <span class="n">remainder</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span><span class="p">)</span> <span class="o">:</span> <span class="p">((</span><span class="n">rows_per_process</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dim</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="n">displs</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">offset</span> <span class="o">+=</span> <span class="n">sendcounts</span><span class="p">[</span><span class="n">p</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">MPI_Scatterv</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">sendcounts</span><span class="p">,</span> <span class="n">displs</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="n">local_A</span><span class="p">,</span> <span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 所有进程都需要完整的矩阵 B
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">double</span> <span class="o">*</span><span class="n">full_B</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">full_B</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Memory allocation failed for full_B</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">memcpy</span><span class="p">(</span><span class="n">full_B</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="n">full_B</span><span class="p">,</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="nf">timespec_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">start_ns</span><span class="p">,</span> <span class="n">TIME_UTC</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">matrix_multiply_double</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">local_A</span><span class="p">,</span> <span class="n">full_B</span><span class="p">,</span> <span class="n">local_c</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">timespec_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">end_ns</span><span class="p">,</span> <span class="n">TIME_UTC</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="n">cpu_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_ns</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">-</span> <span class="n">start_ns</span><span class="p">.</span><span class="n">tv_sec</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">end_ns</span><span class="p">.</span><span class="n">tv_nsec</span> <span class="o">-</span> <span class="n">start_ns</span><span class="p">.</span><span class="n">tv_nsec</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 使用 MPI_Reduce 对所有进程的 cpu_time 求和
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">MPI_Reduce</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cpu_time</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">total_cpu_time</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="n">MPI_SUM</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="c1">// 计算平均值
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">cpu_time</span> <span class="o">=</span> <span class="n">total_cpu_time</span> <span class="o">/</span> <span class="n">size</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 将平均值广播给所有进程
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">MPI_Bcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cpu_time</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="kt">double</span> <span class="n">gflops</span> <span class="o">=</span> <span class="mf">1e-9</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">cpu_time</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\t</span><span class="s">: %d x %d Matrix multiply wall time : %.6fs(%.3fGflops)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">cpu_time</span><span class="p">,</span> <span class="n">gflops</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span> <span class="c1">// 强制刷新标准输出缓冲区
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 收集所有进程的局部结果到主进程
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">double</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Memory allocation failed for c matrix</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">MPI_Gatherv</span><span class="p">(</span><span class="n">local_c</span><span class="p">,</span> <span class="n">rows_per_process</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">sendcounts</span><span class="p">,</span> <span class="n">displs</span><span class="p">,</span> <span class="n">MPI_DOUBLE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MPI_COMM_WORLD</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// 主进程进行校验
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">check_row</span> <span class="o">=</span> <span class="n">check_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">check_col</span> <span class="o">=</span> <span class="n">check_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">            <span class="kt">double</span> <span class="n">result_value</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">check_row</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">check_col</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nf">fabs</span><span class="p">(</span><span class="n">result_value</span> <span class="o">-</span> <span class="n">check_value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.000001</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Verification failed at iteration %d: expected %.6f, got %.6f</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">check_value</span><span class="p">,</span> <span class="n">result_value</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">free</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1">// Free memory
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">free</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">free</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">local_A</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">local_c</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">sendcounts</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">displs</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">full_B</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">ave_gflops</span> <span class="o">+=</span> <span class="n">gflops</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">max_gflops</span> <span class="o">=</span> <span class="nf">MAX</span><span class="p">(</span><span class="o">*</span><span class="n">max_gflops</span><span class="p">,</span> <span class="n">gflops</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">ave_time</span> <span class="o">+=</span> <span class="n">cpu_time</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">min_time</span> <span class="o">=</span> <span class="nf">MIN</span><span class="p">(</span><span class="o">*</span><span class="n">min_time</span><span class="p">,</span> <span class="n">cpu_time</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">ave_gflops</span> <span class="o">/=</span> <span class="n">loop_num</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">ave_time</span> <span class="o">/=</span> <span class="n">loop_num</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">rank</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">MPI_Init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">argv</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">MPI_Comm_rank</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rank</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>                                <span class="c1">// Default matrix size exponent
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">loop_num</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>                          <span class="c1">// Number of iterations for averaging
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">ave_gflops</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">max_gflops</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span> <span class="c1">// Average and maximum Gflops
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">ave_time</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">min_time</span> <span class="o">=</span> <span class="mf">1e9</span><span class="p">;</span>     <span class="c1">// Average and minimum time
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">use_double</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                        <span class="c1">// Default to float precision
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// Help message
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">||</span> <span class="p">(</span><span class="n">argc</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nf">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#34;-h&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nf">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#34;--help&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)))</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Usage: mpiexec/mpirun [-n/-np $NUM_PROCS] %s [-n SIZE] [-l LOOP_NUM] [-float|-double]</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;  -n SIZE      Specify matrix size, like 2^SIZE (default: 10)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;  -l LOOP_NUM  Specify number of iterations (default: 5)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;  -float       Use float precision (default)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;  -double      Use double precision</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;  -h, --help   Show this help message</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">MPI_Finalize</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// Parse -n, -l, -float, -double options
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">double_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">float_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argi</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">argi</span> <span class="o">&lt;</span> <span class="n">argc</span><span class="p">;</span> <span class="o">++</span><span class="n">argi</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="nf">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">argi</span><span class="p">],</span> <span class="s">&#34;-n&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">argi</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">argc</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">n</span> <span class="o">=</span> <span class="nf">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">argi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">            <span class="n">argi</span><span class="o">++</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nf">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">argi</span><span class="p">],</span> <span class="s">&#34;-l&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">argi</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">argc</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">loop_num</span> <span class="o">=</span> <span class="nf">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">argi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]);</span>
-</span></span><span class="line"><span class="cl">            <span class="n">argi</span><span class="o">++</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nf">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">argi</span><span class="p">],</span> <span class="s">&#34;-double&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">double_flag</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nf">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">argi</span><span class="p">],</span> <span class="s">&#34;-float&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">float_flag</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">double_flag</span> <span class="o">&amp;&amp;</span> <span class="n">float_flag</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Error: Cannot specify both -double and -float options.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">MPI_Finalize</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">use_double</span> <span class="o">=</span> <span class="n">double_flag</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">dim</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nf">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">use_double</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Using double precision for matrix multiplication.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">mpi_double</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">loop_num</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ave_gflops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">max_gflops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ave_time</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">min_time</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">MPI_Finalize</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">else</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Using float precision for matrix multiplication.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">mpi_float</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">loop_num</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ave_gflops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">max_gflops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ave_time</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">min_time</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nf">MPI_Finalize</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Average Gflops: %.3f, Max Gflops: %.3f</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ave_gflops</span><span class="p">,</span> <span class="n">max_gflops</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Average Time: %.6fs, Min Time: %.6fs</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ave_time</span><span class="p">,</span> <span class="n">min_time</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nf">MPI_Finalize</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>为了确保合并之后的矩阵没有错误，主程序中增加了随机坐标校验机制。</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/code/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Code
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/c&#43;&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">C&#43;&#43;</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/fortran/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Fortran</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-06-25T00:00:00&#43;00:00">
-      2025-06-25
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长26分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
               <a href="/zh-cn/post/2025-06-24-matrix_multiplication-2/">
                 <figure>
     <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
@@ -1188,6 +584,272 @@
     </i>
     <span>
       阅读时长34分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-06-11-rust_gui/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="Rust图形界面库初探" title="Rust图形界面库初探"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-06-11-rust_gui/">Rust图形界面库初探</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>最近打算用rust把以前写的代码重构一下，涉及到GUI界面怎么选择的问题。rust正式发布不过十年光景，在GUI开发这方面还不如老牌的C/C++，有诸如wxWidgets、qt、gtk+等众多知名又久经考验的GUI界面库。本文选取几款rust的GUI库，简单实现一个边界层计算器，做个横向对比。</p>
+<h2 id="1-slint">1. slint</h2>
+<p><a href="https://slint.dev/" target="_blank" rel="noopener">slint</a>
+近期的宣传不可谓不卖力，号称要打造成下一代gui工具包，看来野心不小。slint通过自定义的声明式语言定义ui界面，在vscode下编程可以通过插件预览，也可以通过官方的<a href="https://slintpad.com/" target="_blank" rel="noopener">slintpad</a>
+网站预览。</p>
+<p>cargo配置文件如下，<code>slint-build</code>用于将<code>.slint</code>界面文件翻译成<code>.rs</code>文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="p">[</span><span class="nx">package</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;sLayers-rs&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">version</span> <span class="p">=</span> <span class="s2">&#34;0.1.0&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">edition</span> <span class="p">=</span> <span class="s2">&#34;2024&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">dependencies</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">slint</span> <span class="p">=</span> <span class="s2">&#34;1.8.0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">build-dependencies</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">slint-build</span> <span class="p">=</span> <span class="s2">&#34;1.8.0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">profile</span><span class="p">.</span><span class="nx">release</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">strip</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">opt-level</span> <span class="p">=</span> <span class="s2">&#34;z&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">lto</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">codegen-units</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">panic</span> <span class="p">=</span> <span class="s2">&#34;abort&#34;</span>
+</span></span></code></pre></div><p>ui界面文件<code>dialog.slint</code>。slint可以把需要调用的参数定义到ui界面中，并自动隐式生成<code>set_</code>和<code>get_</code>方法用于在rs文件中设置这些参数的值。同样的，界面中定义的回调函数也会自动隐式生成<code>on_</code>方法，用于在rs文件中调用。需要注意的是，在rs中更新了ui界面中的参数，关联的控件并不会自动更新显示，需要手动更新控件显示。</p>
+<pre tabindex="0"><code>import { Button, LineEdit, SpinBox, CheckBox, GridBox, VerticalBox } from &#34;std-widgets.slint&#34;;
+<p>export component Dialog inherits Window {
+title: &quot;Layers&quot;;
+in-out property &lt;string&gt; tt: &quot;3.0&quot;;
+in-out property &lt;int&gt; nl: 5;
+in-out property &lt;string&gt; ft: &quot;0.3&quot;;
+in-out property &lt;string&gt; gr: &quot;1.5&quot;;
+callback calculate_first_thickness();
+callback calculate_num_layers();
+callback calculate_growth_rate();
+callback calculate_total_thickness();</p>
+<pre><code>callback calculate_value();
+VerticalBox {
+    Text {
+        text: &amp;#34;Calculate fluid boundary layer parameters.\nCalculate the selected parameters based on the others.&amp;#34;;
+    }
+
+    GridBox {
+        Row {
+            b_t := CheckBox {
+                text: &amp;#34;Total thickness (mm)&amp;#34;;
+                checked: true;
+                enabled: !self.checked;
+                toggled() =&amp;gt; {
+                    if self.checked {
+                        b_n.checked = false;
+                        b_f.checked = false;
+                        b_g.checked = false;
+                    }
+                }
+            }
+
+            e_t := LineEdit {
+                text: root.tt;
+                input-type: decimal;
+                read-only: b_t.checked;
+            }
+        }
+
+        Row {
+            b_n := CheckBox {
+                text: &amp;#34;Number of layers&amp;#34;;
+                checked: false;
+                enabled: !self.checked;
+                toggled() =&amp;gt; {
+                    if self.checked {
+                        b_t.checked = false;
+                        b_f.checked = false;
+                        b_g.checked = false;
+                    }
+                }
+            }
+
+            e_n := SpinBox {
+                value: root.nl;
+                minimum: 1;
+            }
+        }
+
+        Row {
+            b_f := CheckBox {
+                text: &amp;#34;First thickness (mm)&amp;#34;;
+                checked: false;
+                enabled: !self.checked;
+                toggled() =&amp;gt; {
+                    if self.checked {
+                        b_n.checked = false;
+                        b_t.checked = false;
+                        b_g.checked = false;
+                    }
+                }
+            }
+
+            e_f := LineEdit {
+                text: root.ft;
+                input-type: decimal;
+                read-only: b_f.checked;
+            }
+        }
+
+        Row {
+            b_g := CheckBox {
+                text: &amp;#34;Growth rate&amp;#34;;
+                checked: false;
+                enabled: !self.checked;
+                toggled() =&amp;gt; {
+                    if self.checked {
+                        b_n.checked = false;
+                        b_f.checked = false;
+                        b_t.checked = false;
+                    }
+                }
+            }
+
+            e_g := LineEdit {
+                text: root.gr;
+                input-type: decimal;
+                read-only: b_g.checked;
+            }
+        }
+    }
+
+    Button {
+        text: &amp;#34;Calculate&amp;#34;;
+        clicked =&amp;gt; {
+            root.tt = e_t.text;
+            root.nl = e_n.value;
+            root.ft = e_f.text;
+            root.gr = e_g.text;
+            if b_t.checked {
+                root.calculate_total_thickness();
+            } else if b_n.checked {
+                root.calculate_num_layers();
+            } else if b_f.checked {
+                root.calculate_first_thickness();
+            } else if b_g.checked {
+                root.calculate_growth_rate();
+            }
+            e_t.text = root.tt;
+            e_g.text = root.gr;
+            e_f.text = root.ft;
+            e_n.value = root.nl;
+        }
+    }
+}
+</code></pre>
+<p>}</code></pre><p><code>build.rs</code>构建脚本调用<code>slint-build</code>将<code>.slint</code>文件翻译成<code>.rs</code>文件。</p></p>
+
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/rust/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Rust</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-06-11T00:00:00&#43;00:00">
+      2025-06-11
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长9分钟
     </span>
   </div>
 </div>

@@ -9,12 +9,19 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Mon, 25 Aug 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 25 Aug 2025 15:47:08 +0800</lastBuildDate>
     <atom:link href="https://andrewmoa.site/zh-cn/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tech</title>
+      <link>https://andrewmoa.site/zh-cn/categories/tech/</link>
+      <pubDate>Mon, 25 Aug 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/zh-cn/categories/tech/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Code</title>
       <link>https://andrewmoa.site/zh-cn/categories/code/</link>
-      <pubDate>Mon, 25 Aug 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <pubDate>Tue, 22 Jul 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
       <guid>https://andrewmoa.site/zh-cn/categories/code/</guid>
       <description></description>
     </item>
@@ -37,13 +44,6 @@
       <link>https://andrewmoa.site/zh-cn/categories/ansa/</link>
       <pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
       <guid>https://andrewmoa.site/zh-cn/categories/ansa/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Tech</title>
-      <link>https://andrewmoa.site/zh-cn/categories/tech/</link>
-      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
-      <guid>https://andrewmoa.site/zh-cn/categories/tech/</guid>
       <description></description>
     </item>
     <item>

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>PyCFF - a Python-based curve fitting tool :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Lately, I&rsquo;ve frequently encountered situations in my work where I need to fit function curves to scattered data. Typical examples include fitting porous media parameters using the pressure drop of a heat exchanger and fitting polynomial density to a fluid medium. While these tasks can be performed using Excel, Origin, and other tools, they are cumbersome and support limited function types. Here, I&rsquo;ve developed a simple toolkit in Python that implements function fitting using numpy and scipy. The user interface is written in PySide, allowing for the entire process from input data to output fitting function parameters. The tool also supports data prediction and custom functions.
+"
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/post/2025-08-25-pycff/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="PyCFF - a Python-based curve fitting tool">
+  <meta property="og:description" content="Lately, I’ve frequently encountered situations in my work where I need to fit function curves to scattered data. Typical examples include fitting porous media parameters using the pressure drop of a heat exchanger and fitting polynomial density to a fluid medium. While these tasks can be performed using Excel, Origin, and other tools, they are cumbersome and support limited function types. Here, I’ve developed a simple toolkit in Python that implements function fitting using numpy and scipy. The user interface is written in PySide, allowing for the entire process from input data to output fitting function parameters. The tool also supports data prediction and custom functions.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-08-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-08-25T00:00:00+00:00">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Qt">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PyCFF - a Python-based curve fitting tool">
+  <meta name="twitter:description" content="Lately, I’ve frequently encountered situations in my work where I need to fit function curves to scattered data. Typical examples include fitting porous media parameters using the pressure drop of a heat exchanger and fitting polynomial density to a fluid medium. While these tasks can be performed using Excel, Origin, and other tools, they are cumbersome and support limited function types. Here, I’ve developed a simple toolkit in Python that implements function fitting using numpy and scipy. The user interface is written in PySide, allowing for the entire process from input data to output fitting function parameters. The tool also supports data prediction and custom functions.">
+
+
+<link rel="canonical" href="https://andrewmoa.site/post/2025-08-25-pycff/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-08-25T00:00:00Z","datePublished":"2025-08-25T00:00:00Z","description":"Lately, I\u0026rsquo;ve frequently encountered situations in my work where I need to fit function curves to scattered data. Typical examples include fitting porous media parameters using the pressure drop of a heat exchanger and fitting polynomial density to a fluid medium. While these tasks can be performed using Excel, Origin, and other tools, they are cumbersome and support limited function types. Here, I\u0026rsquo;ve developed a simple toolkit in Python that implements function fitting using numpy and scipy. The user interface is written in PySide, allowing for the entire process from input data to output fitting function parameters. The tool also supports data prediction and custom functions.\n","image":"/images/code-bg.jpg","name":"PyCFF - a Python-based curve fitting tool","url":"https://andrewmoa.site/post/2025-08-25-pycff/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">Open main menu</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/post/" title="Post">Post</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/about/" title="About">About</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">Open language switcher</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">English</span>
+            </li>
+        
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/zh-cn/post/2025-08-25-pycff/" title="中文">中文</a></li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">Search</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="Toggle dark mode">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="Toggle dark mode">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/post/2025-08-25-pycff/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="PyCFF - a Python-based curve fitting tool" title="PyCFF - a Python-based curve fitting tool"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/post/2025-08-25-pycff/">PyCFF - a Python-based curve fitting tool</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/tags/python/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Python</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/tags/qt/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Qt</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-08-25T00:00:00&#43;00:00">
+      2025-08-25
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      5 minutes to read
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>Table of Contents</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-introduction">1. Introduction</a>
+      <ul>
+        <li><a href="#11-user-interface">1.1 User Interface</a></li>
+        <li><a href="#12-custom-functions">1.2 Custom Functions</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-build">2. Build</a>
+      <ul>
+        <li><a href="#21-build-environment">2.1 Build Environment</a></li>
+        <li><a href="#22-build-script">2.2 Build Script</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>Lately, I&rsquo;ve frequently encountered situations in my work where I need to fit function curves to scattered data. Typical examples include fitting porous media parameters using the pressure drop of a heat exchanger and fitting polynomial density to a fluid medium. While these tasks can be performed using Excel, Origin, and other tools, they are cumbersome and support limited function types. Here, I&rsquo;ve developed a simple toolkit in Python that implements function fitting using numpy and scipy. The user interface is written in PySide, allowing for the entire process from input data to output fitting function parameters. The tool also supports data prediction and custom functions.</p>
+<h2 id="1-introduction">1. Introduction</h2>
+<p>Repository：<a href="https://github.com/AndrewMoa2005/PyCFF/" target="_blank" rel="noopener">PyCFF</a>
+</p>
+<h3 id="11-user-interface">1.1 User Interface</h3>
+<p>Below is the software&rsquo;s startup interface. The software interface is implemented using PySide (Qt). It supports function drawing, allowing users to customize drawing content and save output images.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_7434f0264f99c612.webp 320w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_e4b4fffa25a8989a.webp 640w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_dfe6663621881e6e.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_99972747f7789bb1.jpg 320w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_572366b1a902eb6c.jpg 640w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_1e96c1ea08fcd90b.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_572366b1a902eb6c.jpg" width="1204" height="947" alt="c6219195050ac1b0866829f371239172.png" title="c6219195050ac1b0866829f371239172.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The image below shows the software&rsquo;s input interface. Input data is presented in a table format, and users select the independent variable (x) and dependent variable (y) to be fitted by specifying columns. Users can enter data manually in the table, paste data from spreadsheet software like Excel, and quickly enter large amounts of data using the <strong>Paste Replace Columns</strong> feature.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_26bfa282be5db29.webp 320w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_edfef31dc944cb8b.webp 640w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_7878a661f528dd2a.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_15370fee07199558.jpg 320w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_a335fb2638b2e3d5.jpg 640w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_5962f1ac3b403bc3.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_a335fb2638b2e3d5.jpg" width="1204" height="947" alt="1dbefea8b95c2677587b4f885c9df838.png" title="1dbefea8b95c2677587b4f885c9df838.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>The image below shows the software&rsquo;s output interface. The software pre-defines some common functions. Clicking an operation displays the function parameters in the table on the left and the complete function expression in the text box. Users can customize the precision of the output parameters and whether to use scientific notation. The default setting is scientific notation with six decimal places, which meets the needs of most engineering calculations.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_93ac3acbad02f734.webp 320w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_fb1be15ea0bc6b27.webp 640w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_ba1dc529d61f6b15.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_36ac0254752dbaf2.jpg 320w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_a296ac5c7de23766.jpg 640w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_ed1ebdb470cc1c8.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_a296ac5c7de23766.jpg" width="1204" height="947" alt="98ecd6a60f59bed8a70596750a11fd4d.png" title="98ecd6a60f59bed8a70596750a11fd4d.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="12-custom-functions">1.2 Custom Functions</h3>
+<p>The software includes predefined functions such as polynomials, exponentials, logarithms, and power functions. In addition to these predefined functions, the software also supports user-defined functions. Custom functions such as <code>a+b*x**1+c*x**2</code> and <code>-omega-alpha * exp(x)</code> automatically extract their parameters and fit them to the input data. Custom functions support not only the four arithmetic operations (+, -, <em>, /) and power operations (</em>* or ^), but also common functions. See the table below for specific functions and their descriptions.<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/cc51005d3b909b23abebc855fbc2e641_hu_1040d3ffc2fa0f78.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/cc51005d3b909b23abebc855fbc2e641_hu_98d66cb66f76e5c9.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/cc51005d3b909b23abebc855fbc2e641_hu_e4bec931a6d8d6fb.jpg" width="603" height="338" alt="cc51005d3b909b23abebc855fbc2e641.png" title="cc51005d3b909b23abebc855fbc2e641.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<table>
+  <thead>
+      <tr>
+          <th>Function</th>
+          <th>Usage</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>exp</td>
+          <td>exp(a)</td>
+          <td>Calculates the exponential value of a</td>
+      </tr>
+      <tr>
+          <td>pow</td>
+          <td>pow(a, b)</td>
+          <td>Calculates a raised to the power of b</td>
+      </tr>
+      <tr>
+          <td>abs</td>
+          <td>abs(a)</td>
+          <td>Calculates the absolute value of a</td>
+      </tr>
+      <tr>
+          <td>sqrt</td>
+          <td>sqrt(a)</td>
+          <td>Calculates the square root of a</td>
+      </tr>
+      <tr>
+          <td>cbrt</td>
+          <td>cbrt(a)</td>
+          <td>Calculates the cube root of a</td>
+      </tr>
+      <tr>
+          <td>log</td>
+          <td>log(a)</td>
+          <td>Calculates the base e logarithm of a</td>
+      </tr>
+      <tr>
+          <td>log10</td>
+          <td>log10(a)</td>
+          <td>Calculates the base 10 logarithm of a</td>
+      </tr>
+      <tr>
+          <td>log2</td>
+          <td>log2(a)</td>
+          <td>Calculates the base 2 logarithm of a</td>
+      </tr>
+      <tr>
+          <td>min</td>
+          <td>min(a)</td>
+          <td>Calculates the minimum value of a</td>
+      </tr>
+      <tr>
+          <td>max</td>
+          <td>max(a)</td>
+          <td>Calculates the maximum value of a</td>
+      </tr>
+      <tr>
+          <td>sin</td>
+          <td>sin(a)</td>
+          <td>Calculates the sine of a</td>
+      </tr>
+      <tr>
+          <td>cos</td>
+          <td>cos(a)</td>
+          <td>Find the cosine of a</td>
+      </tr>
+      <tr>
+          <td>tan</td>
+          <td>tan(a)</td>
+          <td>Find the tangent of a</td>
+      </tr>
+      <tr>
+          <td>asin</td>
+          <td>asin(a)</td>
+          <td>Find the inverse sine of a</td>
+      </tr>
+      <tr>
+          <td>acos</td>
+          <td>acos(a)</td>
+          <td>Find the inverse cosine of a</td>
+      </tr>
+      <tr>
+          <td>atan</td>
+          <td>atan(a)</td>
+          <td>Find the inverse tangent of a</td>
+      </tr>
+      <tr>
+          <td>sinh</td>
+          <td>sinh(a)</td>
+          <td>Find the hyperbolic sine of a</td>
+      </tr>
+      <tr>
+          <td>cosh</td>
+          <td>cosh(a)</td>
+          <td>Find the hyperbolic cosine of a</td>
+      </tr>
+      <tr>
+          <td>tanh</td>
+          <td>tanh(a)</td>
+          <td>Find the hyperbolic tangent of a</td>
+      </tr>
+      <tr>
+          <td>asinh</td>
+          <td>asinh(a)</td>
+          <td>Find the inverse hyperbolic sine of a</td>
+      </tr>
+      <tr>
+          <td>acosh</td>
+          <td>acosh(a)</td>
+          <td>Find the inverse hyperbolic cosine of a</td>
+      </tr>
+      <tr>
+          <td>atanh</td>
+          <td>atanh(a)</td>
+          <td>Find the inverse hyperbolic tangent of a</td>
+      </tr>
+      <tr>
+          <td>pi</td>
+          <td>pi()</td>
+          <td>Pi</td>
+      </tr>
+      <tr>
+          <td>e</td>
+          <td>e()</td>
+          <td>base of natural logarithms</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="2-build">2. Build</h2>
+<h3 id="21-build-environment">2.1 Build Environment</h3>
+<p>The source code provides a <code>build.py</code> script for quick and easy building. Users should create a virtual environment before building:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python -m venv myvenv <span class="c1"># myvenv is the name of the virtual environment, which can be defined as needed</span>
+</span></span></code></pre></div><p>On Windows, use the following command to activate the virtual environment:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">./</span><span class="n">myvenv</span><span class="p">/</span><span class="n">Scripts</span><span class="p">/</span><span class="n">activate</span> <span class="c"># in windows, it is recommended to run under posershell</span>
+</span></span></code></pre></div><p>On Linux, use the following command to activate the virtual environment:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">source</span> ./myvenv/bin/activate <span class="c1"># in posix</span>
+</span></span></code></pre></div><p>After activating the virtual environment, the <code>(myvenv)</code> character will be displayed at the beginning of the command line, indicating that Python under the command line is running in the virtual environment <code>myvenv</code>. Install the dependencies using the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pip install -r requirements.txt
+</span></span></code></pre></div><p>After the build is complete, exit the virtual environment by deactivating it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">deactivate <span class="c1"># The same command is used under windows and posix</span>
+</span></span></code></pre></div><h3 id="22-build-script">2.2 Build Script</h3>
+<p>Run the following command to display help information for the build script:</p>
+<pre tabindex="0"><code>python build.py -h
+</code></pre><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_82134c78ee6ad428.webp 320w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_baa67dc34d9733a4.webp 640w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_cb87da1948880172.webp 960w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_313402442b06e222.webp 1280w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_d21c8eef0f39bfc7.webp 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_ca0d874d17bd48cd.jpg 320w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_79f5beb6caec3ba1.jpg 640w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_f25cd8ab581478aa.jpg 960w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_5c146c66c3e9b6eb.jpg 1280w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_fc3807c95c514a31.jpg 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_79f5beb6caec3ba1.jpg" width="1678" height="446" alt="c526195ad4f9c0928665d83df792851b.png" title="c526195ad4f9c0928665d83df792851b.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<ul>
+<li>The <code>-h</code>/<code>--help</code> switch displays command-line help.</li>
+<li>The <code>-c</code>/<code>--copy</code> switch copies the source code to a specified directory for debugging purposes.</li>
+<li>The <code>-b</code>/<code>--build</code> switch runs <code>pyinstaller</code> to package the source code into an executable file. <code>dir</code> packages the source code into a directory (the default), and <code>one</code> packages the source code into a single executable file.</li>
+<li>The <code>-u</code>/<code>--update</code> switch compiles <code>.ui</code> and <code>.qrc</code> files in the source code into <code>.py</code> files for debugging purposes.</li>
+<li>The <code>-t</code>/<code>--translate</code> switch allows for multi-language translation. <code>up</code> updates <code>.ts</code> files in the source code, <code>gui</code> launches the <code>linguistgui</code> interface and opens <code>.ts</code> files, and <code>gen</code> compiles <code>.ts</code> files into <code>.qm</code> files. This switch is typically used for debugging purposes only.</li>
+<li>The <code>-p</code>/<code>--pyd</code> switch compiles the <code>.py</code> file into <code>.pyd</code>/<code>.so</code>, then runs <code>pyinstaller</code> to package it into an executable file. <code>dir</code> packages the file into a directory (the default), and <code>one</code> packages the file into a single executable file.</li>
+<li>The <code>-g</code>/<code>--genwhl</code> switch generates a whl distribution package.</li>
+</ul>
+<p>In general, you can quickly build an executable program using the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python build.py -p
+</span></span></code></pre></div><p>The generated executable file/folder is located in the <code>[source_dir]/build/pycff/dist</code> directory.</p>
+<p>You can quickly build the whl distribution package using the following command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python build.py -g
+</span></span></code></pre></div><p>The generated whl file is in the <code>[source_dir]/build/dist</code> path. You can install the release package through <code>pip install pycff-{version}-py3-none-{platform}.whl</code>. After the release package is installed, you can start the main program through <code>pycff</code> or <code>python -m pycff</code>.</p>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>

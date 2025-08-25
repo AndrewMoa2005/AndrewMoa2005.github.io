@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" dir="ltr">
 <head>
-	<meta name="generator" content="Hugo 0.148.1">
+	<meta name="generator" content="Hugo 0.148.2">
   <title>Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -203,6 +203,166 @@
   <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
     <div class="flex flex-row">
       <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-08-25-pycff/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="PyCFF——一款基于Python的曲线拟合工具" title="PyCFF——一款基于Python的曲线拟合工具"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-08-25-pycff/">PyCFF——一款基于Python的曲线拟合工具</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p>最近工作中经常遇到需要通过散点数据拟合函数曲线的情况，比较典型的例子是通过换热器的压降拟合多孔介质参数，以及拟合流体介质的多项式密度。虽然相关的工作可以通过Excel、Origin等实现，但是操作繁琐而且支持的函数类型有限。这里使用Python编写了一个简单的工具包，通过numpy和scipy实现函数拟合功能，用PySide编写了用户界面，实现了从输入数据到输出拟合函数参数的功能，并且支持数据预测和自定义函数功能。</p>
+<h2 id="1-软件简介">1. 软件简介</h2>
+<p>源码地址：<a href="https://github.com/AndrewMoa2005/PyCFF/" target="_blank" rel="noopener">PyCFF</a>
+</p>
+<h3 id="11-用户界面">1.1 用户界面</h3>
+<p>下面是软件的启动界面。软件界面通过PySide(Qt)实现。支持函数绘图功能，用户可以自定义绘图内容及输出保存图片。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_7434f0264f99c612.webp 320w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_e4b4fffa25a8989a.webp 640w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_dfe6663621881e6e.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_99972747f7789bb1.jpg 320w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_572366b1a902eb6c.jpg 640w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_1e96c1ea08fcd90b.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_572366b1a902eb6c.jpg" width="1204" height="947" alt="c6219195050ac1b0866829f371239172.png" title="c6219195050ac1b0866829f371239172.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>下面是软件的输入界面。输入数据通过表格的方式展示，用户通过指定列来选择要拟合函数的自变量(x)和因变量(y)。用户不仅可以在表格中手动输入数据，也可以通过Excel等表格软件粘贴输入，还可以通过<strong>粘贴替换列</strong>的方式快速输入大量数据。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_26bfa282be5db29.webp 320w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_edfef31dc944cb8b.webp 640w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_7878a661f528dd2a.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_15370fee07199558.jpg 320w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_a335fb2638b2e3d5.jpg 640w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_5962f1ac3b403bc3.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_a335fb2638b2e3d5.jpg" width="1204" height="947" alt="1dbefea8b95c2677587b4f885c9df838.png" title="1dbefea8b95c2677587b4f885c9df838.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>下面是软件的输出界面。软件预定义了一些常用函数，用户点击运算后在左侧表格中输出函数参数，并且在文本框中输出函数的完整表达式。用户可以自定义输出参数的精度和是否采用科学计数法，输出参数默认采用的是6位小数的科学计数法表示，满足大部分工程计算的需求。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_93ac3acbad02f734.webp 320w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_fb1be15ea0bc6b27.webp 640w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_ba1dc529d61f6b15.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_36ac0254752dbaf2.jpg 320w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_a296ac5c7de23766.jpg 640w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_ed1ebdb470cc1c8.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_a296ac5c7de23766.jpg" width="1204" height="947" alt="98ecd6a60f59bed8a70596750a11fd4d.png" title="98ecd6a60f59bed8a70596750a11fd4d.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/python/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Python</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/qt/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Qt</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-08-25T00:00:00&#43;00:00">
+      2025-08-25
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
@@ -543,178 +703,6 @@
     </i>
     <span>
       阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
-      alt="Windows下编译rocblas-rocm-6.2.4" title="Windows下编译rocblas-rocm-6.2.4"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-06-27-windows-compile-rocblas-rocm-6_2_4/">Windows下编译rocblas-rocm-6.2.4</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>之前演示矩阵运算加速的时候本来想尝试一下AMD自家的ROCm，程序编译完运行结果碰到报错：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">rocBLAS error: Cannot read D:\example\efficiency_v3\rocm\build\Release\/rocblas/library/TensileLibrary.dat: No such file or directory for GPU arch : gfx1150
-</span></span><span class="line"><span class="cl"> List of available TensileLibrary Files : 
-</span></span></code></pre></div><p>查询官网文档，ROCm不支持Radeon 880M核显(AI H 365w处理器)<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。除非自己编译rocblas，否则没法运行。</p>
-<p>查了一下网上的教程文章<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>，没有适配这款核显的，自己开搞吧。</p>
-<h2 id="1-下载工具和源码">1. 下载工具和源码</h2>
-<p>需要用到的工具见下表，没有就去官网下载安装。</p>
-<table>
-  <thead>
-      <tr>
-          <th>序号</th>
-          <th>软件/工具包</th>
-          <th>版本</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>1</td>
-          <td>Visual Studio Community</td>
-          <td>2022</td>
-      </tr>
-      <tr>
-          <td>2</td>
-          <td>AMD HIP SDK for Windows<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup></td>
-          <td>6.2.4</td>
-      </tr>
-      <tr>
-          <td>3</td>
-          <td>Python</td>
-          <td>3.13</td>
-      </tr>
-      <tr>
-          <td>4</td>
-          <td>Git for Windows</td>
-          <td>2.7.4</td>
-      </tr>
-      <tr>
-          <td>5</td>
-          <td>Strawberry Perl</td>
-          <td>5.40.0.1</td>
-      </tr>
-      <tr>
-          <td>6</td>
-          <td>CMake</td>
-          <td>3.30.1</td>
-      </tr>
-  </tbody>
-</table>
-<p>我的机器上装了vcpkg，除了前两个从官网下载安装之外，后面的都是从vcpkg的<code>downloads\tools</code>目录提取的，将路径添加到环境变量即可。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c"># 配置工具包路径</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$Env:HIP_PATH</span><span class="p">=</span><span class="s2">&#34;C:\Program Files\AMD\ROCm\6.2&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$Env:GIT_BIN_PATH</span> <span class="p">=</span> <span class="s2">&#34;D:\vcpkg\downloads\tools\git-2.7.4-windows\bin&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$Env:PERL_PATH</span> <span class="p">=</span> <span class="s2">&#34;D:\vcpkg\downloads\tools\perl\5.40.0.1&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$Env:CMAKE_BIN_PATH</span> <span class="p">=</span> <span class="s2">&#34;D:\vcpkg\downloads\tools\cmake-3.30.1-windows\cmake-3.30.1-windows-i386\bin&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c"># 配置系统环境变量</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$Env:PATH</span> <span class="p">+=</span> <span class="s2">&#34;;</span><span class="nv">$Env:HIP_PATH</span><span class="s2">\bin;</span><span class="nv">$Env:GIT_BIN_PATH</span><span class="s2">;</span><span class="nv">$Env:PERL_PATH</span><span class="s2">\perl\site\bin;</span><span class="nv">$Env:PERL_PATH</span><span class="s2">\perl\bin;</span><span class="nv">$Env:PERL_PATH</span><span class="s2">\c\bin;</span><span class="nv">$Env:CMAKE_BIN_PATH</span><span class="s2">&#34;</span>
-</span></span></code></pre></div><p>从Github上下载<strong>rocBLAS</strong>和<strong>Tensile</strong>的源码，注意版本和本机安装的<strong>AMD HIP SDK</strong>版本要一致。这里还要下载补丁文件<strong>Tensile-fix-fallback-arch-build.patch</strong>，确保可以为不支持的显卡编译内容。</p>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/code/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Code
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/c&#43;&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">C&#43;&#43;</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-06-27T00:00:00&#43;00:00">
-      2025-06-27
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长8分钟
     </span>
   </div>
 </div>

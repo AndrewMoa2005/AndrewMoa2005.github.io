@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN" dir="ltr">
 <head>
-	<meta name="generator" content="Hugo 0.148.1">
+	<meta name="generator" content="Hugo 0.148.2">
   <title>Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -203,6 +203,194 @@
   <div class="flex flex-col w-full max-w-4xl lg:max-w-5xl relative">
     <div class="flex flex-row">
       <section class="flex flex-col w-full md:w-2/3">
+        
+          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+            <div>
+              <a href="/zh-cn/post/2025-03-27-ubuntu-compile-su2/">
+                <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/ubuntu-bg.jpg"
+      alt="Ubuntu编译安装SU2" title="Ubuntu编译安装SU2"
+      loading="lazy"
+    >
+  </figure>
+              </a>
+            </div>
+            <div class="flex flex-col gap-y-3 p-6">
+              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
+                <a href="/zh-cn/post/2025-03-27-ubuntu-compile-su2/">Ubuntu编译安装SU2</a>
+              </h2>
+
+              
+  
+  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
+    <p><a href="https://su2code.github.io/" target="_blank" rel="noopener">SU2</a>
+是一款由斯坦福大学航空航天学院开发的开源CFD求解器，基于C++和Python开发，定位类似于OpenFOAM，但不支持多面体网格。相比OpenFOAM，SU2在高速可压缩流方面的求解更有优势。</p>
+<p>下载SU2源代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">mkdir <span class="nv">$HOME</span>/su2code <span class="o">&amp;&amp;</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/su2code
+</span></span><span class="line"><span class="cl"><span class="c1"># 只clone最近commit版本，加快下载速度</span>
+</span></span><span class="line"><span class="cl">git clone https://github.com/su2code/SU2.git --depth<span class="o">=</span><span class="m">1</span>
+</span></span></code></pre></div><p>定义环境变量，新建配置文件<code>su2.env</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">touch <span class="nv">$HOME</span>/su2code/su2.env
+</span></span><span class="line"><span class="cl">chmod +x <span class="nv">$HOME</span>/su2code/su2.env
+</span></span><span class="line"><span class="cl">vim <span class="nv">$HOME</span>/su2code/su2.env
+</span></span></code></pre></div><p>在<code>su2.env</code>文件中加入以下内容，保存退出：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="cp">#!/bin/sh
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 定义SU2环境变量</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SU2_RUN</span><span class="o">=</span><span class="nv">$HOME</span>/su2code/bin	<span class="c1"># 编译完成后su2的安装路径</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SU2_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/su2code/SU2	<span class="c1"># 下载su2的源码的文件夹路径</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SU2_RUN</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$SU2_RUN</span>:<span class="nv">$PYTHONPATH</span>
+</span></span></code></pre></div><p>编译程序的配置文件<code>meson_options.txt</code>位于SU2源代码文件夹下，根据自己的需求调整其中的编译选项：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">vim <span class="nv">$HOME</span>/su2code/SU2/meson_options.txt
+</span></span></code></pre></div><p>这里打开mpi和blas支持，修改以下两行的value：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="line"><span class="cl"><span class="n">option</span><span class="p">(</span><span class="s1">&#39;with-mpi&#39;</span><span class="p">,</span>   <span class="nb">type</span> <span class="p">:</span> <span class="s1">&#39;feature&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="s1">&#39;enabled&#39;</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="s1">&#39;enable MPI support&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">option</span><span class="p">(</span><span class="s1">&#39;enable-openblas&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="p">:</span> <span class="s1">&#39;boolean&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="n">true</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="s1">&#39;enable BLAS and LAPACK support via OpenBLAS&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><p>如果是Intel的机器，建议打开mkl支持。</p>
+<p>默认支持的blas库是openblas，要先下载openblas库：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">sudo apt install libopenblas-dev -y
+</span></span></code></pre></div><p>进入下载的源码目录，运行编译程序</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl"><span class="c1"># 载入环境变量</span>
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> <span class="nv">$HOME</span>/su2code/su2.env
+</span></span><span class="line"><span class="cl"><span class="c1"># 进入源码文件夹</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$SU2_HOME</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置编译器，生成ninja构建文件</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 配置过程中会自动从git上下载外部依赖</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 非常花时间……</span>
+</span></span><span class="line"><span class="cl">./meson.py build --prefix<span class="o">=</span><span class="nv">$SU2_RUN</span>/..
+</span></span><span class="line"><span class="cl"><span class="c1"># 开始编译并安装</span>
+</span></span><span class="line"><span class="cl">./ninja -C build install
+</span></span></code></pre></div><p>验证是否安装成功：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">SU2_CFD --help
+</span></span></code></pre></div><p>安装成功会输出软件版本号和帮助信息。</p>
+  </div>
+  
+
+
+              
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/linux/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Linux
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/slurm/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Slurm</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/su2/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Su2</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/ubuntu/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Ubuntu</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-03-27T00:00:00&#43;00:00">
+      2025-03-27
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+            </div>
+          </article>
         
           <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
             <div>
@@ -491,179 +679,6 @@
     </i>
     <time datetime="2025-03-26T00:00:00&#43;00:00">
       2025-03-26
-    </time>
-  </div>
-
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M6.5 7h11"></path>
-   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
-   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
-</svg>
-
-    </i>
-    <span>
-      阅读时长1分钟
-    </span>
-  </div>
-</div>
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-</svg>
-
-    </i>
-    <span>Andrew Moa</span>
-  </div>
-</div>
-            </div>
-          </article>
-        
-          <article class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
-            <div>
-              <a href="/zh-cn/post/2025-03-25-posershell-starccm-script/">
-                <figure>
-    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/starccm-bg.jpg"
-      alt="PowerShell编写STAR-CCM&#43;自动排队计算脚本" title="PowerShell编写STAR-CCM&#43;自动排队计算脚本"
-      loading="lazy"
-    >
-  </figure>
-              </a>
-            </div>
-            <div class="flex flex-col gap-y-3 p-6">
-              <h2 class="text-4xl font-semibold text-slate-800 dark:text-slate-200">
-                <a href="/zh-cn/post/2025-03-25-posershell-starccm-script/">PowerShell编写STAR-CCM+自动排队计算脚本</a>
-              </h2>
-
-              
-  
-  <div class="my-4 text-large text-slate-600 dark:text-slate-300">
-    <p>以前用STAR-CCM+在Windows工作站做计算的时候（没钱，公司舍不得上超算……），有时候一晚上要提交十几二十个计算任务（瞎卷ㄟ( ▔, ▔ )ㄏ），当然不可能十几个任务全都一起跑（机器遭不住），也不可能全程盯着它跑一个个手动提交（人遭不住）。几年前用PowerShell编写了这个简易的排队计算的模板，在这里分享给大家。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="nv">$title</span> <span class="p">=</span> <span class="s2">&#34;STAR-CCM+ 19.06.009-r8&#34;</span>	<span class="c"># 窗口标题，怎么填随你喜欢</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$host</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">RawUI</span><span class="p">.</span><span class="py">WindowTitle</span> <span class="p">=</span> <span class="nv">$title</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nv">$STARCCM_PATH</span> <span class="p">=</span> <span class="s2">&#34;D:\XXX\Siemens\19.06.009-R8\STAR-CCM+19.06.009-R8\star\lib\win64\clang17.0vc14.2-r8\lib&#34;</span>	<span class="c"># 填写本机STAR-CCM+的安装绝对路径</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$env:path</span> <span class="p">+=</span> <span class="s2">&#34;;</span><span class="nv">$STARCCM_PATH</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$run_dir</span> <span class="p">=</span> <span class="nv">$pwd</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$thread_number</span> <span class="p">=</span> <span class="mf">32</span>	<span class="c"># 填写本机的CPU核心数</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nv">$Array</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">-Path</span> <span class="nv">$run_dir</span> <span class="n">-Name</span> <span class="s2">&#34;*.sim&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$n</span> <span class="p">=</span> <span class="mf">0</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">foreach</span><span class="p">(</span><span class="nv">$item</span> <span class="k">in</span> <span class="nv">$Array</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nv">$n</span> <span class="p">+=</span> <span class="mf">1</span>
-</span></span><span class="line"><span class="cl">    <span class="nv">$sub_dir</span> <span class="p">=</span> <span class="nv">$n</span><span class="p">.</span><span class="py">ToString</span><span class="p">()</span> <span class="p">+</span> <span class="s2">&#34;_&#34;</span> <span class="p">+</span> <span class="nv">$item</span><span class="p">.</span><span class="py">Substring</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="nv">$item</span><span class="p">.</span><span class="n">Length</span><span class="p">-</span><span class="mf">4</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="n">mkdir</span> <span class="nv">$sub_dir</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">mv </span><span class="nv">$item</span> <span class="nv">$sub_dir</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">cd </span><span class="nv">$sub_dir</span>
-</span></span><span class="line"><span class="cl">    <span class="nv">$host</span><span class="p">.</span><span class="py">ui</span><span class="p">.</span><span class="py">RawUI</span><span class="p">.</span><span class="py">WindowTitle</span> <span class="p">=</span> <span class="nv">$title</span> <span class="p">+</span> <span class="s2">&#34; - &#34;</span> <span class="p">+</span> <span class="nv">$item</span> <span class="p">+</span> <span class="s2">&#34; - &#34;</span> <span class="p">+</span> <span class="nv">$n</span> <span class="p">+</span> <span class="s2">&#34;/&#34;</span> <span class="p">+</span> <span class="nv">$Array</span><span class="p">.</span><span class="py">Count</span>
-</span></span><span class="line"><span class="cl">    <span class="nv">$log</span> <span class="p">=</span> <span class="nv">$item</span> <span class="p">+</span> <span class="s2">&#34;.log&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">starccm</span><span class="p">+</span> <span class="nv">$item</span> <span class="n">-batch</span> <span class="n">run</span> <span class="n">-np</span> <span class="nv">$thread_number</span> <span class="n">-mpi</span> <span class="n">ms</span> <span class="p">|</span> <span class="nb">tee </span><span class="nv">$log</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">cd </span><span class="nv">$run_dir</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>把以上命令行以文本格式保存为<code>.ps1</code>脚本文件，和要提交计算的<code>.sim</code>文件放到同一个文件夹，然后通过终端运行这个脚本。会自动统计排队任务数，将计算的.sim文件转移至新建子文件夹，同时生成<code>.log</code>日志文件，也可以在输出窗口中监控运行情况。计算完成后关闭终端即可。</p>
-<p>美中不足的是，不支持宏文件，也不支持临时增加或插入算例。</p>
-<p>各位可以针对自己的情况，做一些针对性的调整。</p>
-<p>如果碰到输出窗口和日志文件中有乱码的情况，多半是你的PowerShell不支持UTF-8所导致。参考以下方法<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>，在PowerShell窗口中输入：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="c"># 配置文件一般位于：C:\Users\用户名\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1</span>
-</span></span><span class="line"><span class="cl"><span class="c"># 如果没有就新建一个</span>
-</span></span><span class="line"><span class="cl"><span class="n">notepad</span> <span class="nv">$PROFILE</span> <span class="c"># 编辑配置文件</span>
-</span></span></code></pre></div><p>在配置文件中增加以下内容，保存退出：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-PowerShell" data-lang="PowerShell"><span class="line"><span class="cl"><span class="nv">$OutputEncoding</span> <span class="p">=</span> <span class="p">[</span><span class="no">console</span><span class="p">]::</span><span class="n">InputEncoding</span> <span class="p">=</span> <span class="p">[</span><span class="no">console</span><span class="p">]::</span><span class="n">OutputEncoding</span> <span class="p">=</span> <span class="p">[</span><span class="no">Text.UTF8Encoding</span><span class="p">]::</span><span class="n">UTF8</span>
-</span></span></code></pre></div><div class="footnotes" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn:1">
-<p><a href="https://www.azfum.com/archives/ki3syg5b/" target="_blank" rel="noopener">WindowsPowerShell中文乱码问题解决</a>
-&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
-</li>
-</ol>
-</div>
-  </div>
-  
-
-
-              
-  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
-    
-      
-      <li>
-        <a href="/zh-cn/categories/cfd/"
-          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
-          Cfd
-        </a>
-      </li>
-      
-    
-    
-      
-      <li>
-        <a href="/zh-cn/tags/powershell/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Powershell</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/zh-cn/tags/star-ccm&#43;/"
-          class="flex flex-row text-sm mr-2 py-1">
-          <i class="h-5 w-5 flex-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M5 9l14 0"></path>
-   <path d="M5 15l14 0"></path>
-   <path d="M11 4l-4 16"></path>
-   <path d="M17 4l-4 16"></path>
-</svg>
-
-          </i>
-          <span class="ml-0">Star-Ccm&#43;</span>
-        </a>
-      </li>
-      
-    
-  </ul>
-
-
-
-              <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
-  
-  
-  <div class="flex flex-row text-base gap-x-1">
-    <i class="h-6 w-6 flex-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
-   <path d="M16 3v4"></path>
-   <path d="M8 3v4"></path>
-   <path d="M4 11h16"></path>
-   <path d="M11 15h1"></path>
-   <path d="M12 15v3"></path>
-</svg>
-
-    </i>
-    <time datetime="2025-03-25T00:00:00&#43;00:00">
-      2025-03-25
     </time>
   </div>
 

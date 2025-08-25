@@ -9,8 +9,15 @@
     <managingEditor>andrew.moa2005@163.com (Andrew Moa)</managingEditor>
     <webMaster>andrew.moa2005@163.com (Andrew Moa)</webMaster>
     <copyright>Andrew Moa</copyright>
-    <lastBuildDate>Tue, 22 Jul 2025 16:35:31 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 25 Aug 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://andrewmoa.site/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PyCFF - a Python-based curve fitting tool</title>
+      <link>https://andrewmoa.site/post/2025-08-25-pycff/</link>
+      <pubDate>Mon, 25 Aug 2025 00:00:00 +0000</pubDate><author>andrew.moa2005@163.com (Andrew Moa)</author>
+      <guid>https://andrewmoa.site/post/2025-08-25-pycff/</guid>
+      <description>&lt;p&gt;Lately, I&amp;rsquo;ve frequently encountered situations in my work where I need to fit function curves to scattered data. Typical examples include fitting porous media parameters using the pressure drop of a heat exchanger and fitting polynomial density to a fluid medium. While these tasks can be performed using Excel, Origin, and other tools, they are cumbersome and support limited function types. Here, I&amp;rsquo;ve developed a simple toolkit in Python that implements function fitting using numpy and scipy. The user interface is written in PySide, allowing for the entire process from input data to output fitting function parameters. The tool also supports data prediction and custom functions.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Use pyinstaller to package Windows executable files</title>
       <link>https://andrewmoa.site/post/2025-07-22-pyinstaller-pkg-exe/</link>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+  <title>PyCFF——一款基于Python的曲线拟合工具 :: Andrew Moa Blog Site - Example site for hugo-theme-tailwind</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="最近工作中经常遇到需要通过散点数据拟合函数曲线的情况，比较典型的例子是通过换热器的压降拟合多孔介质参数，以及拟合流体介质的多项式密度。虽然相关的工作可以通过Excel、Origin等实现，但是操作繁琐而且支持的函数类型有限。这里使用Python编写了一个简单的工具包，通过numpy和scipy实现函数拟合功能，用PySide编写了用户界面，实现了从输入数据到输出拟合函数参数的功能，并且支持数据预测和自定义函数功能。
+1. 软件简介 源码地址：PyCFF 1.1 用户界面 下面是软件的启动界面。软件界面通过PySide(Qt)实现。支持函数绘图功能，用户可以自定义绘图内容及输出保存图片。 下面是软件的输入界面。输入数据通过表格的方式展示，用户通过指定列来选择要拟合函数的自变量(x)和因变量(y)。用户不仅可以在表格中手动输入数据，也可以通过Excel等表格软件粘贴输入，还可以通过粘贴替换列的方式快速输入大量数据。 下面是软件的输出界面。软件预定义了一些常用函数，用户点击运算后在左侧表格中输出函数参数，并且在文本框中输出函数的完整表达式。用户可以自定义输出参数的精度和是否采用科学计数法，输出参数默认采用的是6位小数的科学计数法表示，满足大部分工程计算的需求。 "
+/>
+<meta
+  name="keywords"
+  content="hugo, tailwind, tailwindcss, hugo theme, hugo theme tailwind"
+/>
+<meta name="robots" content="noodp" /><link rel="manifest" href="/manifest.json" /><meta property="og:url" content="https://andrewmoa.site/zh-cn/post/2025-08-25-pycff/">
+  <meta property="og:site_name" content="Andrew Moa Blog Site">
+  <meta property="og:title" content="PyCFF——一款基于Python的曲线拟合工具">
+  <meta property="og:description" content="最近工作中经常遇到需要通过散点数据拟合函数曲线的情况，比较典型的例子是通过换热器的压降拟合多孔介质参数，以及拟合流体介质的多项式密度。虽然相关的工作可以通过Excel、Origin等实现，但是操作繁琐而且支持的函数类型有限。这里使用Python编写了一个简单的工具包，通过numpy和scipy实现函数拟合功能，用PySide编写了用户界面，实现了从输入数据到输出拟合函数参数的功能，并且支持数据预测和自定义函数功能。
+1. 软件简介 源码地址：PyCFF 1.1 用户界面 下面是软件的启动界面。软件界面通过PySide(Qt)实现。支持函数绘图功能，用户可以自定义绘图内容及输出保存图片。 下面是软件的输入界面。输入数据通过表格的方式展示，用户通过指定列来选择要拟合函数的自变量(x)和因变量(y)。用户不仅可以在表格中手动输入数据，也可以通过Excel等表格软件粘贴输入，还可以通过粘贴替换列的方式快速输入大量数据。 下面是软件的输出界面。软件预定义了一些常用函数，用户点击运算后在左侧表格中输出函数参数，并且在文本框中输出函数的完整表达式。用户可以自定义输出参数的精度和是否采用科学计数法，输出参数默认采用的是6位小数的科学计数法表示，满足大部分工程计算的需求。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-08-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-08-25T00:00:00+00:00">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Qt">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PyCFF——一款基于Python的曲线拟合工具">
+  <meta name="twitter:description" content="最近工作中经常遇到需要通过散点数据拟合函数曲线的情况，比较典型的例子是通过换热器的压降拟合多孔介质参数，以及拟合流体介质的多项式密度。虽然相关的工作可以通过Excel、Origin等实现，但是操作繁琐而且支持的函数类型有限。这里使用Python编写了一个简单的工具包，通过numpy和scipy实现函数拟合功能，用PySide编写了用户界面，实现了从输入数据到输出拟合函数参数的功能，并且支持数据预测和自定义函数功能。
+1. 软件简介 源码地址：PyCFF 1.1 用户界面 下面是软件的启动界面。软件界面通过PySide(Qt)实现。支持函数绘图功能，用户可以自定义绘图内容及输出保存图片。 下面是软件的输入界面。输入数据通过表格的方式展示，用户通过指定列来选择要拟合函数的自变量(x)和因变量(y)。用户不仅可以在表格中手动输入数据，也可以通过Excel等表格软件粘贴输入，还可以通过粘贴替换列的方式快速输入大量数据。 下面是软件的输出界面。软件预定义了一些常用函数，用户点击运算后在左侧表格中输出函数参数，并且在文本框中输出函数的完整表达式。用户可以自定义输出参数的精度和是否采用科学计数法，输出参数默认采用的是6位小数的科学计数法表示，满足大部分工程计算的需求。">
+
+
+<link rel="canonical" href="https://andrewmoa.site/zh-cn/post/2025-08-25-pycff/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="stylesheet" href="/css/index.min.8f52268ce38691bd84eeee05121a11e2bc53c0e9f7fa97e2b147af29c8a627e1.css">
+
+
+
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-75W5D7R0V1"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-75W5D7R0V1');
+        }
+      </script>
+
+
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","author":{"@type":"Person","name":"Andrew Moa"},"dateModified":"2025-08-25T00:00:00Z","datePublished":"2025-08-25T00:00:00Z","description":"最近工作中经常遇到需要通过散点数据拟合函数曲线的情况，比较典型的例子是通过换热器的压降拟合多孔介质参数，以及拟合流体介质的多项式密度。虽然相关的工作可以通过Excel、Origin等实现，但是操作繁琐而且支持的函数类型有限。这里使用Python编写了一个简单的工具包，通过numpy和scipy实现函数拟合功能，用PySide编写了用户界面，实现了从输入数据到输出拟合函数参数的功能，并且支持数据预测和自定义函数功能。\n1. 软件简介 源码地址：PyCFF 1.1 用户界面 下面是软件的启动界面。软件界面通过PySide(Qt)实现。支持函数绘图功能，用户可以自定义绘图内容及输出保存图片。 下面是软件的输入界面。输入数据通过表格的方式展示，用户通过指定列来选择要拟合函数的自变量(x)和因变量(y)。用户不仅可以在表格中手动输入数据，也可以通过Excel等表格软件粘贴输入，还可以通过粘贴替换列的方式快速输入大量数据。 下面是软件的输出界面。软件预定义了一些常用函数，用户点击运算后在左侧表格中输出函数参数，并且在文本框中输出函数的完整表达式。用户可以自定义输出参数的精度和是否采用科学计数法，输出参数默认采用的是6位小数的科学计数法表示，满足大部分工程计算的需求。 ","image":"/images/code-bg.jpg","name":"PyCFF——一款基于Python的曲线拟合工具","url":"https://andrewmoa.site/zh-cn/post/2025-08-25-pycff/"}
+</script>
+
+</head>
+<body class="flex flex-col min-h-screen w-full bg-slate-50 dark:bg-gray-800"><header class="flex flex-none justify-center z-10">
+    <div class="flex flex-row gap justify-between w-full max-w-4xl lg:max-w-5xl h-12 mt-3">
+  <div class="flex-none ml-2 md:ml-0">
+    <a href="/zh-cn/" class="">
+      <img class="h-12 w-12 rounded-full object-cover bg-gray-100" src="/logo.svg" alt="logo">
+    </a>
+  </div>
+  
+  <h1 class="hidden md:flex flex-col justify-center mx-2">
+    <a href="/zh-cn/" class="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+      Andrew Moa Blog Site
+    </a>
+  </h1>
+  
+  <div class="flex-1"></div>
+  <div class="flex-none">
+    
+
+
+
+<nav class="h-full static">
+  <button id="navbar-menu-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+    <span class="sr-only">打开菜单</span>
+    <i class="w-8 h-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 6l16 0" />
+  <path d="M4 12l16 0" />
+  <path d="M4 18l16 0" />
+</svg>
+
+    </i>
+  </button>
+  <div class="absolute md:static top-16 left-0 right-0 z-50 hidden w-full md:block md:w-auto" id="navbar-menu">
+    <ul class="flex flex-col mx-2 md:mx-0 md:flex-row md:border-0 rounded-xs md:rounded-full px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+    
+        <li id="post" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600 text-emerald-600"
+            href="/zh-cn/post/" title="文章">文章</a>
+        </li>
+      
+    
+        <li id="about" class="">
+          <a class="block px-3 py-3 hover:text-emerald-600"
+            href="/zh-cn/about/" title="关于">关于</a>
+        </li>
+      
+    
+    </ul>
+  </div>
+</nav>
+
+
+  </div>
+  
+  <div class="flex-none">
+    <div class="h-full static">
+      <button id="navbar-lang-toggle" type="button" class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+        <span class="sr-only">打开语言切换</span>
+        <i class="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c0 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+        </i>
+      </button>
+      <div class="absolute hidden top-16 z-50" id="navbar-lang">
+        <ul class="flex flex-col rounded-xs px-3 text-base font-medium text-slate-800 dark:text-slate-200 shadow-lg bg-white dark:bg-gray-600 shadow-slate-800/5 dark:shadow-slate-200/5 ring-1 ring-slate-900/5 dark:ring-slate-100/5">
+          <li class="">
+            <a class="block px-3 py-3 hover:text-emerald-600"
+              href="/post/2025-08-25-pycff/" title="English">English</a></li>
+        
+          <li class="">
+            <span class="block px-3 py-3 cursor-default hover:text-emerald-600">中文</span>
+            </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-none md:hidden">
+    <a href=/zh-cn/search/ class="inline-flex items-center p-2 text-sm text-slate-800 dark:text-slate-200 rounded-lg" aria-controls="navbar-menu" aria-expanded="false">
+      <span class="sr-only">搜索</span>
+      <i class="w-8 h-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+</svg>
+
+      </i>
+    </a>
+  </div>
+  <div class="darkmode-toggle flex flex-none mr-2 md:mr-0">
+    <label for="darkmode-toggle" class="relative flex items-center gap-1 px-3 cursor-pointer rounded-full bg-gray-100 dark:bg-gray-600" title="切换夜间模式">
+      <input name="darkmode-toggle" id="darkmode-toggle" type="checkbox" class="sr-only peer" aria-label="切换夜间模式">
+      <div class="absolute z-10 w-15 h-8 rounded-full bg-white dark:bg-gray-700"></div>
+      <i class="h-6 w-6 z-20 ml-1 flex-none rounded-full bg-yellow-400 place-self-center peer-checked:invisible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-down" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+   <path d="M12 5l0 .01"></path>
+   <path d="M17 7l0 .01"></path>
+   <path d="M19 12l0 .01"></path>
+   <path d="M17 17l0 .01"></path>
+   <path d="M12 19l0 .01"></path>
+   <path d="M7 17l0 .01"></path>
+   <path d="M5 12l0 .01"></path>
+   <path d="M7 7l0 .01"></path>
+</svg>
+
+      </i>
+      <i class="h-6 w-6 z-20 mr-1 flex-none rounded-full place-self-center invisible peer-checked:visible">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon-stars" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+   <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
+   <path d="M19 11h2m-1 -1v2"></path>
+</svg>
+
+      </i>
+    </label>
+  </div>
+</div>
+
+  </header>
+  <main class="flex flex-auto justify-center">
+    
+<div id="progress" class="fixed top-0 left-0 w-full h-1 bg-blue-500"></div>
+<div class="w-full max-w-4xl lg:max-w-5xl">
+  <div class="flex flex-col mt-6 mx-2 md:mx-0 rounded-lg overflow-hidden shadow-md bg-white dark:bg-gray-700">
+    <div>
+      <a href="/zh-cn/post/2025-08-25-pycff/">
+        <figure>
+    <img class="w-full object-cover h-36 md:h-48 xl:h-60" src="/images/code-bg.jpg"
+      alt="PyCFF——一款基于Python的曲线拟合工具" title="PyCFF——一款基于Python的曲线拟合工具"
+      loading="lazy"
+    >
+  </figure>
+      </a>
+    </div>
+    <div class="flex flex-col gap-y-3 p-6">
+      <h1 class="text-4xl font-semibold text-slate-800 dark:text-slate-100">
+        <a href="/zh-cn/post/2025-08-25-pycff/">PyCFF——一款基于Python的曲线拟合工具</a>
+      </h1>
+
+      
+      
+  <ul class="flex flex-row flex-wrap text-slate-500 dark:text-slate-300">
+    
+      
+      <li>
+        <a href="/zh-cn/categories/code/"
+          class="text-sm mr-2 px-2 py-1 rounded-sm border border-emerald-800 bg-emerald-800 text-slate-50">
+          Code
+        </a>
+      </li>
+      
+    
+    
+      
+      <li>
+        <a href="/zh-cn/tags/python/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Python</span>
+        </a>
+      </li>
+      
+      <li>
+        <a href="/zh-cn/tags/qt/"
+          class="flex flex-row text-sm mr-2 py-1">
+          <i class="h-5 w-5 flex-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M5 9l14 0"></path>
+   <path d="M5 15l14 0"></path>
+   <path d="M11 4l-4 16"></path>
+   <path d="M17 4l-4 16"></path>
+</svg>
+
+          </i>
+          <span class="ml-0">Qt</span>
+        </a>
+      </li>
+      
+    
+  </ul>
+
+
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  
+  
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"></path>
+   <path d="M16 3v4"></path>
+   <path d="M8 3v4"></path>
+   <path d="M4 11h16"></path>
+   <path d="M11 15h1"></path>
+   <path d="M12 15v3"></path>
+</svg>
+
+    </i>
+    <time datetime="2025-08-25T00:00:00&#43;00:00">
+      2025-08-25
+    </time>
+  </div>
+
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hourglass-high" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M6.5 7h11"></path>
+   <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"></path>
+   <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"></path>
+</svg>
+
+    </i>
+    <span>
+      阅读时长1分钟
+    </span>
+  </div>
+</div>
+
+      <div class="flex flex-col gap-y-1 md:flex-row md:gap-y-0 md:gap-x-4 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row text-base gap-x-1">
+    <i class="h-6 w-6 flex-none">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+    </i>
+    <span>Andrew Moa</span>
+  </div>
+</div>
+
+      
+        
+        <section class="prose prose-slate dark:prose-invert w-full max-w-4xl lg:max-w-5xl mt-6">
+          <h2>目录</h2>
+          <aside><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-软件简介">1. 软件简介</a>
+      <ul>
+        <li><a href="#11-用户界面">1.1 用户界面</a></li>
+        <li><a href="#12-自定义函数说明">1.2 自定义函数说明</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-构建说明">2. 构建说明</a>
+      <ul>
+        <li><a href="#21-构建环境">2.1 构建环境</a></li>
+        <li><a href="#22-构建脚本">2.2 构建脚本</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside>
+        </section>
+        
+      
+
+      <article class="mt-6 w-full max-w-4xl lg:max-w-5xl prose prose-slate dark:prose-invert prose-quoteless post-content">
+        <p>最近工作中经常遇到需要通过散点数据拟合函数曲线的情况，比较典型的例子是通过换热器的压降拟合多孔介质参数，以及拟合流体介质的多项式密度。虽然相关的工作可以通过Excel、Origin等实现，但是操作繁琐而且支持的函数类型有限。这里使用Python编写了一个简单的工具包，通过numpy和scipy实现函数拟合功能，用PySide编写了用户界面，实现了从输入数据到输出拟合函数参数的功能，并且支持数据预测和自定义函数功能。</p>
+<h2 id="1-软件简介">1. 软件简介</h2>
+<p>源码地址：<a href="https://github.com/AndrewMoa2005/PyCFF/" target="_blank" rel="noopener">PyCFF</a>
+</p>
+<h3 id="11-用户界面">1.1 用户界面</h3>
+<p>下面是软件的启动界面。软件界面通过PySide(Qt)实现。支持函数绘图功能，用户可以自定义绘图内容及输出保存图片。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_7434f0264f99c612.webp 320w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_e4b4fffa25a8989a.webp 640w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_dfe6663621881e6e.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_99972747f7789bb1.jpg 320w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_572366b1a902eb6c.jpg 640w, /post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_1e96c1ea08fcd90b.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/c6219195050ac1b0866829f371239172_hu_572366b1a902eb6c.jpg" width="1204" height="947" alt="c6219195050ac1b0866829f371239172.png" title="c6219195050ac1b0866829f371239172.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>下面是软件的输入界面。输入数据通过表格的方式展示，用户通过指定列来选择要拟合函数的自变量(x)和因变量(y)。用户不仅可以在表格中手动输入数据，也可以通过Excel等表格软件粘贴输入，还可以通过<strong>粘贴替换列</strong>的方式快速输入大量数据。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_26bfa282be5db29.webp 320w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_edfef31dc944cb8b.webp 640w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_7878a661f528dd2a.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_15370fee07199558.jpg 320w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_a335fb2638b2e3d5.jpg 640w, /post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_5962f1ac3b403bc3.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/1dbefea8b95c2677587b4f885c9df838_hu_a335fb2638b2e3d5.jpg" width="1204" height="947" alt="1dbefea8b95c2677587b4f885c9df838.png" title="1dbefea8b95c2677587b4f885c9df838.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<p>下面是软件的输出界面。软件预定义了一些常用函数，用户点击运算后在左侧表格中输出函数参数，并且在文本框中输出函数的完整表达式。用户可以自定义输出参数的精度和是否采用科学计数法，输出参数默认采用的是6位小数的科学计数法表示，满足大部分工程计算的需求。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_93ac3acbad02f734.webp 320w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_fb1be15ea0bc6b27.webp 640w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_ba1dc529d61f6b15.webp 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_36ac0254752dbaf2.jpg 320w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_a296ac5c7de23766.jpg 640w, /post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_ed1ebdb470cc1c8.jpg 960w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/98ecd6a60f59bed8a70596750a11fd4d_hu_a296ac5c7de23766.jpg" width="1204" height="947" alt="98ecd6a60f59bed8a70596750a11fd4d.png" title="98ecd6a60f59bed8a70596750a11fd4d.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<h3 id="12-自定义函数说明">1.2 自定义函数说明</h3>
+<p>软件的预定义函数包括多项式、指数函数、对数函数及幂函数等，除了以上预定义函数也支持用户自定义函数。类似<code>a+b*x**1+c*x**2</code>、<code>-omega-alpha * exp(x)</code>等自定义函数，会自动提取其中的参数并通过输入数据进行拟合。自定义函数除了四则运算(+、-、*、/)和幂运算(**或^)，还支持常用的函数运算，具体函数和相关说明见下表。<div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/cc51005d3b909b23abebc855fbc2e641_hu_1040d3ffc2fa0f78.webp 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/cc51005d3b909b23abebc855fbc2e641_hu_98d66cb66f76e5c9.jpg 320w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/cc51005d3b909b23abebc855fbc2e641_hu_e4bec931a6d8d6fb.jpg" width="603" height="338" alt="cc51005d3b909b23abebc855fbc2e641.png" title="cc51005d3b909b23abebc855fbc2e641.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<table>
+  <thead>
+      <tr>
+          <th>函数名</th>
+          <th>用法</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>exp</td>
+          <td>exp(a)</td>
+          <td>求a的指数值</td>
+      </tr>
+      <tr>
+          <td>pow</td>
+          <td>pow(a, b)</td>
+          <td>求a的b次幂</td>
+      </tr>
+      <tr>
+          <td>abs</td>
+          <td>abs(a)</td>
+          <td>求a的绝对值</td>
+      </tr>
+      <tr>
+          <td>sqrt</td>
+          <td>sqrt(a)</td>
+          <td>求a的平方根</td>
+      </tr>
+      <tr>
+          <td>cbrt</td>
+          <td>cbrt(a)</td>
+          <td>求a的立方根</td>
+      </tr>
+      <tr>
+          <td>log</td>
+          <td>log(a)</td>
+          <td>求a的对数(以e为底)</td>
+      </tr>
+      <tr>
+          <td>log10</td>
+          <td>log10(a)</td>
+          <td>求a的对数(以10为底)</td>
+      </tr>
+      <tr>
+          <td>log2</td>
+          <td>log2(a)</td>
+          <td>求a的对数(以2为底)</td>
+      </tr>
+      <tr>
+          <td>min</td>
+          <td>min(a)</td>
+          <td>求a的最小值</td>
+      </tr>
+      <tr>
+          <td>max</td>
+          <td>max(a)</td>
+          <td>求a的最大值</td>
+      </tr>
+      <tr>
+          <td>sin</td>
+          <td>sin(a)</td>
+          <td>求a的正弦值</td>
+      </tr>
+      <tr>
+          <td>cos</td>
+          <td>cos(a)</td>
+          <td>求a的余弦值</td>
+      </tr>
+      <tr>
+          <td>tan</td>
+          <td>tan(a)</td>
+          <td>求a的正切值</td>
+      </tr>
+      <tr>
+          <td>asin</td>
+          <td>asin(a)</td>
+          <td>求a的反正弦</td>
+      </tr>
+      <tr>
+          <td>acos</td>
+          <td>acos(a)</td>
+          <td>求a的反余弦</td>
+      </tr>
+      <tr>
+          <td>atan</td>
+          <td>atan(a)</td>
+          <td>求a的反正切</td>
+      </tr>
+      <tr>
+          <td>sinh</td>
+          <td>sinh(a)</td>
+          <td>求a的双曲正弦值</td>
+      </tr>
+      <tr>
+          <td>cosh</td>
+          <td>cosh(a)</td>
+          <td>求a的双曲余弦值</td>
+      </tr>
+      <tr>
+          <td>tanh</td>
+          <td>tanh(a)</td>
+          <td>求a的双曲正切值</td>
+      </tr>
+      <tr>
+          <td>asinh</td>
+          <td>asinh(a)</td>
+          <td>求a的反双曲正弦</td>
+      </tr>
+      <tr>
+          <td>acosh</td>
+          <td>acosh(a)</td>
+          <td>求a的反双曲余弦</td>
+      </tr>
+      <tr>
+          <td>atanh</td>
+          <td>atanh(a)</td>
+          <td>求a的反双曲正切</td>
+      </tr>
+      <tr>
+          <td>pi</td>
+          <td>pi()</td>
+          <td>圆周率</td>
+      </tr>
+      <tr>
+          <td>e</td>
+          <td>e()</td>
+          <td>自然对数的底数</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="2-构建说明">2. 构建说明</h2>
+<h3 id="21-构建环境">2.1 构建环境</h3>
+<p>源代码提供了<code>build.py</code>脚本方便快速构建，用户构建前应先建立虚拟环境：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python -m venv myvenv <span class="c1"># myvenv 为虚拟环境名称，根据需要自己定义</span>
+</span></span></code></pre></div><p>Windows平台下通过以下命令激活虚拟环境：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">./</span><span class="n">myvenv</span><span class="p">/</span><span class="n">Scripts</span><span class="p">/</span><span class="n">activate</span> <span class="c"># win环境下激活虚拟环境，建议在posershell中运行</span>
+</span></span></code></pre></div><p>Linux平台下通过以下命令激活虚拟环境：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">source</span> ./myvenv/bin/activate <span class="c1"># posix环境下激活虚拟环境</span>
+</span></span></code></pre></div><p>激活虚拟环境之后会在命令行开头显示<code>(myvenv)</code>字符，表明此时命令行下的python运行在虚拟环境<code>myvenv</code>中。通过以下命令安装依赖：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pip install -r requirements.txt
+</span></span></code></pre></div><p>构建完成后通过deactivate退出虚拟环境：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">deactivate <span class="c1"># win、posix都是同一个命令</span>
+</span></span></code></pre></div><h3 id="22-构建脚本">2.2 构建脚本</h3>
+<p>运行以下命令显示构建脚本的帮助信息：</p>
+<pre tabindex="0"><code>python build.py -h
+</code></pre><p><div class="not-prose">
+<picture>
+    <source type="image/webp" srcset="/post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_82134c78ee6ad428.webp 320w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_baa67dc34d9733a4.webp 640w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_cb87da1948880172.webp 960w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_313402442b06e222.webp 1280w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_d21c8eef0f39bfc7.webp 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <source type="image/jpeg" srcset="/post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_ca0d874d17bd48cd.jpg 320w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_79f5beb6caec3ba1.jpg 640w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_f25cd8ab581478aa.jpg 960w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_5c146c66c3e9b6eb.jpg 1280w, /post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_fc3807c95c514a31.jpg 1600w" sizes="(min-width: 1024px) 100vw, 50vw" />
+    <img class="h-auto max-w-full rounded-lg" src="/post/2025-08-25-pycff/images/c526195ad4f9c0928665d83df792851b_hu_79f5beb6caec3ba1.jpg" width="1678" height="446" alt="c526195ad4f9c0928665d83df792851b.png" title="c526195ad4f9c0928665d83df792851b.png" loading="lazy" />
+  </picture>
+</div>
+</p>
+<ul>
+<li>开关<code>-h</code>/<code>--help</code>显示命令行帮助信息</li>
+<li>开关<code>-c</code>/<code>--copy</code>将源文件复制到指定目录，用于调试</li>
+<li>开关<code>-b</code>/<code>--build</code>运行<code>pyinstaller</code>将源码打包成可执行文件，<code>dir</code>表示打包成目录(默认情况)，<code>one</code>表示打包成单独的可执行文件</li>
+<li>开关<code>-u</code>/<code>--update</code>将源文件中的<code>.ui</code>和<code>.qrc</code>编译成<code>.py</code>文件，用于调试</li>
+<li>开关<code>-t</code>/<code>--translate</code>用于多语言翻译，<code>up</code>表示更新源码中的<code>.ts</code>文件，<code>gui</code>表示启动<code>linguistgui</code>界面并打开<code>.ts</code>文件，<code>gen</code>表示将<code>.ts</code>文件编译成<code>.qm</code>文件，此开关一般单独用于调试</li>
+<li>开关<code>-p</code>/<code>--pyd</code>，先将<code>.py</code>文件编译成<code>.pyd</code>/<code>.so</code>，再运行<code>pyinstaller</code>打包成可执行文件，<code>dir</code>表示打包成目录(默认情况)，<code>one</code>表示打包成单独的可执行文件</li>
+<li>开关<code>-g</code>/<code>--genwhl</code>，生成whl发布包</li>
+</ul>
+<p>一般情况下，使用以下命令即可快速构建可执行程序：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python build.py -p
+</span></span></code></pre></div><p>生成的可执行文件/文件夹在<code>[source_dir]/build/pycff/dist</code>路径下。</p>
+<p>使用以下命令即可快速构建whl发布包：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python build.py -g
+</span></span></code></pre></div><p>生成的whl文件在<code>[source_dir]/build/dist</code>路径下，通过<code>pip install pycff-{version}-py3-none-{platform}.whl</code>安装该发布包。发布包安装后，可以通过<code>pycff</code>或者<code>python -m pycff</code>启动主程序。</p>
+
+      </article>
+
+      
+
+
+  
+<script type="text/javascript">
+  (function() {
+    const themeToggle = document.querySelector('.darkmode-toggle input');
+    const light = 'light';
+    const dark = 'dark';
+    let isDark = localStorage.theme === dark || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let theme = isDark ? dark : light;
+
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    const dataset = {
+        repo: 'AndrewMoa2005\/AndrewMoa2005.github.io',
+        repoId: 'R_kgDOOSI4_A',
+        category: 'General',
+        categoryId: 'DIC_kwDOOSI4_M4Co1Kf',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        theme: theme,
+        lang: 'en',
+    };
+    s.src = 'https://giscus.app/client.js';
+    s.crossorigin = 'anonymous';
+    s.async = true;
+    Object.entries(dataset).forEach(function(a) {
+        return s.dataset[a[0]] = a[1];
+    });
+
+    const curScriptElement = document.currentScript;
+    curScriptElement.parentNode.insertBefore(s, curScriptElement);
+
+    function sendMessage(message) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      
+      if (!iframe) return;
+      iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+    }
+
+    themeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        theme = dark;
+      } else {
+        theme = light;
+      }
+      sendMessage({
+        setConfig: {
+          theme: theme,
+        }
+      });
+    });
+  })();
+</script>
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  <footer class="flex flex-none justify-center">
+    <section class="flex flex-col md:flex-row mx-2 md:mx-0 gap-2 md:gap-0 justify-between w-full max-w-4xl lg:max-w-5xl py-6 text-slate-500 dark:text-slate-300">
+  <div class="flex flex-row">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <a href="https://github.com/AndrewMoa2005" target="_blank" title="Github" class="flex flex-row mr-2">
+      <span class="hidden">Github</span>
+      <i class="h-6 w-6 flex-none"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+</svg>
+ </i>
+    </a>
+  
+  
+  
+  
+
+
+  </div>
+  <div class="grow"></div>
+  <div class="flex flex-row">
+    <i class="h-6 w-6 flex-none"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+   <path d="M14 9.75a3.016 3.016 0 0 0 -4.163 .173a2.993 2.993 0 0 0 0 4.154a3.016 3.016 0 0 0 4.163 .173"></path>
+</svg>
+</i> 2025 Andrew Moa
+    
+  </div>
+  
+  <div class="flex flex-row">
+    <span class="ml-0 pl-0 md:ml-2 md:pl-2 border-l-0 md:border-l border-slate-300 dark:border-slate-400">
+      Powered by <a href="https://gohugo.io" target="_blank" rel="noopener" class="underline">Hugo</a> <span class="text-red-600">&hearts;</span> <a href="https://github.com/tomowang/hugo-theme-tailwind" target="_blank" rel="noopener" class="underline">Tailwind</a>
+    </span>
+  </div>
+  
+</section>
+
+  </footer>
+  <script src="/main.min.65ca5b0808abf278fcec5d424701ebf0b4bc46a737129cd5e57fdb739f463e79.js"></script>
+
+<div class="hidden top-1 right-1" id="code-copy">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+  <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+</svg>
+
+  </i>
+</div>
+<div class="hidden top-1 right-1" id="code-copy-done">
+  <i class="h-6 w-6 block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M5 12l5 5l10 -10" />
+</svg>
+
+  </i>
+</div><script src="/code-copy.min.e7b2a74adef1ed474c335c8bd5e7832b2316b8842b0f9184d65286c5bd64f51a.js"></script>
+
+
+
+
+
+</body>
+</html>
